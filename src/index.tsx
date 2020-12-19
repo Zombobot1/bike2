@@ -1,15 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const text = 'Hello world'
+const text = 'Hello world!!';
 
-const App: React.FunctionComponent<{ message: string }> = ({ message }) => (
-  <div>{message}</div>
-);
+type RFC<T> = React.FunctionComponent<T>;
+type WithMessage = { message: string };
+type AppT = RFC<WithMessage>;
+
+const App: AppT = ({ message }) => <div>{message}</div>;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App message={text}/>
+    <App message={text} />
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
