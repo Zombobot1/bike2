@@ -1,9 +1,7 @@
 @import "../../../sass/config";
 
 .landing-hero-screen {
-  background-color: $primary-color;
-  height: 100vh;
-  overflow: auto;
+  @extend %landing-screen-base;
 
   %landing-header {
     font-size: 90px;
@@ -67,9 +65,4 @@
     right: 100px;
   }
 
-  .scroll-down {
-    position: absolute;
-    bottom: 5px;
-    left: 50%;
-  }
 }

@@ -2,3 +2,10 @@ $primary-color: #1C2540;
 $secondary-color: #fca95c;
 
 $font-stack: Nunito, Helvetica, sans-serif;
+
+%landing-screen-base {
+  background-color: $primary-color;
+  height: 100vh;
+  position: relative;
+  overflow: auto;
+}
