@@ -1,0 +1,75 @@
+@import "../../../sass/config";
+
+.landing-hero-screen {
+  background-color: $primary-color;
+  height: 100vh;
+  overflow: auto;
+
+  %landing-header {
+    font-size: 90px;
+    font-weight: bold;
+    font-family: $font-stack;
+  }
+
+  .hero {
+    margin-top: 200px;
+    margin-left: 150px;
+
+    &__h-top {
+      @extend %landing-header;
+      color: white;
+    }
+
+    &__h-bottom {
+      @extend %landing-header;
+      margin-top: -20px;
+      color: $secondary-color;
+    }
+
+    &__p {
+      width: 40%;
+      margin-top: 40px;
+      margin-bottom: 60px;
+      font-size: 35px;
+      font-family: $font-stack;
+      color: white;
+    }
+
+    &__btn-cta {
+      background-color: $secondary-color;
+      color: white;
+      font-weight: bold;
+      font-family: $font-stack;
+      font-size: 20px;
+      width: 305px;
+      height: 45px;
+      border-radius: 10px;
+      border: none;
+
+      transition: box-shadow 250ms ease-in-out;
+
+      &:focus,
+      &:hover {
+        outline:none;
+        box-shadow: 0 0 20px rgba(252, 169, 92, 0.76);
+      }
+      &:active {
+        opacity: .9;
+        box-shadow: 0 0 20px rgba(252, 169, 92, 0.76);
+      }
+    }
+  }
+
+  .girl-img {
+    width: 40%;
+    position: absolute;
+    top: 200px;
+    right: 100px;
+  }
+
+  .scroll-down {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+  }
+}
