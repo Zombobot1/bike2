@@ -13,15 +13,11 @@
   width: 100%;
 
   button {
-    background-color: Transparent;
-    background-repeat:no-repeat;
-    border: none;
-    cursor:pointer;
-    overflow: hidden;
-    outline:none;
+    @extend %transparent-button;
   }
 
   [class*="chevron-"] {
+    position: absolute;
     fill: white;
     opacity: .7;
 
@@ -31,13 +27,11 @@
   }
 
   .chevron-left {
-    position: absolute;
     left: 25%;
     bottom: 50%;
   }
 
   .chevron-right {
-    position: absolute;
     right: 28.5%;
     bottom: 46.5%;
   }

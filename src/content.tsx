@@ -1,7 +1,7 @@
 const hero_header = 'Learn better with Uni';
 const paragraph =
   'Achieve the highest results in studying using the most powerful flashcards application and do not worry about forgetting with flexible spaced repetition';
-const btn_text = 'Register for free';
+const btnText = 'Register for free';
 
 const features_header = 'Features';
 const features = [
@@ -73,7 +73,7 @@ const appProperties = {
   hero: {
     header: hero_header,
     paragraph,
-    btn_text,
+    btnText,
   },
   features: {
     header: features_header,

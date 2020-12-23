@@ -31,11 +31,11 @@ const Landing = ({ hero, features, pricing }: LandingP) => {
       ['features', pricingRef],
     ]),
   );
-  const { header, paragraph, btn_text } = hero;
+  const { header, paragraph, btnText } = hero;
   const { testimonialsHeader, testimonials, pricingHeader, prices } = pricing;
   return (
     <>
-      <LandingHero header={header} paragraph={paragraph} btn_text={btn_text} scroller={scr} refName={heroRefName} />
+      <LandingHero header={header} paragraph={paragraph} btnText={btnText} scroller={scr} refName={heroRefName} />
       <LandingFeatures
         header={features.header}
         features={features.features}

@@ -3,6 +3,16 @@ $secondary-color: #fca95c;
 
 $font-stack: Nunito, Helvetica, sans-serif;
 
+
+%transparent-button {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;
+}
+
 %landing-screen-base {
   background-color: $primary-color;
   height: 100vh;

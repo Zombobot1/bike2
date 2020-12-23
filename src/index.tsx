@@ -8,9 +8,11 @@ import './components/shared-icons/shared-icons.scss';
 import App from './components/app';
 import appProperties from './content';
 
+const { hero, features, pricing } = appProperties;
+
 ReactDOM.render(
   <React.StrictMode>
-    <App hero={appProperties.hero} features={appProperties.features} pricing={appProperties.pricing} />
+    <App hero={hero} features={features} pricing={pricing} />
   </React.StrictMode>,
   document.getElementById('root'),
 );
