@@ -3,25 +3,11 @@ import './landing-features.scss';
 
 import ScrollDown from '../shared-icons/scroll-down.svg';
 import { Scroller } from '../utils/types';
-
-type Feature = {
-  subheader: string;
-  description: string;
-};
-
-const FeatureC = ({ subheader, description }: Feature, index: number) => {
-  const cardName = `cards__feature-${index + 1}`;
-  return (
-    <div className={cardName} key={index}>
-      <h3 className={`${cardName}__h3`}>{subheader}</h3>
-      <pre className={`${cardName}__pre`}>{description}</pre>
-    </div>
-  );
-};
+import Feature, { FeatureP } from './feature';
 
 interface FeaturesBaseP {
   header: string;
-  features: Feature[];
+  features: FeatureP[];
 }
 
 interface FeaturesP extends FeaturesBaseP {
@@ -35,7 +21,7 @@ const LandingFeatures = ({ header, features, scroller, refName, reff }: Features
   return (
     <section className={'landing-features-screen'} ref={reff}>
       <h2 className={'landing-features-screen__h2'}>{header}</h2>
-      <div className={'cards'}>{features.map(FeatureC)}</div>
+      <div className={'cards'}>{features.map(Feature)}</div>
       <img className={'scroll-down'} src={ScrollDown} alt="sd" onClick={() => scroller.scrollFrom(refName)} />
     </section>
   );

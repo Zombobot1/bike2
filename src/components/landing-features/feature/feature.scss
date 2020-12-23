@@ -1,0 +1,40 @@
+@import "../../../sass/config";
+
+@mixin feature-card($color-from, $color-to, $shadow-opacity) {
+  width: 350px;
+  height: 530px;
+  padding: 40px;
+  margin-right: 70px;
+  border-radius: 40px;
+  background: linear-gradient(135deg, $color-from 0%, $color-to 100%);
+  box-shadow: 6px 6px 20px rgba($color-from, $shadow-opacity);
+
+  &__h3 {
+    color: white;
+    font-size: 30px;
+  }
+
+  &__pre {
+    margin-top: 30px;
+    color: white;
+    font-size: 25px;
+    white-space:pre-wrap;
+    font-family: $font-stack;
+  }
+}
+
+.feature-1 {
+  @include feature-card(#C522FF, #4C09DB, .45);
+}
+
+.feature-2 {
+  @include feature-card(#25A7FC, #16945F, .35);
+}
+
+.feature-3 {
+  @include feature-card(#D005AB, #F0573E, .55);
+}
+
+.feature-4 {
+  @include feature-card(#EDD605, #FF2400, .25);
+}

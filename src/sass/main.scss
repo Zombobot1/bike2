@@ -1,0 +1,21 @@
+@import "config";
+
+$theme-colors: (
+  "primary": $primary-color,
+  "secondary": $secondary-color,
+);
+
+.btn.btn-primary:active:hover,
+.btn.btn-primary:hover {
+  background-color: #000;
+}
+
+$input-focus-width: .2rem !default;
+$input-focus-color: $primary-color !default;
+$input-focus-border-color: rgba($primary-color, .5) !default;
+$input-focus-box-shadow: 0 0 0 $input-focus-width rgba($primary-color, .25) !default;
+
+$border-radius: 10px;
+$font-family-sans-serif: $font-stack;
+
+@import "../../node_modules/bootstrap/scss/bootstrap";

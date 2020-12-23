@@ -1,4 +1,4 @@
-@import "../../../sass/config";
+@import "../../sass/config";
 
 .landing-hero-screen {
   @extend %landing-screen-base;
@@ -10,8 +10,8 @@
   }
 
   .hero {
-    margin-top: 200px;
-    margin-left: 150px;
+    margin-top: 100px;
+    margin-left: 100px;
 
     &__h-top {
       @extend %landing-header;
@@ -61,7 +61,7 @@
   .girl-img {
     width: 40%;
     position: absolute;
-    top: 200px;
+    top: 100px;
     right: 100px;
   }
 

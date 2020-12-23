@@ -1,0 +1,32 @@
+@import "../../../sass/config";
+
+.landing__footer {
+  margin-top: 50px;
+  display: flex;
+
+  p,
+  a {
+    font-family: $font-stack;
+    font-size: 20px;
+  }
+
+  p {
+    color: white;
+    margin-left: 150px;
+    margin-right: auto;
+  }
+
+  .refs {
+    margin-right: 100px;
+    display: flex;
+    gap: 50px;
+
+    a {
+      color: white;
+      &:hover {
+        color: $secondary-color;
+        cursor: pointer;
+      }
+    }
+  }
+}

@@ -1,4 +1,4 @@
-@import "../../../sass/config";
+@import "../../sass/config";
 
 .landing-features-screen {
   @extend %landing-screen-base;
@@ -14,45 +14,9 @@
 
   .cards {
     display: flex;
-    justify-content: center;
 
     margin-left: 150px;
     margin-top: 100px;
-
-    @mixin feature-card($color-from, $color-to) {
-      width: 350px;
-      height: 530px;
-      padding: 40px;
-      margin-right: 70px;
-      border-radius: 40px;
-      background: linear-gradient(135deg, $color-from 0%, $color-to 100%);
-      box-shadow: 6px 6px 20px rgba($color-from, 0.35);
-
-      &__h3 {
-        color: white;
-        font-size: 30px;
-      }
-
-      &__pre {
-        margin-top: 30px;
-        color: white;
-        font-size: 25px;
-        white-space:pre-wrap;
-        font-family: $font-stack;
-      }
-    }
-
-    &__feature-1 {
-      @include feature-card(#C522FF, #4C09DB);
-    }
-
-    &__feature-2 {
-      @include feature-card(#25A7FC, #16945F);
-    }
-
-    &__feature-3 {
-      @include feature-card(#D005AB, #F0573E);
-    }
   }
 
 

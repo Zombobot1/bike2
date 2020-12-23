@@ -1,0 +1,44 @@
+@import "../../../sass/config";
+
+.testimonials-subheader {
+  @extend %landing-subheader;
+}
+
+.testimonials {
+  margin-top: 20px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  width: 100%;
+
+  button {
+    background-color: Transparent;
+    background-repeat:no-repeat;
+    border: none;
+    cursor:pointer;
+    overflow: hidden;
+    outline:none;
+  }
+
+  [class*="chevron-"] {
+    fill: white;
+    opacity: .7;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  .chevron-left {
+    position: absolute;
+    left: 25%;
+    bottom: 50%;
+  }
+
+  .chevron-right {
+    position: absolute;
+    right: 28.5%;
+    bottom: 46.5%;
+  }
+}
