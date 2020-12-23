@@ -1,17 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-const text = 'Hello world!!';
+import './sass/main.scss';
 
-type RFC<T> = React.FunctionComponent<T>;
-type WithMessage = { message: string };
-type AppT = RFC<WithMessage>;
+import './components/shared-icons/shared-icons.scss';
 
-const App: AppT = ({ message }) => <div>{message}</div>;
+import App from './components/app';
+import appProperties from './content';
+
+const { hero, features, pricing } = appProperties;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App message={text} />
+    <App hero={hero} features={features} pricing={pricing} />
   </React.StrictMode>,
   document.getElementById('root'),
 );

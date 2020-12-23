@@ -1,0 +1,12 @@
+@import "../../../sass/config";
+
+.pricing-subheader {
+  @extend %landing-subheader;
+}
+
+.prices {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
