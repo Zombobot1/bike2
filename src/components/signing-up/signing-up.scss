@@ -1,0 +1,120 @@
+@import "../../sass/config";
+
+.sign-up-container {
+  position: relative;
+  .guy-img {
+    position: absolute;
+    left: 100px;
+    bottom: 22.5%;
+  }
+
+  .girl-img {
+    position: absolute;
+    transform: scale(1.3);
+    z-index: 10;
+    right: 160px;
+    bottom: 29%;
+  }
+}
+
+.sign-up-card {
+  width: 500px;
+  height: 675px;
+  margin: 100px auto 0;
+  padding: 48px;
+  background-color: white;
+  border: 1.7px solid #EBEBEB;
+  border-radius: 13px;
+
+  &__header {
+    font-family: $font-stack;
+    font-weight: bold;
+    font-size: 28px;
+    text-align: center;
+  }
+
+  a {
+    display: block;
+    font-family: $font-stack;
+    color: $primary-color;
+    font-weight: bold;
+    text-decoration: none;
+
+
+    &:active,
+    &:hover {
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  }
+
+  form {
+    & >*+* {
+      margin-top: 10px;
+    }
+
+    label {
+      margin-bottom: 7px;
+    }
+
+    .lost-password {
+      text-align: right;
+      margin-top: 20px;
+      margin-bottom: 13px;
+    }
+
+    .input-with-icon {
+      position: relative;
+
+      .e-email {
+        position: absolute;
+        top: 11px;
+        left: 10px;
+      }
+
+      .e-password {
+        position: absolute;
+        top: 9px;
+        left: 10px;
+      }
+    }
+    input {
+      text-indent: 22px;
+    }
+
+    .btn {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      width: 100%;
+    }
+
+  }
+
+  .login-with {
+    margin-top: 15px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .btn-google {
+    width: 125px;
+    height: 40px;
+    margin-top: -3px;
+    margin-bottom: 50px;
+
+    .google-icon {
+      margin-right: 5px;
+      display: inline-block;
+    }
+  }
+
+  .not-registered {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+
+    a:hover {
+      text-decoration: underline;
+    }
+  }
+}
