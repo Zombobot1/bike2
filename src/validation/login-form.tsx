@@ -7,11 +7,11 @@ export class LoginFormV {
   @MinLength(8, { message: 'Password must be at least 8 symbols long' })
   password: string | undefined;
 
-  static validateEmail = (email: string): string => {
-    return validate({ email }, LoginFormV);
-  };
+  static validateEmail(email: string): string {
+    return validate('email', { email }, LoginFormV);
+  }
 
-  static validatePassword = (password: string): string => {
-    return validate({ password }, LoginFormV);
-  };
+  static validatePassword(password: string): string {
+    return validate('password', { password }, LoginFormV);
+  }
 }

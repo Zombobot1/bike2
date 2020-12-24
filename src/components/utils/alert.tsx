@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { FC } from 'react';
 
-const Alert = (type: string, text: string) => (isVisible: boolean) => (
+type AlertP = { isVisible: boolean };
+export type AlertFC = FC<AlertP>;
+export const Alert = (type: string, text: string): AlertFC => ({ isVisible }: AlertP) => (
   <div className={`alert alert-${type} text-center ${!isVisible ? 'invisible' : ''}`} role="alert">
     {text}
   </div>
 );
-
-export default Alert;

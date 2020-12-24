@@ -13,6 +13,12 @@ $bg-color: #F5F8FB;
 
 $font-stack: Nunito, Helvetica, sans-serif;
 
+%ui-card {
+  padding: 48px;
+  background-color: $white-color;
+  border: 1.7px solid #EBEBEB;
+  border-radius: 13px;
+}
 
 %transparent-button {
   background-color: Transparent;
