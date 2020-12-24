@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC } from 'react';
+import React, { FC } from 'react';
 import { ValidatedInputFieldP } from '../types';
 import { ValueUpdate } from '../../../utils/types';
 

@@ -14,7 +14,7 @@ const App = ({ hero, features, pricing }: LandingP) => {
       <Switch>
         <Route path={'/signup'} component={SignUp} />
         <Route path={'/lostpassword'} render={() => <div>Lost</div>} />
-        <Route path={'/signin'} component={SignIn} />
+        <Route path={'/'} component={SignIn} />
         <Route path={'/landing'} render={() => <Landing hero={hero} features={features} pricing={pricing} />} />
       </Switch>
     </>

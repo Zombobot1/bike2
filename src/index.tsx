@@ -3,7 +3,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import './components/shared-icons/shared-icons.scss';
+import './components/icons/icons.scss';
+import './components/images/images.scss';
 
 import App from './components/app';
 import appProperties from './content';

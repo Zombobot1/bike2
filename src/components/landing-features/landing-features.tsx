@@ -1,7 +1,7 @@
 import React from 'react';
 import './landing-features.scss';
 
-import { ReactComponent as ScrollDown } from '../shared-icons/scroll-down.svg';
+import { ReactComponent as ScrollDown } from '../icons/scroll-down.svg';
 import { Scroller } from '../../utils/types';
 import Feature, { FeatureP } from './feature';
 
