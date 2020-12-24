@@ -11,7 +11,7 @@
   }
 
   p {
-    color: white;
+    color: $white-color;
     margin-left: 150px;
     margin-right: auto;
   }
@@ -22,7 +22,7 @@
     gap: 50px;
 
     a {
-      color: white;
+      color: $white-color;
       &:hover {
         color: $secondary-color;
         cursor: pointer;

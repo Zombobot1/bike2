@@ -1,0 +1,18 @@
+.input-with-icon {
+  position: relative;
+
+  .e-email {
+    position: absolute;
+    top: 11px;
+    left: 10px;
+  }
+
+  .e-password {
+    position: absolute;
+    top: 9px;
+    left: 10px;
+  }
+}
+input {
+  text-indent: 22px;
+}

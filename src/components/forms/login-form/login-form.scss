@@ -1,0 +1,22 @@
+form {
+  & >*+* {
+    margin-top: 10px;
+  }
+
+  label {
+    margin-bottom: 7px;
+  }
+
+  .lost-password {
+    text-align: right;
+    margin-top: 20px;
+    margin-bottom: 13px;
+  }
+
+  .btn {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+}

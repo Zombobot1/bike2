@@ -3,6 +3,14 @@
 $theme-colors: (
   "primary": $primary-color,
   "secondary": $secondary-color,
+  "tertiary": $tertiary-color,
+  "info": $info-color,
+  "success": $success-color,
+  "warning": $warning-color,
+  "danger": $danger-color,
+  "dark": $dark-color,
+  "gray": $gray-color,
+  "light": $light-color,
 );
 
 .btn.btn-primary:active:hover,

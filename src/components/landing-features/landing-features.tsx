@@ -1,8 +1,8 @@
 import React from 'react';
 import './landing-features.scss';
 
-import ScrollDown from '../shared-icons/scroll-down.svg';
-import { Scroller } from '../utils/types';
+import { ReactComponent as ScrollDown } from '../shared-icons/scroll-down.svg';
+import { Scroller } from '../../utils/types';
 import Feature, { FeatureP } from './feature';
 
 interface FeaturesBaseP {
@@ -22,7 +22,7 @@ const LandingFeatures = ({ header, features, scroller, refName, reff }: Features
     <section className={'landing-features-screen'} ref={reff}>
       <h2 className={'landing-features-screen__h2'}>{header}</h2>
       <div className={'cards'}>{features.map(Feature)}</div>
-      <img className={'scroll-down'} src={ScrollDown} alt="sd" onClick={() => scroller.scrollFrom(refName)} />
+      <ScrollDown className={'scroll-down'} onClick={() => scroller.scrollFrom(refName)} />
     </section>
   );
 };

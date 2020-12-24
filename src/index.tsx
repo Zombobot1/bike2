@@ -1,7 +1,7 @@
+import './sass/main.scss';
 import React from 'react';
 import ReactDOM from 'react-dom';
-
-import './sass/main.scss';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import './components/shared-icons/shared-icons.scss';
 
@@ -12,7 +12,9 @@ const { hero, features, pricing } = appProperties;
 
 ReactDOM.render(
   <React.StrictMode>
-    <App hero={hero} features={features} pricing={pricing} />
+    <Router>
+      <App hero={hero} features={features} pricing={pricing} />
+    </Router>
   </React.StrictMode>,
   document.getElementById('root'),
 );
