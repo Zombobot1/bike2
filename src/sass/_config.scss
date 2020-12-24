@@ -8,7 +8,7 @@ $danger-color: #fa5252;
 $dark-color: #262b40;
 $gray-color: #4a5073;
 $light-color: #eaedf2;
-
+$white-color: #fff;
 $bg-color: #F5F8FB;
 
 $font-stack: Nunito, Helvetica, sans-serif;
@@ -36,5 +36,5 @@ $font-stack: Nunito, Helvetica, sans-serif;
   font-size: 60px;
   font-weight: bold;
   font-family: $font-stack;
-  color: white;
+  color: $white-color;
 }

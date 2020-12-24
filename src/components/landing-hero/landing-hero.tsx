@@ -1,9 +1,9 @@
 import React from 'react';
 import './landing-hero.scss';
 
-import CardsImg from './cards-background-img.svg';
-import ScrollDown from '../shared-icons/scroll-down.svg';
-import { Scroller } from '../utils/types';
+import { ReactComponent as CardsImg } from './cards-background-img.svg';
+import { ReactComponent as ScrollDown } from '../shared-icons/scroll-down.svg';
+import { Scroller } from '../../utils/types';
 
 interface HeroBaseP {
   header: string;
@@ -33,8 +33,8 @@ const LandingHero = ({ header, paragraph, btnText, scroller, refName }: HeroP) =
         <p className={'hero__p'}>{paragraph}</p>
         <button className={'hero__btn-cta'}>{btnText}</button>
       </div>
-      <img className={'girl-img'} src={CardsImg} alt="Girl and cards" />
-      <img className={'scroll-down'} src={ScrollDown} alt="sd" onClick={() => scroller.scrollFrom(refName)} />
+      <CardsImg className={'girl-img'} />
+      <ScrollDown className={'scroll-down'} onClick={() => scroller.scrollFrom(refName)} />
     </section>
   );
 };
