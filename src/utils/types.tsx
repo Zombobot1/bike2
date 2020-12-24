@@ -5,5 +5,6 @@ type Scroller = {
 };
 
 export type { Scroller };
-export type OnChange = (e: ChangeEvent<HTMLInputElement>) => void;
+export type ValueUpdate<T> = { target: { value: T } };
+export type OnChange<T> = (e: ValueUpdate<T>) => void;
 export type RFC<T = Record<string, never>> = (props: T) => JSX.Element;

@@ -4,7 +4,7 @@ import Unlock from '../../shared-icons/unlock.svg';
 import { RFC } from '../../../utils/types';
 import { withValidation, WithValidationP } from '../hoc/with-validation';
 import { compose } from 'redux';
-import { LoginFormV } from '../../../validation/login-form';
+import { LoginFormV, SignUpFormV } from '../../../validation/login-form';
 import InputField from '../input-field/input-field';
 
 const emailConfig = {
@@ -23,9 +23,15 @@ const passwordConfig = {
   icon: Unlock,
 };
 
-type RFCV = RFC<WithValidationP>;
-export const ValidatedEmail = compose(withValidation(LoginFormV.validateEmail), InputField)(emailConfig) as RFCV;
-export const ValidatedPassword = compose(
-  withValidation(LoginFormV.validatePassword),
-  InputField,
-)(passwordConfig) as RFCV;
+const confirmedPasswordConfig = {
+  label: 'Confirm Password',
+  id: 'inputCPassword',
+  placeholder: 'Password',
+  type: 'password',
+  icon: Unlock,
+};
+
+type RFCV = RFC<WithValidationP<string>>;
+export const ValidatedEmail = compose(withValidation, InputField)(emailConfig) as RFCV;
+export const ValidatedPassword = compose(withValidation, InputField)(passwordConfig) as RFCV;
+export const ValidatedConfirmedPassword = compose(withValidation, InputField)(confirmedPasswordConfig) as RFCV;

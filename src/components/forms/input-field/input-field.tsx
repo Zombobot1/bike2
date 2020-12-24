@@ -1,22 +1,32 @@
 import { ValidatedInputFieldP } from '../types';
 import React from 'react';
 
-type InputConfiguration = {
+interface InputConfigurationBase {
   label: string;
   id: string;
+}
+
+interface InputConfiguration extends InputConfigurationBase {
   placeholder: string;
   type: string;
   icon: string;
-};
-
-const InputField = (config: InputConfiguration) => ({ state, onChange, errorStr }: ValidatedInputFieldP) => {
+}
+type InputFieldP = ValidatedInputFieldP<string>;
+const InputField = (config: InputConfiguration) => ({ state, onChange, errorStr, value }: InputFieldP) => {
   const { id, label, placeholder, type, icon } = config;
   return (
-    <div className="form-group email-group">
+    <div className={`form-group ${type}-group`}>
       <label htmlFor={id}>{label}</label>
       <div className="input-with-icon">
-        <img src={icon} alt="i" className={`e-${type}`} />
-        <input type={type} className={'form-control' + state()} id={id} placeholder={placeholder} onChange={onChange} />
+        <img className={`e-${type}`} src={icon} alt="i" />
+        <input
+          className={'form-control' + state()}
+          type={type}
+          value={value}
+          id={id}
+          placeholder={placeholder}
+          onChange={onChange}
+        />
         <div className="invalid-feedback">{errorStr}</div>
       </div>
     </div>
@@ -24,4 +34,4 @@ const InputField = (config: InputConfiguration) => ({ state, onChange, errorStr 
 };
 
 export default InputField;
-export type { InputConfiguration };
+export type { InputConfiguration, InputConfigurationBase };
