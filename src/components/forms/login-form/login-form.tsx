@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { preventAndCall } from '../../../utils/events';
 import { ValidatedEmail, ValidatedPassword } from '../input-field-v';
 import Alert from '../../utils';
+import { useHistory } from 'react-router-dom';
 
 const useVStates = (name: string) => {
   const [error, setError] = useState('');
@@ -25,6 +26,8 @@ const LoginForm = () => {
     if (!login.activation) login.emptyActivation();
     if (!password.activation) password.emptyActivation();
   };
+  const history = useHistory();
+  const toPasswordReset = () => history.push('/lostpassword', { from: '/signin' });
   return (
     <>
       {WrongCredentialsAlert(wrongCredentials)}
@@ -34,7 +37,9 @@ const LoginForm = () => {
           error={[password.error, password.setError]}
           activation={[password.activation, password.setActivation]}
         />
-        <a className={'lost-password'}>Lost password?</a>
+        <a className={'lost-password'} onClick={toPasswordReset}>
+          Lost password?
+        </a>
         <button type="submit" className="btn btn-primary">
           Sign in
         </button>

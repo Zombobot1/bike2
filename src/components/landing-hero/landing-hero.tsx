@@ -4,6 +4,7 @@ import './landing-hero.scss';
 import { ReactComponent as CardsImg } from './cards-background-img.svg';
 import { ReactComponent as ScrollDown } from '../shared-icons/scroll-down.svg';
 import { Scroller } from '../../utils/types';
+import { useHistory } from 'react-router-dom';
 
 interface HeroBaseP {
   header: string;
@@ -25,13 +26,17 @@ const last_word = (text: string): string => {
 };
 
 const LandingHero = ({ header, paragraph, btnText, scroller, refName }: HeroP) => {
+  const history = useHistory();
+  const toSignIn = () => history.push('/signin', { from: 'landing' });
   return (
     <section className={'landing-hero-screen'}>
       <div className={'hero'}>
         <h1 className={'hero__h-top'}>{all_but_last_word(header)}</h1>
         <h1 className={'hero__h-bottom'}>{last_word(header)}</h1>
         <p className={'hero__p'}>{paragraph}</p>
-        <button className={'hero__btn-cta'}>{btnText}</button>
+        <button className={'hero__btn-cta'} onClick={toSignIn}>
+          {btnText}
+        </button>
       </div>
       <CardsImg className={'girl-img'} />
       <ScrollDown className={'scroll-down'} onClick={() => scroller.scrollFrom(refName)} />

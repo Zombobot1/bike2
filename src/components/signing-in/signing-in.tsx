@@ -1,12 +1,15 @@
 import './signing-up.scss';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 import LoginForm from '../forms/login-form';
 
 import { ReactComponent as Google } from '../shared-icons/google.svg';
 import { ReactComponent as Guy } from './guy.svg';
 import { ReactComponent as Girl } from './girl.svg';
 
-const SigningUp = () => {
+const SigningIn = () => {
+  const history = useHistory();
+  const toSignUp = () => history.push('/signup', { from: '/signin' });
   return (
     <div className={'sign-up-container'}>
       <Guy />
@@ -23,11 +26,11 @@ const SigningUp = () => {
         </div>
         <div className={'not-registered'}>
           <p>Not registered?</p>
-          <a>Create account</a>
+          <a onClick={toSignUp}>Create account</a>
         </div>
       </div>
     </div>
   );
 };
 
-export default SigningUp;
+export default SigningIn;
