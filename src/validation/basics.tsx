@@ -1,5 +1,5 @@
 import { validateSync, ValidationError } from 'class-validator';
-import { map, setField, varName } from '../utils/objects';
+import { map, setField } from '../utils/objects';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validateField = (field: string, fieldsAndValue: any, validator: any): ValidationError | undefined => {

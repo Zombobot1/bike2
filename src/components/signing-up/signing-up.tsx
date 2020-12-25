@@ -2,8 +2,8 @@ import './signing-up.scss';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { ReactComponent as Guy } from '../images/guy.svg';
-import { ReactComponent as Girl } from '../images/girl.svg';
+import { ReactComponent as Guy } from '../images/reading-guy-and-girl.svg';
+import { ReactComponent as Girl } from '../images/reading-girl.svg';
 import LoginOptions from '../forms/login-options';
 import { SignUpWithAlert } from '../forms/hoc/sign-up-with-alert';
 

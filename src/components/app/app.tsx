@@ -2,7 +2,8 @@ import React from 'react';
 import { Helmet } from 'react-helmet';
 import { Route, Switch } from 'react-router-dom';
 
-import { Landing, LandingP, SignIn, SignUp } from '../pages';
+import { ForgotPassword, Landing, LandingP, PAGES, SignIn, SignUp } from '../pages';
+import { ResetPassword } from '../pages/password-management/reset-password';
 
 const App = ({ hero, features, pricing }: LandingP) => {
   return (
@@ -12,10 +13,11 @@ const App = ({ hero, features, pricing }: LandingP) => {
         <style>{'body { background-color: #F5F8FB; }'}</style>
       </Helmet>
       <Switch>
-        <Route path={'/signup'} component={SignUp} />
-        <Route path={'/lostpassword'} render={() => <div>Lost</div>} />
-        <Route path={'/'} component={SignIn} />
-        <Route path={'/landing'} render={() => <Landing hero={hero} features={features} pricing={pricing} />} />
+        <Route path={PAGES.signUp} component={SignUp} />
+        <Route path={PAGES.lostPassword} component={ForgotPassword} />
+        <Route path={PAGES.root} component={ResetPassword} />
+        <Route path={PAGES.signIn} component={SignIn} />
+        <Route path={PAGES.landing} render={() => <Landing hero={hero} features={features} pricing={pricing} />} />
       </Switch>
     </>
   );

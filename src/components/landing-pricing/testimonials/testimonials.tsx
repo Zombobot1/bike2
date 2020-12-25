@@ -2,8 +2,8 @@ import Testimonial, { TestimonialP } from '../testimonial';
 import React, { useState } from 'react';
 import './testimonials.scss';
 
-import { ReactComponent as ChevronLeft } from './chevron-left.svg';
-import { ReactComponent as ChevronRight } from './chevron-right.svg';
+import { ReactComponent as ChevronLeft } from '../../icons/chevron-left.svg';
+import { ReactComponent as ChevronRight } from '../../icons/chevron-right.svg';
 
 interface TestimonialsP {
   testimonialsHeader: string;

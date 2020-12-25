@@ -1,13 +1,18 @@
-.guy-img {
+.reading-guy-and-girl {
   position: absolute;
   left: 100px;
   top: 100px;
 }
 
-.girl-img {
+.reading-girl {
   position: absolute;
   transform: scale(1.3);
-  z-index: 10;
+  right: 160px;
+  top: 183px;
+}
+
+.standing-girl {
+  position: absolute;
   right: 160px;
   top: 183px;
 }

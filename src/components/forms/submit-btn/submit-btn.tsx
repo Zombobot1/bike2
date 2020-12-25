@@ -1,8 +1,12 @@
 import React from 'react';
 
-const SubmitBtn = () => (
+type SubmitBtnP = {
+  text?: string;
+};
+
+const SubmitBtn = ({ text = 'Sign in' }: SubmitBtnP) => (
   <button type="submit" className="btn btn-primary">
-    Sign in
+    {text}
   </button>
 );
 
