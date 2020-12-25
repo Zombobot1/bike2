@@ -4,13 +4,14 @@ export type { LandingP } from './landing';
 export { SignIn } from './sign-in';
 export { SignUp } from './sign-up';
 
-export { ForgotPassword } from './password-management';
+export { ForgotPassword } from './forgot-password';
+export { ResetPassword } from './reset-password';
 
 export const PAGES = {
   signIn: '/signin',
   signUp: '/signup',
   landing: '/landing',
-  lostPassword: '/lostpassword',
+  forgotPassword: '/lostpassword',
   resetPassword: '/resetpassword',
   root: '/',
 };

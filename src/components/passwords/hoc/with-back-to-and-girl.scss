@@ -1,0 +1,19 @@
+@import "../../../sass/config";
+
+.forgot-password-container {
+  margin-top: 192px;
+  overflow: auto;
+
+  .back-to {
+    margin-bottom: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    color: $gray-color;
+
+    .chevron-left {
+      transform: scale(0.6);
+      margin-top: -2px;
+      fill: $gray-color;
+    }
+  }
+}
