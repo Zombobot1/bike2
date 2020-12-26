@@ -5,6 +5,12 @@ import { ValidatedConfirmedPassword, ValidatedEmail, ValidatedPassword, Validate
 import SubmitBtn from '../../submit-btn';
 import React from 'react';
 import { SignUpFormV } from '../../../../validation/sign-up-form';
+import { compose } from 'redux';
+import { FootlessModal } from '../../../utils/footless-modal';
+
+const Terms = () => <p>We do not have terms and conditions so far.</p>;
+
+const TermsModal = compose(FootlessModal({ id: 'terms', title: 'Terms and conditions' }))(Terms);
 
 const SignUpForm = () => {
   const email = useStrInput('email', SignUpFormV.validateEmail);
@@ -18,7 +24,13 @@ const SignUpForm = () => {
       <ValidatedEmail {...email} />
       <ValidatedPassword {...password} />
       <ValidatedConfirmedPassword {...confirmedPassword} />
-      <ValidatedTerms {...terms} />
+      <div className="terms-agreement">
+        <ValidatedTerms {...terms} />
+        <a href="#" data-bs-toggle="modal" data-bs-target="#terms">
+          Read more
+        </a>
+        <TermsModal />
+      </div>
       <SubmitBtn />
     </form>
   );

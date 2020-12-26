@@ -7,6 +7,15 @@
     margin-bottom: 7px;
   }
 
+  .terms-agreement {
+    position: relative;
+    a {
+      position: absolute;
+      right: 0;
+      top: 0;
+    }
+  }
+
   .btn {
     margin-top: 10px;
     margin-bottom: 10px;
