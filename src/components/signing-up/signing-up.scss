@@ -1,7 +1,0 @@
-@import "../../sass/config";
-@import "../scss/signing";
-
-.sign-up-card {
-  @extend %sign-card;
-  height: 780px;
-}

@@ -8,15 +8,18 @@ type StateT<T> = [T, React.Dispatch<React.SetStateAction<T>>];
 type StrStateT = StateT<string>;
 type BoolStateT = StateT<boolean>;
 
-type WithValidationP<T> = {
-  validator: ValidationF<T>;
+interface WithValidationBaseP<T> {
   error: StrStateT;
   activation: BoolStateT;
   value: StateT<T>;
-};
+}
+
+interface WithValidationP<T> extends WithValidationBaseP<T> {
+  validator: ValidationF<T>;
+}
 
 type ValidatedInputFC<T> = FC<ValidatedInputFieldP<T>>;
-const withValidation = <T extends unknown>(Base: ValidatedInputFC<T>) => (props: WithValidationP<T>) => {
+const withValidation = <T,>(Base: ValidatedInputFC<T>) => (props: WithValidationP<T>) => {
   const [errorStr, setErrorStr] = props.error;
   const [wasActivated, setWasActivated] = props.activation;
   const [value, setValue] = props.value;
@@ -36,4 +39,4 @@ const withValidation = <T extends unknown>(Base: ValidatedInputFC<T>) => (props:
 };
 
 export { withValidation };
-export type { ValidationF, WithValidationP, ValidatedInputFC };
+export type { ValidationF, WithValidationP, ValidatedInputFC, WithValidationBaseP };

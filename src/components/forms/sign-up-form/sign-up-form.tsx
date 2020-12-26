@@ -7,15 +7,15 @@ import React from 'react';
 import { SignUpFormV } from '../../../validation/sign-up-form';
 
 const SignUpForm = () => {
-  const login = useStrInput('email', SignUpFormV.validateEmail);
+  const email = useStrInput('email', SignUpFormV.validateEmail);
   const password = useStrInput('password', SignUpFormV.validatePassword);
   const confirmationV = (v: string) => SignUpFormV.confirmPassword(password.value[0], v);
   const confirmedPassword = useStrInput('confirmation', confirmationV);
   const terms = useBoolInput('confirmation', SignUpFormV.validateTerms);
 
   return (
-    <form onSubmit={submit([login, password, confirmedPassword, terms])}>
-      <ValidatedEmail {...login} />
+    <form className="login-form" onSubmit={submit([email, password, confirmedPassword, terms])}>
+      <ValidatedEmail {...email} />
       <ValidatedPassword {...password} />
       <ValidatedConfirmedPassword {...confirmedPassword} />
       <ValidatedTerms {...terms} />

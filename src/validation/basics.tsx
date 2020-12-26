@@ -19,3 +19,8 @@ const firstError = (error: ValidationError | undefined): string => {
 export const validate = (field: string, fieldsAndValue: any, validator: any) => {
   return firstError(validateField(field, fieldsAndValue, validator));
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const validateOne = (fieldAndValue: any, validator: any) => {
+  return firstError(validateField(varName(fieldAndValue), fieldAndValue, validator));
+};
