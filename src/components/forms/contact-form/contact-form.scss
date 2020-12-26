@@ -1,0 +1,23 @@
+.contact-form {
+  width: 470px;
+  height: 400px;
+
+  & >*+* {
+    margin-top: 10px;
+  }
+
+  label {
+    margin-bottom: 7px;
+  }
+
+  .d-flex {
+    margin-top: 27px;
+
+    button {
+      width: 170px;
+      height: 45px;
+      margin-bottom: 0;
+    }
+
+  }
+}

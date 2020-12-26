@@ -35,14 +35,14 @@
 
     &__btn-cta {
       background-color: $secondary-color;
+      padding: 10px 100px;
+      border-radius: 10px;
+      border: none;
       color: $white-color;
       font-weight: bold;
       font-family: $font-stack;
-      font-size: 20px;
-      width: 305px;
-      height: 45px;
-      border-radius: 10px;
-      border: none;
+      font-size: 28px;
+      text-decoration: none;
 
       transition: box-shadow 250ms ease-in-out;
 

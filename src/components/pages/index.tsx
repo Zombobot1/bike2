@@ -7,6 +7,8 @@ export { SignUp } from './sign-up';
 export { ForgotPassword } from './forgot-password';
 export { ResetPassword } from './reset-password';
 
+export { Sandbox } from './_sandbox';
+
 export const PAGES = {
   signIn: '/signin',
   signUp: '/signup',
@@ -14,4 +16,5 @@ export const PAGES = {
   forgotPassword: '/lostpassword',
   resetPassword: '/resetpassword',
   root: '/',
+  _sandbox: '/_',
 };

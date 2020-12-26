@@ -6,9 +6,9 @@
     "bootstrap": "^5.0.0-beta1",
     "class-validator": "^0.12.2",
     "node-sass": "4.14.1",
+    "popper.js": "^1.16.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "react-helmet": "^6.1.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.1",
     "redux": "^4.0.5"
@@ -33,6 +33,7 @@
     ]
   },
   "devDependencies": {
+    "@popperjs/core": "^2.6.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",

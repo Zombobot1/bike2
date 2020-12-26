@@ -1,24 +1,22 @@
 import './login-form.scss';
 import React from 'react';
-import { ValidatedEmail, ValidatedPassword } from '../validated-fields';
-import { useStrInput } from '../hooks/use-validation';
+import { useNotEmptyStrInput } from '../hooks/use-validation';
 import SubmitBtn from '../submit-btn';
 import { submit } from '../utils';
-import { LoginFormV } from '../../../validation/login-form';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { EmptyValidatedEmail, EmptyValidatedPassword } from '../validated-fields/validated-fields';
+import { PAGES } from '../../pages';
 
 const LoginForm = () => {
-  const login = useStrInput('email', LoginFormV.validateEmail);
-  const password = useStrInput('password', LoginFormV.validatePassword);
-  const history = useHistory();
-  const toPasswordReset = () => history.push('/lostpassword', { from: 'signin' });
+  const login = useNotEmptyStrInput('email');
+  const password = useNotEmptyStrInput('password');
   return (
-    <form onSubmit={submit([login, password])}>
-      <ValidatedEmail {...login} />
-      <ValidatedPassword {...password} />
-      <a className="lost-password" onClick={toPasswordReset}>
+    <form className="login-form" onSubmit={submit([login, password])}>
+      <EmptyValidatedEmail {...login} />
+      <EmptyValidatedPassword {...password} />
+      <Link className="lost-password" to={PAGES.forgotPassword}>
         Lost password?
-      </a>
+      </Link>
       <SubmitBtn />
     </form>
   );

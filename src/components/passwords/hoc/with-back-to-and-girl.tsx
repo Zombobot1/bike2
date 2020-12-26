@@ -12,7 +12,7 @@ const withBackToAndGirl = (Base: FC) => () => {
       <div className="forgot-password-container d-flex flex-column">
         <Link className="back-to align-self-center" to={PAGES.signIn}>
           <ChevronLeft />
-          <a>Back to log in</a>
+          <span>Back to log in</span>
         </Link>
         <Base />
       </div>

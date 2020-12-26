@@ -14,7 +14,7 @@ const SignUpForm = () => {
   const terms = useBoolInput('confirmation', SignUpFormV.validateTerms);
 
   return (
-    <form onSubmit={submit([login, password, confirmedPassword, terms])}>
+    <form className="login-form" onSubmit={submit([login, password, confirmedPassword, terms])}>
       <ValidatedEmail {...login} />
       <ValidatedPassword {...password} />
       <ValidatedConfirmedPassword {...confirmedPassword} />

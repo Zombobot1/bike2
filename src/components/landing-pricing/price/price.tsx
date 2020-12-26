@@ -1,13 +1,12 @@
-import React from 'react';
+import React, { FC } from 'react';
 import './price.scss';
 
 type PriceP = {
   header: string;
   features: string[];
-  btnText: string;
 };
 
-const Price = ({ header, features, btnText }: PriceP, onClick: () => void) => {
+const Price = (Button: FC) => ({ header, features }: PriceP) => {
   return (
     <div className={'price'}>
       <h3>{header}</h3>
@@ -18,9 +17,7 @@ const Price = ({ header, features, btnText }: PriceP, onClick: () => void) => {
           ))}
         </ul>
       </div>
-      <button className={'btn btn-outline-primary'} onClick={onClick}>
-        {btnText}
-      </button>
+      <Button />
     </div>
   );
 };
