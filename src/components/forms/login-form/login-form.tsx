@@ -8,11 +8,11 @@ import { EmptyValidatedEmail, EmptyValidatedPassword } from '../validated-fields
 import { PAGES } from '../../pages';
 
 const LoginForm = () => {
-  const login = useNotEmptyStrInput('email');
+  const email = useNotEmptyStrInput('email');
   const password = useNotEmptyStrInput('password');
   return (
-    <form className="login-form" onSubmit={submit([login, password])}>
-      <EmptyValidatedEmail {...login} />
+    <form className="login-form" onSubmit={submit([email, password])}>
+      <EmptyValidatedEmail {...email} />
       <EmptyValidatedPassword {...password} />
       <Link className="lost-password" to={PAGES.forgotPassword}>
         Lost password?

@@ -1,11 +1,11 @@
 import React from 'react';
-import './landing-hero.scss';
+import './hero.scss';
 
 import { ReactComponent as CardsImg } from './cards-background-img.svg';
-import { ReactComponent as ScrollDown } from '../icons/scroll-down.svg';
-import { Scroller } from '../../utils/types';
+import { ReactComponent as ScrollDown } from '../../icons/scroll-down.svg';
+import { Scroller } from '../../../utils/types';
 import { Link } from 'react-router-dom';
-import { PAGES } from '../pages';
+import { PAGES } from '../../pages';
 
 interface HeroBaseP {
   header: string;
@@ -26,9 +26,9 @@ const last_word = (text: string): string => {
   return text.split(' ').slice(-1)[0];
 };
 
-const LandingHero = ({ header, paragraph, btnText, scroller, refName }: HeroP) => {
+const Hero = ({ header, paragraph, btnText, scroller, refName }: HeroP) => {
   return (
-    <section className={'landing-hero-screen'}>
+    <section className={'hero-screen'}>
       <div className={'hero'}>
         <h1 className={'hero__h-top'}>{all_but_last_word(header)}</h1>
         <h1 className={'hero__h-bottom'}>{last_word(header)}</h1>
@@ -44,4 +44,4 @@ const LandingHero = ({ header, paragraph, btnText, scroller, refName }: HeroP) =
 };
 
 export type { HeroP, HeroBaseP };
-export default LandingHero;
+export default Hero;

@@ -1,5 +1,5 @@
 import { validateSync, ValidationError } from 'class-validator';
-import { map, setField } from '../utils/objects';
+import { map, setField, varName } from '../utils/objects';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validateField = (field: string, fieldsAndValue: any, validator: any): ValidationError | undefined => {
@@ -18,4 +18,9 @@ const firstError = (error: ValidationError | undefined): string => {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const validate = (field: string, fieldsAndValue: any, validator: any) => {
   return firstError(validateField(field, fieldsAndValue, validator));
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const validateOne = (fieldAndValue: any, validator: any) => {
+  return firstError(validateField(varName(fieldAndValue), fieldAndValue, validator));
 };

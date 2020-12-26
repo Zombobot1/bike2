@@ -30,3 +30,7 @@ $border-radius-lg: 10px;
 $font-family-sans-serif: $font-stack;
 
 @import "../../node_modules/bootstrap/scss/bootstrap";
+
+a {
+  text-decoration: none;
+}

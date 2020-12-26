@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 
-import LandingHero, { HeroBaseP } from '../landing-hero';
-import LandingFeatures, { FeaturesBaseP } from '../landing-features';
-import LandingPricing, { PricingBaseP } from '../landing-pricing';
+import Hero, { HeroBaseP } from '../landing/hero';
+import Features, { FeaturesBaseP } from '../landing/features';
+import Pricing, { PricingBaseP } from '../landing/pricing';
 
 type LandingP = {
   hero: HeroBaseP;
@@ -35,15 +35,15 @@ const Landing = ({ hero, features, pricing }: LandingP) => {
   const { testimonialsHeader, testimonials, pricingHeader, prices } = pricing;
   return (
     <>
-      <LandingHero header={header} paragraph={paragraph} btnText={btnText} scroller={scr} refName={heroRefName} />
-      <LandingFeatures
+      <Hero header={header} paragraph={paragraph} btnText={btnText} scroller={scr} refName={heroRefName} />
+      <Features
         header={features.header}
         features={features.features}
         scroller={scr}
         refName={featuresRefName}
         reff={featuresRef}
       />
-      <LandingPricing
+      <Pricing
         prices={prices}
         pricingHeader={pricingHeader}
         reff={pricingRef}

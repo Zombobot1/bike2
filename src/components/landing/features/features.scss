@@ -1,6 +1,6 @@
-@import "../../sass/config";
+@import "../../../sass/config";
 
-.landing-features-screen {
+.features-screen {
   @extend %landing-screen-base;
 
   &__h2 {

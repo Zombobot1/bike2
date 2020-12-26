@@ -1,9 +1,9 @@
 import React from 'react';
-import './landing-features.scss';
+import './features.scss';
 
-import { ReactComponent as ScrollDown } from '../icons/scroll-down.svg';
-import { Scroller } from '../../utils/types';
-import Feature, { FeatureP } from './feature';
+import { ReactComponent as ScrollDown } from '../../icons/scroll-down.svg';
+import { Scroller } from '../../../utils/types';
+import Feature, { FeatureP } from '../../landing/feature';
 
 interface FeaturesBaseP {
   header: string;
@@ -17,10 +17,10 @@ interface FeaturesP extends FeaturesBaseP {
   reff: any;
 }
 
-const LandingFeatures = ({ header, features, scroller, refName, reff }: FeaturesP) => {
+const Features = ({ header, features, scroller, refName, reff }: FeaturesP) => {
   return (
-    <section className={'landing-features-screen'} ref={reff}>
-      <h2 className={'landing-features-screen__h2'}>{header}</h2>
+    <section className={'features-screen'} ref={reff}>
+      <h2 className={'features-screen__h2'}>{header}</h2>
       <div className={'cards'}>{features.map(Feature)}</div>
       <ScrollDown className={'scroll-down'} onClick={() => scroller.scrollFrom(refName)} />
     </section>
@@ -28,4 +28,4 @@ const LandingFeatures = ({ header, features, scroller, refName, reff }: Features
 };
 
 export type { FeaturesP, FeaturesBaseP };
-export default LandingFeatures;
+export default Features;

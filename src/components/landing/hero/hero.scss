@@ -1,9 +1,9 @@
-@import "../../sass/config";
+@import "../../../sass/config";
 
-.landing-hero-screen {
+.hero-screen {
   @extend %landing-screen-base;
 
-  %landing-header {
+  %header {
     font-size: 90px;
     font-weight: bold;
     font-family: $font-stack;
@@ -14,12 +14,12 @@
     margin-left: 100px;
 
     &__h-top {
-      @extend %landing-header;
+      @extend %header;
       color: $white-color;
     }
 
     &__h-bottom {
-      @extend %landing-header;
+      @extend %header;
       margin-top: -20px;
       color: $secondary-color;
     }
