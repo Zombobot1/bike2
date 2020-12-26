@@ -6,8 +6,8 @@ import { ReactComponent as Guy } from '../../images/reading-guy-and-girl.svg';
 import { ReactComponent as Girl } from '../../images/reading-girl.svg';
 import LoginOptions from '../../forms/login-options';
 import { PAGES } from '../../pages';
-import { UserAlreadyExistsAlert } from '../../forms/sign-up-form/user-already-exists-alert';
-import SignUpForm from '../../forms/sign-up-form';
+import { UserAlreadyExistsAlert } from '../../forms/forms/sign-up-form/user-already-exists-alert';
+import SignUpForm from '../../forms/forms/sign-up-form';
 
 const SigningUp = () => {
   return (

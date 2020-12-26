@@ -32,5 +32,4 @@ component-group
   ... - components and component groups
   hoc - .tsx .scss files
   component-condiments
-  index.tsx - internal structure should be unknown
   component-group.scss - shared styles
