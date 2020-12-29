@@ -13,7 +13,7 @@
   width: 100%;
 
   button {
-    @extend %transparent-button;
+    @extend %transparent-button-base;
   }
 
   [class*="chevron-"] {

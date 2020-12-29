@@ -20,13 +20,23 @@ $font-stack: Nunito, Helvetica, sans-serif;
   border-radius: 13px;
 }
 
-%transparent-button {
+%transparent-button-base {
   background-color: Transparent;
   background-repeat:no-repeat;
   border: none;
   cursor:pointer;
   overflow: hidden;
   outline:none;
+
+  &:focus,
+  &:active {
+    outline: none !important;
+    border: none;
+  }
+}
+
+.transparent-button {
+  @extend %transparent-button-base;
 }
 
 %landing-screen-base {

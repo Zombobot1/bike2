@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as Guy } from '../../images/reading-guy-and-girl.svg';
 import { ReactComponent as Girl } from '../../images/reading-girl.svg';
 import LoginOptions from '../../forms/login-options';
-import { PAGES } from '../../pages';
+import { PAGES, SIGNIN } from '../../pages';
 import { UserAlreadyExistsAlert } from '../../forms/forms/sign-up-form/user-already-exists-alert';
 import SignUpForm from '../../forms/forms/sign-up-form';
 
@@ -21,7 +21,7 @@ const SigningUp = () => {
         <LoginOptions text={'or'} />
         <div className={'alternative'}>
           <p>Already have an account?</p>
-          <Link to={PAGES.signIn}>Login here</Link>
+          <Link to={SIGNIN}>Login here</Link>
         </div>
       </div>
     </div>

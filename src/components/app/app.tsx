@@ -1,21 +1,34 @@
-import React from 'react';
+import React, { FC } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
-import { LostPassword, Landing, LandingP, PAGES, SignIn, SignUp } from '../pages';
-import { ResetPassword } from '../pages';
-import { Sandbox } from '../pages';
+import { PAGES } from '../pages';
 
-const App = ({ hero, features, pricing }: LandingP) => {
+export type Routed = {
+  routes?: RouteT[];
+};
+
+type RouteT = {
+  path: string;
+  component: FC<Routed>;
+  routes?: RouteT[];
+};
+
+const RouteWithSubRoutes = (route: RouteT) => {
   return (
-    <Switch>
-      <Route path={PAGES.signUp} component={SignUp} />
-      <Route path={PAGES.lostPassword} component={LostPassword} />
-      <Route path={PAGES.resetPassword} component={ResetPassword} />
-      <Route path={PAGES.signIn} component={SignIn} />
-      <Route path={PAGES.landing} render={() => <Landing hero={hero} features={features} pricing={pricing} />} />
-      <Route path={PAGES._sandbox} component={Sandbox} />
-    </Switch>
+    <Route
+      path={route.path}
+      render={() => {
+        if (route.routes) return <route.component routes={route.routes} />;
+        return <route.component />;
+      }}
+    />
   );
+};
+
+export const buildRoutes = (route: RouteT, i: number) => <RouteWithSubRoutes key={i} {...route} />;
+
+const App = () => {
+  return <Switch>{PAGES.map(buildRoutes)}</Switch>;
 };
 
 export default App;

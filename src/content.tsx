@@ -69,7 +69,7 @@ const prices = [
   },
 ];
 
-const appProperties = {
+const appData = {
   hero: {
     header: hero_header,
     paragraph,
@@ -87,4 +87,4 @@ const appProperties = {
   },
 };
 
-export default appProperties;
+export default appData;

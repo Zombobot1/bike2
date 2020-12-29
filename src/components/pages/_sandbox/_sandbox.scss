@@ -1,2 +1,227 @@
 @import "../../../sass/config";
 
+$navbar-width: 80px;
+$content-margin-left: $navbar-width + 50px;
+
+%overdue-base {
+  display: inline;
+  transform: scale(1.3);
+  position: absolute;
+  top: 12px;
+  right: 10px;
+}
+
+.overdue--none {
+  @extend %overdue-base;
+  display: none;
+}
+
+.overdue--warning {
+  @extend %overdue-base;
+  fill: $warning-color;
+}
+
+.overdue--danger {
+  @extend %overdue-base;
+  fill: $danger-color;
+}
+
+.receiving-time,
+.notification-description {
+  font-size: 14px;
+  font-weight: lighter;
+  color: rgba($primary-color, .6);
+}
+.deck {
+  gap: 10px;
+
+  .deck-circle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #25A7FC;
+  }
+
+  .deck-path {
+    font-size: 12px;
+  }
+
+  .deck-name {
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .clocks-fill-up-icon {
+    margin-top: -3px;
+    margin-right: 5px;
+  }
+
+  .cards-number {
+    padding-left: 0;
+    font-size: 12px;
+  }
+}
+
+.notification {
+  width: 350px;
+  height: 110px;
+  padding: 7px 10px;
+  position: relative;
+  background-color: $white-color;
+  border-bottom: solid 0.5px rgba($primary-color, .2);
+  margin: auto;
+
+  &:hover {
+    background-color: $light-color;
+    cursor: pointer;
+  }
+
+}
+
+.navbar {
+  width: $navbar-width;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  background-color: $primary-color;
+
+  .avatar-and-bell {
+    height: 130px;
+    margin-top: 20px;
+
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .dropdown-menu {
+      margin-left: 20px;
+
+
+      .settings-icon {
+        margin-right: 15px;
+        transform: scale(1.1);
+      }
+
+      .logout-icon {
+        margin-left: 3px;
+        margin-right: 12px;
+        transform: scale(1.3);
+        fill: $danger-color;
+      }
+    }
+
+    .bell-container {
+      position: relative;
+      width: $navbar-width;
+      height: 50px;
+      svg {
+        fill: $white-color;
+        //width: 32px;
+        //margin: 15px 24px;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+
+    }
+
+    .bell-container--active {
+      &::after {
+        content: '';
+        width: 9px;
+        height: 9px;
+        position: absolute;
+        top: 5px;
+        right: 18px;
+        border-radius: 50%;
+        background-color: $danger-color;
+      }
+    }
+  }
+
+  .navbar-nav {
+    height: 480px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+
+    .nav-item {
+      width: 100%;
+
+      .nav-link {
+        display: flex;
+        position: relative;
+        align-items: center;
+        height: 80px;
+
+        &:hover {
+          background: black;
+        }
+
+        svg {
+          width: 32px;
+          margin: 0 24px;
+          fill: $white-color;
+        }
+
+        &--active {
+          &::before {
+            content: '';
+            width: 7px;
+            height: 100%;
+            position: absolute;
+            background-color: $secondary-color;
+          }
+          svg {
+            fill: $secondary-color;
+          }
+        }
+      }
+    }
+  }
+
+  .uni-icon {
+    margin-left: 3px;
+  }
+}
+
+.content-area {
+  overflow: auto;
+  width: 100vw;
+  height: 100vh;
+  background-color: $bg-color;
+  padding-left: $content-margin-left;
+
+  .breadcrumb-container {
+    margin-top: 25px;
+    font-size: 20px;
+
+    [class*="icon"] {
+      margin-top: 6px;
+      margin-right: 5px;
+    }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 10px;
+    width: 90%;
+    opacity: .7;
+
+    .refs {
+      gap: 20px;
+    }
+  }
+}
+

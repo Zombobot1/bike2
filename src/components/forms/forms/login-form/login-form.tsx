@@ -6,7 +6,7 @@ import SubmitBtn from '../../submit-btn';
 import { submit } from '../../utils';
 import { Link } from 'react-router-dom';
 import { EmptyValidatedEmail, EmptyValidatedPassword } from '../../validated-fields/validated-fields';
-import { PAGES } from '../../../pages';
+import { LOSTPASSWORD, PAGES } from '../../../pages';
 
 const LoginForm = () => {
   const email = useNotEmptyStrInput('email');
@@ -15,7 +15,7 @@ const LoginForm = () => {
     <form className="form" onSubmit={submit([email, password])}>
       <EmptyValidatedEmail {...email} />
       <EmptyValidatedPassword {...password} />
-      <Link className="lost-password" to={PAGES.lostPassword}>
+      <Link className="lost-password" to={LOSTPASSWORD}>
         Lost password?
       </Link>
       <SubmitBtn />

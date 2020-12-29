@@ -8,14 +8,14 @@ import './components/icons/icons.scss';
 import './components/images/images.scss';
 
 import App from './components/app';
-import appProperties from './content';
-
-const { hero, features, pricing } = appProperties;
+import InfoProvider from './components/info-provider';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <App hero={hero} features={features} pricing={pricing} />
+      <InfoProvider>
+        <App />
+      </InfoProvider>
     </Router>
   </React.StrictMode>,
   document.getElementById('root'),
