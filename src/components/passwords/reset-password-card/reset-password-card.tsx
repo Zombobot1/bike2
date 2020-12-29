@@ -1,4 +1,4 @@
-import '../password-card.scss';
+import '../common.scss';
 import React from 'react';
 import ResetPasswordForm from '../../forms/forms/reset-password-form';
 

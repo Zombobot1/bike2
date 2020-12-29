@@ -1,0 +1,27 @@
+@import './config';
+
+%ui-card {
+  padding: 48px;
+  background-color: $white-color;
+  border: 1.7px solid #EBEBEB;
+  border-radius: 13px;
+}
+
+%transparent-button-base {
+  background-color: Transparent;
+  background-repeat:no-repeat;
+  border: none;
+  cursor:pointer;
+  overflow: hidden;
+  outline:none;
+
+  &:focus,
+  &:active {
+    outline: none !important;
+    border: none;
+  }
+}
+
+.transparent-button {
+  @extend %transparent-button-base;
+}

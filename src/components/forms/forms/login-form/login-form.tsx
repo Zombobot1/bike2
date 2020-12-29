@@ -1,4 +1,4 @@
-import '../form.scss';
+import '../common.scss';
 import './login-form.scss';
 import React from 'react';
 import { useNotEmptyStrInput } from '../../hooks/use-validation';

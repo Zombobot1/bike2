@@ -13,6 +13,11 @@ uni_front
     validation - classes validators
     index.tsx - ts entry point
 
+pages
+  ... - page folders for small pages with scss and index.tsx
+  ... - page.tsx
+  index.tsx - describes navigation in app
+
 component-condiments
   hoc - .tsx .scss files
   hooks - .tsx files
@@ -22,7 +27,7 @@ component-condiments
   utils.tsx - ts code utils
   types.tsx - all shared types and interfaces
 
-component - can contain auxiliary components which aren't used outside it
+component - can contain auxiliary components (in own folders if necessary) which aren't used outside it
   ... - images
   index.tsx - has default export
   component.tsx

@@ -1,4 +1,4 @@
-import '../password-card.scss';
+import '../common.scss';
 import React from 'react';
 import RecoverPasswordForm from '../../forms/forms/recover-password-form';
 

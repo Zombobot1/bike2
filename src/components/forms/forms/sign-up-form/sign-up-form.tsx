@@ -1,4 +1,4 @@
-import '../form.scss';
+import '../common.scss';
 import { useBoolInput, useStrInput } from '../../hooks/use-validation';
 import { submit } from '../../utils';
 import { ValidatedConfirmedPassword, ValidatedEmail, ValidatedPassword, ValidatedTerms } from '../../validated-fields';
