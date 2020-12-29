@@ -2,7 +2,7 @@ import React from 'react';
 import Price, { PriceP } from '../price';
 import './prices.scss';
 import ContactUs from '../contact-us';
-import { PAGES, SIGNIN } from '../../pages';
+import { SIGNIN } from '../../pages';
 import { BLink } from '../../utils/blink';
 import { ModalTrigger } from '../../utils/modal-trigger';
 

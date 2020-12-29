@@ -1,0 +1,32 @@
+@import "../../sass/config";
+
+.bell-container {
+  position: relative;
+  width: $navbar-width;
+  height: 50px;
+
+  svg {
+    fill: $white-color;
+  }
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  &--active {
+    &::after {
+      content: '';
+      width: 9px;
+      height: 9px;
+      position: absolute;
+      top: 5px;
+      right: 18px;
+      border-radius: 50%;
+      background-color: $danger-color;
+    }
+  }
+}
+
+.notifications__dropdown {
+  margin-left: 10px !important;
+}

@@ -1,27 +1,28 @@
 import { Landing } from './landing';
 import { SignUp } from './sign-up';
-import { NavAndContent, Sandbox } from './_sandbox/_sandbox';
+import { Sandbox } from './_sandbox';
 import { Overview } from './overview';
 import { SignIn } from './sign-in';
 import { LostPassword } from './lost-password';
 import { ResetPassword } from './reset-password';
 import { Study } from './study';
-import { Page404 } from './page404';
+import { Page404, Redirect404 } from './page404';
 import { Decks } from './decks';
 import { Schedule } from './schedule';
 import { Settings } from './settings';
 
-import { ReactComponent as OverviewI } from './_sandbox/overview-icon-f.svg';
-import { ReactComponent as StudyI } from './_sandbox/study-icon-f.svg';
-import { ReactComponent as DecksI } from './_sandbox/decks-icon-f.svg';
-import { ReactComponent as ScheduleI } from './_sandbox/schedule-icon-f.svg';
-import { ReactComponent as SettingsI } from './_sandbox/settings-icon-f.svg';
-import { ReactComponent as OverviewT } from './_sandbox/overview-icon.svg';
-import { ReactComponent as StudyT } from './_sandbox/study-icon.svg';
-import { ReactComponent as DecksT } from './_sandbox/decks-icon.svg';
-import { ReactComponent as ScheduleT } from './_sandbox/schedule-icon.svg';
-import { ReactComponent as SettingsT } from './_sandbox/settings-icon.svg';
+import { ReactComponent as OverviewI } from './icons/overview-icon-f.svg';
+import { ReactComponent as StudyI } from './icons/study-icon-f.svg';
+import { ReactComponent as DecksI } from './icons/decks-icon-f.svg';
+import { ReactComponent as ScheduleI } from './icons/schedule-icon-f.svg';
+import { ReactComponent as SettingsI } from './icons/settings-icon-f.svg';
+import { ReactComponent as OverviewT } from './icons/overview-icon.svg';
+import { ReactComponent as StudyT } from './icons/study-icon.svg';
+import { ReactComponent as DecksT } from './icons/decks-icon.svg';
+import { ReactComponent as ScheduleT } from './icons/schedule-icon.svg';
+import { ReactComponent as SettingsT } from './icons/settings-icon.svg';
 import { FC } from 'react';
+import App from '../app';
 
 export const LANDING = '/landing';
 export const SIGNIN = '/signin';
@@ -29,12 +30,12 @@ export const SIGNUP = '/signup';
 export const LOSTPASSWORD = '/lostpassword';
 export const RESETPASSWORD = '/resetpassword';
 export const _SANDBOX = '/_';
-export const _ROOT = '/';
-export const OVERVIEW = '/overview';
-export const STUDY = '/study';
-export const DECKS = '/decks';
-export const SCHEDULE = '/schedule';
-export const SETTINGS = '/settings';
+export const APP = '/app';
+export const OVERVIEW = APP + '/overview';
+export const STUDY = APP + '/study';
+export const DECKS = APP + '/decks';
+export const SCHEDULE = APP + '/schedule';
+export const SETTINGS = APP + '/settings';
 export const _ANY = '*';
 
 export const PAGES = [
@@ -45,15 +46,15 @@ export const PAGES = [
   { path: RESETPASSWORD, component: ResetPassword },
   { path: _SANDBOX, component: Sandbox },
   {
-    path: _ROOT,
-    component: NavAndContent,
+    path: APP,
+    component: App,
     routes: [
       { path: OVERVIEW, component: Overview },
       { path: STUDY, component: Study },
       { path: DECKS, component: Decks },
       { path: SCHEDULE, component: Schedule },
       { path: SETTINGS, component: Settings },
-      { path: _ANY, component: Page404 },
+      { path: _ANY, component: Redirect404 },
     ],
   },
   { path: _ANY, component: Page404 },

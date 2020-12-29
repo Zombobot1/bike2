@@ -6,7 +6,7 @@ import SubmitBtn from '../../submit-btn';
 import { submit } from '../../utils';
 import { Link } from 'react-router-dom';
 import { EmptyValidatedEmail, EmptyValidatedPassword } from '../../validated-fields/validated-fields';
-import { LOSTPASSWORD, PAGES } from '../../../pages';
+import { LOSTPASSWORD } from '../../../pages';
 
 const LoginForm = () => {
   const email = useNotEmptyStrInput('email');

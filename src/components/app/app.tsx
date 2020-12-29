@@ -1,34 +1,23 @@
-import React, { FC } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import './app.scss';
+import React from 'react';
+import { Switch } from 'react-router-dom';
 
-import { PAGES } from '../pages';
+import { buildRoutes, Routed } from '../utils/routing';
+import NavBar from '../navigation/navbar';
+import Breadcrumb from '../navigation/breadcrumb';
+import Footer from '../footer';
 
-export type Routed = {
-  routes?: RouteT[];
-};
-
-type RouteT = {
-  path: string;
-  component: FC<Routed>;
-  routes?: RouteT[];
-};
-
-const RouteWithSubRoutes = (route: RouteT) => {
+const App = ({ routes }: Routed) => {
   return (
-    <Route
-      path={route.path}
-      render={() => {
-        if (route.routes) return <route.component routes={route.routes} />;
-        return <route.component />;
-      }}
-    />
+    <>
+      <NavBar />
+      <main className="content-area">
+        <Breadcrumb />
+        <Switch>{routes?.map(buildRoutes)}</Switch>
+        <Footer className="footer" />
+      </main>
+    </>
   );
-};
-
-export const buildRoutes = (route: RouteT, i: number) => <RouteWithSubRoutes key={i} {...route} />;
-
-const App = () => {
-  return <Switch>{PAGES.map(buildRoutes)}</Switch>;
 };
 
 export default App;

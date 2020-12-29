@@ -1,4 +1,4 @@
-import { LOSTPASSWORD, PAGES } from '../../../pages';
+import { LOSTPASSWORD } from '../../../pages';
 import React from 'react';
 import { AlertTextAndRLink } from '../../../utils/alert-text-and-rlink';
 import { Alert } from '../../../utils';

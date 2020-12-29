@@ -1,3 +1,5 @@
+import { OverdueType } from './components/notifications/notification/notification';
+
 const hero_header = 'Learn better with Uni';
 const paragraph =
   'Achieve the highest results in studying using the most powerful flashcards application and do not worry about forgetting with flexible spaced repetition';
@@ -69,6 +71,24 @@ const prices = [
   },
 ];
 
+const notification = {
+  overdue: OverdueType.Warning,
+  deckColor: '#FF5151',
+  deckPath: 'Statistical methods / Lectures',
+  deckName: 'Bayesian approach',
+  repeatingCardsNumberStr: '234',
+  receivingTime: '2 hrs ago',
+};
+const notification2 = {
+  overdue: OverdueType.None,
+  deckColor: '#FC5C9F',
+  deckPath: 'C++ programming language',
+  deckName: 'Chapter 1',
+  repeatingCardsNumberStr: '1.2k',
+  receivingTime: '1 d ago',
+};
+const notifications = [notification, notification2, notification, notification2, notification];
+
 const appData = {
   hero: {
     header: hero_header,
@@ -85,6 +105,7 @@ const appData = {
     pricingHeader,
     prices,
   },
+  notifications,
 };
 
 export default appData;

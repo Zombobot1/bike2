@@ -1,4 +1,15 @@
-@import "../../../sass/config";
+@import "../../sass/config";
+
+.footer {
+  position: absolute;
+  bottom: 10px;
+  width: 90%;
+  opacity: .7;
+
+  .refs {
+    gap: 20px;
+  }
+}
 
 .landing__footer {
   margin-top: 50px;

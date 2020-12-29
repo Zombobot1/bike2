@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { ReactComponent as ChevronLeft } from '../../../components/icons/chevron-left.svg';
 import { ReactComponent as Girl } from '../../../components/images/standing-girl.svg';
-import { PAGES, SIGNIN } from '../../pages';
+import { SIGNIN } from '../../pages';
 
 const withBackToAndGirl = (Base: FC) => () => {
   return (

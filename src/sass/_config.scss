@@ -13,6 +13,9 @@ $bg-color: #F5F8FB;
 
 $font-stack: Nunito, Helvetica, sans-serif;
 
+$navbar-width: 80px;
+$content-margin-left: $navbar-width + 50px;
+
 %ui-card {
   padding: 48px;
   background-color: $white-color;

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as Guy } from '../../images/reading-guy-and-girl.svg';
 import { ReactComponent as Girl } from '../../images/reading-girl.svg';
 import LoginOptions from '../../forms/login-options';
-import { PAGES, SIGNIN } from '../../pages';
+import { SIGNIN } from '../../pages';
 import { UserAlreadyExistsAlert } from '../../forms/forms/sign-up-form/user-already-exists-alert';
 import SignUpForm from '../../forms/forms/sign-up-form';
 

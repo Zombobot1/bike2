@@ -1,0 +1,58 @@
+@import "../../../sass/config";
+
+.navbar {
+  width: $navbar-width;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  background-color: $primary-color;
+
+  .navbar-nav {
+    height: 480px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    list-style: none;
+
+    .nav-item {
+      width: 100%;
+
+      .nav-link {
+        display: flex;
+        position: relative;
+        align-items: center;
+        height: 80px;
+
+        &:hover {
+          background: black;
+        }
+
+        svg {
+          width: 32px;
+          margin: 0 24px;
+          fill: $white-color;
+        }
+
+        &--active {
+          &::before {
+            content: '';
+            width: 7px;
+            height: 100%;
+            position: absolute;
+            background-color: $secondary-color;
+          }
+          svg {
+            fill: $secondary-color;
+          }
+        }
+      }
+    }
+  }
+
+  .uni-icon {
+    margin-left: 3px;
+  }
+}

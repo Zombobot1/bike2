@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
 
-import Hero, { HeroBaseP } from '../landing/hero';
-import Features, { FeaturesBaseP } from '../landing/features';
-import Pricing, { PricingBaseP } from '../landing/pricing';
+import Hero from '../landing/hero';
+import Features from '../landing/features';
+import Pricing from '../landing/pricing';
 import { useInfo } from '../info-provider/info-provider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

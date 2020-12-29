@@ -5,7 +5,7 @@ import { ReactComponent as CardsImg } from './cards-background-img.svg';
 import { ReactComponent as ScrollDown } from '../../icons/scroll-down.svg';
 import { Scroller } from '../../../utils/types';
 import { Link } from 'react-router-dom';
-import { PAGES, SIGNIN } from '../../pages';
+import { SIGNIN } from '../../pages';
 
 interface HeroBaseP {
   header: string;
