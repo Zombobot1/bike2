@@ -5,7 +5,7 @@ import { ReactComponent as CardsImg } from './cards-background-img.svg';
 import { ReactComponent as ScrollDown } from '../../icons/scroll-down.svg';
 import { Scroller } from '../../../utils/types';
 import { Link } from 'react-router-dom';
-import { PAGES } from '../../pages';
+import { SIGNIN } from '../../pages';
 
 interface HeroBaseP {
   header: string;
@@ -33,7 +33,7 @@ const Hero = ({ header, paragraph, btnText, scroller, refName }: HeroP) => {
         <h1 className={'hero__h-top'}>{all_but_last_word(header)}</h1>
         <h1 className={'hero__h-bottom'}>{last_word(header)}</h1>
         <p className={'hero__p'}>{paragraph}</p>
-        <Link className={'hero__btn-cta'} to={PAGES.signIn}>
+        <Link className={'hero__btn-cta'} to={SIGNIN}>
           {btnText}
         </Link>
       </div>

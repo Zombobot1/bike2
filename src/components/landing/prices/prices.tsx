@@ -2,7 +2,7 @@ import React from 'react';
 import Price, { PriceP } from '../price';
 import './prices.scss';
 import ContactUs from '../contact-us';
-import { PAGES } from '../../pages';
+import { SIGNIN } from '../../pages';
 import { BLink } from '../../utils/blink';
 import { ModalTrigger } from '../../utils/modal-trigger';
 
@@ -11,9 +11,7 @@ interface PricesP {
   prices: PriceP[];
 }
 
-const BasicPrice = Price(() => (
-  <BLink className="btn btn-outline-primary" text="Register for free" to={PAGES.signIn} />
-));
+const BasicPrice = Price(() => <BLink className="btn btn-outline-primary" text="Register for free" to={SIGNIN} />);
 
 const SpecialPrice = Price(() => <ModalTrigger className="btn btn-primary" modalId="contact" text="Contact us" />);
 

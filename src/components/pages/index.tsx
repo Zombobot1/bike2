@@ -1,20 +1,80 @@
-export { Landing } from './landing';
-export type { LandingP } from './landing';
+import { Landing } from './landing';
+import { SignUp } from './sign-up';
+import { Sandbox } from './_sandbox';
+import { Overview } from './overview';
+import { SignIn } from './sign-in';
+import { LostPassword } from './lost-password';
+import { ResetPassword } from './reset-password';
+import { Study } from './study';
+import { Decks } from './decks';
+import { Schedule } from './schedule';
+import { Settings } from './settings';
 
-export { SignIn } from './sign-in';
-export { SignUp } from './sign-up';
+import { ReactComponent as OverviewI } from './icons/overview-icon-f.svg';
+import { ReactComponent as StudyI } from './icons/study-icon-f.svg';
+import { ReactComponent as DecksI } from './icons/decks-icon-f.svg';
+import { ReactComponent as ScheduleI } from './icons/schedule-icon-f.svg';
+import { ReactComponent as SettingsI } from './icons/settings-icon-f.svg';
+import { ReactComponent as OverviewT } from './icons/overview-icon.svg';
+import { ReactComponent as StudyT } from './icons/study-icon.svg';
+import { ReactComponent as DecksT } from './icons/decks-icon.svg';
+import { ReactComponent as ScheduleT } from './icons/schedule-icon.svg';
+import { ReactComponent as SettingsT } from './icons/settings-icon.svg';
+import { FC } from 'react';
+import App from '../app';
+import Page404 from './page404';
+import { Redirect404 } from '../utils/routing';
 
-export { ForgotPassword } from './forgot-password';
-export { ResetPassword } from './reset-password';
+export const LANDING = '/landing';
+export const SIGNIN = '/signin';
+export const SIGNUP = '/signup';
+export const LOSTPASSWORD = '/lostpassword';
+export const RESETPASSWORD = '/resetpassword';
+export const _SANDBOX = '/_';
+export const APP = '/app';
+export const OVERVIEW = APP + '/overview';
+export const STUDY = APP + '/study';
+export const DECKS = APP + '/decks';
+export const SCHEDULE = APP + '/schedule';
+export const SETTINGS = APP + '/settings';
+export const _ANY = '*';
+export const PAGE404 = '/404';
 
-export { Sandbox } from './_sandbox';
+export const PAGES = [
+  { path: LANDING, component: Landing },
+  { path: SIGNIN, component: SignIn },
+  { path: SIGNUP, component: SignUp },
+  { path: LOSTPASSWORD, component: LostPassword },
+  { path: RESETPASSWORD, component: ResetPassword },
+  { path: PAGE404, component: Page404 },
+  { path: _SANDBOX, component: Sandbox },
+  {
+    path: APP,
+    component: App,
+    routes: [
+      { path: OVERVIEW, component: Overview },
+      { path: STUDY, component: Study },
+      { path: DECKS, component: Decks },
+      { path: SCHEDULE, component: Schedule },
+      { path: SETTINGS, component: Settings },
+      { path: _ANY, component: Redirect404 },
+    ],
+  },
+  { path: _ANY, component: Redirect404 },
+];
 
-export const PAGES = {
-  signIn: '/signin',
-  signUp: '/signup',
-  landing: '/landing',
-  forgotPassword: '/lostpassword',
-  resetPassword: '/resetpassword',
-  root: '/',
-  _sandbox: '/_',
+export const ICONSF = {
+  [OVERVIEW]: OverviewI,
+  [STUDY]: StudyI,
+  [DECKS]: DecksI,
+  [SCHEDULE]: ScheduleI,
+  [SETTINGS]: SettingsI,
+};
+
+export const ICONST: { [key: string]: FC } = {
+  [OVERVIEW]: OverviewT,
+  [STUDY]: StudyT,
+  [DECKS]: DecksT,
+  [SCHEDULE]: ScheduleT,
+  [SETTINGS]: SettingsT,
 };

@@ -6,7 +6,7 @@ import { ReactComponent as Guy } from '../../images/reading-guy-and-girl.svg';
 import { ReactComponent as Girl } from '../../images/reading-girl.svg';
 import { LoginWithAlert } from '../../forms/hoc/login-with-alert';
 import LoginOptions from '../../forms/login-options';
-import { PAGES } from '../../pages';
+import { SIGNUP } from '../../pages';
 
 const SigningIn = () => {
   return (
@@ -19,7 +19,7 @@ const SigningIn = () => {
         <LoginOptions text="or login with" />
         <div className={'alternative'}>
           <p>Not registered?</p>
-          <Link to={PAGES.signUp}>Create account</Link>
+          <Link to={SIGNUP}>Create account</Link>
         </div>
       </div>
     </div>

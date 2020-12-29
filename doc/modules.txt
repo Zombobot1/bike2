@@ -1,0 +1,2 @@
+Each component is exported by default.
+Other auxiliary stuff might be exported inline.

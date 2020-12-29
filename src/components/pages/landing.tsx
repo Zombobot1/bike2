@@ -1,14 +1,9 @@
 import React, { useRef } from 'react';
 
-import Hero, { HeroBaseP } from '../landing/hero';
-import Features, { FeaturesBaseP } from '../landing/features';
-import Pricing, { PricingBaseP } from '../landing/pricing';
-
-type LandingP = {
-  hero: HeroBaseP;
-  features: FeaturesBaseP;
-  pricing: PricingBaseP;
-};
+import Hero from '../landing/hero';
+import Features from '../landing/features';
+import Pricing from '../landing/pricing';
+import { useInfo } from '../info-provider/info-provider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const scroller = (ways: Map<string, any>) => {
@@ -18,7 +13,8 @@ const scroller = (ways: Map<string, any>) => {
   return { scrollFrom };
 };
 
-const Landing = ({ hero, features, pricing }: LandingP) => {
+const Landing = () => {
+  const info = useInfo();
   const heroRefName = 'hero';
   const featuresRefName = 'features';
   const featuresRef = useRef(null);
@@ -31,14 +27,14 @@ const Landing = ({ hero, features, pricing }: LandingP) => {
       ['features', pricingRef],
     ]),
   );
-  const { header, paragraph, btnText } = hero;
-  const { testimonialsHeader, testimonials, pricingHeader, prices } = pricing;
+  const { header, paragraph, btnText } = info.hero;
+  const { testimonialsHeader, testimonials, pricingHeader, prices } = info.pricing;
   return (
     <>
       <Hero header={header} paragraph={paragraph} btnText={btnText} scroller={scr} refName={heroRefName} />
       <Features
-        header={features.header}
-        features={features.features}
+        header={info.features.header}
+        features={info.features.features}
         scroller={scr}
         refName={featuresRefName}
         reff={featuresRef}
@@ -55,4 +51,3 @@ const Landing = ({ hero, features, pricing }: LandingP) => {
 };
 
 export { Landing };
-export type { LandingP };

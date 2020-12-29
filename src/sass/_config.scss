@@ -13,34 +13,5 @@ $bg-color: #F5F8FB;
 
 $font-stack: Nunito, Helvetica, sans-serif;
 
-%ui-card {
-  padding: 48px;
-  background-color: $white-color;
-  border: 1.7px solid #EBEBEB;
-  border-radius: 13px;
-}
-
-%transparent-button {
-  background-color: Transparent;
-  background-repeat:no-repeat;
-  border: none;
-  cursor:pointer;
-  overflow: hidden;
-  outline:none;
-}
-
-%landing-screen-base {
-  background-color: $primary-color;
-  height: 100vh;
-  position: relative;
-  overflow: auto;
-}
-
-%landing-subheader {
-  margin-top: 10px;
-  margin-left: 150px;
-  font-size: 60px;
-  font-weight: bold;
-  font-family: $font-stack;
-  color: $white-color;
-}
+$navbar-width: 80px;
+$content-margin-left: $navbar-width + 50px;
