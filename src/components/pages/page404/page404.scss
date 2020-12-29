@@ -1,0 +1,17 @@
+.page404 {
+  * {
+    margin: 0 auto;
+  }
+
+  &__h {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-size: 40px;
+  }
+
+  .btn-lg {
+    margin-top: 20px;
+  }
+
+  padding-top: 50px;
+}

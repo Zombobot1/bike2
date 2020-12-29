@@ -2,7 +2,7 @@ import './_sandbox.scss';
 import React from 'react';
 
 const Sandbox = () => {
-  return <div>Box</div>;
+  return <div> </div>;
 };
 
 export { Sandbox };

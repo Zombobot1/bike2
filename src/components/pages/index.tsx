@@ -6,7 +6,6 @@ import { SignIn } from './sign-in';
 import { LostPassword } from './lost-password';
 import { ResetPassword } from './reset-password';
 import { Study } from './study';
-import { Page404, Redirect404 } from './page404';
 import { Decks } from './decks';
 import { Schedule } from './schedule';
 import { Settings } from './settings';
@@ -23,6 +22,8 @@ import { ReactComponent as ScheduleT } from './icons/schedule-icon.svg';
 import { ReactComponent as SettingsT } from './icons/settings-icon.svg';
 import { FC } from 'react';
 import App from '../app';
+import Page404 from './page404';
+import { Redirect404 } from '../utils/routing';
 
 export const LANDING = '/landing';
 export const SIGNIN = '/signin';
@@ -37,6 +38,7 @@ export const DECKS = APP + '/decks';
 export const SCHEDULE = APP + '/schedule';
 export const SETTINGS = APP + '/settings';
 export const _ANY = '*';
+export const PAGE404 = '/404';
 
 export const PAGES = [
   { path: LANDING, component: Landing },
@@ -44,6 +46,7 @@ export const PAGES = [
   { path: SIGNUP, component: SignUp },
   { path: LOSTPASSWORD, component: LostPassword },
   { path: RESETPASSWORD, component: ResetPassword },
+  { path: PAGE404, component: Page404 },
   { path: _SANDBOX, component: Sandbox },
   {
     path: APP,
@@ -57,7 +60,7 @@ export const PAGES = [
       { path: _ANY, component: Redirect404 },
     ],
   },
-  { path: _ANY, component: Page404 },
+  { path: _ANY, component: Redirect404 },
 ];
 
 export const ICONSF = {
