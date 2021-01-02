@@ -7,3 +7,17 @@
     opacity: 0.8;
   }
 }
+
+@mixin attention-base($color:none, $scale:1.3, $top:12px, $right:10px) {
+  display: inline;
+  transform: scale($scale);
+  position: absolute;
+  top: $top;
+  right: $right;
+  fill: $color;
+}
+
+.overdue--none {
+  @include attention-base;
+  display: none;
+}

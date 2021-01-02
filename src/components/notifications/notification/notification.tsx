@@ -1,8 +1,7 @@
 import './notification.scss';
-import { ReactComponent as Overdue } from '../../pages/icons/attention-icon.svg';
 import { ReactComponent as Clocks } from '../../pages/icons/clocks-fill-up-icon.svg';
 import React from 'react';
-import { cne } from '../../../utils/utils';
+import { Overdue } from '../../icons/icons';
 
 export enum OverdueType {
   None,
@@ -30,7 +29,7 @@ const Notification = ({
   return (
     <div className="notification">
       <span className="notification-description">It’s time to learn</span>
-      <Overdue className={cne({ overdue }, OverdueType)} />
+      <Overdue type={overdue} />
       <div className="d-flex deck">
         <div className="align-self-center deck-circle" style={{ backgroundColor: deckColor }} />
         <span>

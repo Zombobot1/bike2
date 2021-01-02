@@ -10,3 +10,8 @@ export const cne = (enumKeyAndValue: any, enum_: any) => {
   const enumValueName = enum_[enumKeyAndValue[classBase]];
   return `${classBase}--${enumValueName}`.toLowerCase();
 };
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const transformedMax = (arr: any, f: any) => Math.max(...arr.map(f));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const sum = (arr: any, f: any) => arr.reduce(f, 0);

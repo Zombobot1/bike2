@@ -89,6 +89,181 @@ const notification2 = {
 };
 const notifications = [notification, notification2, notification, notification2, notification];
 
+const lastHour = () => {
+  const now = new Date();
+  now.setHours(now.getHours() - 1);
+  return now.toISOString();
+};
+
+const yesterday = () => {
+  const now = new Date();
+  now.setDate(now.getDate() - 1);
+  return now.toISOString();
+};
+
+const lastMonth = () => {
+  const now = new Date();
+  now.setDate(now.getDate() - 31);
+  return now.toISOString();
+};
+
+const overview = {
+  lastTrainings: [
+    {
+      overdue: OverdueType.None,
+      deckColor: '#FF5151',
+      deckName: 'Bayesian approach',
+      editingDate: new Date().toISOString(),
+      trainingCardsInfo: { toRepeat: 123, toLearn: 234 },
+    },
+    {
+      overdue: OverdueType.None,
+      deckColor: '#735CFC',
+      deckName: 'Exersices 1-10',
+      editingDate: lastHour(),
+      trainingCardsInfo: { toRepeat: 123, toLearn: 0 },
+    },
+    {
+      overdue: OverdueType.Warning,
+      deckColor: '#FCA95C',
+      deckName: 'Workers',
+      editingDate: yesterday(),
+      trainingCardsInfo: { toRepeat: 0, toLearn: 234 },
+    },
+    {
+      overdue: OverdueType.Danger,
+      deckColor: '#FC5C9F',
+      deckName: 'Chapter 1',
+      editingDate: lastMonth(),
+      trainingCardsInfo: { toRepeat: 1930, toLearn: 234 },
+    },
+  ],
+  deckProgresses: [
+    {
+      deckColor: '#FF5151',
+      deckName: 'Math',
+      progress: 0.934,
+    },
+    {
+      deckColor: '#FCA95C',
+      deckName: 'Js',
+      progress: 0.6234,
+    },
+    {
+      deckColor: '#735CFC',
+      deckName: 'English',
+      progress: 0.74,
+    },
+    {
+      deckColor: '#FC5C9F',
+      deckName: 'C++',
+      progress: 0.834,
+    },
+    {
+      deckColor: '#2730FD',
+      deckName: 'Python',
+      progress: 0.52,
+    },
+    {
+      deckColor: '#DC5CFC',
+      deckName: 'Cooking',
+      progress: 0.77234,
+    },
+  ],
+  lastEditedCards: [
+    {
+      deckColor: '#2730FD',
+      deckName: 'Pathlib',
+      editingDate: new Date().toISOString(),
+    },
+    {
+      deckColor: '#FC5C9F',
+      deckName: 'Chapter 1',
+      editingDate: lastHour(),
+    },
+    {
+      deckColor: '#DC5CFC',
+      deckName: 'Borsh',
+      editingDate: lastHour(),
+    },
+    {
+      deckColor: '#eced2b',
+      deckName: 'Async & Await',
+      editingDate: yesterday(),
+    },
+  ],
+  lastReviews: [
+    {
+      deckName: 'C++ programming language',
+      deckColor: '#FC5C9F',
+      reviewDate: lastMonth(),
+      reviewResult: 0.954,
+    },
+    {
+      deckName: 'Bayesian approach',
+      deckColor: '#FF5151',
+      reviewDate: lastMonth(),
+      reviewResult: 0.824,
+    },
+  ],
+  cardsPerDayData: [
+    {
+      id: 'cards per day',
+      data: [
+        { x: '31/01', y: 49 },
+        { x: '01/02', y: 235 },
+        { x: '02/02', y: 238 },
+        { x: '03/02', y: 171 },
+        { x: '04/02', y: 207 },
+        { x: '05/02', y: 30 },
+        { x: '06/02', y: 94 },
+        { x: '07/02', y: 128 },
+        { x: '08/02', y: 174 },
+        { x: '09/02', y: 151 },
+        { x: '10/02', y: 238 },
+        { x: '11/02', y: 70 },
+      ],
+    },
+  ],
+  cardsTypesData: [
+    { id: 'new', value: 234 },
+    { id: 'learning', value: 324 },
+    { id: 'expect review', value: 873 },
+    { id: 'repeating', value: 100 },
+  ],
+  timeInAppData: [
+    {
+      id: 'time in app',
+      data: [
+        { x: '31/01', y: 123 },
+        { x: '01/02', y: 190 },
+        { x: '02/02', y: 28 },
+        { x: '03/02', y: 94 },
+        { x: '04/02', y: 128 },
+        { x: '05/02', y: 274 },
+        { x: '06/02', y: 151 },
+        { x: '07/02', y: 72 },
+        { x: '08/02', y: 174 },
+        { x: '09/02', y: 101 },
+        { x: '10/02', y: 238 },
+        { x: '11/02', y: 270 },
+        { x: '12/02', y: 49 },
+        { x: '13/02', y: 235 },
+        { x: '14/02', y: 238 },
+        { x: '15/02', y: 171 },
+        { x: '16/02', y: 207 },
+        { x: '17/02', y: 161 },
+        { x: '18/02', y: 287 },
+        { x: '19/02', y: 301 },
+        { x: '20/02', y: 294 },
+        { x: '21/02', y: 30 },
+        { x: '22/02', y: 238 },
+        { x: '23/02', y: 70 },
+      ],
+    },
+  ],
+};
+
 const appData = {
   hero: {
     header: hero_header,
@@ -106,6 +281,7 @@ const appData = {
     prices,
   },
   notifications,
+  overview,
 };
 
 export default appData;

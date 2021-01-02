@@ -1,3 +1,4 @@
 import React from 'react';
+import { Overview as O } from './_sandbox/_sandbox';
 
-export const Overview = () => <div>Overview</div>;
+export const Overview = () => <O />;

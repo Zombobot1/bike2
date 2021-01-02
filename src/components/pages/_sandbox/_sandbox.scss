@@ -1,4 +1,267 @@
-@import "../../../sass/config";
+@import "../../../sass/common";
+@import "../../icons/icons";
 
+.btn-tertiary {
+  color: white;
+  &:hover,
+  &:active,
+  &:focus {
+    color: white;
+  }
+}
+
+%ui-card-base {
+  padding: 17px 20px;
+  background-color: $white-color;
+  border: 0.5px solid #EBEBEB;
+  border-radius: 13px;
+}
+
+%mini-deck-card-base {
+  width: 240px;
+  height: 80px;
+
+  position: relative;
+  padding-top: 10px;
+  border-radius: 10px;
+  background-color: $white-color;
+  box-shadow:
+          0 0 4.2px rgba(0, 0, 0, 0.1),
+          0 6.7px 5.3px rgba(0, 0, 0, 0.051),
+          0 12.5px 10px rgba(0, 0, 0, 0.043),
+          0 22.3px 17.9px rgba(0, 0, 0, 0.037),
+          0 41.8px 33.4px rgba(0, 0, 0, 0.03),
+          0 100px 80px rgba(0, 0, 0, 0.021);
+
+  transition:
+          transform .3s ease-out,
+          box-shadow .3s ease-out;
+
+  &:hover {
+    transform: translate(0, -5px);
+    box-shadow:
+            0 2.8px 2.2px rgba(0, 0, 0, 0.021),
+            0 6.7px 5.3px rgba(0, 0, 0, 0.03),
+            0 12.5px 10px rgba(0, 0, 0, 0.037),
+            0 22.3px 17.9px rgba(0, 0, 0, 0.043),
+            0 41.8px 33.4px rgba(0, 0, 0, 0.051),
+            0 100px 80px rgba(0, 0, 0, 0.07);
+    cursor: pointer;
+  }
+
+  .deck-mark {
+    width: 14px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    background-color: #25A7FC;
+  }
+
+  .deck-name {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+    margin-left: 20px;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 16px;
+  }
+
+  .time {
+    position: absolute;
+    bottom: 3px;
+    right: 10px;
+    color: rgba($primary-color, .5);
+    font-size: 12px;
+    font-weight: lighter;
+  }
+}
+
+.last-edited-card {
+  @extend %mini-deck-card-base;
+  width: 256px;
+
+  .deck-mark {
+    border-radius: 0 10px 0 10px;
+  }
+}
+
+@mixin overdue($color) {
+  @include attention-base($color, 1.2, -4px, -3px);
+}
+
+.last-training-card {
+  @extend %mini-deck-card-base;
+  width: 268px;
+
+  .deck-mark {
+    border-radius: 10px 0 0 10px;
+  }
+
+  .overdue--warning {
+    @include overdue($warning-color);
+  }
+
+  .overdue--danger {
+    @include overdue($danger-color);
+  }
+
+  .training-cards-number {
+    position: absolute;
+    bottom: 4px;
+    left: 20px;
+    font-size: 10px;
+
+    .clocks-fill-up-icon {
+      transform: scale(.8);
+      margin-top: -2px;
+    }
+
+    .glasses-icon {
+      margin-top: -2px;
+      margin-left: 2px;
+      margin-right: 1px;
+    }
+  }
+}
+
+.last-review-card {
+  @extend %mini-deck-card-base;
+
+  width: 280px;
+
+  .ok-bookmark-icon {
+    position: absolute;
+    right: 10px;
+    top: -5px;
+    fill: #25A7FC;
+  }
+
+  .deck-name {
+    margin-left: 10px;
+  }
+
+  .review-result {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: $tertiary-color;
+  }
+}
+
+.deck-progress {
+  width: 335px;
+
+  .deck-name {
+    font-weight: bold;
+    width: 80%;
+    height: 25px;
+    overflow:hidden;
+    white-space:nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .progress-value {
+    opacity: 0;
+    transition: opacity .6s ease-out;
+  }
+
+  &:hover .progress-value {
+    opacity: 1;
+  }
+
+  .progress {
+    margin-top: 10px;
+    border-radius: 5px;
+    max-width: 100%;
+    height: 10px;
+  }
+}
+
+.pie-container {
+  width: 350px;
+  height: 220px;
+}
+
+.line-container {
+  width: 1070px;
+  height: 210px;
+}
+
+.time-in-app-line-container {
+  width: 1370px;
+  height: 210px;
+}
+
+$overview-card-height: 275px;
+
+.overview__subheader {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.cards-per-day {
+  @extend %ui-card-base;
+  height: $overview-card-height;
+  width: 62.5%;
+}
+
+.cards-types {
+  @extend %ui-card-base;
+  height: $overview-card-height;
+  width: 21%;
+}
+
+.cards {
+  margin-top: 20px;
+  display: flex;
+  gap: 17px;
+  flex-wrap: wrap;
+}
+
+.progresses {
+  margin-top: 20px;
+  display: flex;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.last-edited {
+  @extend %ui-card-base;
+  width: 32%;
+  height: $overview-card-height;
+}
+
+.last-trainings {
+  @extend %ui-card-base;
+
+  padding-right: 0;
+
+  .last-trainings__header {
+    padding-right: 20px;
+  }
+
+  height: $overview-card-height;
+}
+
+.reviews {
+  @extend %ui-card-base;
+  height: $overview-card-height;
+}
+
+.time-in-app {
+  @extend %ui-card-base;
+  width: 79%;
+  height: $overview-card-height;
+}
+
+.decks-progress {
+  @extend %ui-card-base;
+  height: $overview-card-height;
+}
 
 
