@@ -5,9 +5,9 @@ import Testimonials, { TestimonialsP } from '../../landing/testimonials';
 import Prices, { PricesP } from '../../landing/prices';
 import Footer from '../../footer';
 
-interface PricingBaseP extends TestimonialsP, PricesP {}
+export interface PricingBaseP extends TestimonialsP, PricesP {}
 
-interface PricingP extends PricingBaseP {
+export interface PricingP extends PricingBaseP {
   reff: Ref<HTMLElement>;
 }
 
@@ -19,5 +19,4 @@ const Pricing = ({ testimonialsHeader, testimonials, pricingHeader, prices, reff
   </section>
 );
 
-export type { PricingBaseP, PricingP };
 export default Pricing;

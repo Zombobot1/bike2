@@ -2,7 +2,7 @@ import { InputConfigurationBase } from '../input-field';
 import { ValidatedInputFieldP } from '../types';
 import React from 'react';
 
-interface TextAreaConfiguration extends InputConfigurationBase {
+export interface TextAreaConfiguration extends InputConfigurationBase {
   rows: number;
 }
 

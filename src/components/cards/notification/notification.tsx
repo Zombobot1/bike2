@@ -1,8 +1,8 @@
 import './notification.scss';
-import { ReactComponent as Overdue } from '../../pages/icons/attention-icon.svg';
-import { ReactComponent as Clocks } from '../../pages/icons/clocks-fill-up-icon.svg';
+import { ReactComponent as Clocks } from '../../cards/training-cards-info/clocks-fill-up-icon.svg';
 import React from 'react';
-import { cne } from '../../../utils/utils';
+import { Overdue } from '../../icons/icons';
+import { fancyDate } from '../../../utils/formatting';
 
 export enum OverdueType {
   None,
@@ -10,14 +10,14 @@ export enum OverdueType {
   Danger,
 }
 
-export type NotificationP = {
+export interface NotificationP {
   overdue: OverdueType;
   deckColor: string;
   deckPath: string;
   deckName: string;
   repeatingCardsNumberStr: string;
   receivingTime: string;
-};
+}
 
 const Notification = ({
   overdue,
@@ -30,7 +30,7 @@ const Notification = ({
   return (
     <div className="notification">
       <span className="notification-description">It’s time to learn</span>
-      <Overdue className={cne({ overdue }, OverdueType)} />
+      <Overdue type={overdue} />
       <div className="d-flex deck">
         <div className="align-self-center deck-circle" style={{ backgroundColor: deckColor }} />
         <span>
@@ -43,7 +43,7 @@ const Notification = ({
           {repeatingCardsNumberStr}
         </span>
       </div>
-      <p className="receiving-time text-end">{receivingTime}</p>
+      <p className="receiving-time text-end">{fancyDate(receivingTime)}</p>
     </div>
   );
 };

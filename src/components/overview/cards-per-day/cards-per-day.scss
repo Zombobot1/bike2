@@ -1,0 +1,14 @@
+@import "../../../sass/common";
+@import "../common";
+
+.cards-per-day {
+  @extend %ui-card-base;
+
+  height: $overview-card-height;
+  width: 62.5%;
+
+  .cards-per-day-line-container {
+    width: 1070px;
+    height: 210px;
+  }
+}

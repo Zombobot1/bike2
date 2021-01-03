@@ -1,10 +1,10 @@
 import './feature.scss';
 import React from 'react';
 
-type FeatureP = {
+export interface FeatureP {
   subheader: string;
   description: string;
-};
+}
 
 const Feature = ({ subheader, description }: FeatureP, index: number) => {
   const cardName = `feature-${index + 1}`;
@@ -17,4 +17,3 @@ const Feature = ({ subheader, description }: FeatureP, index: number) => {
 };
 
 export default Feature;
-export type { FeatureP };

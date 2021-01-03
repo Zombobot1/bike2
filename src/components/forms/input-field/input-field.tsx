@@ -1,12 +1,12 @@
 import { ValidatedInputFieldP } from '../types';
 import React from 'react';
 
-interface InputConfigurationBase {
+export interface InputConfigurationBase {
   label: string;
   id: string;
 }
 
-interface InputConfiguration extends InputConfigurationBase {
+export interface InputConfiguration extends InputConfigurationBase {
   placeholder: string;
   type: string;
   icon: string;
@@ -34,4 +34,3 @@ const InputField = (config: InputConfiguration) => ({ state, onChange, errorStr,
 };
 
 export default InputField;
-export type { InputConfiguration, InputConfigurationBase };

@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import './price.scss';
 
-type PriceP = {
+export interface PriceP {
   header: string;
   features: string[];
-};
+}
 
 const Price = (Button: FC) => ({ header, features }: PriceP) => {
   return (
@@ -23,4 +23,3 @@ const Price = (Button: FC) => ({ header, features }: PriceP) => {
 };
 
 export default Price;
-export type { PriceP };

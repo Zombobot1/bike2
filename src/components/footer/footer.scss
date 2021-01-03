@@ -2,13 +2,18 @@
 
 .footer {
   position: absolute;
-  bottom: 10px;
+  bottom: 0;
   width: 90%;
   opacity: .7;
+
+  p {
+    margin-bottom: 10px;
+  }
 
   .refs {
     gap: 20px;
   }
+
 }
 
 .landing__footer {

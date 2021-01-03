@@ -7,13 +7,13 @@ import { Scroller } from '../../../utils/types';
 import { Link } from 'react-router-dom';
 import { SIGNIN } from '../../pages';
 
-interface HeroBaseP {
+export interface HeroBaseP {
   header: string;
   paragraph: string;
   btnText: string;
 }
 
-interface HeroP extends HeroBaseP {
+export interface HeroP extends HeroBaseP {
   scroller: Scroller;
   refName: string;
 }
@@ -43,5 +43,4 @@ const Hero = ({ header, paragraph, btnText, scroller, refName }: HeroP) => {
   );
 };
 
-export type { HeroP, HeroBaseP };
 export default Hero;

@@ -36,3 +36,16 @@ a {
   text-decoration: none;
   color: $primary-color;
 }
+
+.btn-sm {
+  border-radius: 7px;
+}
+
+.btn-tertiary {
+  color: white;
+  &:hover,
+  &:active,
+  &:focus {
+    color: white;
+  }
+}

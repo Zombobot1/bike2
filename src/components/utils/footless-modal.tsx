@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
-type FootlessModalP = {
+export interface FootlessModalP {
   id: string;
   title: string;
-};
+}
 
 export const FootlessModal = ({ id, title }: FootlessModalP) => (Body: FC) => () => {
   return (

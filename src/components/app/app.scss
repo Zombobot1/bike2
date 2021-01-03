@@ -1,8 +1,7 @@
 @import "../../sass/config";
 
 .content-area {
-  overflow: auto;
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-color: $bg-color;
   padding-top: 25px;

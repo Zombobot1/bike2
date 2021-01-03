@@ -1,0 +1,12 @@
+@import "../../../sass/common";
+@import "../common";
+
+.last-edited-card {
+  @extend %mini-deck-card-base;
+
+  width: 256px;
+
+  .deck-mark {
+    border-radius: 0 10px 0 10px;
+  }
+}
