@@ -1,3 +1,4 @@
+import './training-cards-info.scss';
 import { ReactComponent as Clocks } from './clocks-fill-up-icon.svg';
 import { ReactComponent as Glasses } from './glasses-icon.svg';
 import React from 'react';
@@ -10,13 +11,13 @@ export interface TrainingCardsInfoP {
 
 const TrainingCardsInfo = ({ toRepeat, toLearn }: TrainingCardsInfoP) => {
   const repeatInfo = () => (
-    <span>
+    <span className="repeat-info">
       <Clocks />
       {fancyNumber(toRepeat)}
     </span>
   );
   const learnInfo = () => (
-    <span>
+    <span className="learn-info">
       <Glasses />
       {fancyNumber(toLearn)}
     </span>

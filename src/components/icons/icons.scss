@@ -1,3 +1,5 @@
+@import "../../sass/config";
+
 .scroll-down {
   position: absolute;
   bottom: 15px;
@@ -20,4 +22,16 @@
 .overdue--none {
   @include attention-base;
   display: none;
+}
+
+@mixin overdue($color) {
+  @include attention-base($color, 1.2, -4px, -3px);
+}
+
+.overdue--warning {
+  @include overdue($warning-color);
+}
+
+.overdue--danger {
+  @include overdue($danger-color);
 }

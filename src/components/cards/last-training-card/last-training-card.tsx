@@ -2,12 +2,12 @@ import './last-training-card.scss';
 import { OverdueType } from '../notification/notification';
 import { Overdue } from '../../icons/icons';
 import React from 'react';
-import { DeckCard } from '../types';
+import { SmallDeckCard } from '../types';
 import TrainingCardsInfo from '../training-cards-info';
 import { TrainingCardsInfoP } from '../training-cards-info/training-cards-info';
 import { fancyDate } from '../../../utils/formatting';
 
-export interface LastTrainingCardP extends DeckCard {
+export interface LastTrainingCardP extends SmallDeckCard {
   overdue: OverdueType;
   trainingCardsInfo: TrainingCardsInfoP;
   editingDate: string;

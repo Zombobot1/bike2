@@ -1,9 +1,9 @@
 import './last-edited-card.scss';
 import React from 'react';
-import { DeckCard } from '../types';
+import { SmallDeckCard } from '../types';
 import { fancyDate } from '../../../utils/formatting';
 
-export interface LastEditedCardP extends DeckCard {
+export interface LastEditedCardP extends SmallDeckCard {
   editingDate: string;
 }
 

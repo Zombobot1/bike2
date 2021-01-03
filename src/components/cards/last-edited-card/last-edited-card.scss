@@ -2,7 +2,7 @@
 @import "../common";
 
 .last-edited-card {
-  @extend %mini-deck-card-base;
+  @include mini-deck-card-base;
 
   width: 256px;
 
