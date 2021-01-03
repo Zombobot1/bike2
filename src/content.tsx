@@ -1,4 +1,4 @@
-import { OverdueType } from './components/notifications/notification/notification';
+import { OverdueType } from './components/cards/notification/notification';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -71,27 +71,9 @@ const prices = [
   },
 ];
 
-const notification = {
-  overdue: OverdueType.Warning,
-  deckColor: '#FF5151',
-  deckPath: 'Statistical methods / Lectures',
-  deckName: 'Bayesian approach',
-  repeatingCardsNumberStr: '234',
-  receivingTime: '2 hrs ago',
-};
-const notification2 = {
-  overdue: OverdueType.None,
-  deckColor: '#FC5C9F',
-  deckPath: 'C++ programming language',
-  deckName: 'Chapter 1',
-  repeatingCardsNumberStr: '1.2k',
-  receivingTime: '1 d ago',
-};
-const notifications = [notification, notification2, notification, notification2, notification];
-
-const lastHour = () => {
+const lastHour = (diff = 1) => {
   const now = new Date();
-  now.setHours(now.getHours() - 1);
+  now.setHours(now.getHours() - diff);
   return now.toISOString();
 };
 
@@ -106,6 +88,24 @@ const lastMonth = () => {
   now.setDate(now.getDate() - 31);
   return now.toISOString();
 };
+
+const notification = {
+  overdue: OverdueType.Warning,
+  deckColor: '#FF5151',
+  deckPath: 'Statistical methods / Lectures',
+  deckName: 'Bayesian approach',
+  repeatingCardsNumberStr: '234',
+  receivingTime: lastHour(2),
+};
+const notification2 = {
+  overdue: OverdueType.None,
+  deckColor: '#FC5C9F',
+  deckPath: 'C++ programming language',
+  deckName: 'Chapter 1',
+  repeatingCardsNumberStr: '1.2k',
+  receivingTime: yesterday(),
+};
+const notifications = [notification, notification2, notification, notification2, notification];
 
 const overview = {
   lastTrainings: [

@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 
-type AlertTextAndRLinkP = {
+export interface AlertTextAndRLinkP {
   text: string;
   linkText: string;
   to: string;
-};
+}
 
-const AlertTextAndRLink = ({ text, linkText, to }: AlertTextAndRLinkP) => (
+export const AlertTextAndRLink = ({ text, linkText, to }: AlertTextAndRLinkP) => (
   <span>
     {text + ' '}
     <Link className="alert-link" to={to}>
@@ -15,5 +15,3 @@ const AlertTextAndRLink = ({ text, linkText, to }: AlertTextAndRLinkP) => (
     </Link>
   </span>
 );
-
-export { AlertTextAndRLink };

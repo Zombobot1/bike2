@@ -7,7 +7,7 @@
 }
 
 %sign-card {
-  @extend %ui-card;
+  @extend %outer-ui-card;
   width: 500px;
   margin: 100px auto 0;
 

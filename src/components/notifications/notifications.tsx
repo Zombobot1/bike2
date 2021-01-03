@@ -1,10 +1,10 @@
 import './notifications.scss';
 import React, { useState } from 'react';
-import { cn } from '../../utils/utils';
 import { ReactComponent as Bell } from '../pages/icons/bell-icon-f.svg';
-import Notification from './notification';
+import Notification from '../cards/notification';
 import { useEventListener } from '../utils/hooks/use-event-listener';
 import { useInfo } from '../info-provider/info-provider';
+import { cn } from '../../utils/utils';
 
 const Notifications = () => {
   const info = useInfo();

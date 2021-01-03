@@ -6,7 +6,7 @@ import { SIGNIN } from '../../pages';
 import { BLink } from '../../utils/blink';
 import { ModalTrigger } from '../../utils/modal-trigger';
 
-interface PricesP {
+export interface PricesP {
   pricingHeader: string;
   prices: PriceP[];
 }
@@ -30,4 +30,3 @@ const Prices = ({ pricingHeader, prices }: PricesP) => {
 };
 
 export default Prices;
-export type { PricesP };

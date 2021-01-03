@@ -1,7 +1,7 @@
 import { activateAll, InputControl } from '../utils';
 import { useState } from 'react';
 
-const useSubmit = (inputs: InputControl[]) => {
+export const useSubmit = (inputs: InputControl[]) => {
   const [isSubmittable, setIsSubmittable] = useState(false);
   const validateInputs = () => {
     activateAll(inputs);
@@ -10,5 +10,3 @@ const useSubmit = (inputs: InputControl[]) => {
   };
   return { isSubmittable, validateInputs };
 };
-
-export { useSubmit };

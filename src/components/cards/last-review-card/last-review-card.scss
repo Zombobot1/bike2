@@ -1,0 +1,27 @@
+@import "../../../sass/common";
+@import "../common";
+
+.last-review-card {
+  @extend %mini-deck-card-base;
+
+  width: 280px;
+
+  .ok-bookmark-icon {
+    position: absolute;
+    right: 10px;
+    top: -5px;
+  }
+
+  .deck-name {
+    margin-left: 10px;
+  }
+
+  .review-result {
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: $tertiary-color;
+  }
+}

@@ -13,7 +13,7 @@ const scroller = (ways: Map<string, any>) => {
   return { scrollFrom };
 };
 
-const Landing = () => {
+export const Landing = () => {
   const info = useInfo();
   const heroRefName = 'hero';
   const featuresRefName = 'features';
@@ -49,5 +49,3 @@ const Landing = () => {
     </>
   );
 };
-
-export { Landing };

@@ -6,7 +6,7 @@ import { ReactComponent as ChevronLeft } from '../../../components/icons/chevron
 import { ReactComponent as Girl } from '../../../components/images/standing-girl.svg';
 import { SIGNIN } from '../../pages';
 
-const withBackToAndGirl = (Base: FC) => () => {
+export const withBackToAndGirl = (Base: FC) => () => {
   return (
     <>
       <div className="forgot-password-container d-flex flex-column">
@@ -20,5 +20,3 @@ const withBackToAndGirl = (Base: FC) => () => {
     </>
   );
 };
-
-export { withBackToAndGirl };

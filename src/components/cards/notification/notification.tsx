@@ -1,7 +1,8 @@
 import './notification.scss';
-import { ReactComponent as Clocks } from '../../pages/icons/clocks-fill-up-icon.svg';
+import { ReactComponent as Clocks } from '../../cards/training-cards-info/clocks-fill-up-icon.svg';
 import React from 'react';
 import { Overdue } from '../../icons/icons';
+import { fancyDate } from '../../../utils/formatting';
 
 export enum OverdueType {
   None,
@@ -9,14 +10,14 @@ export enum OverdueType {
   Danger,
 }
 
-export type NotificationP = {
+export interface NotificationP {
   overdue: OverdueType;
   deckColor: string;
   deckPath: string;
   deckName: string;
   repeatingCardsNumberStr: string;
   receivingTime: string;
-};
+}
 
 const Notification = ({
   overdue,
@@ -42,7 +43,7 @@ const Notification = ({
           {repeatingCardsNumberStr}
         </span>
       </div>
-      <p className="receiving-time text-end">{receivingTime}</p>
+      <p className="receiving-time text-end">{fancyDate(receivingTime)}</p>
     </div>
   );
 };

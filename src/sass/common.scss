@@ -1,10 +1,15 @@
 @import './config';
 
-%ui-card {
-  padding: 48px;
+%ui-card-base {
+  padding: 17px 20px;
   background-color: $white-color;
-  border: 1.7px solid #EBEBEB;
+  border: 0.5px solid #EBEBEB;
   border-radius: 13px;
+}
+
+%outer-ui-card {
+  @extend %ui-card-base;
+  padding: 48px;
 }
 
 %transparent-button-base {

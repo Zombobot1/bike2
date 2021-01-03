@@ -1,9 +1,9 @@
 import './footer.scss';
 import React from 'react';
 
-type FooterP = {
+export interface FooterP {
   className: string;
-};
+}
 
 const Footer = ({ className }: FooterP) => (
   <div className={'d-flex justify-content-between ' + className}>

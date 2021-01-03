@@ -5,7 +5,7 @@ import './testimonials.scss';
 import { ReactComponent as ChevronLeft } from '../../icons/chevron-left.svg';
 import { ReactComponent as ChevronRight } from '../../icons/chevron-right.svg';
 
-interface TestimonialsP {
+export interface TestimonialsP {
   testimonialsHeader: string;
   testimonials: TestimonialP[];
 }
@@ -32,4 +32,3 @@ const Testimonials = ({ testimonialsHeader, testimonials }: TestimonialsP) => {
 };
 
 export default Testimonials;
-export type { TestimonialsP };

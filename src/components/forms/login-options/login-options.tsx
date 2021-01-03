@@ -2,7 +2,9 @@ import './login-options.scss';
 import { ReactComponent as Google } from '../../icons/google.svg';
 import React from 'react';
 
-type LoginOptionsP = { text: string };
+export interface LoginOptionsP {
+  text: string;
+}
 
 const LoginOptions = ({ text }: LoginOptionsP) => (
   <>

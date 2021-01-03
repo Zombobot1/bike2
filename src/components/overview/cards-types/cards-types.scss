@@ -1,0 +1,14 @@
+@import "../../../sass/common";
+@import "../common";
+
+.cards-types {
+  @extend %ui-card-base;
+
+  height: $overview-card-height;
+  width: 21%;
+
+  .cards-types-pie-container {
+    width: 350px;
+    height: 220px;
+  }
+}

@@ -4,11 +4,11 @@ import WomanAvatar from './woman-avatar.png';
 import Man2Avatar from './man-2-avatar.png';
 import './testimonial.scss';
 
-type TestimonialP = {
+export interface TestimonialP {
   image: string;
   review: string;
   name: string;
-};
+}
 
 const avatars = new Map([
   ['man', ManAvatar],
@@ -28,4 +28,3 @@ const Testimonial = ({ image, review, name }: TestimonialP, index: number, curre
 };
 
 export default Testimonial;
-export type { TestimonialP };

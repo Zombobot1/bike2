@@ -5,12 +5,12 @@ import { ReactComponent as ScrollDown } from '../../icons/scroll-down.svg';
 import { Scroller } from '../../../utils/types';
 import Feature, { FeatureP } from '../../landing/feature';
 
-interface FeaturesBaseP {
+export interface FeaturesBaseP {
   header: string;
   features: FeatureP[];
 }
 
-interface FeaturesP extends FeaturesBaseP {
+export interface FeaturesP extends FeaturesBaseP {
   scroller: Scroller;
   refName: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,5 +27,4 @@ const Features = ({ header, features, scroller, refName, reff }: FeaturesP) => {
   );
 };
 
-export type { FeaturesP, FeaturesBaseP };
 export default Features;

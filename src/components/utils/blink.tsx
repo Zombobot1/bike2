@@ -1,11 +1,12 @@
 import { useHistory } from 'react-router-dom';
 import React from 'react';
 
-type BLinkP = {
+export interface BLinkP {
   className: string;
   to: string;
   text: string;
-};
+}
+
 export const BLink = ({ className, text, to }: BLinkP) => {
   const history = useHistory();
   return (

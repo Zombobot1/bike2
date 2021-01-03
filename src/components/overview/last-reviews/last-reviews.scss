@@ -1,0 +1,7 @@
+@import "../../../sass/common";
+@import "../common";
+
+.last-reviews {
+  @extend %ui-card-base;
+  height: $overview-card-height;
+}

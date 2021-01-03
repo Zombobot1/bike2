@@ -2,24 +2,24 @@ import React, { FC } from 'react';
 import { ValidatedInputFieldP } from '../types';
 import { ValueUpdate } from '../../../utils/types';
 
-type ValidationF<T> = (d: T) => string;
+export type ValidationF<T> = (d: T) => string;
 
-type StateT<T> = [T, React.Dispatch<React.SetStateAction<T>>];
-type StrStateT = StateT<string>;
-type BoolStateT = StateT<boolean>;
+export type StateT<T> = [T, React.Dispatch<React.SetStateAction<T>>];
+export type StrStateT = StateT<string>;
+export type BoolStateT = StateT<boolean>;
 
-interface WithValidationBaseP<T> {
+export interface WithValidationBaseP<T> {
   error: StrStateT;
   activation: BoolStateT;
   value: StateT<T>;
 }
 
-interface WithValidationP<T> extends WithValidationBaseP<T> {
+export interface WithValidationP<T> extends WithValidationBaseP<T> {
   validator: ValidationF<T>;
 }
 
-type ValidatedInputFC<T> = FC<ValidatedInputFieldP<T>>;
-const withValidation = <T,>(Base: ValidatedInputFC<T>) => (props: WithValidationP<T>) => {
+export type ValidatedInputFC<T> = FC<ValidatedInputFieldP<T>>;
+export const withValidation = <T,>(Base: ValidatedInputFC<T>) => (props: WithValidationP<T>) => {
   const [errorStr, setErrorStr] = props.error;
   const [wasActivated, setWasActivated] = props.activation;
   const [value, setValue] = props.value;
@@ -37,6 +37,3 @@ const withValidation = <T,>(Base: ValidatedInputFC<T>) => (props: WithValidation
   const p = { state, onChange, errorStr, value };
   return <Base {...p} />;
 };
-
-export { withValidation };
-export type { ValidationF, WithValidationP, ValidatedInputFC, WithValidationBaseP };
