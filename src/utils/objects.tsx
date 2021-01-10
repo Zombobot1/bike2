@@ -10,8 +10,10 @@ export function setField<O>(obj: O, key: keyof any, value: any) {
   obj[key] = value;
 }
 
-export function map<O, V>(obj: O, functor: (key: string, value: V) => void) {
-  if (obj) Object.entries(obj).forEach(([key, value]) => functor(key, value));
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function map(obj: any, functor: (key: string, value: any) => any) {
+  if (obj) return [];
+  return Object.entries(obj).map(([key, value]) => functor(key, value));
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

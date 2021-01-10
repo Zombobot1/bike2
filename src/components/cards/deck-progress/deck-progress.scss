@@ -4,12 +4,9 @@
   width: 335px;
 
   .deck-name {
+    @include chopped-text(80%);
     font-weight: bold;
-    width: 80%;
     height: 25px;
-    overflow:hidden;
-    white-space:nowrap;
-    text-overflow: ellipsis;
   }
 
   &:hover .progress-value {

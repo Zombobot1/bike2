@@ -1,0 +1,61 @@
+@import "../../../../sass/common";
+@import "../../../cards/common";
+
+.review-card {
+  @include mini-deck-card-base($dx: -5px, $dy: 0);
+
+  padding-top: 10px;
+  width: 270px;
+  height: 90px;
+
+  .ok-bookmark-icon {
+    position: absolute;
+    right: 10px;
+    top: -5px;
+  }
+
+  .deck-name,
+  .deck-path {
+    margin-left: 10px;
+  }
+
+  .review-result {
+    position: absolute;
+    bottom: 3px;
+    left: 10px;
+    font-size: 14px;
+    font-weight: bold;
+    color: $tertiary-color;
+  }
+
+}
+.review-cards {
+  @extend %ui-card-base;
+
+  width: 325px;
+
+  .heading {
+    margin-right: 7px;
+    padding-bottom: 5px;
+
+    .subheader {
+      font-size: 20px;
+      font-weight: bold;
+      height: 20px;
+      margin-bottom: 0;
+      margin-top: 5px;
+    }
+
+    .btn {
+      height: 32px;
+    }
+  }
+
+  .cards {
+    margin-top: 20px;
+    margin-left: 5px;
+    padding-bottom: 10px;
+    gap: 15px;
+  }
+
+}

@@ -38,6 +38,10 @@
     cursor: pointer;
   }
 
+  &:active {
+    background-color: $bg-hover-color;
+  }
+
   .deck-mark {
     width: 14px;
     height: 100%;

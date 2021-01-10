@@ -4,10 +4,12 @@ import React from 'react';
 import { SmallDeckCard } from '../types';
 import { fancyDate, percentage } from '../../../utils/formatting';
 
-export interface LastReviewCardP extends SmallDeckCard {
+export interface ReviewInfo {
   reviewResult: number;
   reviewDate: string;
 }
+
+export interface LastReviewCardP extends SmallDeckCard, ReviewInfo {}
 
 const LastReviewCard = ({ deckName, deckColor, reviewDate, reviewResult }: LastReviewCardP) => {
   return (

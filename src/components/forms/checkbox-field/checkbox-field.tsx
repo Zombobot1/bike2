@@ -11,7 +11,7 @@ const CheckBoxField = ({ label, id }: InputConfigurationBase) => ({
   const onClick = () => onChange({ target: { value: !value } });
   return (
     <div className="form-check mt-4">
-      <input className={'form-check-input' + state()} type="checkbox" onClick={onClick} id={id} />
+      <input className={'form-check-input' + state()} type="checkbox" onChange={onClick} id={id} />
       <label className="form-check-label" htmlFor={id}>
         {label}
       </label>

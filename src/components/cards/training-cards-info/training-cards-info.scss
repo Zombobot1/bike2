@@ -18,3 +18,7 @@
     margin-right: 3px;
   }
 }
+
+.training-cards-number {
+  @extend %training-cards-number-base;
+}

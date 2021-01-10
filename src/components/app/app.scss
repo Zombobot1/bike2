@@ -1,9 +1,11 @@
 @import "../../sass/config";
 
 .content-area {
+  position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   background-color: $bg-color;
   padding-top: 25px;
+  padding-bottom: 25px;
   padding-left: $content-margin-left;
 }

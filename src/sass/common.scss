@@ -30,3 +30,10 @@
 .transparent-button {
   @extend %transparent-button-base;
 }
+
+@mixin chopped-text($width: 100%) {
+  width: $width;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}

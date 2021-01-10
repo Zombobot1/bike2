@@ -20,6 +20,7 @@ import { ReactComponent as StudyT } from './icons/study-icon.svg';
 import { ReactComponent as DecksT } from './icons/decks-icon.svg';
 import { ReactComponent as ScheduleT } from './icons/schedule-icon.svg';
 import { ReactComponent as SettingsT } from './icons/settings-icon.svg';
+import { ReactComponent as SandboxT } from './icons/sandbox-icon.svg';
 import { FC } from 'react';
 import App from '../app';
 import Page404 from './page404';
@@ -77,4 +78,5 @@ export const ICONST: { [key: string]: FC } = {
   [DECKS]: DecksT,
   [SCHEDULE]: ScheduleT,
   [SETTINGS]: SettingsT,
+  [_SANDBOX]: SandboxT,
 };

@@ -10,3 +10,12 @@ export const useEventListener = (eventName: string, handler: (e: Event) => void)
   }, [eventName, ref]);
   return ref;
 };
+
+export const useGlobalEventListener = (eventName: string, handler: (e: Event) => void) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  useEffect(() => {
+    const eventListener = (event: Event) => handler(event);
+    window.addEventListener(eventName, eventListener);
+    return () => window.removeEventListener(eventName, eventListener);
+  }, [eventName]);
+};

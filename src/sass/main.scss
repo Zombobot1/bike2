@@ -25,6 +25,13 @@ $input-focus-width: .2rem !default;
 $input-focus-color: $primary-color !default;
 $input-focus-border-color: rgba($primary-color, .5) !default;
 $input-focus-box-shadow: 0 0 0 $input-focus-width rgba($primary-color, .25) !default;
+$input-btn-focus-width: .2rem;
+$input-btn-focus-color: rgba($primary-color, .25);
+
+$form-check-input-checked-border-color: $primary-color;
+$form-check-input-checked-bg-color: $primary-color;
+$form-check-input-focus-border: $gray-color;
+
 
 $border-radius: 10px;
 $border-radius-lg: 10px;

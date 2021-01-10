@@ -71,19 +71,19 @@ const prices = [
   },
 ];
 
-const lastHour = (diff = 1) => {
+export const lastHour = (diff = 1) => {
   const now = new Date();
   now.setHours(now.getHours() - diff);
   return now.toISOString();
 };
 
-const yesterday = () => {
+export const yesterday = () => {
   const now = new Date();
   now.setDate(now.getDate() - 1);
   return now.toISOString();
 };
 
-const lastMonth = () => {
+export const lastMonth = () => {
   const now = new Date();
   now.setDate(now.getDate() - 31);
   return now.toISOString();
