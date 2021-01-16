@@ -46,18 +46,24 @@
 .training-cards {
   @extend %ui-card-base;
 
-  width: 325px;
+  width: 330px;
+  padding: 15px 0 10px;
 
   &:hover .heading .btn {
     opacity: 1;
   }
 
   .heading {
-    margin-right: 7px;
+    min-height: 37px;
+    padding-left: 25px;
+    padding-right: 15px;
     padding-bottom: 5px;
+    margin-bottom: 0;
+
     & > .training-cards-number {
       position: static;
-      margin-top: 7px;
+      margin-top: 9px;
+      margin-right: 10px;
       transform: scale(1.2);
     }
 
@@ -81,11 +87,14 @@
     .btn {
       opacity: 0;
       height: 32px;
+      margin-right: 15px;
       transition: opacity 0.3s ease-in-out;
 
       &:focus {
         opacity: 1;
       }
+
+      @media only screen and (max-width: 850px) { & { opacity: 1; } }
     }
 
     .overdue-indicator--warning {
@@ -99,11 +108,17 @@
     }
   }
 
+  .collapse.show {
+    margin-bottom: 15px;
+  }
+
   .cards {
-    margin-top: 20px;
-    margin-left: 5px;
-    padding-bottom: 10px;
+    margin-left: 28px;
     gap: 15px;
+  }
+
+  .cards:first-child {
+    margin-top: 10px;
   }
 }
 
@@ -119,22 +134,22 @@
   }
 }
 
-.regular-trainings {
-  //@media only screen and (max-width: 1900px) { & { max-width: 1200px; } }
-  //@media only screen and (max-width: 1200px) { & { max-width: 800px; } }
-  //@media only screen and (max-width: 800px) { & { max-width: 600px; } }
-}
-
 .heading {
   margin-bottom: 10px;
+  max-width: 1020px;
+
   .page-header {
     display: inline-block;
     font-size: 20px;
     font-weight: bold;
   }
+
   .settings-trigger {
     margin-left: 120px;
   }
+
+  @media only screen and (max-width: 1200px) { & { max-width: 675px; } }
+  @media only screen and (max-width: 850px) { & { max-width: 330px; } }
 }
 
 .settings__deck-name {

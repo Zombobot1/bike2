@@ -7,8 +7,8 @@ export interface FooterP {
 
 const Footer = ({ className }: FooterP) => (
   <div className={'d-flex justify-content-between ' + className}>
-    <p className="">{`Copyright © ${new Date().getFullYear()} Uni`}</p>
-    <span className={'d-flex justify-content-between refs'}>
+    <p className="me-3">{`Copyright © ${new Date().getFullYear()} Uni`}</p>
+    <span className={'refs'}>
       <a href="#">About</a>
       <a href="#">Presentation</a>
       <a href="#">Contact</a>

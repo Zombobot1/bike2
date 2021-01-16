@@ -1,9 +1,6 @@
 @import "../../sass/config";
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 90%;
   opacity: .7;
 
   p {
@@ -11,7 +8,11 @@
   }
 
   .refs {
+    display: flex;
+    justify-content: space-between;
     gap: 20px;
+
+    @media only screen and (max-width: 550px) { & { flex-direction: column; } }
   }
 
 }

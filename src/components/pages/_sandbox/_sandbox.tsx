@@ -137,10 +137,12 @@ const TrainingDeck = ({ deckName, trainings }: TrainingCardsP) => {
         {isCollapsed && <TrainingCardsInfo {...totalRepeatAndLearn} />}
       </div>
       <div className="collapse show" id={'c' + collapseId}>
-        <div className="d-flex flex-column cards">
-          {displayedTrainings.map((e, i) => (
-            <TrainingCard {...e} key={i} />
-          ))}
+        <div>
+          <div className="d-flex flex-column cards">
+            {displayedTrainings.map((e, i) => (
+              <TrainingCard {...e} key={i} />
+            ))}
+          </div>
         </div>
       </div>
     </div>
@@ -322,74 +324,46 @@ const cookingTrainings = [
 ];
 
 const decks = [
-  { name: 'Math', trainings: mathTrainings },
-  { name: 'Js', trainings: jsTrainings },
-  { name: 'English', trainings: englishTrainings },
-  { name: 'C++', trainings: cppTrainings },
-  { name: 'Python', trainings: pythonTrainings },
-  { name: 'Cooking', trainings: cookingTrainings },
+  { deckName: 'Math', trainings: mathTrainings },
+  { deckName: 'Js', trainings: jsTrainings },
+  { deckName: 'English', trainings: englishTrainings },
+  { deckName: 'C++', trainings: cppTrainings },
+  { deckName: 'Python', trainings: pythonTrainings },
+  { deckName: 'Cooking', trainings: cookingTrainings },
 ];
 
+const useCurrentWidth = (widths: number[]) => {
+  const selectClosestWidth = () => {
+    const min = Math.min(...widths);
+    return widths.find((e) => e <= window.innerWidth) || min;
+  };
+  const [cw, scw] = useState<number>(selectClosestWidth());
+  useGlobalEventListener('resize', () => scw(selectClosestWidth()));
+  return cw;
+};
+
 const Trainings = () => {
-  const [columnNumber, setColumnNumber] = useState(3);
-  const cw = useWidths([
-    { width: 1500, handler: () => setColumnNumber(3) },
-    { width: 1200, handler: () => setColumnNumber(2) },
-    // { width: 800, handler: () => setColumnNumber(2) },
+  const widthAndColumnNumbers = new Map<number, number>([
+    [1200, 3],
+    [850, 2],
+    [500, 1],
   ]);
-  // useEffect(() => setColumnNumber());
+  const currentWidth = useCurrentWidth(Array.from(widthAndColumnNumbers.keys()));
+  const selectColumnNumber = () => widthAndColumnNumbers.get(currentWidth) || 0;
+  const [columnNumber, setColumnNumber] = useState(selectColumnNumber());
+  useEffect(() => setColumnNumber(selectColumnNumber()), [currentWidth]);
   return (
     <div className="d-flex decks-to-train">
       {range(columnNumber).map((i) => (
         <div className={cn({ 'me-3': i !== columnNumber - 1 })} key={i}>
           {eachNth(decks, columnNumber, i).map((e, j) => (
-            <TrainingDeck deckName={e.name} trainings={e.trainings} key={j} />
+            <TrainingDeck {...e} key={j} />
           ))}
         </div>
       ))}
       <div className="w-100 trainings-footer" />
     </div>
   );
-};
-
-export interface RWDHandler {
-  width: number;
-  handler: () => void;
-}
-
-const useWidths = (handlers: RWDHandler[]) => {
-  const selectHandler = (width: number) => handlers.find((e) => e.width <= width);
-  const [cw, scw] = useState<number>(0);
-  // useEffect(() => )
-  const [currentHandler, setCurrentHandler] = useState<RWDHandler>(selectHandler(window.innerWidth) || handlers[0]);
-  const handleResize = (width: number) => {
-    const handler = selectHandler(width);
-    console.log({ width, cw });
-    if (!handler || cw === handler.width) return;
-    console.log('handled');
-    handler.handler();
-    scw(width);
-  };
-  const rwd = () => handleResize(window.innerWidth);
-  useGlobalEventListener('resize', rwd);
-  return cw;
-};
-
-// const useCW = () => {
-//
-//   return cw;
-// };
-
-const C = () => {
-  const [cw, scw] = useState<number>(window.innerWidth);
-  const rwd = () => {
-    console.log({ cw, wiw: window.innerWidth });
-    scw(window.innerWidth);
-  };
-  useGlobalEventListener('resize', rwd);
-  const [cw2, scw2] = useState(cw * 2);
-  useEffect(() => scw2(cw * 2), [cw]);
-  return <p>{'' + cw2}</p>;
 };
 
 const Study = () => {
@@ -473,7 +447,7 @@ const Subdeck = ({ name, split, merge }: SubdeckP) => {
       onClick={onClick}
     >
       <span className="deck-name">{name}</span>
-      <input className="form-check-input" type="checkbox" defaultChecked={value} />
+      <input className="form-check-input" type="checkbox" checked={value} readOnly />
     </li>
   );
 };
@@ -682,17 +656,17 @@ const DeckSettingsModalTrigger = () => (
 
 const Sandbox = () => {
   return (
-    <div style={{ width: '100vw', height: '100vh', padding: '300px 300px', backgroundColor: COLORS.bg }}>
-      <C />
-    </div>
-    // <>
-    //   <NavBar />
-    //   <main className="content-area">
-    //     <Breadcrumb />
-    //     <Study />
-    //     <Footer className="footer" />
-    //   </main>
-    // </>
+    // <div style={{ width: '100vw', height: '100vh', padding: '100px 100px', backgroundColor: COLORS.bg }}>
+    //   <TrainingDeck {...decks[0]} />
+    // </div>
+    <>
+      <NavBar />
+      <main className="content-area">
+        <Breadcrumb />
+        <Study />
+        <Footer className="footer" />
+      </main>
+    </>
   );
 };
 

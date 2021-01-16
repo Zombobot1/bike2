@@ -14,13 +14,7 @@
   padding-top: 10px;
   border-radius: 10px;
   background-color: $white-color;
-  box-shadow:
-          0 0 4.2px rgba(0, 0, 0, 0.1),
-          0 6.7px 5.3px rgba(0, 0, 0, 0.051),
-          0 12.5px 10px rgba(0, 0, 0, 0.043),
-          0 22.3px 17.9px rgba(0, 0, 0, 0.037),
-          0 41.8px 33.4px rgba(0, 0, 0, 0.03),
-          0 100px 80px rgba(0, 0, 0, 0.021);
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.12);
 
   transition:
           transform .3s ease-out,
@@ -28,13 +22,7 @@
 
   &:hover {
     transform: translate($dx, $dy);
-    box-shadow:
-            0 2.8px 2.2px rgba(0, 0, 0, 0.021),
-            0 6.7px 5.3px rgba(0, 0, 0, 0.03),
-            0 12.5px 10px rgba(0, 0, 0, 0.037),
-            0 22.3px 17.9px rgba(0, 0, 0, 0.043),
-            0 41.8px 33.4px rgba(0, 0, 0, 0.051),
-            0 100px 80px rgba(0, 0, 0, 0.07);
+    box-shadow: 0 4px 14px 0 rgba(0,0,0,0.15);
     cursor: pointer;
   }
 

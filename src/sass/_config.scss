@@ -16,4 +16,5 @@ $secondary-text-color: rgba($primary-color, 0.5);
 $font-stack: Nunito, Helvetica, sans-serif;
 
 $navbar-width: 80px;
-$content-margin-left: $navbar-width + 50px;
+$content-padding: 50px;
+$content-padding-left: $navbar-width + $content-padding;
