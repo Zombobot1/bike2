@@ -11,7 +11,10 @@ $light-color: #eaedf2;
 $white-color: #fff;
 $bg-color: #F5F8FB;
 
+$bg-hover-color: rgba($gray-color, .1);
+$secondary-text-color: rgba($primary-color, 0.5);
 $font-stack: Nunito, Helvetica, sans-serif;
 
 $navbar-width: 80px;
-$content-margin-left: $navbar-width + 50px;
+$content-padding: 50px;
+$content-padding-left: $navbar-width + $content-padding;

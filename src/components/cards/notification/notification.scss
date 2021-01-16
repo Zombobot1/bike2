@@ -1,4 +1,4 @@
-@import "../../../sass/config";
+@import "../../../sass/common";
 @import "../../icons/icons";
 
 .notification {
@@ -11,7 +11,7 @@
   margin: auto;
 
   &:hover {
-    background-color: $light-color;
+    background-color: $bg-hover-color;
     cursor: pointer;
   }
 
@@ -23,7 +23,13 @@
     @include attention-base($danger-color);
   }
 
-  .receiving-time,
+  .receiving-time {
+    margin-top: 10px;
+    font-size: 14px;
+    font-weight: lighter;
+    color: rgba($primary-color, .6);
+  }
+
   .notification-description {
     font-size: 14px;
     font-weight: lighter;
@@ -33,20 +39,37 @@
   .deck {
     gap: 10px;
 
+    p {
+      margin: 0;
+    }
+
     .deck-circle {
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background-color: #25A7FC;
     }
 
-    .deck-path {
-      font-size: 12px;
+    .training-cards-number {
+      position: static;
+      .repeat-info {
+        margin-right: 0;
+      }
     }
 
-    .deck-name {
-      font-size: 16px;
-      font-weight: bold;
+    .deck-info {
+      width: 75%;
+
+      .deck-path {
+        @include chopped-text();
+        font-size: 12px;
+      }
+
+      .deck-name {
+        @include chopped-text();
+
+        font-size: 16px;
+        font-weight: bold;
+      }
     }
 
     .clocks-fill-up-icon {

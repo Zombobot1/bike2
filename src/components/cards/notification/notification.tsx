@@ -1,8 +1,8 @@
 import './notification.scss';
-import { ReactComponent as Clocks } from '../../cards/training-cards-info/clocks-fill-up-icon.svg';
 import React from 'react';
 import { Overdue } from '../../icons/icons';
 import { fancyDate } from '../../../utils/formatting';
+import TrainingCardsInfo from '../training-cards-info';
 
 export enum OverdueType {
   None,
@@ -15,7 +15,7 @@ export interface NotificationP {
   deckColor: string;
   deckPath: string;
   deckName: string;
-  repeatingCardsNumberStr: string;
+  repeatingCardsNumber: number;
   receivingTime: string;
 }
 
@@ -24,7 +24,7 @@ const Notification = ({
   deckColor,
   deckPath,
   deckName,
-  repeatingCardsNumberStr,
+  repeatingCardsNumber,
   receivingTime,
 }: NotificationP) => {
   return (
@@ -33,15 +33,11 @@ const Notification = ({
       <Overdue type={overdue} />
       <div className="d-flex deck">
         <div className="align-self-center deck-circle" style={{ backgroundColor: deckColor }} />
-        <span>
-          <span className="deck-path">{deckPath}</span>
-          <br />
-          <span className="deck-name">{deckName}</span>
-        </span>
-        <span className="align-self-center ms-auto cards-number">
-          <Clocks />
-          {repeatingCardsNumberStr}
-        </span>
+        <div className="d-flex flex-column deck-info">
+          <p className="deck-path">{deckPath}</p>
+          <p className="deck-name">{deckName}</p>
+        </div>
+        <TrainingCardsInfo className={'align-self-center ms-auto'} toRepeat={repeatingCardsNumber} toLearn={0} />
       </div>
       <p className="receiving-time text-end">{fancyDate(receivingTime)}</p>
     </div>

@@ -71,19 +71,19 @@ const prices = [
   },
 ];
 
-const lastHour = (diff = 1) => {
+export const lastHour = (diff = 1) => {
   const now = new Date();
   now.setHours(now.getHours() - diff);
   return now.toISOString();
 };
 
-const yesterday = () => {
+export const yesterday = () => {
   const now = new Date();
   now.setDate(now.getDate() - 1);
   return now.toISOString();
 };
 
-const lastMonth = () => {
+export const lastMonth = () => {
   const now = new Date();
   now.setDate(now.getDate() - 31);
   return now.toISOString();
@@ -94,7 +94,7 @@ const notification = {
   deckColor: '#FF5151',
   deckPath: 'Statistical methods / Lectures',
   deckName: 'Bayesian approach',
-  repeatingCardsNumberStr: '234',
+  repeatingCardsNumber: 234,
   receivingTime: lastHour(2),
 };
 const notification2 = {
@@ -102,7 +102,7 @@ const notification2 = {
   deckColor: '#FC5C9F',
   deckPath: 'C++ programming language',
   deckName: 'Chapter 1',
-  repeatingCardsNumberStr: '1.2k',
+  repeatingCardsNumber: 1200,
   receivingTime: yesterday(),
 };
 const notifications = [notification, notification2, notification, notification2, notification];
@@ -264,6 +264,213 @@ const overview = {
   ],
 };
 
+const mathTrainings = [
+  {
+    overdue: OverdueType.None,
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+];
+const jsTrainings = [
+  {
+    overdue: OverdueType.Danger,
+    deckColor: '#FCA95C',
+    deckName: 'Functions',
+    deckPath: 'Basics',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#FCA95C',
+    deckName: 'Functions',
+    deckPath: 'Basics',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#FCA95C',
+    deckName: 'Workers',
+    deckPath: 'Browsers',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#eced2b',
+    deckName: 'Async & Await',
+    deckPath: 'Advanced',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#eced2b',
+    deckName: 'Proxy',
+    deckPath: 'Advanced',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#eced2b',
+    deckName: 'Proxy',
+    deckPath: 'Advanced',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+];
+const englishTrainings = [
+  {
+    overdue: OverdueType.None,
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+];
+const cppTrainings = [
+  {
+    overdue: OverdueType.None,
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    deckPath: 'C++ programming language',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    deckPath: 'C++ programming language',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    deckPath: 'C++ programming language',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+];
+const pythonTrainings = [
+  {
+    overdue: OverdueType.None,
+    deckColor: '#2730FD',
+    deckName: 'Pathlib',
+    deckPath: 'Libraries',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.None,
+    deckColor: '#2730FD',
+    deckName: 'Pathlib',
+    deckPath: 'Libraries',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+];
+const cookingTrainings = [
+  {
+    overdue: OverdueType.Danger,
+    deckColor: '#DC5CFC',
+    deckName: 'Borsh',
+    deckPath: 'Recepies',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+  {
+    overdue: OverdueType.Warning,
+    deckColor: '#DC5CFC',
+    deckName: 'Borsh',
+    deckPath: 'Recepies',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  },
+];
+
+const trainingDecks = [
+  { deckName: 'Math', trainings: mathTrainings },
+  { deckName: 'Js', trainings: jsTrainings },
+  { deckName: 'English', trainings: englishTrainings },
+  { deckName: 'C++', trainings: cppTrainings },
+  { deckName: 'Python', trainings: pythonTrainings },
+  { deckName: 'Cooking', trainings: cookingTrainings },
+];
+
+const trainingDecksSettings = {
+  trainingDecks: {
+    Js: {
+      subdecksNames: ['Basics', 'Advanced'],
+      parentsNames: ['IT', 'Programming languages'],
+    },
+    Python: {
+      subdecksNames: ['Libraries', 'Advanced'],
+      parentsNames: ['IT', 'Programming languages'],
+    },
+  },
+  split: (root: string, subdeck: string) => {
+    console.info('split', root, subdeck);
+  },
+  merge: (root: string, subdeck: string) => {
+    console.info('merge', root, subdeck);
+  },
+};
+
+const study = {
+  trainingDecks,
+  trainingDecksSettings,
+};
+
 const appData = {
   hero: {
     header: hero_header,
@@ -282,6 +489,7 @@ const appData = {
   },
   notifications,
   overview,
+  study,
 };
 
 export default appData;

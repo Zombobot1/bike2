@@ -1,10 +1,10 @@
 import './deck-progress.scss';
 import React, { useState } from 'react';
-import { DeckCard } from '../types';
+import { SmallDeckCard } from '../types';
 import { percentage } from '../../../utils/formatting';
 import { cn } from '../../../utils/utils';
 
-export interface DeckProgressP extends DeckCard {
+export interface DeckProgressP extends SmallDeckCard {
   progress: number;
 }
 

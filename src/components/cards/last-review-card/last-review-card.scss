@@ -2,7 +2,7 @@
 @import "../common";
 
 .last-review-card {
-  @extend %mini-deck-card-base;
+  @include mini-deck-card-base;
 
   width: 280px;
 

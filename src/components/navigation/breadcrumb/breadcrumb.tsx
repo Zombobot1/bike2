@@ -5,6 +5,7 @@ import React from 'react';
 
 const breadcrumbFromPath = (path: string) => {
   const parts = path.split('/');
+  if (parts[1] === '_') return 'Sandbox';
   if (parts.length < 3) return '';
   const root = parts[2];
   return root[0].toUpperCase() + root.slice(1);

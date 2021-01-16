@@ -1,0 +1,28 @@
+@import "../../../sass/common";
+@import "../../cards/common";
+
+.training-card {
+  @include mini-deck-card-base($dx: 5px, $dy: 0);
+
+  .deck-path {
+    @extend %two-rows-text-base;
+
+    margin-left: 20px;
+    margin-bottom: 3px;
+    line-height: 12px;
+    font-size: 12px;
+  }
+
+  padding-top: 10px;
+  width: 270px;
+  height: 90px;
+
+  .deck-mark {
+    border-radius: 10px 0 0 10px;
+  }
+
+  .training-cards-number {
+    right: 10px;
+    bottom: 5px;
+  }
+}
