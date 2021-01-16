@@ -5,10 +5,10 @@
   @extend %ui-card-base;
 
   height: $overview-card-height;
-  width: 62.5%;
+  width: 65%;
 
   .cards-per-day-line-container {
-    width: 1070px;
-    height: 210px;
+    width: 100%;
+    height: 87%;
   }
 }

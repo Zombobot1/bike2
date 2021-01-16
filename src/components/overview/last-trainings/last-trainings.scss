@@ -4,6 +4,7 @@
 .last-trainings {
   @extend %ui-card-base;
 
+  width: 34.5%;
   padding-right: 0;
 
   .last-trainings__header {
