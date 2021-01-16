@@ -7,9 +7,10 @@ import { fancyNumber } from '../../../utils/formatting';
 export interface TrainingCardsInfoP {
   toRepeat: number;
   toLearn: number;
+  className?: string;
 }
 
-const TrainingCardsInfo = ({ toRepeat, toLearn }: TrainingCardsInfoP) => {
+const TrainingCardsInfo = ({ toRepeat, toLearn, className }: TrainingCardsInfoP) => {
   const repeatInfo = () => (
     <span className="repeat-info">
       <Clocks />
@@ -24,7 +25,7 @@ const TrainingCardsInfo = ({ toRepeat, toLearn }: TrainingCardsInfoP) => {
   );
 
   return (
-    <span className="training-cards-number">
+    <span className={'training-cards-number ' + className}>
       {Boolean(toRepeat) && repeatInfo()} {Boolean(toLearn) && learnInfo()}
     </span>
   );

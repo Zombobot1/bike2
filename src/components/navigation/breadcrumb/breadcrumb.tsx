@@ -1,6 +1,6 @@
 import './breadcrumb.scss';
 import { useRouter } from '../../utils/hooks/use-router';
-import { _SANDBOX, ICONST } from '../../pages';
+import { ICONST } from '../../pages';
 import React from 'react';
 
 const breadcrumbFromPath = (path: string) => {

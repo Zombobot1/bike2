@@ -1,0 +1,25 @@
+@import "../../../sass/common";
+
+.training-deck {
+  @extend %ui-card-base;
+
+  width: 330px;
+  padding: 15px 0 10px;
+
+  &:hover .trainings-heading .btn {
+    opacity: 1;
+  }
+
+  .collapse.show {
+    margin-bottom: 15px;
+  }
+
+  .cards {
+    margin-left: 28px;
+    gap: 15px;
+  }
+
+  .cards:first-child {
+    margin-top: 10px;
+  }
+}

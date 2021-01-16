@@ -3,7 +3,7 @@ import { ReactComponent as Bookmark } from '../../../cards/training-cards-info/b
 import { fancyDate, percentage } from '../../../../utils/formatting';
 import { lastMonth, yesterday } from '../../../../content';
 import React from 'react';
-import { DeckCard } from '../_sandbox';
+import { DeckCard } from '../../../cards/training-card';
 
 export interface ReviewCardP extends DeckCard, ReviewInfo {
   isActive: boolean;

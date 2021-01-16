@@ -4,6 +4,7 @@ import { varName } from './objects';
 
 export const cn: ClassNamesFn = (...classes: ClassValue[]) => classNames(...classes);
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const pcn = (main: string, ..._classes: any) => {
   let hasTruthy = false;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -22,3 +23,5 @@ export const cne = (enumKeyAndValue: any, enum_: any) => {
   const enumValueName = enum_[enumKeyAndValue[classBase]];
   return `${classBase}--${enumValueName}`.toLowerCase();
 };
+
+export const rnd = (max: number) => Math.floor(Math.random() * max);

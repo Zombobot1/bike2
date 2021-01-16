@@ -56,3 +56,9 @@ a {
     color: white;
   }
 }
+
+.nav-item {
+  &:hover {
+    cursor: pointer;
+  }
+}

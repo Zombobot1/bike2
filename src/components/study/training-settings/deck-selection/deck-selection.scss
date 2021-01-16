@@ -1,0 +1,13 @@
+@import "../../../../sass/config";
+
+.selection-info {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.deck-to-tune {
+  &:hover {
+    cursor: pointer;
+    background-color: $bg-hover-color;
+  }
+}
