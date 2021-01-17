@@ -9,33 +9,40 @@ import Avatar from './avatar/avatar';
 import Notifications from '../../notifications';
 import { cn } from '../../../utils/utils';
 
-const NavBar = () => {
-  const router = useRouter();
+export interface NavBarP {
+  visibility: boolean;
+  toggleVisibility: () => void;
+}
 
+const NavBar = ({ visibility, toggleVisibility }: NavBarP) => {
+  const router = useRouter();
   return (
-    <nav className="navbar">
-      <div className="h-100 d-flex flex-column justify-content-between">
-        <div className="avatar-and-bell d-flex flex-column justify-content-between align-items-center">
-          <Avatar />
-          <Notifications />
-        </div>
-        <ul className="navbar-nav">
-          {Object.entries(ICONSF).map(([path, Icon], i) => (
-            <li className="nav-item" key={i}>
-              <Link to={path} className={cn('nav-link', { 'nav-link--active': path === router.pathname })}>
-                <Icon />
-              </Link>
+    <>
+      <nav className={cn('navbar', { 'navbar--visible': visibility })}>
+        <div className="h-100 d-flex flex-column justify-content-between">
+          <div className="avatar-and-bell d-flex flex-column justify-content-between align-items-center">
+            <Avatar />
+            <Notifications />
+          </div>
+          <ul className="navbar-nav">
+            {Object.entries(ICONSF).map(([path, Icon], i) => (
+              <li className="nav-item" key={i}>
+                <Link to={path} className={cn('nav-link', { 'nav-link--active': path === router.pathname })}>
+                  <Icon />
+                </Link>
+              </li>
+            ))}
+            <li className="nav-item">
+              <a href="#" className="nav-link">
+                <Help />
+              </a>
             </li>
-          ))}
-          <li className="nav-item">
-            <a href="#" className="nav-link">
-              <Help />
-            </a>
-          </li>
-        </ul>
-        <Logo />
-      </div>
-    </nav>
+          </ul>
+          <Logo />
+        </div>
+      </nav>
+      <div className={cn('nav-backdrop', { 'nav-backdrop--visible': visibility })} onClick={toggleVisibility} />
+    </>
   );
 };
 

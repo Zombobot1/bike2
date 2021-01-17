@@ -6,13 +6,15 @@ import { buildRoutes, Routed } from '../utils/routing';
 import NavBar from '../navigation/navbar';
 import Breadcrumb from '../navigation/breadcrumb';
 import Footer from '../footer';
+import { useToggle } from '../utils/hooks/use-toggle';
 
 const App = ({ routes }: Routed) => {
+  const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
   return (
     <>
-      <NavBar />
+      <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
+      <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
-        <Breadcrumb />
         <Switch>{routes?.map(buildRoutes)}</Switch>
         <Footer className="footer" />
       </main>

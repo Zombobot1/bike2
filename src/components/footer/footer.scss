@@ -14,9 +14,21 @@
     justify-content: space-between;
     gap: 20px;
 
-    @media only screen and (max-width: 550px) { & { flex-direction: column; } }
+    @media only screen and (max-width: 550px) {
+      & {
+        flex-direction: column;
+        gap: 5px;
+      }
+    }
   }
 
+  @media only screen and (max-width: 550px) {
+    & {
+      padding-left: 20px;
+      padding-right: 20px;
+      padding-bottom: 5px;
+    }
+  }
 }
 
 .landing__footer {

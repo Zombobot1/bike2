@@ -5,6 +5,9 @@ import Breadcrumb from '../../navigation/breadcrumb';
 import Footer from '../../footer';
 import { COLORS } from '../../../config';
 import { Overview } from '../overview';
+import { useToggle } from '../../utils/hooks/use-toggle';
+import { Switch } from 'react-router-dom';
+import { buildRoutes } from '../../utils/routing';
 
 const Page = () => (
   <div className="d-flex">
@@ -15,15 +18,15 @@ const Page = () => (
 );
 
 const Sandbox = () => {
+  const [navBarVisibility, toggleNavBarVisibility] = useToggle(true);
   return (
     // <div style={{ width: '100vw', height: '100vh', padding: '100px 100px', backgroundColor: COLORS.tertiary }}>
     //   <Page />
     // </div>
     <>
-      <NavBar />
+      <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
+      <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
-        <Breadcrumb />
-        <Overview />
         <Footer className="footer" />
       </main>
     </>
