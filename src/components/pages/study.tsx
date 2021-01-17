@@ -1,14 +1,10 @@
 import React from 'react';
-import Trainings from '../study/trainings';
-import TrainingsHeading from '../study/trainings-heading';
+import RegularTrainings from '../study/regular-trainings';
 
 export const Study = () => {
   return (
     <div className="study">
-      <div className="regular-trainings">
-        <TrainingsHeading />
-        <Trainings />
-      </div>
+      <RegularTrainings />
     </div>
   );
 };

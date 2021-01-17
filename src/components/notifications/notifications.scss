@@ -5,6 +5,8 @@
   width: $navbar-width;
   height: 50px;
 
+  @include for(mobile) { & { margin-top: 20px; } }
+
   svg {
     fill: $white-color;
   }

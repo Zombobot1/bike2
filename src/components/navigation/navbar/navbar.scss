@@ -8,6 +8,8 @@
   top: 0;
   background-color: $primary-color;
 
+  transition: opacity 0.3s ease-in-out;
+
   .navbar-nav {
     height: 480px;
     width: 100%;
@@ -49,11 +51,43 @@
             fill: $secondary-color;
           }
         }
+
+        @media only screen and (max-width: 550px) { & { height: 70px } }
       }
     }
   }
 
   .uni-icon {
     margin-left: 3px;
+    @media only screen and (max-width: 550px) { & { height: 0} }
+  }
+}
+
+@media only screen and (max-width: 550px) {
+  .navbar {
+    left: -$navbar-width;
+    opacity: 0;
+  }
+
+  .navbar--visible {
+    left: 0;
+    opacity: 1;
+  }
+}
+
+.nav-backdrop {
+  width: 0;
+  transition: width 0.3s ease-in-out;
+}
+
+@media only screen and (max-width: 550px) {
+  .nav-backdrop--visible {
+    z-index: 10;
+    display: block;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background-color: $primary-color;
+    opacity: .5;
   }
 }

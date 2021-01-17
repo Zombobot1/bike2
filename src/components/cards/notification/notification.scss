@@ -5,10 +5,11 @@
   width: 350px;
   height: 110px;
   padding: 7px 10px;
+  margin: auto;
   position: relative;
   background-color: $white-color;
   border-bottom: solid 0.5px rgba($primary-color, .2);
-  margin: auto;
+
 
   &:hover {
     background-color: $bg-hover-color;
@@ -28,6 +29,8 @@
     font-size: 14px;
     font-weight: lighter;
     color: rgba($primary-color, .6);
+
+    @include for(mobile) { & { display: none } }
   }
 
   .notification-description {
@@ -51,13 +54,22 @@
 
     .training-cards-number {
       position: static;
-      .repeat-info {
-        margin-right: 0;
+
+      .repeat-info { margin-right: 0; }
+
+      @include for(mobile) {
+        & {
+          position: absolute;
+          bottom: 7px;
+          right: 10px;
+        }
       }
     }
 
     .deck-info {
       width: 75%;
+
+      @include for(mobile) { & { width: 90% } }
 
       .deck-path {
         @include chopped-text();
@@ -66,7 +78,7 @@
 
       .deck-name {
         @include chopped-text();
-
+        margin-top: -5px;
         font-size: 16px;
         font-weight: bold;
       }
@@ -80,6 +92,13 @@
     .cards-number {
       padding-left: 0;
       font-size: 12px;
+    }
+  }
+
+  @include for(mobile) {
+    & {
+      width: 310px;
+      height: 90px;
     }
   }
 }

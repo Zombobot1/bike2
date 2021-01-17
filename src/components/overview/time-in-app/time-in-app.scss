@@ -5,11 +5,11 @@
 .time-in-app {
   @extend %ui-card-base;
 
-  width: 79%;
+  width: 82.5%;
   height: $overview-card-height;
 
   .time-in-app-line-container {
-    width: 1370px;
-    height: 210px;
+    width: 100%;
+    height: 88%;
   }
 }
