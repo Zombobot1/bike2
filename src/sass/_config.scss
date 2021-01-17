@@ -19,6 +19,7 @@ $font-stack: Nunito, Helvetica, sans-serif;
 $navbar-width: 80px;
 $content-padding: 50px;
 $content-padding-left: $navbar-width + $content-padding;
+$ui-card-border-radius: 13px;
 
 $media_queries : (
   'mobile': "only screen and (max-width: 550px)",

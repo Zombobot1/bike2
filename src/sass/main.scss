@@ -44,6 +44,12 @@ a {
   color: $primary-color;
 }
 
+pre {
+  white-space: pre-wrap;
+  font-family: $font-stack;
+  color: $primary-color;
+}
+
 .btn-sm {
   border-radius: 7px;
 }
@@ -61,4 +67,11 @@ a {
   &:hover {
     cursor: pointer;
   }
+}
+
+.progress {
+  border-radius: 5px;
+  height: 10px;
+
+  .progress-bar { border-radius: 10px; }
 }
