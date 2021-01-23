@@ -2,7 +2,7 @@ import { HeadlessModal } from '../../../utils/footless-modal';
 import TrainingDecksSettings from '../training-decks-settings';
 import { ModalTrigger } from '../../../utils/modal-trigger';
 import React from 'react';
-import { useInfo } from '../../../info-provider';
+import { useInfo } from '../../../context/info-provider';
 
 const deckSettingsModalId = 'split-merge-decks';
 

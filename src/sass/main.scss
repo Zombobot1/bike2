@@ -54,20 +54,22 @@ pre {
   border-radius: 7px;
 }
 
-.btn-tertiary {
+.btn-tertiary,
+.btn-info,
+.btn-success,
+.btn-danger {
   color: white;
-  &:hover,
-  &:active,
-  &:focus {
-    color: white;
-  }
+  &:hover, &:active, &:focus { color: white; }
 }
 
+.dropdown-item,
 .nav-item {
   &:hover {
     cursor: pointer;
   }
 }
+
+.bi { fill: $primary-color }
 
 .progress {
   border-radius: 5px;

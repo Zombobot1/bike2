@@ -266,6 +266,7 @@ const overview = {
 
 const mathTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -273,6 +274,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -280,6 +282,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -287,6 +290,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -294,6 +298,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -303,6 +308,7 @@ const mathTrainings = [
 ];
 const jsTrainings = [
   {
+    id: '1',
     overdue: OverdueType.Danger,
     deckColor: '#FCA95C',
     deckName: 'Functions',
@@ -310,6 +316,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FCA95C',
     deckName: 'Functions',
@@ -317,6 +324,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FCA95C',
     deckName: 'Workers',
@@ -324,6 +332,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#eced2b',
     deckName: 'Async & Await',
@@ -331,6 +340,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#eced2b',
     deckName: 'Proxy',
@@ -338,6 +348,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#eced2b',
     deckName: 'Proxy',
@@ -347,6 +358,7 @@ const jsTrainings = [
 ];
 const englishTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -354,6 +366,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -361,6 +374,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -368,6 +382,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -375,6 +390,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -384,6 +400,7 @@ const englishTrainings = [
 ];
 const cppTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
@@ -391,6 +408,7 @@ const cppTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
@@ -398,6 +416,7 @@ const cppTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
@@ -407,6 +426,7 @@ const cppTrainings = [
 ];
 const pythonTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#2730FD',
     deckName: 'Pathlib',
@@ -414,6 +434,7 @@ const pythonTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#2730FD',
     deckName: 'Pathlib',
@@ -423,6 +444,7 @@ const pythonTrainings = [
 ];
 const cookingTrainings = [
   {
+    id: '1',
     overdue: OverdueType.Danger,
     deckColor: '#DC5CFC',
     deckName: 'Borsh',
@@ -430,6 +452,7 @@ const cookingTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#DC5CFC',
     deckName: 'Borsh',

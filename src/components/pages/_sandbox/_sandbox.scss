@@ -18,17 +18,30 @@
     font-size: 14px;
   }
 
-  .three-dots-icon {
-    opacity: .5;
-    transform: scale(2);
-    margin-right: 10px;
+  .settings {
+
+    .three-dots-icon {
+      opacity: .5;
+      transform: scale(2);
+      margin-right: 10px;
+    }
+
+    .dropdown-menu { transform: translate(-165px, 0)!important; }
+
+    .bi { margin-right: 5px; }
+    .bi-patch-exclamation { fill: $danger-color; }
+    .bi-hourglass { fill: $warning-color }
+    .bi-pen {
+      transform: scale(.9);
+      fill: $info-color;
+    }
   }
 
   .qa-card-container {
     border-radius: $ui-card-border-radius;
     position: relative;
     margin-top: 10px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     height: 600px;
 
 
@@ -51,28 +64,38 @@
       height: 30px;
       width: 100%;
       border-radius: 0 0 $ui-card-border-radius $ui-card-border-radius;
-
-      background-color: #F0573E;
     }
   }
 
   .controls {
-    position: relative;
 
-    .timer {
-      position: absolute;
-      top: 12px;
+    .bi-arrow-left-short {
+      width: 35px;
+      height: 35px;
+    }
 
-      .bi-hourglass-split {
-        width: 25px;
-        height: 25px;
+    .btn-group {
+      height: 48px;
+
+      .btn {
+        width: 80px;
+        font-size: 20px;
+      }
+
+      .btn-warning {
+        color: white;
+        &:hover, &:active, &:focus { color: white; }
       }
     }
 
-    .btn {
-      position: absolute;
-      left: 38%;
+    .timer {
+      display: flex;
+      align-content: center;
+
+      .bi-hourglass-split { width: 25px; height: 25px; }
+      .text { padding-top: 1px; }
     }
   }
-
 }
+
+

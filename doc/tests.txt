@@ -1,0 +1,7 @@
+Routing
+  / -> /_
+  /a -> /404
+  /app -> /404
+  /app/ -> /404
+  /app/o -> /404
+  /app/overview -> /app/overview

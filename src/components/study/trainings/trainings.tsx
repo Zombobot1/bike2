@@ -5,7 +5,7 @@ import { range } from 'lodash';
 import { cn } from '../../../utils/utils';
 import { eachNth } from '../utils';
 import TrainingDeck from '../training-deck';
-import { useInfo } from '../../info-provider';
+import { useInfo } from '../../context/info-provider';
 
 const Trainings = () => {
   const decks = useInfo().study.trainingDecks;
