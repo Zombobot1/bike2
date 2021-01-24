@@ -1,24 +1,26 @@
 import React, { ReactNode, createContext, useReducer, useContext } from 'react';
+import { IdLinkP } from '../navigation/breadcrumb/breadcrumb';
 
-type PagesInfoAction = { type: 'ADD'; payload: string[] } | { type: 'CLEAR' };
+export type PagesInfoState = { path: IdLinkP[] };
+type PagesInfoAction = { type: 'SET'; payload: PagesInfoState } | { type: 'CLEAR' };
 type PagesInfoDispatch = (action: PagesInfoAction) => void;
-export type PagesInfoState = { [p: string]: string };
 type PagesInfoProviderProps = { children: ReactNode };
 
-const PagesInfoStateContext = createContext<PagesInfoState>({});
-const PagesInfoDispatchContext = createContext<PagesInfoDispatch>(() => ({}));
+const defaultState = { path: [] };
+const PagesInfoStateContext = createContext<PagesInfoState>(defaultState);
+const PagesInfoDispatchContext = createContext<PagesInfoDispatch>(() => defaultState);
 
 const pagesInfoReducer = (state: PagesInfoState, action: PagesInfoAction) => {
   switch (action.type) {
-    case 'ADD':
-      return { ...state, [action.payload[0]]: action.payload[1] };
+    case 'SET':
+      return { ...action.payload };
     case 'CLEAR':
-      return {};
+      return defaultState;
   }
 };
 
 export const PagesInfoProvider = ({ children }: PagesInfoProviderProps) => {
-  const [state, dispatch] = useReducer(pagesInfoReducer, {});
+  const [state, dispatch] = useReducer(pagesInfoReducer, defaultState);
   return (
     <PagesInfoStateContext.Provider value={state}>
       <PagesInfoDispatchContext.Provider value={dispatch}>{children}</PagesInfoDispatchContext.Provider>

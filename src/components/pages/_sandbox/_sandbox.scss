@@ -2,98 +2,146 @@
 @import "../../cards/common";
 @import "../../cards/training-cards-info/training-cards-info";
 
-.training {
-  width: 500px;
+.training-container {
+  height: 85vh;
 
-  .header {
-    font-weight: bold;
-    font-size: 20px;
-    margin-bottom: 0;
+  @include for(mobile) {
+    height: 660px;
+    margin-bottom: 30px;
   }
 
-  .progress { width: 130px;  }
+  .training {
+    width: 500px;
+    height: 100%;
 
-  .cards-left-info {
-    color: $secondary-text-color;
-    font-size: 14px;
-  }
+    @include for(mobile) { width: 380px; }
 
-  .settings {
+    .header {
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 0;
 
-    .three-dots-icon {
-      opacity: .5;
-      transform: scale(2);
-      margin-right: 10px;
+      @include for(mobile) { display: none; }
     }
 
-    .dropdown-menu { transform: translate(-165px, 0)!important; }
+    .heading {
+      @include for(mobile) {  }
 
-    .bi { margin-right: 5px; }
-    .bi-patch-exclamation { fill: $danger-color; }
-    .bi-hourglass { fill: $warning-color }
-    .bi-pen {
-      transform: scale(.9);
-      fill: $info-color;
-    }
-  }
+      .progress { width: 130px;  }
 
-  .qa-card-container {
-    border-radius: $ui-card-border-radius;
-    position: relative;
-    margin-top: 10px;
-    margin-bottom: 15px;
-    height: 600px;
+      .cards-left-info {
+        color: $secondary-text-color;
+        font-size: 14px;
+      }
 
+      .fs-trigger {
+        margin-right: 15px;
+      }
 
-    .qa-card {
-      @extend %ui-card-base;
-      position: absolute;
-      z-index: 1;
-      height: 580px;
+      .settings {
 
-      pre {
-        height: 100%;
-        font-size: 35px;
-        line-height: 45px;
+        .three-dots-icon {
+          opacity: .5;
+          transform: scale(2);
+          margin-right: 10px;
+        }
+
+        .dropdown-menu { transform: translate(-165px, 0)!important; }
+
+        .bi { margin-right: 5px; }
+        .bi-patch-exclamation { fill: $danger-color; }
+        .bi-hourglass { fill: $warning-color }
+        .bi-pen {
+          transform: scale(.9);
+          fill: $info-color;
+        }
       }
     }
 
-    .qa-card-bottom {
-      position: absolute;
-      bottom: 0;
-      height: 30px;
-      width: 100%;
-      border-radius: 0 0 $ui-card-border-radius $ui-card-border-radius;
-    }
-  }
+    .qa-card-container {
+      border-radius: $ui-card-border-radius;
+      position: relative;
+      margin-top: 8px;
+      margin-bottom: 15px;
+      height: 90%;
 
-  .controls {
+      @include for(mobile) { height: 570px; }
 
-    .bi-arrow-left-short {
-      width: 35px;
-      height: 35px;
-    }
+      .qa-card {
+        @extend %ui-card-base;
 
-    .btn-group {
-      height: 48px;
+        position: absolute;
+        z-index: 1;
+        height: 97%;
+        padding-right: 0;
 
-      .btn {
-        width: 80px;
-        font-size: 20px;
+        pre {
+          height: 100%;
+          padding-right: 15px;
+          font-size: calc(.4em + 3vh);
+          line-height: calc(.4em + 3vh);
+        }
       }
 
-      .btn-warning {
-        color: white;
-        &:hover, &:active, &:focus { color: white; }
+      .qa-card-bottom {
+        position: absolute;
+        bottom: 0;
+        height: 4.5%;
+        width: 100%;
+        border-radius: 0 0 $ui-card-border-radius $ui-card-border-radius;
       }
     }
 
-    .timer {
-      display: flex;
-      align-content: center;
+    .controls {
 
-      .bi-hourglass-split { width: 25px; height: 25px; }
-      .text { padding-top: 1px; }
+      .bi-arrow-left-short {
+        width: 35px;
+        height: 35px;
+      }
+
+      .estimate-btn {
+        @include for(mobile) {
+          height: 38px;
+          font-size: 14px;
+          font-weight: bold;
+        }
+      }
+
+      .btn-group {
+        height: 48px;
+
+        @include for(mobile) { height: 38px; }
+
+        .btn {
+          width: 80px;
+          font-size: 20px;
+
+          @include for(mobile) {
+            width: 65px;
+            font-size: 14px;
+            font-weight: bold;
+          }
+        }
+
+        .btn-warning {
+          color: white;
+          &:hover, &:active, &:focus { color: white; }
+        }
+      }
+
+      .timer {
+        display: flex;
+        align-content: center;
+
+        .bi-hourglass-split {
+          width: 25px; height: 25px;
+          @include for(mobile) { width: 20px; height: 20px; }
+        }
+        .text {
+          padding-top: 1px;
+          @include for(mobile) { font-size: 14px; }
+        }
+      }
     }
   }
 }

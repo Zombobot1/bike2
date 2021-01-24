@@ -56,8 +56,8 @@ export const PAGES = [
     component: App,
     routes: [
       { path: OVERVIEW, component: Overview },
-      { path: STUDY, component: Study },
       { path: STUDYID, component: StudyTraining },
+      { path: STUDY, component: Study },
       { path: DECKS, component: Decks },
       { path: SCHEDULE, component: Schedule },
       { path: SETTINGS, component: Settings },

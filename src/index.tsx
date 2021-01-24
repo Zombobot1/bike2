@@ -10,15 +10,18 @@ import './components/images/images.scss';
 import InfoProvider from './components/context/info-provider';
 import { _ROOT, _SANDBOX, PAGES } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
+import { PagesInfoProvider } from './components/context/user-position-provider';
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
       <InfoProvider>
-        <Switch>
-          <Redirect exact from={_ROOT} to={_SANDBOX} />
-          {PAGES.map(buildRoutes)}
-        </Switch>
+        <PagesInfoProvider>
+          <Switch>
+            <Redirect exact from={_ROOT} to={_SANDBOX} />
+            {PAGES.map(buildRoutes)}
+          </Switch>
+        </PagesInfoProvider>
       </InfoProvider>
     </Router>
   </React.StrictMode>,

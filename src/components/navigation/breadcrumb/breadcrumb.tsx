@@ -1,25 +1,16 @@
 import './breadcrumb.scss';
 import { useRouter } from '../../utils/hooks/use-router';
 import { iconForAppPage, ICONST, STUDY, toAppPage } from '../../pages';
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { ReactComponent as Burger } from './burger.svg';
-import { useUserPosition } from './useUserPosition';
-import { usePagesInfoDispatch } from '../../context/user-position-provider';
-import { Link } from 'react-router-dom';
+import { usePagesInfoDispatch, usePagesInfoState } from '../../context/user-position-provider';
+import { Link, useHistory } from 'react-router-dom';
 import { cn } from '../../../utils/utils';
 
 export interface BreadcrumbP {
   toggleNavbarVisibility: () => void;
 }
-// export interface NLinkP {
-//   id: string;
-//   name: string;
-//   to: string;
-// }
-// const NLink = ({ id, name, to }: NLinkP) => {
-//   const onMoveToPage = () => addPage(id, name);
-//   return <Link to={to}>{name}</Link>
-// };
+
 export interface LinkP {
   name: string;
 }
@@ -28,7 +19,7 @@ export interface IdLinkP extends LinkP {
   id: string;
 }
 
-const AppPageLink = ({ name }: LinkP) => {
+export const AppPageTextLink = ({ name }: LinkP) => {
   const dispatch = usePagesInfoDispatch();
   const clearPages = () => dispatch({ type: 'CLEAR' });
   return (
@@ -38,12 +29,42 @@ const AppPageLink = ({ name }: LinkP) => {
   );
 };
 
+export interface AppPageIconLinkP {
+  to: string;
+  Icon: FC;
+  className: string;
+}
+
+export const AppPageIconLink = ({ to, Icon, className }: AppPageIconLinkP) => {
+  const dispatch = usePagesInfoDispatch();
+  const clearPages = () => dispatch({ type: 'CLEAR' });
+  return (
+    <Link className={className} to={to} onClick={clearPages}>
+      <Icon />
+    </Link>
+  );
+};
+
 const TrainingLink = ({ id, name }: IdLinkP) => <Link to={`${STUDY}/${id}`}>{name}</Link>;
 
+const safeSplit = (str: string, sep: string) => {
+  const parts = str.split(sep);
+  return parts.filter((e) => e);
+};
+
+const pageName = (path: string) => {
+  const parts = safeSplit(path, '/');
+  if (parts[0] === '_') return 'Sandbox';
+  if (parts.length < 2 || !parts[1]) return '';
+  const root = parts[1];
+  return root[0].toUpperCase() + root.slice(1);
+};
+
 const Breadcrumb = ({ toggleNavbarVisibility }: BreadcrumbP) => {
-  const [appPage, ...contentPages] = useUserPosition();
-  const Icon = iconForAppPage(appPage.name);
-  useEffect(() => console.log(!contentPages.length), []);
+  const router = useRouter();
+  const appPage = pageName(router.pathname);
+  const Icon = iconForAppPage(appPage);
+  const { path } = usePagesInfoState();
   return (
     <div className="d-flex breadcrumb-container">
       <Burger className="transparent-button burger-icon" onClick={toggleNavbarVisibility} />
@@ -51,9 +72,9 @@ const Breadcrumb = ({ toggleNavbarVisibility }: BreadcrumbP) => {
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
-            <AppPageLink name={appPage.name} />
+            <AppPageTextLink name={appPage} />
           </li>
-          {contentPages.map((e, i) => (
+          {path.map((e, i) => (
             <li className="breadcrumb-item" key={i}>
               <TrainingLink {...e} />
             </li>

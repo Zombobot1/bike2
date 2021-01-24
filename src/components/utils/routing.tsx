@@ -35,8 +35,8 @@ export const DebugRouter = ({ children }: { children: any }) => {
   // if (process.env.NODE_ENV === 'development')
   // console.debug(`Route: ${location.pathname}${location.search}, State: ${JSON.stringify(location.state)}`);
   history.listen((location, action) => {
-    console.log(`The current URL is ${location.pathname}${location.search}${location.hash}`);
-    console.log(`The last navigation action was ${action}`, JSON.stringify(history, null, 2));
+    console.debug(`The current URL is ${location.pathname}${location.search}${location.hash}`);
+    console.debug(`The last navigation action was ${action}`, JSON.stringify(history, null, 2));
   });
   return children;
 };

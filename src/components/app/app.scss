@@ -7,9 +7,7 @@
   background-color: $bg-color;
   padding: 20px $content-padding 0 $content-padding-left;
 
-  @media only screen and (max-width: 550px) {
-    & {
-      padding: 60px 0 0;
-    }
+  @include for(mobile) {
+    padding: 55px 0 0;
   }
 }

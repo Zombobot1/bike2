@@ -1,6 +1,6 @@
 import React from 'react';
 import RegularTrainings from '../study/regular-trainings';
-import { training, Training } from './_sandbox/_sandbox';
+import { training, Training, TrainingContainer } from './_sandbox/_sandbox';
 
 export const Study = () => {
   return (
@@ -10,8 +10,4 @@ export const Study = () => {
   );
 };
 
-export const StudyTraining = () => (
-  <div className="study-training">
-    <Training {...training} />
-  </div>
-);
+export const StudyTraining = () => <TrainingContainer />;

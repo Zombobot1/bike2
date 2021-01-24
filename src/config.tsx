@@ -5,3 +5,7 @@ export const COLORS = {
   info: '#0948b3',
   bg: '#F5F8FB',
 };
+
+export const MEDIA = {
+  mobile: '(min-width: 550px)',
+};

@@ -8,6 +8,7 @@ import React from 'react';
 import Avatar from './avatar/avatar';
 import Notifications from '../../notifications';
 import { cn } from '../../../utils/utils';
+import { AppPageIconLink } from '../breadcrumb/breadcrumb';
 
 export interface NavBarP {
   visibility: boolean;
@@ -27,9 +28,11 @@ const NavBar = ({ visibility, toggleVisibility }: NavBarP) => {
           <ul className="navbar-nav">
             {Object.entries(ICONSF).map(([path, Icon], i) => (
               <li className="nav-item" key={i}>
-                <Link to={path} className={cn('nav-link', { 'nav-link--active': path === router.pathname })}>
-                  <Icon />
-                </Link>
+                <AppPageIconLink
+                  className={cn('nav-link', { 'nav-link--active': router.pathname.includes(path) })}
+                  to={path}
+                  Icon={Icon}
+                />
               </li>
             ))}
             <li className="nav-item">

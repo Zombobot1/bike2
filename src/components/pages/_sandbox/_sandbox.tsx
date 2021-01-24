@@ -1,9 +1,9 @@
 import './_sandbox.scss';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import NavBar from '../../navigation/navbar';
 import Breadcrumb from '../../navigation/breadcrumb';
 import Footer from '../../footer';
-import { COLORS } from '../../../config';
+import { COLORS, MEDIA } from '../../../config';
 import { useToggle } from '../../utils/hooks/use-toggle';
 import { addS, fancyNumber, percentage } from '../../../utils/formatting';
 import { ReactComponent as Dots } from './three-dots-icon.svg';
@@ -12,18 +12,26 @@ import { ReactComponent as TimerI } from './hourglass-split.svg';
 import { ReactComponent as StopTimerI } from './hourglass.svg';
 import { ReactComponent as EditI } from './pen.svg';
 import { ReactComponent as MarkI } from './patch-exclamation.svg';
+import { ReactComponent as FullScreenI } from './bi-arrows-fullscreen.svg';
+import { ReactComponent as ExitFullScreenI } from './bi-fullscreen-exit.svg';
 import { ReactComponent as QuestionI } from './question-icon.svg';
 import { StateT } from '../../forms/hoc/with-validation';
 import { useRouter } from '../../utils/hooks/use-router';
 import { STUDY } from '../index';
 import { cn } from '../../../utils/utils';
+import { usePagesInfoDispatch } from '../../context/user-position-provider';
+import * as screenfull from 'screenfull';
+import { Screenfull } from 'screenfull';
+
+const fs = () => screenfull as Screenfull;
 
 const question = `The English language is conventionally divided into three historical periods. In which of these periods did William Shakespeare write his plays?
 
 
 (a) Old English
 (b) Middle English
-(c) Modern English`;
+(c) Modern English
+`;
 
 const answer = `(c) The period of Modern English extends from the 1500s to the present day. Shakespeare wrote his plays between 1590 and 1613.`;
 
@@ -53,6 +61,7 @@ enum TrainingType {
 }
 
 export interface TrainingP {
+  id: string;
   deckName: string;
   type: TrainingType;
   cards: CardT[];
@@ -81,7 +90,7 @@ const fancyTime = (secs: number) => {
   let deltaMins = Math.floor(delta / minute);
   const deltaHrs = Math.floor(delta / hour);
 
-  if (delta < minute) return `${delta} sec${addS(delta)}`;
+  if (delta < minute) return `~${delta} sec${addS(delta)}`;
   if (delta < hour) return `${deltaMins} min${addS(deltaMins)}`;
   deltaMins = Math.floor((delta - deltaHrs * hour) / minute);
   return `${deltaHrs} hr${addS(deltaHrs)} ${deltaMins} min${addS(deltaMins)}`;
@@ -94,6 +103,7 @@ const format00 = (num: number) => (!div(num, 10) ? `0${num}` : `${num}`);
 const fancyTimerTime = (secs_: number) => {
   const mins = div(secs_, 60);
   const secs = secs_ - mins * 60;
+  if (secs < 0 || mins < 0) return '00:00';
   if (mins === 0) return `00:${format00(secs)}`;
   if (mins > 99) return `99:99`;
   return `${format00(mins)}:${format00(secs)}`;
@@ -124,19 +134,25 @@ export interface TrainingControlsP {
   nextCard: () => void;
 }
 
-const useInterval = (f: () => void, ms: number, deps: unknown[] = []) => {
-  if (!deps.length) deps = [ms];
-  const [id, setId] = useState<NodeJS.Timeout>();
+const useInterval = (callback: () => void, delay: number | null) => {
+  const savedCallback = useRef<() => void | null>();
   useEffect(() => {
-    const id_ = setInterval(f, ms);
-    setId(id_);
-    return () => clearInterval(id_);
-  }, deps);
-  return id;
+    savedCallback.current = callback;
+  });
+  useEffect(() => {
+    const tick = () => {
+      if (typeof savedCallback?.current !== 'undefined') savedCallback?.current();
+    };
+    if (delay !== null) {
+      const id = setInterval(tick, delay);
+      return () => clearInterval(id);
+    }
+  }, [delay]);
 };
 
 export interface TrainingTimerP {
-  timeoutSec: number;
+  timeout: { sec: number };
+  onTimeout: () => void;
 }
 
 const useEffectedState = <T,>(init: T): StateT<T> => {
@@ -145,14 +161,16 @@ const useEffectedState = <T,>(init: T): StateT<T> => {
   return [state, setState];
 };
 
-const TrainingTimer = ({ timeoutSec }: TrainingTimerP) => {
-  const [secsLeft, setSecsLeft] = useEffectedState(timeoutSec);
-  const id = useInterval(() => setSecsLeft((s) => s - 1), 1000, [timeoutSec]);
-  if (id && secsLeft < 1) clearInterval(id);
+const TrainingTimer = ({ timeout, onTimeout }: TrainingTimerP) => {
+  const [secsLeft, setSecsLeft] = useEffectedState(timeout);
+  useInterval(() => setSecsLeft((s) => ({ sec: s.sec - 1 })), 1000);
+  useEffect(() => {
+    if (secsLeft.sec < 0) onTimeout();
+  }, [secsLeft]);
   return (
     <div className="timer">
       <TimerI />
-      <span className="text">{fancyTimerTime(secsLeft)}</span>
+      <span className="text">{fancyTimerTime(secsLeft.sec)}</span>
     </div>
   );
 };
@@ -172,12 +190,10 @@ const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP) => (
 const TrainingControls = ({ cardSideS, timeoutSec, nextCard, estimate }: TrainingControlsP) => {
   const [cardSide, setCardSide] = cardSideS;
   const makeEstimation = (e: AnswerEstimation) => {
-    if (autoFailInterval) clearInterval(autoFailInterval);
     estimate(e);
     nextCard();
   };
   const fail = () => makeEstimation(AnswerEstimation.Bad);
-  const autoFailInterval = useInterval(fail, (timeoutSec + 1) * 1000);
 
   const backICN = cn('bi bi-arrow-left-short transparent-button', { invisible: cardSide === CardSide.Front });
   return (
@@ -196,7 +212,7 @@ const TrainingControls = ({ cardSideS, timeoutSec, nextCard, estimate }: Trainin
           <EstimationBtn btnClass="btn-info" estimate={makeEstimation} estimation={AnswerEstimation.Easy} />
         </div>
       )}
-      <TrainingTimer timeoutSec={timeoutSec} />
+      <TrainingTimer timeout={{ sec: timeoutSec }} onTimeout={fail} />
     </div>
   );
 };
@@ -229,32 +245,85 @@ const TrainingSettings = () => (
   </>
 );
 
-export const Training = ({ cards, deckName, type }: TrainingP) => {
-  const { history } = useRouter();
-  const [currentCardNumber, setCurrentCardNumber] = useState(0);
-  const nextCard = () => {
-    if (currentCardNumber === cards.length - 1) history.push(STUDY);
-    setCurrentCardNumber((n) => n + 1);
-    setCardSide(CardSide.Front);
+const useMedia = <T,>(queries: string[], values: T[], defaultValue: T) => {
+  const mediaQueryLists = queries.map((q) => window.matchMedia(q));
+  const getValue = () => {
+    const index = mediaQueryLists.findIndex((mql) => mql.matches);
+    return values?.[index] || defaultValue;
   };
-  const timeToFinish = cards.slice(currentCardNumber).reduce((p, e) => p + e.timeout, 0);
-  const [cardSide, setCardSide] = useState(CardSide.Front);
-  const estimate = (e: AnswerEstimation) => console.info('estimation: ' + AnswerEstimation[e]);
+  const [value, setValue] = useState<T>(getValue);
+  useEffect(() => {
+    const handler = () => setValue(getValue);
+    mediaQueryLists.forEach((mql) => mql.addEventListener('change', handler));
+    return () => mediaQueryLists.forEach((mql) => mql.removeEventListener('change', handler));
+  }, []);
+
+  return value;
+};
+
+const FullScreenTrigger = () => {
+  if (!screenfull.isEnabled) return null;
+  const isMobile = useMedia([MEDIA.mobile], [false], true);
+  const [full, toggle] = useToggle(false);
+  useEffect(() => {
+    if (full)
+      fs()
+        .request()
+        .catch(() => ({}));
+    else fs().exit().catch();
+  }, [full]);
   return (
-    <div className="d-flex flex-column training">
+    <div className="transparent-button fs-trigger">
+      {!full && isMobile && <FullScreenI onClick={toggle} />}
+      {full && <ExitFullScreenI onClick={toggle} />}
+    </div>
+  );
+};
+
+export interface TrainingHeaderP {
+  type: TrainingType;
+  deckName: string;
+  cards: CardT[];
+  currentCardNumber: number;
+}
+
+const TrainingHeader = ({ cards, deckName, type, currentCardNumber }: TrainingHeaderP) => {
+  const timeToFinish = cards.slice(currentCardNumber).reduce((p, e) => p + e.timeout, 0);
+  return (
+    <>
       <h3 className="header">{(type === TrainingType.Learning ? 'Learning ' : 'Training ') + deckName}</h3>
-      <div className="d-flex">
+      <div className="d-flex align-items-center heading">
         <ProgressBar
           className="align-self-center me-2"
           value={currentCardNumber / cards.length}
           color={COLORS.tertiary}
         />
-        <span className="align-self-center me-auto cards-left-info">
-          {fancyNumber(cards.length - currentCardNumber)} card{addS(cards.length)} left. You need{' '}
-          {fancyTime(timeToFinish)} to finish.
-        </span>
+        <span className="align-self-center me-auto cards-left-info">{fancyTime(timeToFinish)} left.</span>
+        <FullScreenTrigger />
         <TrainingSettings />
       </div>
+    </>
+  );
+};
+
+export const Training = ({ id, cards, deckName, type }: TrainingP) => {
+  const { history } = useRouter();
+  const [currentCardNumber, setCurrentCardNumber] = useState(0);
+  const dispatch = usePagesInfoDispatch();
+  dispatch({ type: 'SET', payload: { path: [{ id, name: deckName }] } });
+  const nextCard = () => {
+    if (currentCardNumber === cards.length - 1) {
+      history.push(STUDY);
+      dispatch({ type: 'CLEAR' });
+    }
+    setCurrentCardNumber((n) => n + 1);
+    setCardSide(CardSide.Front);
+  };
+  const [cardSide, setCardSide] = useState(CardSide.Front);
+  const estimate = (e: AnswerEstimation) => console.info('estimation: ' + AnswerEstimation[e]);
+  return (
+    <div className="d-flex flex-column training">
+      <TrainingHeader type={type} deckName={deckName} cards={cards} currentCardNumber={currentCardNumber} />
       <Card {...cards[currentCardNumber]} side={cardSide} />
       <TrainingControls
         cardSideS={[cardSide, setCardSide]}
@@ -268,6 +337,7 @@ export const Training = ({ cards, deckName, type }: TrainingP) => {
 };
 
 export const training = {
+  id: '1',
   deckName: 'Exercises 1-10',
   type: TrainingType.Learning,
   cards: [
@@ -275,17 +345,25 @@ export const training = {
       id: '1',
       question,
       answer,
-      timeout: 1000000,
+      timeout: 10,
       stageColor: 'red',
     },
     {
       id: '2',
       question,
       answer,
-      timeout: 1000000,
+      timeout: 10,
       stageColor: 'blue',
     },
   ],
+};
+
+export const TrainingContainer = () => {
+  return (
+    <div className="d-flex justify-content-center align-items-center training-container">
+      <Training {...training} />
+    </div>
+  );
 };
 
 type RecP = { width?: number; height?: number; color?: string };
