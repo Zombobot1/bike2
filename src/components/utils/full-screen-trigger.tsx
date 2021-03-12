@@ -11,7 +11,7 @@ const fs = () => screenfull as Screenfull;
 export const FullScreenTrigger = () => {
   if (!screenfull.isEnabled) return null;
 
-  const isMobile = useMedia([MEDIA.mobile], [false], true);
+  const isMobile = useMedia([MEDIA.mobile], [true], false);
   const [full, setFull] = useState(fs().isFullscreen);
 
   const setFullScreen = () => setFull(fs().isFullscreen);

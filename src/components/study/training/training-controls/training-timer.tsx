@@ -3,22 +3,23 @@ import { ReactComponent as TimerI } from '../../../icons/hourglass-split.svg';
 import { useEffectedState } from '../../../utils/hooks/use-effected-state';
 import { useInterval } from '../../../utils/hooks/use-interval';
 import { fancyTimerTime } from '../../../../utils/formatting';
+import { StateT } from '../../../forms/hoc/with-validation';
 
 export interface TrainingTimerP {
-  timeout: { sec: number };
+  secsLeftS: StateT<number>;
   onTimeout: () => void;
 }
 
-export const TrainingTimer = ({ timeout, onTimeout }: TrainingTimerP) => {
-  const [secsLeft, setSecsLeft] = useEffectedState(timeout);
-  useInterval(() => setSecsLeft((s) => ({ sec: s.sec - 1 })), 1000);
+export const TrainingTimer = ({ secsLeftS, onTimeout }: TrainingTimerP) => {
+  const [secsLeft, setSecsLeft] = secsLeftS;
+  useInterval(() => setSecsLeft((s) => s - 1), 1000);
   useEffect(() => {
-    if (secsLeft.sec < 0) onTimeout();
+    if (secsLeft < 0) onTimeout();
   }, [secsLeft]);
   return (
     <div className="timer">
       <TimerI />
-      <span className="text">{fancyTimerTime(secsLeft.sec)}</span>
+      <span className="text">{fancyTimerTime(secsLeft)}</span>
     </div>
   );
 };

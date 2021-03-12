@@ -16,14 +16,8 @@
     position: absolute;
     z-index: 1;
     height: 97%;
+    width: 100%;
     padding-right: 0;
-
-    pre {
-      height: 100%;
-      padding-right: 15px;
-      font-size: calc(.4em + 3vh);
-      line-height: calc(.4em + 3vh);
-    }
   }
 
   .qa-card-bottom {

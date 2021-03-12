@@ -1,0 +1,25 @@
+.qa-card__pre {
+  padding-right: 15px;
+  overflow-y: hidden;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  font-size: calc(.4em + 3vh);
+  line-height: calc(.55em + 3vh);
+}
+
+.qa-card__img {
+  width: 96%;
+  height: auto;
+  border-radius: 5px;
+
+  margin-bottom: 15px;
+}
+
+.qa-card__audio {
+  .bi {
+    width: 60px;
+    height: 60px;
+
+    &:hover { cursor: pointer;  }
+  }
+}

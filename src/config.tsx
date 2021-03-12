@@ -7,5 +7,5 @@ export const COLORS = {
 };
 
 export const MEDIA = {
-  mobile: '(min-width: 550px)',
+  mobile: '(max-width: 550px)',
 };

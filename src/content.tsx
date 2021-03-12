@@ -1,5 +1,6 @@
 import { OverdueType } from './components/cards/notification/notification';
-import { TrainingType } from './components/study/training/types';
+import { FieldT, TrainingType } from './components/study/training/types';
+import hospital from './hospital.png';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -505,6 +506,48 @@ const question = `The English language is conventionally divided into three hist
 
 const answer = `(c) The period of Modern English extends from the 1500s to the present day. Shakespeare wrote his plays between 1590 and 1613.`;
 
+const field1: FieldT = {
+  type: 'PRE',
+  data: question,
+  side: 'FRONT',
+};
+
+const field2: FieldT = {
+  type: 'PRE',
+  data: answer,
+  side: 'BACK',
+};
+
+const field3: FieldT = {
+  type: 'PRE',
+  data: 'Hospital',
+  side: 'FRONT',
+};
+
+const field4: FieldT = {
+  type: 'PRE',
+  data: 'ˈhɒspɪtl',
+  side: 'FRONT',
+};
+
+const field6: FieldT = {
+  type: 'IMG',
+  data: hospital,
+  side: 'FRONT',
+};
+
+const field7: FieldT = {
+  type: 'AUDIO',
+  data: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
+  side: 'FRONT',
+};
+
+const field5: FieldT = {
+  type: 'PRE',
+  data: 'das Krankenhaus',
+  side: 'BACK',
+};
+
 export const training = {
   id: '1',
   deckName: 'Exercises 1-10',
@@ -512,16 +555,14 @@ export const training = {
   cards: [
     {
       id: '1',
-      question,
-      answer,
+      fields: [field6, field3, field4, field5, field7],
       timeout: 3000,
       stageColor: 'red',
     },
     {
       id: '2',
-      question,
-      answer,
-      timeout: 2,
+      fields: [field1, field2],
+      timeout: 3000,
       stageColor: 'blue',
     },
   ],

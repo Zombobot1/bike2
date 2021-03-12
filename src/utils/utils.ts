@@ -25,3 +25,12 @@ export const cne = (enumKeyAndValue: any, enum_: any) => {
 };
 
 export const rnd = (max: number) => Math.floor(Math.random() * max);
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+export default function compose(...funcs: Function[]) {
+  if (funcs.length === 0) return <T>(arg: T) => arg;
+  if (funcs.length === 1) return funcs[0];
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return funcs.reduce((a, b) => (...args: any) => a(b(...args)));
+}

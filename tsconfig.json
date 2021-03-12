@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "types": ["@emotion/react/types/css-prop"],
     "experimentalDecorators": true,
     "target": "es6",
     "lib": [

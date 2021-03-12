@@ -1,23 +1,19 @@
 import './qa-card.scss';
 import React from 'react';
-
-export enum CardSide {
-  Front,
-  Back,
-}
+import { CardSide, FieldT } from '../types';
+import { Field } from './field/field';
 
 export interface QACardP {
-  question: string;
-  answer: string;
+  fields: FieldT[];
   stageColor: string;
   side: CardSide;
 }
 
-export const QACard = ({ question, answer, stageColor, side }: QACardP) => {
+export const QACard = ({ fields, stageColor, side }: QACardP) => {
   return (
     <div className="qa-card-container">
       <div className="qa-card">
-        <pre>{side === CardSide.Front ? question : answer}</pre>
+        {fields.map((f, i) => (f.side === side ? <Field type={f.type} data={f.data} key={i} /> : null))}
       </div>
       <div className="qa-card-bottom" style={{ backgroundColor: stageColor }} />
     </div>
