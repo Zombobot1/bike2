@@ -80,7 +80,7 @@
   transition: width 0.3s ease-in-out;
 }
 
-@include for(mobile){
+@include xs {
   .nav-backdrop--visible {
     z-index: 999;
     display: block;

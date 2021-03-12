@@ -1,4 +1,4 @@
-import React, { ReactNode, createContext, useReducer, useContext } from 'react';
+import React, { createContext, ReactNode, useContext, useReducer } from 'react';
 import { IdLinkP } from '../navigation/breadcrumb/breadcrumb';
 
 export type PagesInfoState = { path: IdLinkP[] };

@@ -3,11 +3,10 @@
 .content-area {
   position: relative;
   width: 100%;
-  //min-height: 100vh;
   background-color: $bg-color;
   padding: 20px $content-padding 0 $content-padding-left;
 
-  @include for(mobile) {
+  @include xs {
     padding: 55px 0 0;
   }
 }

@@ -5,7 +5,6 @@ import TrainingCardsInfo, { TrainingCardsInfoP } from '../training-cards-info';
 import { Overdue } from '../../icons/icons';
 import React from 'react';
 import { useRouter } from '../../utils/hooks/use-router';
-import { usePagesInfoDispatch } from '../../context/user-position-provider';
 import { STUDY } from '../../pages';
 
 export interface DeckCard extends SmallDeckCard {

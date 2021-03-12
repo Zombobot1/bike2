@@ -1,0 +1,10 @@
+@use "../../../../sass/config";
+
+.training-container {
+  height: 85vh;
+
+  @include config.xs {
+    height: 660px;
+    margin-bottom: 30px;
+  }
+}

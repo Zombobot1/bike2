@@ -1,4 +1,5 @@
 import { OverdueType } from './components/cards/notification/notification';
+import { TrainingType } from './components/study/training/types';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -494,6 +495,38 @@ const study = {
   trainingDecksSettings,
 };
 
+const question = `The English language is conventionally divided into three historical periods. In which of these periods did William Shakespeare write his plays?
+
+
+(a) Old English
+(b) Middle English
+(c) Modern English
+`;
+
+const answer = `(c) The period of Modern English extends from the 1500s to the present day. Shakespeare wrote his plays between 1590 and 1613.`;
+
+export const training = {
+  id: '1',
+  deckName: 'Exercises 1-10',
+  type: TrainingType.Learning,
+  cards: [
+    {
+      id: '1',
+      question,
+      answer,
+      timeout: 3000,
+      stageColor: 'red',
+    },
+    {
+      id: '2',
+      question,
+      answer,
+      timeout: 2,
+      stageColor: 'blue',
+    },
+  ],
+};
+
 const appData = {
   hero: {
     header: hero_header,
@@ -513,6 +546,7 @@ const appData = {
   notifications,
   overview,
   study,
+  training,
 };
 
 export default appData;

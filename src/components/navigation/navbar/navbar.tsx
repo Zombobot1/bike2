@@ -1,7 +1,6 @@
 import './navbar.scss';
 import { useRouter } from '../../utils/hooks/use-router';
 import { ICONSF } from '../../pages';
-import { Link } from 'react-router-dom';
 import { ReactComponent as Help } from '../../pages/icons/help-icon-f.svg';
 import { ReactComponent as Logo } from '../../pages/icons/uni-icon.svg';
 import React from 'react';

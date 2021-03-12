@@ -1,11 +1,10 @@
 import './breadcrumb.scss';
 import { useRouter } from '../../utils/hooks/use-router';
-import { iconForAppPage, ICONST, STUDY, toAppPage } from '../../pages';
-import React, { FC, useEffect } from 'react';
+import { iconForAppPage, STUDY, toAppPage } from '../../pages';
+import React, { FC } from 'react';
 import { ReactComponent as Burger } from './burger.svg';
 import { usePagesInfoDispatch, usePagesInfoState } from '../../context/user-position-provider';
-import { Link, useHistory } from 'react-router-dom';
-import { cn } from '../../../utils/utils';
+import { Link } from 'react-router-dom';
 
 export interface BreadcrumbP {
   toggleNavbarVisibility: () => void;

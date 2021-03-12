@@ -21,15 +21,10 @@ $content-padding: 50px;
 $content-padding-left: $navbar-width + $content-padding;
 $ui-card-border-radius: 13px;
 
-$media_queries : (
-  'mobile': "only screen and (max-width: 550px)",
-);
+$screen-xs-max: 599px;
 
-@mixin for($breakpoints) {
-  $conditions : ();
-  @each $breakpoint in $breakpoints {
-    $conditions: append($conditions, #{ inspect(map-get($media_queries, $breakpoint)) }, comma);
+@mixin xs {
+  @media screen and (max-width: #{$screen-xs-max}) {
+    @content;
   }
-
-  @media #{$conditions} { @content; }
 }

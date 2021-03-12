@@ -8,7 +8,7 @@
   background-color: $bg-color;
   font-size: 20px;
 
-  @include for(mobile) {
+  @include xs {
     position: fixed;
     z-index: 998;
     padding-bottom: 5px;
@@ -29,7 +29,7 @@
     margin-top: 2px;
     margin-right: 15px;
 
-    @include for(mobile) { display: inline }
+    @include xs { display: inline }
   }
 
   .breadcrumb { margin-bottom: 0; }
