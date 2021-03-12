@@ -22,6 +22,7 @@ import { cn } from '../../../utils/utils';
 import { usePagesInfoDispatch } from '../../context/user-position-provider';
 import * as screenfull from 'screenfull';
 import { Screenfull } from 'screenfull';
+import { useEventListener, useGlobalEventListener } from '../../utils/hooks/use-event-listener';
 
 const fs = () => screenfull as Screenfull;
 
@@ -263,15 +264,17 @@ const useMedia = <T,>(queries: string[], values: T[], defaultValue: T) => {
 
 const FullScreenTrigger = () => {
   if (!screenfull.isEnabled) return null;
+
   const isMobile = useMedia([MEDIA.mobile], [false], true);
-  const [full, toggle] = useToggle(false);
+  const [full, setFull] = useState(fs().isFullscreen);
+
+  const setFullScreen = () => setFull(fs().isFullscreen);
   useEffect(() => {
-    if (full)
-      fs()
-        .request()
-        .catch(() => ({}));
-    else fs().exit().catch();
-  }, [full]);
+    fs().onchange(setFullScreen);
+    return () => fs().off('change', setFullScreen);
+  }, []);
+
+  const toggle = () => fs().toggle();
   return (
     <div className="transparent-button fs-trigger">
       {!full && isMobile && <FullScreenI onClick={toggle} />}
@@ -345,14 +348,14 @@ export const training = {
       id: '1',
       question,
       answer,
-      timeout: 10,
+      timeout: 3,
       stageColor: 'red',
     },
     {
       id: '2',
       question,
       answer,
-      timeout: 10,
+      timeout: 2,
       stageColor: 'blue',
     },
   ],
@@ -372,19 +375,20 @@ const Rec = ({ height = 50, width = 100, color = 'red' }: RecP) => (
 );
 
 const Sandbox = () => {
-  const [navBarVisibility, toggleNavBarVisibility] = useToggle(true);
+  const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
 
   return (
-    <div style={{ width: '100vw', height: '100vh', padding: '100px 200px', backgroundColor: COLORS.bg }}>
-      <Training {...training} />
-    </div>
-    // <>
-    //   <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
-    //   <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
-    //   <main className="content-area">
-    //     <Footer className="footer" />
-    //   </main>
-    // </>
+    // <div style={{ width: '100vw', height: '100vh', padding: '100px 200px', backgroundColor: COLORS.bg }}>
+    //   <Training {...training} />
+    // </div>
+    <>
+      <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
+      <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
+      <main className="content-area">
+        <TrainingContainer />
+        <Footer className="footer" />
+      </main>
+    </>
   );
 };
 

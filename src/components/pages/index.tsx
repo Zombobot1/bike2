@@ -85,4 +85,7 @@ export const ICONST: { [key: string]: FC } = {
 };
 
 export const toAppPage = (pageName: string) => `${APP}/${pageName.toLowerCase()}`;
-export const iconForAppPage = (pageName: string) => ICONST[toAppPage(pageName)];
+export const iconForAppPage = (pageName: string) => {
+  if (pageName === 'Sandbox') return ICONST[_SANDBOX]; // exception for /_ path
+  return ICONST[toAppPage(pageName)];
+};
