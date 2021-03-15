@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { ReactComponent as TimerI } from '../../../icons/hourglass-split.svg';
-import { useEffectedState } from '../../../utils/hooks/use-effected-state';
 import { useInterval } from '../../../utils/hooks/use-interval';
 import { fancyTimerTime } from '../../../../utils/formatting';
 import { StateT } from '../../../forms/hoc/with-validation';
