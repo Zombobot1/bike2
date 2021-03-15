@@ -1,4 +1,7 @@
 import { OverdueType } from './components/cards/notification/notification';
+import { FieldT } from './components/study/training/types';
+import hospital from './hospital.png';
+import { TrainingP } from './components/study/training/training';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -266,6 +269,7 @@ const overview = {
 
 const mathTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -273,6 +277,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -280,6 +285,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -287,6 +293,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -294,6 +301,7 @@ const mathTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
@@ -303,6 +311,7 @@ const mathTrainings = [
 ];
 const jsTrainings = [
   {
+    id: '1',
     overdue: OverdueType.Danger,
     deckColor: '#FCA95C',
     deckName: 'Functions',
@@ -310,6 +319,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FCA95C',
     deckName: 'Functions',
@@ -317,6 +327,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#FCA95C',
     deckName: 'Workers',
@@ -324,6 +335,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#eced2b',
     deckName: 'Async & Await',
@@ -331,6 +343,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#eced2b',
     deckName: 'Proxy',
@@ -338,6 +351,7 @@ const jsTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#eced2b',
     deckName: 'Proxy',
@@ -347,6 +361,7 @@ const jsTrainings = [
 ];
 const englishTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -354,6 +369,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -361,6 +377,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -368,6 +385,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -375,6 +393,7 @@ const englishTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
@@ -384,6 +403,7 @@ const englishTrainings = [
 ];
 const cppTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
@@ -391,6 +411,7 @@ const cppTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
@@ -398,6 +419,7 @@ const cppTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
@@ -407,6 +429,7 @@ const cppTrainings = [
 ];
 const pythonTrainings = [
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#2730FD',
     deckName: 'Pathlib',
@@ -414,6 +437,7 @@ const pythonTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.None,
     deckColor: '#2730FD',
     deckName: 'Pathlib',
@@ -423,6 +447,7 @@ const pythonTrainings = [
 ];
 const cookingTrainings = [
   {
+    id: '1',
     overdue: OverdueType.Danger,
     deckColor: '#DC5CFC',
     deckName: 'Borsh',
@@ -430,6 +455,7 @@ const cookingTrainings = [
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   },
   {
+    id: '1',
     overdue: OverdueType.Warning,
     deckColor: '#DC5CFC',
     deckName: 'Borsh',
@@ -438,7 +464,7 @@ const cookingTrainings = [
   },
 ];
 
-const trainingDecks = [
+export const trainingDecks = [
   { deckName: 'Math', trainings: mathTrainings },
   { deckName: 'Js', trainings: jsTrainings },
   { deckName: 'English', trainings: englishTrainings },
@@ -471,6 +497,88 @@ const study = {
   trainingDecksSettings,
 };
 
+const question = `The English language is conventionally divided into three historical periods. In which of these periods did William Shakespeare write his plays?
+
+
+(a) Old English
+(b) Middle English
+(c) Modern English
+`;
+
+const answer = `(c) The period of Modern English extends from the 1500s to the present day. Shakespeare wrote his plays between 1590 and 1613.`;
+
+const field1: FieldT = {
+  type: 'PRE',
+  data: question,
+  side: 'FRONT',
+};
+
+const field2: FieldT = {
+  type: 'PRE',
+  data: answer,
+  side: 'BACK',
+};
+
+const field3: FieldT = {
+  type: 'PRE',
+  data: 'Hospital',
+  side: 'FRONT',
+};
+
+const field4: FieldT = {
+  type: 'PRE',
+  data: 'ˈhɒspɪtl',
+  side: 'FRONT',
+};
+
+const field6: FieldT = {
+  type: 'IMG',
+  data: hospital,
+  side: 'FRONT',
+};
+
+const field7: FieldT = {
+  type: 'AUDIO',
+  data: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
+  side: 'FRONT',
+};
+
+const field5: FieldT = {
+  type: 'PRE',
+  data: 'das Krankenhaus',
+  side: 'BACK',
+};
+
+export const card1 = {
+  id: '1',
+  fields: [field6, field3, field4, field5, field7],
+  timeout: 3000,
+  stageColor: 'red',
+  priority: 1,
+};
+
+export const card2 = {
+  id: '2',
+  fields: [field1, field2],
+  timeout: 3000,
+  stageColor: 'blue',
+  priority: 2,
+};
+
+export const card3 = {
+  id: '3',
+  fields: [field1, field2],
+  timeout: 3000,
+  stageColor: 'blue',
+  priority: 2,
+};
+
+export const training: TrainingP = {
+  id: '1',
+  deckName: 'Exercises 1-10',
+  initialCards: [card1, card2],
+};
+
 const appData = {
   hero: {
     header: hero_header,
@@ -490,6 +598,7 @@ const appData = {
   notifications,
   overview,
   study,
+  training,
 };
 
 export default appData;

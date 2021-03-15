@@ -9,13 +9,17 @@ export const useRouter = () => {
   const match = useRouteMatch();
 
   return useMemo(() => {
+    const queryParams: queryString.ParsedQuery<string> = {
+      ...queryString.parse(location.search),
+      ...params,
+    };
     return {
       push: history.push,
       replace: history.replace,
       pathname: location.pathname,
-      query: {
-        ...queryString.parse(location.search),
-        ...params,
+      query: (key: string): string | null => {
+        const result = queryParams[key];
+        return Array.isArray(result) ? result[0] : result;
       },
       match,
       location,

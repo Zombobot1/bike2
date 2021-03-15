@@ -1,0 +1,69 @@
+@use "../../../../sass/config";
+
+.controls {
+  height: 48px;
+  position: relative;
+
+  .bi-arrow-left-short {
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .estimate-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
+    @include config.xs {
+      height: 38px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+  }
+
+  .btn-group {
+    height: 48px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-57%);
+
+    @include config.xs { height: 38px; }
+
+    .btn {
+      width: 80px;
+      font-size: 20px;
+
+      @include config.xs {
+        width: 65px;
+        font-size: 14px;
+        font-weight: bold;
+      }
+    }
+
+    .btn-warning {
+      color: white;
+      &:hover, &:active, &:focus { color: white; }
+    }
+  }
+
+  .timer {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    align-content: center;
+
+    .bi-hourglass-split {
+      width: 25px; height: 25px;
+      @include config.xs { width: 20px; height: 20px; }
+    }
+    .text {
+      padding-top: 1px;
+      @include config.xs { font-size: 14px; }
+    }
+  }
+}

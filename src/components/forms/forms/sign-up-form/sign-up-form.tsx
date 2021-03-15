@@ -5,8 +5,8 @@ import { ValidatedConfirmedPassword, ValidatedEmail, ValidatedPassword, Validate
 import SubmitBtn from '../../submit-btn';
 import React from 'react';
 import { SignUpFormV } from '../../../../validation/sign-up-form';
-import { compose } from 'redux';
 import { FootlessModal } from '../../../utils/footless-modal';
+import compose from '../../../../utils/utils';
 
 const Terms = () => <p>We do not have terms and conditions so far.</p>;
 

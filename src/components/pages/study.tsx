@@ -1,5 +1,6 @@
 import React from 'react';
 import RegularTrainings from '../study/regular-trainings';
+import { TrainingContainer } from '../study/training/training-container/training-container';
 
 export const Study = () => {
   return (
@@ -8,3 +9,5 @@ export const Study = () => {
     </div>
   );
 };
+
+export const StudyTraining = () => <TrainingContainer />;

@@ -5,7 +5,7 @@ import { Overview } from './overview';
 import { SignIn } from './sign-in';
 import { LostPassword } from './lost-password';
 import { ResetPassword } from './reset-password';
-import { Study } from './study';
+import { Study, StudyTraining } from './study';
 import { Decks } from './decks';
 import { Schedule } from './schedule';
 import { Settings } from './settings';
@@ -31,15 +31,17 @@ export const SIGNIN = '/signin';
 export const SIGNUP = '/signup';
 export const LOSTPASSWORD = '/lostpassword';
 export const RESETPASSWORD = '/resetpassword';
+export const _ROOT = '/';
 export const _SANDBOX = '/_';
 export const APP = '/app';
 export const OVERVIEW = APP + '/overview';
 export const STUDY = APP + '/study';
+export const STUDYID = STUDY + '/:id';
 export const DECKS = APP + '/decks';
 export const SCHEDULE = APP + '/schedule';
 export const SETTINGS = APP + '/settings';
 export const _ANY = '*';
-export const PAGE404 = '/404';
+export const _PAGE404 = '/404';
 
 export const PAGES = [
   { path: LANDING, component: Landing },
@@ -47,13 +49,14 @@ export const PAGES = [
   { path: SIGNUP, component: SignUp },
   { path: LOSTPASSWORD, component: LostPassword },
   { path: RESETPASSWORD, component: ResetPassword },
-  { path: PAGE404, component: Page404 },
   { path: _SANDBOX, component: Sandbox },
+  { path: _PAGE404, component: Page404 },
   {
     path: APP,
     component: App,
     routes: [
       { path: OVERVIEW, component: Overview },
+      { path: STUDYID, component: StudyTraining },
       { path: STUDY, component: Study },
       { path: DECKS, component: Decks },
       { path: SCHEDULE, component: Schedule },
@@ -79,4 +82,10 @@ export const ICONST: { [key: string]: FC } = {
   [SCHEDULE]: ScheduleT,
   [SETTINGS]: SettingsT,
   [_SANDBOX]: SandboxT,
+};
+
+export const toAppPage = (pageName: string) => `${APP}/${pageName.toLowerCase()}`;
+export const iconForAppPage = (pageName: string) => {
+  if (pageName === 'Sandbox') return ICONST[_SANDBOX]; // exception for /_ path
+  return ICONST[toAppPage(pageName)];
 };

@@ -9,19 +9,6 @@
     height: 25px;
   }
 
-  &:hover .progress-value {
-    color: $info-color;
-  }
-
-  .progress {
-    margin-top: 10px;
-    border-radius: 5px;
-    max-width: 100%;
-    height: 10px;
-
-    .progress-bar {
-      border-radius: 10px;
-    }
-
-  }
+  &:hover .progress-value { color: $info-color;  }
+  .progress { margin-top: 10px; }
 }

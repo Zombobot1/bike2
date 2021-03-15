@@ -5,3 +5,5 @@ export const COLORS = {
   info: '#0948b3',
   bg: '#F5F8FB',
 };
+
+export const SM = '(max-width: 550px)';

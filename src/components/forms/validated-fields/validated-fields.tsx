@@ -2,12 +2,12 @@ import './validated-fields.scss';
 import Envelope from '../../icons/envelope.svg';
 import Unlock from '../../icons/unlock.svg';
 import { withValidation, WithValidationBaseP, WithValidationP } from '../hoc/with-validation';
-import { compose } from 'redux';
 import InputField from '../input-field/input-field';
 import CheckBoxField from '../checkbox-field';
 import { FC } from 'react';
 import TextAreaField from '../text-area-field';
 import { withEmptyValidation } from '../hoc/with-empty-validation';
+import compose from '../../../utils/utils';
 
 const emailConfig = {
   label: 'Your Email',

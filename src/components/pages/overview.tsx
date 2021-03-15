@@ -1,5 +1,5 @@
 import React from 'react';
-import { useInfo } from '../info-provider/info-provider';
+import { useInfo } from '../context/info-provider';
 import LastReviews from '../overview/last-reviews';
 import TimeInApp from '../overview/time-in-app';
 import LastTrainings from '../overview/last-trainings';

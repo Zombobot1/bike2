@@ -1,0 +1,8 @@
+@use "../../../../sass/config";
+
+.training {
+  width: 500px;
+  height: 100%;
+
+  @include config.xs { width: 380px; }
+}

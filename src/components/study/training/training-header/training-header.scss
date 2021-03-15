@@ -1,0 +1,42 @@
+@use "../../../../sass/config";
+
+.header {
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 0;
+
+  @include config.xs { display: none; }
+}
+
+.heading {
+
+  .progress { width: 130px;  }
+
+  .cards-left-info {
+    color: config.$secondary-text-color;
+    font-size: 14px;
+  }
+
+  .fs-trigger {
+    margin-right: 15px;
+  }
+
+  .settings {
+
+    .three-dots-icon {
+      opacity: .5;
+      transform: scale(2);
+      margin-right: 10px;
+    }
+
+    .dropdown-menu { transform: translate(-165px, 0) !important; }
+
+    .bi { margin-right: 5px; }
+    .bi-patch-exclamation { fill: config.$danger-color; }
+    .bi-hourglass { fill: config.$warning-color }
+    .bi-pen {
+      transform: scale(.9);
+      fill: config.$info-color;
+    }
+  }
+}

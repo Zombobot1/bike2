@@ -3,13 +3,10 @@
 .content-area {
   position: relative;
   width: 100%;
-  //min-height: 100vh;
   background-color: $bg-color;
   padding: 20px $content-padding 0 $content-padding-left;
 
-  @media only screen and (max-width: 550px) {
-    & {
-      padding: 60px 0 0;
-    }
+  @include xs {
+    padding: 55px 0 0;
   }
 }

@@ -1,6 +1,6 @@
 import './regular-trainings.scss';
 import TrainingsHeading from '../trainings-heading';
-import Trainings from '../trainings';
+import { Trainings } from '../trainings';
 import React from 'react';
 
 const RegularTrainings = () => (

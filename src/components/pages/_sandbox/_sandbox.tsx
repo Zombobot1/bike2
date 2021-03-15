@@ -3,30 +3,24 @@ import React from 'react';
 import NavBar from '../../navigation/navbar';
 import Breadcrumb from '../../navigation/breadcrumb';
 import Footer from '../../footer';
-import { COLORS } from '../../../config';
-import { Overview } from '../overview';
 import { useToggle } from '../../utils/hooks/use-toggle';
-import { Switch } from 'react-router-dom';
-import { buildRoutes } from '../../utils/routing';
-
-const Page = () => (
-  <div className="d-flex">
-    <div className="col-4 me-3 rec" />
-    <div className="col-3 me-3 rec" />
-    <div className="col-3 me-3 rec" />
-  </div>
+type RecP = { width?: number; height?: number; color?: string };
+const Rec = ({ height = 50, width = 100, color = 'red' }: RecP) => (
+  <div style={{ width: `${width}px`, height: `${height}px`, backgroundColor: color }} />
 );
 
 const Sandbox = () => {
-  const [navBarVisibility, toggleNavBarVisibility] = useToggle(true);
+  const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
+
   return (
-    // <div style={{ width: '100vw', height: '100vh', padding: '100px 100px', backgroundColor: COLORS.tertiary }}>
-    //   <Page />
+    // <div style={{ width: '100vw', height: '100vh', padding: '100px 200px', backgroundColor: COLORS.bg }}>
+    //   <Rec {...training} />
     // </div>
     <>
       <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
+        <Rec />
         <Footer className="footer" />
       </main>
     </>

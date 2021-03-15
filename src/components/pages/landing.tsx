@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import Hero from '../landing/hero';
 import Features from '../landing/features';
 import Pricing from '../landing/pricing';
-import { useInfo } from '../info-provider/info-provider';
+import { useInfo } from '../context/info-provider';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const scroller = (ways: Map<string, any>) => {

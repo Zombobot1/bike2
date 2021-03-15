@@ -1,0 +1,30 @@
+@use "../../../../sass/config";
+@use "../../../../sass/common";
+
+.qa-card-container {
+  border-radius: config.$ui-card-border-radius;
+  position: relative;
+  margin-top: 8px;
+  margin-bottom: 15px;
+  height: 90%;
+
+  @include config.xs { height: 570px; }
+
+  .qa-card {
+    @extend %ui-card-base;
+
+    position: absolute;
+    z-index: 1;
+    height: 97%;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  .qa-card-bottom {
+    position: absolute;
+    bottom: 0;
+    height: 4.5%;
+    width: 100%;
+    border-radius: 0 0 config.$ui-card-border-radius config.$ui-card-border-radius;
+  }
+}
