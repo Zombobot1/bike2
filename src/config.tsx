@@ -6,6 +6,4 @@ export const COLORS = {
   bg: '#F5F8FB',
 };
 
-export const MEDIA = {
-  mobile: '(max-width: 550px)',
-};
+export const SM = '(max-width: 550px)';

@@ -3,47 +3,43 @@ import { useRouter } from '../../../utils/hooks/use-router';
 import React, { useEffect, useState } from 'react';
 import { usePagesInfoDispatch } from '../../../context/user-position-provider';
 import { STUDY } from '../../../pages';
-import { AnswerEstimation, CardSide, CardT, TrainingType } from '../types';
+import { CardSide, CardT } from '../types';
 import { TrainingHeader } from '../training-header';
 import { QACard } from '../qa-card';
 import { TrainingControls } from '../training-controls';
+import { deleteTraining } from '../../../../api/api';
+import { useCards } from './hooks';
 
 export interface TrainingP {
   id: string;
   deckName: string;
-  type: TrainingType;
-  cards: CardT[];
+  initialCards: CardT[];
 }
 
-export const Training = ({ id, cards, deckName, type }: TrainingP) => {
-  const [currentCardNumber, setCurrentCardNumber] = useState(0);
-  const timerSecsLeftS = useState(cards[currentCardNumber].timeout);
-  useEffect(() => timerSecsLeftS[1](cards[currentCardNumber].timeout), [currentCardNumber]);
-
-  const dispatch = usePagesInfoDispatch();
-  dispatch({ type: 'SET', payload: { path: [{ id, name: deckName }] } });
+export const Training = ({ id, initialCards, deckName }: TrainingP) => {
   const { history } = useRouter();
-  const nextCard = () => {
-    if (currentCardNumber === cards.length - 1) {
+  const onLastCard = () => {
+    deleteTraining(id).then(() => {
       history.push(STUDY);
       dispatch({ type: 'CLEAR' });
-    }
-    setCurrentCardNumber((n) => n + 1);
-    setCardSide('FRONT');
+    });
   };
+  const onNextCard = () => setCardSide('FRONT');
+  const { currentCard, estimateCard, timeToFinish, progress } = useCards(id, initialCards, onLastCard, onNextCard);
+
+  const timerSecsLeftS = useState(currentCard.timeout);
+  useEffect(() => timerSecsLeftS[1](currentCard.timeout), [currentCard]);
+
+  const dispatch = usePagesInfoDispatch();
+  useEffect(() => dispatch({ type: 'SET', payload: { path: [{ id, name: deckName }] } }), []);
 
   const [cardSide, setCardSide] = useState<CardSide>('FRONT');
-  const estimate = (e: AnswerEstimation) => console.info('estimation: ' + AnswerEstimation[e]);
+
   return (
     <div className="d-flex flex-column training">
-      <TrainingHeader type={type} deckName={deckName} cards={cards} currentCardNumber={currentCardNumber} />
-      <QACard {...cards[currentCardNumber]} side={cardSide} />
-      <TrainingControls
-        cardSideS={[cardSide, setCardSide]}
-        secsLeftS={timerSecsLeftS}
-        estimate={estimate}
-        nextCard={nextCard}
-      />
+      <TrainingHeader progress={progress} deckName={deckName} timeToFinish={timeToFinish} />
+      <QACard {...currentCard} side={cardSide} />
+      <TrainingControls cardSideS={[cardSide, setCardSide]} secsLeftS={timerSecsLeftS} estimate={estimateCard} />
     </div>
   );
 };

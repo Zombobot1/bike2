@@ -1,8 +1,3 @@
-export enum TrainingType {
-  Learning,
-  Repeating,
-}
-
 export enum AnswerEstimation {
   Bad,
   Poor,
@@ -26,4 +21,5 @@ export interface CardT {
   fields: FieldT[];
   timeout: number;
   stageColor: string;
+  priority: number;
 }

@@ -1,4 +1,4 @@
-import { MEDIA } from '../../config';
+import { SM } from '../../config';
 import React, { useEffect, useState } from 'react';
 import { ReactComponent as FullScreenI } from '../icons/bi-arrows-fullscreen.svg';
 import { ReactComponent as ExitFullScreenI } from '../icons/bi-fullscreen-exit.svg';
@@ -11,7 +11,7 @@ const fs = () => screenfull as Screenfull;
 export const FullScreenTrigger = () => {
   if (!screenfull.isEnabled) return null;
 
-  const isMobile = useMedia([MEDIA.mobile], [true], false);
+  const isMobile = useMedia([SM], [true], false);
   const [full, setFull] = useState(fs().isFullscreen);
 
   const setFullScreen = () => setFull(fs().isFullscreen);

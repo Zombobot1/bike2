@@ -1,13 +1,22 @@
 @use "../../../../sass/config";
 
 .controls {
+  height: 48px;
+  position: relative;
 
   .bi-arrow-left-short {
+    position: absolute;
     width: 35px;
     height: 35px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .estimate-btn {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+
     @include config.xs {
       height: 38px;
       font-size: 14px;
@@ -17,6 +26,9 @@
 
   .btn-group {
     height: 48px;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-57%);
 
     @include config.xs { height: 38px; }
 
@@ -39,6 +51,10 @@
 
   .timer {
     display: flex;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
     align-content: center;
 
     .bi-hourglass-split {

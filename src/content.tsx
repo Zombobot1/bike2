@@ -1,6 +1,7 @@
 import { OverdueType } from './components/cards/notification/notification';
-import { FieldT, TrainingType } from './components/study/training/types';
+import { FieldT } from './components/study/training/types';
 import hospital from './hospital.png';
+import { TrainingP } from './components/study/training/training';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -463,7 +464,7 @@ const cookingTrainings = [
   },
 ];
 
-const trainingDecks = [
+export const trainingDecks = [
   { deckName: 'Math', trainings: mathTrainings },
   { deckName: 'Js', trainings: jsTrainings },
   { deckName: 'English', trainings: englishTrainings },
@@ -548,24 +549,34 @@ const field5: FieldT = {
   side: 'BACK',
 };
 
-export const training = {
+export const card1 = {
+  id: '1',
+  fields: [field6, field3, field4, field5, field7],
+  timeout: 3000,
+  stageColor: 'red',
+  priority: 1,
+};
+
+export const card2 = {
+  id: '2',
+  fields: [field1, field2],
+  timeout: 3000,
+  stageColor: 'blue',
+  priority: 2,
+};
+
+export const card3 = {
+  id: '3',
+  fields: [field1, field2],
+  timeout: 3000,
+  stageColor: 'blue',
+  priority: 2,
+};
+
+export const training: TrainingP = {
   id: '1',
   deckName: 'Exercises 1-10',
-  type: TrainingType.Learning,
-  cards: [
-    {
-      id: '1',
-      fields: [field6, field3, field4, field5, field7],
-      timeout: 3000,
-      stageColor: 'red',
-    },
-    {
-      id: '2',
-      fields: [field1, field2],
-      timeout: 3000,
-      stageColor: 'blue',
-    },
-  ],
+  initialCards: [card1, card2],
 };
 
 const appData = {
