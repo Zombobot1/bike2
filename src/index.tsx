@@ -8,12 +8,15 @@ import './components/icons/icons.scss';
 import './components/images/images.scss';
 
 import InfoProvider from './components/context/info-provider';
-import { _ROOT, _SANDBOX, PAGES } from './components/pages';
+import { _ROOT, _SANDBOX, OVERVIEW, PAGES } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
 import { PagesInfoProvider } from './components/context/user-position-provider';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+let redirect = OVERVIEW;
+
 if (process.env.NODE_ENV === 'development') {
+  redirect = _SANDBOX;
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { worker } = require('./api/fake-api');
   worker.start();
@@ -28,7 +31,7 @@ ReactDOM.render(
         <PagesInfoProvider>
           <QueryClientProvider client={queryClient}>
             <Switch>
-              <Redirect exact from={_ROOT} to={_SANDBOX} />
+              <Redirect exact from={_ROOT} to={redirect} />
               {PAGES.map(buildRoutes)}
             </Switch>
           </QueryClientProvider>
