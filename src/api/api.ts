@@ -1,15 +1,16 @@
 import { axi } from './axi';
-import { CardT } from '../components/study/training/types';
+import { TrainingUpdateDTO, TrainingUpdateDTOP, UserCardAnswerDTO } from '../components/study/training/types';
+import { idfy, queryfy } from '../utils/utils';
 
-export const estimateAnswer = async (trainingId: string, cardId: string, estimation: number) => {
-  const update = await axi
-    .get(`/trainings/${trainingId}/answers?id=${cardId}&estimation=${estimation}`)
-    .then((res) => res.data);
-  return update as CardT[];
+export const GET_TRAININGS_GROUPS = '/trainings';
+export const GET_TRAINING = '/trainings/:id';
+export const GET_TRAINING_UPDATE_ON_ANSWER = '/estimate-answer/';
+
+export const estimateAnswer = async (dto: UserCardAnswerDTO): TrainingUpdateDTOP => {
+  const update = await axi.get(queryfy(GET_TRAINING_UPDATE_ON_ANSWER, dto)).then((res) => res.data);
+  return update as TrainingUpdateDTO;
 };
 
-export const getTrainings = () => axi.get('/trainings').then((res) => res.data);
+export const getTrainings = () => axi.get(GET_TRAININGS_GROUPS).then((res) => res.data);
 
-export const getTraining = (id: string) => axi.get(`/trainings/${id}`).then((res) => res.data);
-
-export const deleteTraining = (id: string) => axi.delete(`/trainings/${id}`).then((res) => res.data);
+export const getTraining = (id: string) => axi.get(idfy(GET_TRAINING, id)).then((res) => res.data);

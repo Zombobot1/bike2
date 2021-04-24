@@ -1,6 +1,7 @@
 import { ClassNamesFn, ClassValue } from 'classnames/types';
 import classNames from 'classnames';
 import { varName } from './objects';
+import { JSObject } from './types';
 
 export const cn: ClassNamesFn = (...classes: ClassValue[]) => classNames(...classes);
 
@@ -34,3 +35,15 @@ export default function compose(...funcs: Function[]) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return funcs.reduce((a, b) => (...args: any) => a(b(...args)));
 }
+
+export const capitalizeFirstLetter = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+
+export const idfy = (route: string, id: string) => `${route.split(':')[0]}${id}`;
+
+export const queryfy = (route: string, args: JSObject) => {
+  let result = `${route}?`;
+  Object.entries(args).forEach(([k, v]) => {
+    result += `${k}=${v}&`;
+  });
+  return result;
+};

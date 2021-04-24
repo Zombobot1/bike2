@@ -1,9 +1,4 @@
-export enum AnswerEstimation {
-  Bad,
-  Poor,
-  Good,
-  Easy,
-}
+export type CardEstimation = 'BAD' | 'POOR' | 'GOOD' | 'EASY';
 
 export type CardSide = 'FRONT' | 'BACK';
 
@@ -16,10 +11,27 @@ export interface FieldT extends FieldP {
   side: CardSide;
 }
 
-export interface CardT {
-  id: string;
+export interface CardDTO {
+  _id: string;
   fields: FieldT[];
-  timeout: number;
+  timeToLearn: number;
   stageColor: string;
   priority: number;
 }
+
+export interface TrainingMetaInfo {
+  highestPriority: string;
+  updatedAt: string;
+}
+
+export interface UserCardAnswerDTO extends TrainingMetaInfo {
+  deckId: string;
+  cardId: string;
+  estimation: CardEstimation;
+}
+
+export interface TrainingUpdateDTO extends TrainingMetaInfo {
+  cards: CardDTO[];
+}
+
+export type TrainingUpdateDTOP = Promise<TrainingUpdateDTO>;

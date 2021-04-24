@@ -550,25 +550,25 @@ const field5: FieldT = {
 };
 
 export const card1 = {
-  id: '1',
+  _id: '1',
   fields: [field6, field3, field4, field5, field7],
-  timeout: 3000,
+  timeToLearn: 3000,
   stageColor: 'red',
   priority: 1,
 };
 
 export const card2 = {
-  id: '2',
+  _id: '2',
   fields: [field1, field2],
-  timeout: 3000,
+  timeToLearn: 3000,
   stageColor: 'blue',
   priority: 2,
 };
 
 export const card3 = {
-  id: '3',
+  _id: '3',
   fields: [field1, field2],
-  timeout: 3000,
+  timeToLearn: 3000,
   stageColor: 'blue',
   priority: 2,
 };
