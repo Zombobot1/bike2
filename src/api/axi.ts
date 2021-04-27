@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const BASE_URL = 'https://uniapi.com';
+export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://bike.maxvas.ru';
 
 export const axi = axios.create({
   baseURL: BASE_URL,

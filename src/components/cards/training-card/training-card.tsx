@@ -6,22 +6,21 @@ import { Overdue } from '../../icons/icons';
 import React from 'react';
 import { useRouter } from '../../utils/hooks/use-router';
 import { STUDY } from '../../pages';
+import { TrainingDTO } from '../../study/training/training';
 
 export interface DeckCard extends SmallDeckCard {
   deckPath: string;
 }
 
 export interface TrainingCardInfo {
-  id: string;
+  _id: string;
   overdue: OverdueType;
   trainingCardsInfo: TrainingCardsInfoP;
 }
 
-export interface TrainingCardP extends DeckCard, TrainingCardInfo {}
-
-const TrainingCard = ({ id, overdue, deckColor, deckName, deckPath, trainingCardsInfo }: TrainingCardP) => {
+const TrainingCard = ({ _id, overdue, deckColor, deckName, deckPath, trainingCardsInfo }: TrainingDTO) => {
   const { history } = useRouter();
-  const onClick = () => history.push(`${STUDY}/${id}`);
+  const onClick = () => history.push(`${STUDY}/${_id}`);
   return (
     <div className="training-card" onClick={onClick}>
       <div className="deck-mark" style={{ backgroundColor: deckColor }} />

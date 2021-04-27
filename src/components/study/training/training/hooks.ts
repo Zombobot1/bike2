@@ -1,8 +1,9 @@
 import { StateT } from '../../../forms/hoc/with-validation';
 import { priorityQueue, PriorityQueue } from '../../../../utils/priority-queue';
-import { CardEstimation, CardDTO, TrainingMetaInfo } from '../types';
+import { CardEstimation, CardDTO } from '../types';
 import { useEffect, useState } from 'react';
 import { estimateAnswer } from '../../../../api/api';
+import { useEffectedState } from '../../training-deck/training-deck';
 
 type TrainingCardsQueueS = StateT<PriorityQueue<CardDTO>>;
 
@@ -23,27 +24,29 @@ export const useTrainingProgress = (cardsS: TrainingCardsQueueS) => {
   const [totalCards, setTotalCards] = useState(cards.size());
 
   const [timeToFinish, setTimeToFinish] = useState(0);
-  useEffect(() => setTimeToFinish(cards.toArray().reduce((p, e) => p + e.timeToLearn, 0)), [cards]);
+  useEffect(() => setTimeToFinish(cards.toArray().reduce((p, e) => p + e.timeToAnswer, 0)), [cards]);
   const [progress, setProgress] = useState(0);
   useEffect(() => setProgress(passedCards / totalCards), [passedCards, totalCards]);
 
   return { timeToFinish, progress, setPassedCards, setTotalCards };
 };
 
-export const useTrainingMetaInfo = (highestPriority = '', updatedAt = ''): StateT<TrainingMetaInfo> => {
-  const [info, setInfo] = useState({ highestPriority, updatedAt });
-  return [info, setInfo];
-};
+const cardsQueue = (initialCards: CardDTO[]) => priorityQueue((e: CardDTO) => e.priority, initialCards);
 
 export const useCards = (
   trainingId: string,
   initialCards: CardDTO[],
   onLastCard: () => void,
   onNextCard: () => void,
+  updatedAt: string,
+  highestPriority: string,
 ) => {
-  const [cards, setCards] = useState(priorityQueue((e: CardDTO) => e.priority, initialCards));
+  const [rawCards] = useEffectedState(initialCards);
+  const [cards, setCards] = useState(cardsQueue(initialCards));
+  useEffect(() => setCards(cardsQueue(rawCards)), [rawCards]);
+
   const setNewCards = useCardsUpdate([cards, setCards]);
-  const [trainingMetaInfo, setTrainingMetaInfo] = useTrainingMetaInfo();
+  const [trainingMetaInfo, setTrainingMetaInfo] = useState({ updatedAt, highestPriority });
   const { timeToFinish, progress, setPassedCards, setTotalCards } = useTrainingProgress([cards, setCards]);
 
   const [currentCard, setCurrentCard] = useState(initialCards[0]);

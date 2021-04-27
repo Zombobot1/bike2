@@ -14,7 +14,7 @@ export interface FieldT extends FieldP {
 export interface CardDTO {
   _id: string;
   fields: FieldT[];
-  timeToLearn: number;
+  timeToAnswer: number;
   stageColor: string;
   priority: number;
 }

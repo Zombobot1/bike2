@@ -3,32 +3,44 @@ import { useRouter } from '../../../utils/hooks/use-router';
 import React, { useEffect, useState } from 'react';
 import { usePagesInfoDispatch } from '../../../context/user-position-provider';
 import { STUDY } from '../../../pages';
-import { CardSide, CardDTO } from '../types';
+import { CardSide, TrainingUpdateDTO } from '../types';
 import { TrainingHeader } from '../training-header';
 import { QACard } from '../qa-card';
 import { TrainingControls } from '../training-controls';
 import { useCards } from './hooks';
+import { OverdueType } from '../../../cards/notification/notification';
+import { TrainingCardsInfoP } from '../../../cards/training-cards-info';
 
-export interface TrainingP {
-  id: string;
+export interface TrainingDTO extends TrainingUpdateDTO {
+  _id: string;
   deckName: string;
-  initialCards: CardDTO[];
+  overdue: OverdueType;
+  deckColor: string;
+  deckPath: string;
+  trainingCardsInfo: TrainingCardsInfoP;
 }
 
-export const Training = ({ id, initialCards, deckName }: TrainingP) => {
+export const Training = ({ _id, cards, deckName, highestPriority, updatedAt }: TrainingDTO) => {
   const { history } = useRouter();
   const onLastCard = () => {
     history.push(STUDY);
     dispatch({ type: 'CLEAR' });
   };
   const onNextCard = () => setCardSide('FRONT');
-  const { currentCard, estimateCard, timeToFinish, progress } = useCards(id, initialCards, onLastCard, onNextCard);
+  const { currentCard, estimateCard, timeToFinish, progress } = useCards(
+    _id,
+    cards,
+    onLastCard,
+    onNextCard,
+    updatedAt,
+    highestPriority,
+  );
 
-  const timerSecsLeftS = useState(currentCard.timeToLearn);
-  useEffect(() => timerSecsLeftS[1](currentCard.timeToLearn), [currentCard]);
+  const timerSecsLeftS = useState(currentCard.timeToAnswer);
+  useEffect(() => timerSecsLeftS[1](currentCard.timeToAnswer), [currentCard]);
 
   const dispatch = usePagesInfoDispatch();
-  useEffect(() => dispatch({ type: 'SET', payload: { path: [{ id, name: deckName }] } }), []);
+  useEffect(() => dispatch({ type: 'SET', payload: { path: [{ id: _id, name: deckName }] } }), []);
 
   const [cardSide, setCardSide] = useState<CardSide>('FRONT');
 
