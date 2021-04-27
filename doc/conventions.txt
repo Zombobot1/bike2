@@ -1,0 +1,8 @@
+Naming
+  Prefixes
+    DTO - data transfer objects
+    ComponentP - interface for a component
+    stateS - compact state
+
+Each component is exported by default.
+Other auxiliary stuff is exported inline.

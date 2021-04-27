@@ -4,11 +4,7 @@ import { Overdue } from '../../icons/icons';
 import { fancyDate } from '../../../utils/formatting';
 import TrainingCardsInfo from '../training-cards-info';
 
-export enum OverdueType {
-  None,
-  Warning,
-  Danger,
-}
+export type OverdueType = 'NONE' | 'WARNING' | 'DANGER';
 
 export interface NotificationP {
   overdue: OverdueType;

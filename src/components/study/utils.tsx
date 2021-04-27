@@ -1,9 +1,9 @@
-import { TrainingCardP } from '../cards/training-card';
 import { TrainingCardsInfoP } from '../cards/training-cards-info';
+import { TrainingDTO } from './training/training';
 
 export const eachNth = <T,>(arr: T[], n: number, from: number): T[] => arr.slice(from).filter((e, i) => i % n === 0);
 
-export const totalToRepeatAndToLearn = (trainings: TrainingCardP[]): TrainingCardsInfoP => {
+export const totalToRepeatAndToLearn = (trainings: TrainingDTO[]): TrainingCardsInfoP => {
   const toLearn = trainings.reduce((p, e) => p + e.trainingCardsInfo.toLearn, 0);
   const toRepeat = trainings.reduce((p, e) => p + e.trainingCardsInfo.toRepeat, 0);
   return { toLearn, toRepeat };

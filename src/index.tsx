@@ -17,9 +17,10 @@ let redirect = OVERVIEW;
 
 if (process.env.NODE_ENV === 'development') {
   redirect = _SANDBOX;
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { worker } = require('./api/fake-api');
-  worker.start();
+  (async () => {
+    const { worker } = await import('./api/fake-api');
+    worker.start().catch(console.error);
+  })();
 }
 
 const queryClient = new QueryClient();

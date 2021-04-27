@@ -1,7 +1,9 @@
-import { OverdueType } from './components/cards/notification/notification';
+import { NotificationP } from './components/cards/notification';
 import { FieldT } from './components/study/training/types';
 import hospital from './hospital.png';
-import { TrainingP } from './components/study/training/training';
+import { TrainingDTO } from './components/study/training/training';
+import { LastTrainingCardP } from './components/cards/last-training-card';
+import { TrainingsGroupDTO } from './components/study/training-deck/training-deck-heading';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -92,55 +94,82 @@ export const lastMonth = () => {
   return now.toISOString();
 };
 
-const notification = {
-  overdue: OverdueType.Warning,
-  deckColor: '#FF5151',
-  deckPath: 'Statistical methods / Lectures',
-  deckName: 'Bayesian approach',
-  repeatingCardsNumber: 234,
-  receivingTime: lastHour(2),
-};
-const notification2 = {
-  overdue: OverdueType.None,
-  deckColor: '#FC5C9F',
-  deckPath: 'C++ programming language',
-  deckName: 'Chapter 1',
-  repeatingCardsNumber: 1200,
-  receivingTime: yesterday(),
-};
-const notifications = [notification, notification2, notification, notification2, notification];
+const notifications: NotificationP[] = [
+  {
+    overdue: 'NONE',
+    deckColor: '#FF5151',
+    deckPath: 'Statistical methods / Lectures',
+    deckName: 'Bayesian approach',
+    repeatingCardsNumber: 234,
+    receivingTime: lastHour(2),
+  },
+  {
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckPath: 'Statistical methods / Lectures',
+    deckName: 'Bayesian approach',
+    repeatingCardsNumber: 234,
+    receivingTime: lastHour(2),
+  },
+  {
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckPath: 'Statistical methods / Lectures',
+    deckName: 'Bayesian approach',
+    repeatingCardsNumber: 234,
+    receivingTime: lastHour(2),
+  },
+  {
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckPath: 'Statistical methods / Lectures',
+    deckName: 'Bayesian approach',
+    repeatingCardsNumber: 234,
+    receivingTime: lastHour(2),
+  },
+  {
+    overdue: 'NONE',
+    deckColor: '#FC5C9F',
+    deckPath: 'C++ programming language',
+    deckName: 'Chapter 1',
+    repeatingCardsNumber: 1200,
+    receivingTime: yesterday(),
+  },
+];
+
+const lastTrainings: LastTrainingCardP[] = [
+  {
+    overdue: 'NONE',
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    editingDate: new Date().toISOString(),
+    trainingCardsInfo: { toRepeat: 123, toLearn: 234 },
+  },
+  {
+    overdue: 'NONE',
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    editingDate: lastHour(),
+    trainingCardsInfo: { toRepeat: 123, toLearn: 0 },
+  },
+  {
+    overdue: 'WARNING',
+    deckColor: '#FCA95C',
+    deckName: 'Workers',
+    editingDate: yesterday(),
+    trainingCardsInfo: { toRepeat: 0, toLearn: 234 },
+  },
+  {
+    overdue: 'DANGER',
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    editingDate: lastMonth(),
+    trainingCardsInfo: { toRepeat: 1930, toLearn: 234 },
+  },
+];
 
 const overview = {
-  lastTrainings: [
-    {
-      overdue: OverdueType.None,
-      deckColor: '#FF5151',
-      deckName: 'Bayesian approach',
-      editingDate: new Date().toISOString(),
-      trainingCardsInfo: { toRepeat: 123, toLearn: 234 },
-    },
-    {
-      overdue: OverdueType.None,
-      deckColor: '#735CFC',
-      deckName: 'Exersices 1-10',
-      editingDate: lastHour(),
-      trainingCardsInfo: { toRepeat: 123, toLearn: 0 },
-    },
-    {
-      overdue: OverdueType.Warning,
-      deckColor: '#FCA95C',
-      deckName: 'Workers',
-      editingDate: yesterday(),
-      trainingCardsInfo: { toRepeat: 0, toLearn: 234 },
-    },
-    {
-      overdue: OverdueType.Danger,
-      deckColor: '#FC5C9F',
-      deckName: 'Chapter 1',
-      editingDate: lastMonth(),
-      trainingCardsInfo: { toRepeat: 1930, toLearn: 234 },
-    },
-  ],
+  lastTrainings,
   deckProgresses: [
     {
       deckColor: '#FF5151',
@@ -267,236 +296,6 @@ const overview = {
   ],
 };
 
-const mathTrainings = [
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-];
-const jsTrainings = [
-  {
-    id: '1',
-    overdue: OverdueType.Danger,
-    deckColor: '#FCA95C',
-    deckName: 'Functions',
-    deckPath: 'Basics',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#FCA95C',
-    deckName: 'Functions',
-    deckPath: 'Basics',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#FCA95C',
-    deckName: 'Workers',
-    deckPath: 'Browsers',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#eced2b',
-    deckName: 'Async & Await',
-    deckPath: 'Advanced',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#eced2b',
-    deckName: 'Proxy',
-    deckPath: 'Advanced',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#eced2b',
-    deckName: 'Proxy',
-    deckPath: 'Advanced',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-];
-const englishTrainings = [
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-];
-const cppTrainings = [
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#FC5C9F',
-    deckName: 'Chapter 1',
-    deckPath: 'C++ programming language',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#FC5C9F',
-    deckName: 'Chapter 1',
-    deckPath: 'C++ programming language',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#FC5C9F',
-    deckName: 'Chapter 1',
-    deckPath: 'C++ programming language',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-];
-const pythonTrainings = [
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#2730FD',
-    deckName: 'Pathlib',
-    deckPath: 'Libraries',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.None,
-    deckColor: '#2730FD',
-    deckName: 'Pathlib',
-    deckPath: 'Libraries',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-];
-const cookingTrainings = [
-  {
-    id: '1',
-    overdue: OverdueType.Danger,
-    deckColor: '#DC5CFC',
-    deckName: 'Borsh',
-    deckPath: 'Recepies',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-  {
-    id: '1',
-    overdue: OverdueType.Warning,
-    deckColor: '#DC5CFC',
-    deckName: 'Borsh',
-    deckPath: 'Recepies',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  },
-];
-
-export const trainingDecks = [
-  { deckName: 'Math', trainings: mathTrainings },
-  { deckName: 'Js', trainings: jsTrainings },
-  { deckName: 'English', trainings: englishTrainings },
-  { deckName: 'C++', trainings: cppTrainings },
-  { deckName: 'Python', trainings: pythonTrainings },
-  { deckName: 'Cooking', trainings: cookingTrainings },
-];
-
-const trainingDecksSettings = {
-  trainingDecks: {
-    Js: {
-      subdecksNames: ['Basics', 'Advanced'],
-      parentsNames: ['IT', 'Programming languages'],
-    },
-    Python: {
-      subdecksNames: ['Libraries', 'Advanced'],
-      parentsNames: ['IT', 'Programming languages'],
-    },
-  },
-  split: (root: string, subdeck: string) => {
-    console.info('split', root, subdeck);
-  },
-  merge: (root: string, subdeck: string) => {
-    console.info('merge', root, subdeck);
-  },
-};
-
-const study = {
-  trainingDecks,
-  trainingDecksSettings,
-};
-
 const question = `The English language is conventionally divided into three historical periods. In which of these periods did William Shakespeare write his plays?
 
 
@@ -550,33 +349,286 @@ const field5: FieldT = {
 };
 
 export const card1 = {
-  id: '1',
+  _id: '1',
   fields: [field6, field3, field4, field5, field7],
-  timeout: 3000,
+  timeToAnswer: 3000,
   stageColor: 'red',
   priority: 1,
 };
 
 export const card2 = {
-  id: '2',
+  _id: '2',
   fields: [field1, field2],
-  timeout: 3000,
+  timeToAnswer: 3000,
   stageColor: 'blue',
   priority: 2,
 };
 
 export const card3 = {
-  id: '3',
+  _id: '3',
   fields: [field1, field2],
-  timeout: 3000,
+  timeToAnswer: 3000,
   stageColor: 'blue',
   priority: 2,
 };
 
-export const training: TrainingP = {
-  id: '1',
-  deckName: 'Exercises 1-10',
-  initialCards: [card1, card2],
+export const training = {
+  cards: [card1, card2],
+  highestPriority: '0',
+  updatedAt: 'now',
+};
+
+const mathTrainings: TrainingDTO[] = [
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#FF5151',
+    deckName: 'Bayesian approach',
+    deckPath: 'Statistical methods / Lectures',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+];
+const jsTrainings: TrainingDTO[] = [
+  {
+    _id: '1',
+    overdue: 'DANGER',
+    deckColor: '#FCA95C',
+    deckName: 'Functions',
+    deckPath: 'Basics',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#FCA95C',
+    deckName: 'Functions',
+    deckPath: 'Basics',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#FCA95C',
+    deckName: 'Workers',
+    deckPath: 'Browsers',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#eced2b',
+    deckName: 'Async & Await',
+    deckPath: 'Advanced',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#eced2b',
+    deckName: 'Proxy',
+    deckPath: 'Advanced',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#eced2b',
+    deckName: 'Proxy',
+    deckPath: 'Advanced',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+];
+const englishTrainings: TrainingDTO[] = [
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#735CFC',
+    deckName: 'Exersices 1-10',
+    deckPath: 'Nouns / Collocations',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+];
+const cppTrainings: TrainingDTO[] = [
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    deckPath: 'C++ programming language',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    deckPath: 'C++ programming language',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#FC5C9F',
+    deckName: 'Chapter 1',
+    deckPath: 'C++ programming language',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+];
+const pythonTrainings: TrainingDTO[] = [
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#2730FD',
+    deckName: 'Pathlib',
+    deckPath: 'Libraries',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'NONE',
+    deckColor: '#2730FD',
+    deckName: 'Pathlib',
+    deckPath: 'Libraries',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+];
+const cookingTrainings: TrainingDTO[] = [
+  {
+    _id: '1',
+    overdue: 'DANGER',
+    deckColor: '#DC5CFC',
+    deckName: 'Borsh',
+    deckPath: 'Recepies',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+  {
+    _id: '1',
+    overdue: 'WARNING',
+    deckColor: '#DC5CFC',
+    deckName: 'Borsh',
+    deckPath: 'Recepies',
+    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    ...training,
+  },
+];
+
+export const trainingDecks: TrainingsGroupDTO[] = [
+  { rootDeckName: 'Math', trainings: mathTrainings },
+  { rootDeckName: 'Js', trainings: jsTrainings },
+  { rootDeckName: 'English', trainings: englishTrainings },
+  { rootDeckName: 'C++', trainings: cppTrainings },
+  { rootDeckName: 'Python', trainings: pythonTrainings },
+  { rootDeckName: 'Cooking', trainings: cookingTrainings },
+];
+
+const trainingDecksSettings = {
+  trainingDecks: {
+    Js: {
+      subdecksNames: ['Basics', 'Advanced'],
+      parentsNames: ['IT', 'Programming languages'],
+    },
+    Python: {
+      subdecksNames: ['Libraries', 'Advanced'],
+      parentsNames: ['IT', 'Programming languages'],
+    },
+  },
+  split: (root: string, subdeck: string) => {
+    console.info('split', root, subdeck);
+  },
+  merge: (root: string, subdeck: string) => {
+    console.info('merge', root, subdeck);
+  },
+};
+
+const study = {
+  trainingDecks,
+  trainingDecksSettings,
 };
 
 const appData = {
@@ -598,7 +650,6 @@ const appData = {
   notifications,
   overview,
   study,
-  training,
 };
 
 export default appData;

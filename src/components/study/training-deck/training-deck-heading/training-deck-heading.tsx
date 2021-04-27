@@ -6,23 +6,21 @@ import TrainingsFilterBtn, { DisplayedTrainingType } from '../training-deck-filt
 import TrainingCardsInfo from '../../../cards/training-cards-info';
 import React, { useState } from 'react';
 import { useToggle } from '../../../utils/hooks/use-toggle';
-import { OverdueType } from '../../../cards/notification/notification';
-import { TrainingCardP } from '../../../cards/training-card';
-import { NamedDeck } from '../training-deck';
+import { TrainingDTO } from '../../training/training';
 
-export interface TrainingDeckHeadingBaseP extends NamedDeck {
-  deckName: string;
-  trainings: TrainingCardP[];
+export interface TrainingsGroupDTO {
+  rootDeckName: string;
+  trainings: TrainingDTO[];
 }
 
-export interface TrainingDeckHeadingP extends TrainingDeckHeadingBaseP {
-  setDisplayedTrainings: (v: TrainingCardP[]) => void;
+export interface TrainingDeckHeadingP extends TrainingsGroupDTO {
+  setDisplayedTrainings: (v: TrainingDTO[]) => void;
   collapseId: string;
 }
 
-const TrainingDeckHeading = ({ deckName, trainings, setDisplayedTrainings, collapseId }: TrainingDeckHeadingP) => {
-  const hasDanger = trainings.find((e) => e.overdue === OverdueType.Danger);
-  const hasWarning = !hasDanger && trainings.find((e) => e.overdue === OverdueType.Warning);
+const TrainingDeckHeading = ({ rootDeckName, trainings, setDisplayedTrainings, collapseId }: TrainingDeckHeadingP) => {
+  const hasDanger = trainings.find((e) => e.overdue === 'DANGER');
+  const hasWarning = !hasDanger && trainings.find((e) => e.overdue === 'WARNING');
   const subheaderNames = cn('subheader', pcn('overdue-indicator', { '--warning': hasWarning, '--danger': hasDanger }));
 
   const [isCollapsed, setIsCollapsed] = useToggle(false);
@@ -31,8 +29,8 @@ const TrainingDeckHeading = ({ deckName, trainings, setDisplayedTrainings, colla
   const filter = (option: DisplayedTrainingType) => {
     if (option === DisplayedTrainingType.All) setDisplayedTrainings(trainings);
     else if (option === DisplayedTrainingType.Danger)
-      setDisplayedTrainings(trainings.filter((e) => e.overdue === OverdueType.Danger));
-    else setDisplayedTrainings(trainings.filter((e) => e.overdue === OverdueType.Warning));
+      setDisplayedTrainings(trainings.filter((e) => e.overdue === 'DANGER'));
+    else setDisplayedTrainings(trainings.filter((e) => e.overdue === 'WARNING'));
     setOption(option);
   };
   return (
@@ -45,7 +43,7 @@ const TrainingDeckHeading = ({ deckName, trainings, setDisplayedTrainings, colla
       >
         <CollapseI className={cn('chevron-up-icon', { collapsed: isCollapsed })} />
       </button>
-      <h3 className={'me-auto ' + subheaderNames}>{chop(deckName, 10)}</h3>
+      <h3 className={'me-auto ' + subheaderNames}>{chop(rootDeckName, 10)}</h3>
       {!isCollapsed && <TrainingsFilterBtn currentOption={option} setCurrentOption={filter} />}
       {isCollapsed && <TrainingCardsInfo {...totalRepeatAndLearn} />}
     </div>
