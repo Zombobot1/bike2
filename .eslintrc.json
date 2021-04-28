@@ -9,7 +9,8 @@
     }
   },
   "plugins": [
-    "@typescript-eslint"
+    "@typescript-eslint",
+    "unused-imports"
   ],
   "extends": [
     "eslint:recommended",
@@ -23,7 +24,17 @@
   "rules": {
     "react/prop-types": 0,
     "@typescript-eslint/explicit-module-boundary-types": "off",
-    "react/display-name": 0
+    "react/display-name": 0,
+    "no-unused-vars": "off",
+    "unused-imports/no-unused-imports": "error",
+    "@typescript-eslint/no-unused-vars": ["error", {
+      "vars": "all", "varsIgnorePattern": "^_",
+      "args": "after-used", "argsIgnorePattern": "^_"
+    }],
+    "unused-imports/no-unused-vars": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
+    ]
   },
 
   "settings": {
