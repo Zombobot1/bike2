@@ -4,8 +4,7 @@ import React from 'react';
 
 export const withEmptyValidation = <T,>(Base: ValidatedInputFC<T>) => (props: WithValidationBaseP<T>) => {
   const [errorStr, setErrorStr] = props.error;
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [wasActivated, setWasActivated] = props.activation;
+  const [_, setWasActivated] = props.activation;
   const [value, setValue] = props.value;
   const onChange = (e: ValueUpdate<T>) => {
     const newValue = e.target.value;
