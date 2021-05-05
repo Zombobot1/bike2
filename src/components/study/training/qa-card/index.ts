@@ -1,2 +1,2 @@
-export { QACard } from './q-a-card';
-export type { QACardP } from './q-a-card';
+export { QACard } from './qa-card';
+export type { QACardP } from './qa-card';

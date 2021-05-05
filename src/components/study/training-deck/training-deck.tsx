@@ -3,7 +3,7 @@ import { rnd } from '../../../utils/utils';
 import React, { useEffect, useState } from 'react';
 import TrainingCard from '../../cards/training-card';
 import TrainingDeckHeading, { TrainingsGroupDTO } from './training-deck-heading';
-import { StateT } from '../../forms/hoc/with-validation';
+import { StateT } from '../../../utils/types';
 
 export interface NamedDeck {
   deckName: string;

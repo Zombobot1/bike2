@@ -1,10 +1,10 @@
 import './training-controls.scss';
-import { NumStateT, StateT } from '../../../forms/hoc/with-validation';
 import { capitalizeFirstLetter, cn } from '../../../../utils/utils';
 import { ReactComponent as BackI } from '../../../pages/_sandbox/next-gen/arrow-left-short.svg';
 import React from 'react';
 import { TrainingTimer } from './training-timer';
 import { CardEstimation, CardSide } from '../types';
+import { NumStateT, StateT } from '../../../../utils/types';
 
 export interface TrainingControlsP {
   estimate: (v: CardEstimation) => void;

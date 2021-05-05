@@ -1,23 +1,13 @@
-import { StateT } from '../../../forms/hoc/with-validation';
-import { CardEstimation, CardDTO, CardDTOs, CardSide } from '../types';
+import { CardDTO, CardDTOs, CardEstimation, CardSide } from '../types';
 import { useEffect, useState } from 'react';
 import { estimateAnswer } from '../../../../api/api';
 import { useEffectedState } from '../../training-deck/training-deck';
 import { useMount } from '../../../../utils/hooks-utils';
 import { Fn } from '../../../../utils/types';
-
-type TrainingCardsS = StateT<CardDTOs>;
-
-export const useCardsUpdate = (cardsS: TrainingCardsS) => {
-  const [cards, setCards] = cardsS;
-  const [newCards, setNewCards] = useState<CardDTOs>([]);
-  useEffect(() => {
-    if (!newCards.length) return;
-    setCards([...cards, ...newCards]);
-    setNewCards([]);
-  }, [newCards]);
-  return setNewCards;
-};
+import { useRouter } from '../../../utils/hooks/use-router';
+import { usePagesInfoDispatch } from '../../../context/user-position-provider';
+import { STUDY } from '../../../pages';
+import { TrainingDTO } from './training';
 
 export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);
@@ -31,14 +21,6 @@ export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) =
 
 export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard: Fn) => {
   const [cards, setCards] = useEffectedState<CardDTOs>(initialCards);
-
-  useMount(() => {
-    console.log('mounted');
-    return () => console.log('unmounted');
-  });
-
-  cards.forEach((c) => console.log('cards', c.stageColor));
-  initialCards.forEach((c) => console.log('initialCards', c.stageColor));
 
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const currentCardSideS = useState<CardSide>('FRONT');
@@ -68,4 +50,19 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   }, [cards, isLoading, currentCardIndex]);
 
   return { cards, currentCardSideS, currentCardIndex, timeToAnswerS, estimateCard, timeToFinish, progress };
+};
+
+type OnLastCard = Fn;
+export const usePagesPathUpdate = ({ _id, deckName }: TrainingDTO): OnLastCard => {
+  const { history } = useRouter();
+  const pagesInfoDispatch = usePagesInfoDispatch();
+
+  useMount(() => {
+    pagesInfoDispatch({ type: 'SET', payload: { path: [{ id: _id, name: deckName }] } });
+  });
+
+  return () => {
+    history.push(STUDY);
+    pagesInfoDispatch({ type: 'CLEAR' });
+  };
 };

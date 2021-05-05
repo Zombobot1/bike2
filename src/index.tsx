@@ -12,7 +12,6 @@ import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
 import { PagesInfoProvider } from './components/context/user-position-provider';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
 import { startWorker } from './api/fake-api';
 
 let redirect = STUDY;
@@ -32,7 +31,7 @@ ReactDOM.render(
       <InfoProvider>
         <PagesInfoProvider>
           <QueryClientProvider client={queryClient}>
-            <ReactQueryDevtools />
+            {/*<ReactQueryDevtools />*/}
             <Switch>
               <Redirect exact from={_ROOT} to={redirect} />
               {PAGES.map(buildRoutes)}

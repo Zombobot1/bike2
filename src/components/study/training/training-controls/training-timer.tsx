@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { ReactComponent as TimerI } from '../../../icons/hourglass-split.svg';
 import { useInterval } from '../../../utils/hooks/use-interval';
 import { fancyTimerTime } from '../../../../utils/formatting';
-import { NumStateT } from '../../../forms/hoc/with-validation';
+import { NumStateT } from '../../../../utils/types';
 
 export interface TrainingTimerP {
   onTimeout: () => void;

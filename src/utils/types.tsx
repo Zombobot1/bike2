@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type Scroller = {
   scrollFrom: (name: string) => void;
 };
@@ -18,3 +20,8 @@ export type Instantiable = { new (...args: any[]): any };
 export interface WithId {
   _id: string;
 }
+
+export type StateT<T> = [T, React.Dispatch<React.SetStateAction<T>>];
+export type NumStateT = StateT<number>;
+export type StrStateT = StateT<string>;
+export type BoolStateT = StateT<boolean>;
