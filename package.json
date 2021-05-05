@@ -8,7 +8,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/**/*.{tsx,ts} --fix --max-warnings=0",
-    "before-commit": "npm run lint && tsc"
+    "compile": "rimraf build && tsc",
+    "check": "npm run lint && npm run compile",
+    "before-commit": "npm run check && git add .",
+    "after-commit": "npm run check"
   },
   "dependencies": {
     "@nivo/core": "^0.67.0",
@@ -67,6 +70,7 @@
     "msw": "^0.27.1",
     "prettier": "^2.2.1",
     "react-scripts": "^4.0.3",
+    "rimraf": "^2.7.1",
     "sass": "^1.32.8",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
