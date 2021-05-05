@@ -5,6 +5,7 @@ import { ValueUpdate } from '../../../utils/types';
 export type ValidationF<T> = (d: T) => string;
 
 export type StateT<T> = [T, React.Dispatch<React.SetStateAction<T>>];
+export type NumStateT = StateT<number>;
 export type StrStateT = StateT<string>;
 export type BoolStateT = StateT<boolean>;
 

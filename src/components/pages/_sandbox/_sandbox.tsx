@@ -4,10 +4,16 @@ import NavBar from '../../navigation/navbar';
 import Breadcrumb from '../../navigation/breadcrumb';
 import Footer from '../../footer';
 import { useToggle } from '../../utils/hooks/use-toggle';
+import 'swiper/swiper.scss';
+import { getIds } from '../../../utils/utils';
 
-type RecP = { width?: number; height?: number; color?: string };
-const Rec = ({ height = 50, width = 100, color = 'red' }: RecP) => (
-  <div style={{ width: `${width}px`, height: `${height}px`, backgroundColor: color }} />
+const id = getIds();
+
+type RecP = { width?: number; height?: number; color?: string; isHidden?: boolean; _id: string };
+const Rec = ({ height = 50, width = 100, color = 'red', isHidden = false, _id }: RecP) => (
+  <div
+    style={{ width: `${width}px`, height: `${height}px`, backgroundColor: color, display: isHidden ? 'none' : 'block' }}
+  />
 );
 
 const Sandbox = () => {
@@ -21,8 +27,7 @@ const Sandbox = () => {
       <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
-        <Rec />
-
+        <Rec _id={id()} isHidden={true} />
         <Footer className="footer" />
       </main>
     </>

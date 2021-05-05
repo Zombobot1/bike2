@@ -18,7 +18,6 @@ export const useEffectedState = <T,>(init: T): StateT<T> => {
 const TrainingDeck = ({ rootDeckName, trainings }: TrainingsGroupDTO) => {
   const [displayedTrainings, setDisplayedTrainings] = useEffectedState(trainings);
   const collapseId = `c${rnd(1e3)}`;
-  console.log('TrainingDeck rootDeckName', rootDeckName);
   return (
     <div className="training-deck mb-3">
       <TrainingDeckHeading

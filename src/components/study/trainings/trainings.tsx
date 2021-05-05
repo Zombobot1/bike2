@@ -10,7 +10,6 @@ import { TrainingsGroupDTO } from '../training-deck/training-deck-heading';
 import { FetchedData } from '../../utils/hoc/fetched-data';
 
 export const DeckColumns = (columnNumber: number) => (decks: TrainingsGroupDTO[]) => {
-  console.log('DeckColumns decks', decks);
   return (
     <>
       {range(columnNumber).map((i) => (
@@ -31,7 +30,6 @@ const LG = '(max-width: 1200px)';
 export const Trainings = () => {
   const decks = useTrainings();
   const columnNumber = useMedia([MD, LG], [1, 2], 3);
-  console.log(decks);
   return (
     <div className="d-flex decks-to-train">
       <FetchedData Base={DeckColumns(columnNumber)} {...decks} />

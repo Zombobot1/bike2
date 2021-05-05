@@ -39,3 +39,16 @@ export const queryfy = (route: string, args: JSObject) => {
   });
   return result;
 };
+
+export const s = <T>(o: T | undefined): T => {
+  if (!o) throw Error('Object is not safe');
+  return o;
+};
+
+export const getIds = () => {
+  let _id = '-1';
+  return () => {
+    _id = String(+_id + 1);
+    return _id;
+  };
+};

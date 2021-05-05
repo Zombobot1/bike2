@@ -2,23 +2,25 @@ import React, { useEffect } from 'react';
 import { ReactComponent as TimerI } from '../../../icons/hourglass-split.svg';
 import { useInterval } from '../../../utils/hooks/use-interval';
 import { fancyTimerTime } from '../../../../utils/formatting';
-import { StateT } from '../../../forms/hoc/with-validation';
+import { NumStateT } from '../../../forms/hoc/with-validation';
 
 export interface TrainingTimerP {
-  secsLeftS: StateT<number>;
   onTimeout: () => void;
+  timeToAnswerS: NumStateT;
 }
 
-export const TrainingTimer = ({ secsLeftS, onTimeout }: TrainingTimerP) => {
-  const [secsLeft, setSecsLeft] = secsLeftS;
-  useInterval(() => setSecsLeft((s) => s - 1), 1000);
+export const TrainingTimer = ({ onTimeout, timeToAnswerS }: TrainingTimerP) => {
+  const [timeToAnswer, setTimeToAnswer] = timeToAnswerS;
+  useInterval(() => setTimeToAnswer((t) => t - 1), 1e3);
+
   useEffect(() => {
-    if (secsLeft < 0) onTimeout();
-  }, [secsLeft]);
+    if (timeToAnswer < 0) onTimeout();
+  }, [timeToAnswer]);
+
   return (
     <div className="timer">
       <TimerI />
-      <span className="text">{fancyTimerTime(secsLeft)}</span>
+      <span className="text">{fancyTimerTime(timeToAnswer)}</span>
     </div>
   );
 };

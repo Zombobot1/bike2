@@ -19,19 +19,11 @@ export interface CardDTO {
   priority: number;
 }
 
-export interface TrainingMetaInfo {
-  highestPriority: string;
-  updatedAt: string;
-}
+export type CardDTOs = CardDTO[];
+export type CardDTOsP = Promise<CardDTOs>;
 
-export interface UserCardAnswerDTO extends TrainingMetaInfo {
+export interface UserCardAnswerDTO {
   deckId: string;
   cardId: string;
   estimation: CardEstimation;
 }
-
-export interface TrainingUpdateDTO extends TrainingMetaInfo {
-  cards: CardDTO[];
-}
-
-export type TrainingUpdateDTOP = Promise<TrainingUpdateDTO>;

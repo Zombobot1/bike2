@@ -3,6 +3,7 @@ Naming
     DTO - data transfer objects
     ComponentP - interface for a component
     stateS - compact state
+    uObject - universal object which collects the most typical properties of its kind
 
 Each component is exported by default.
 Other auxiliary stuff is exported inline.
