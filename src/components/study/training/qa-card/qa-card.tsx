@@ -12,7 +12,9 @@ export interface QACardP {
 export const QACard = ({ fields, stageColor, side }: QACardP) => {
   return (
     <div className="qa-card">
-      {fields.map((f, i) => (f.side === side ? <Field type={f.type} data={f.data} key={i} /> : null))}
+      <div className="fields-container">
+        {fields.map((f, i) => (f.side === side ? <Field type={f.type} data={f.data} key={i} /> : null))}
+      </div>
       <div className="qa-card-bottom" style={{ backgroundColor: stageColor }} />
     </div>
   );
