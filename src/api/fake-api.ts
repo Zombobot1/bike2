@@ -1,20 +1,32 @@
 import { rest, setupWorker } from 'msw';
-import { card3, trainingDecks } from '../content';
+import { card3, trainingDecks, uTraining } from '../content';
 import { BASE_URL } from './axi';
 import { GET_TRAINING, GET_TRAINING_UPDATE_ON_ANSWER, GET_TRAININGS_GROUPS } from './api';
+import { w, WR } from '../utils/msw-utils';
+
+/* eslint prefer-const: 0 */
+
+let getTrainingsGroups = () => trainingDecks;
+let getTraining = () => uTraining;
+let getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') === '1' ? [card3] : []);
+
+// let isFirst = true;
+// getTraining = () => {
+//   if (isFirst) {
+//     isFirst = false;
+//     return { ...uTraining, cards: [{ ...uCard, stageColor: 'red' }] };
+//   }
+//   return { ...uTraining, cards: [{ ...uCard, stageColor: 'blue' }] };
+// };
+// getTrainingUpdateOnAnswer = () => [];
 
 export const handlers = [
-  rest.get(`${BASE_URL}${GET_TRAININGS_GROUPS}`, async (req, res, ctx) => {
-    return res(ctx.json(trainingDecks));
-  }),
-  rest.get(`${BASE_URL}${GET_TRAINING_UPDATE_ON_ANSWER}`, async (req, res, ctx) => {
-    const id = req.url.searchParams.get('cardId');
-    if (id === '2') return res(ctx.json({ updatedAt: 'now', highestPriority: '2', cards: [card3] }));
-    return res(ctx.json({ updatedAt: 'now', highestPriority: '2', cards: [] }));
-  }),
-  rest.get(`${BASE_URL}${GET_TRAINING}`, async (req, res, ctx) => {
-    return res(ctx.json(trainingDecks[0].trainings[0]));
-  }),
+  rest.get(`${BASE_URL}${GET_TRAININGS_GROUPS}`, w(getTrainingsGroups)),
+  rest.get(`${BASE_URL}${GET_TRAINING_UPDATE_ON_ANSWER}`, w(getTrainingUpdateOnAnswer)),
+  rest.get(`${BASE_URL}${GET_TRAINING}`, w(getTraining)),
 ];
 
-export const worker = setupWorker(...handlers);
+export const startWorker = async () => {
+  const worker = setupWorker(...handlers);
+  await worker.start();
+};

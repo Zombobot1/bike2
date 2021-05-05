@@ -1,82 +1,67 @@
-import { StateT } from '../../../forms/hoc/with-validation';
-import { priorityQueue, PriorityQueue } from '../../../../utils/priority-queue';
-import { CardEstimation, CardDTO } from '../types';
+import { CardDTO, CardDTOs, CardEstimation, CardSide } from '../types';
 import { useEffect, useState } from 'react';
 import { estimateAnswer } from '../../../../api/api';
-import { useEffectedState } from '../../training-deck/training-deck';
+import { useEffectedState, useMount } from '../../../../utils/hooks-utils';
+import { Fn } from '../../../../utils/types';
+import { useRouter } from '../../../utils/hooks/use-router';
+import { usePagesInfoDispatch } from '../../../context/user-position-provider';
+import { STUDY } from '../../../pages';
+import { TrainingDTO } from './training';
 
-type TrainingCardsQueueS = StateT<PriorityQueue<CardDTO>>;
-
-export const useCardsUpdate = (cardsS: TrainingCardsQueueS) => {
-  const [cards, setCards] = cardsS;
-  const [newCards, setNewCards] = useState<CardDTO[]>([]);
-  useEffect(() => {
-    if (!newCards.length) return;
-    setCards(cards.insert(newCards));
-    setNewCards([]);
-  }, [newCards]);
-  return setNewCards;
-};
-
-export const useTrainingProgress = (cardsS: TrainingCardsQueueS) => {
-  const [cards] = cardsS;
-  const [passedCards, setPassedCards] = useState(0);
-  const [totalCards, setTotalCards] = useState(cards.size());
-
+export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);
-  useEffect(() => setTimeToFinish(cards.toArray().reduce((p, e) => p + e.timeToAnswer, 0)), [cards]);
-  const [progress, setProgress] = useState(0);
-  useEffect(() => setProgress(passedCards / totalCards), [passedCards, totalCards]);
+  const timeLeft = (from: number) => cards.slice(from).reduce((p, e) => p + e.timeToAnswer, 0);
+  useEffect(() => setTimeToFinish(timeLeft(currentCardIndex)), [currentCardIndex, cards]);
 
-  return { timeToFinish, progress, setPassedCards, setTotalCards };
+  const [progress, setProgress] = useState(0);
+  useEffect(() => setProgress(currentCardIndex / cards.length), [currentCardIndex, cards]);
+  return { timeToFinish, progress };
 };
 
-const cardsQueue = (initialCards: CardDTO[]) => priorityQueue((e: CardDTO) => e.priority, initialCards);
+export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard: Fn) => {
+  const [cards, setCards] = useEffectedState<CardDTOs>(initialCards);
 
-export const useCards = (
-  trainingId: string,
-  initialCards: CardDTO[],
-  onLastCard: () => void,
-  onNextCard: () => void,
-  updatedAt: string,
-  highestPriority: string,
-) => {
-  const [rawCards] = useEffectedState(initialCards);
-  const [cards, setCards] = useState(cardsQueue(initialCards));
-  useEffect(() => setCards(cardsQueue(rawCards)), [rawCards]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const currentCardSideS = useState<CardSide>('FRONT');
+  const goToNextCard = () => setCurrentCardIndex((i) => (i + 1) % (cards.length + 1));
+  const timeToAnswerS = useState(0);
 
-  const setNewCards = useCardsUpdate([cards, setCards]);
-  const [trainingMetaInfo, setTrainingMetaInfo] = useState({ updatedAt, highestPriority });
-  const { timeToFinish, progress, setPassedCards, setTotalCards } = useTrainingProgress([cards, setCards]);
-
-  const [currentCard, setCurrentCard] = useState(initialCards[0]);
   useEffect(() => {
-    if (cards.size()) setCurrentCard(cards.top());
-  }, [cards]);
-  const [isLoading, setIsLoading] = useState(false);
+    if (currentCardIndex >= cards.length) return;
+    currentCardSideS[1]('FRONT');
+    timeToAnswerS[1](cards[currentCardIndex].timeToAnswer);
+  }, [currentCardIndex]);
 
-  const moveToNextCard = () => {
-    if (cards.size() === 0) return;
-    const newCards = cards.pop();
-    setCards(newCards);
-    setPassedCards((v) => v + 1);
-    onNextCard();
-  };
+  const { timeToFinish, progress } = useTrainingProgress(cards, currentCardIndex);
+  const [isLoading, setIsLoading] = useState(false);
 
   const estimateCard = (e: CardEstimation) => {
     setIsLoading(true);
-    estimateAnswer({ ...trainingMetaInfo, deckId: trainingId, cardId: currentCard._id, estimation: e }).then((res) => {
-      setTotalCards((v) => v + res.cards.length);
-      setNewCards(res.cards);
-      setTrainingMetaInfo({ updatedAt: res.updatedAt, highestPriority: res.highestPriority });
+    estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]._id, estimation: e }).then((cards) => {
+      setCards((cs) => [...cs, ...cards]);
       setIsLoading(false);
     });
-    moveToNextCard();
+    goToNextCard();
   };
 
   useEffect(() => {
-    if (!isLoading && !cards.size()) onLastCard();
-  }, [cards, isLoading]);
+    if (!isLoading && currentCardIndex === cards.length) onLastCard();
+  }, [cards, isLoading, currentCardIndex]);
 
-  return { currentCard, estimateCard, timeToFinish, progress };
+  return { cards, currentCardSideS, currentCardIndex, timeToAnswerS, estimateCard, timeToFinish, progress };
+};
+
+type OnLastCard = Fn;
+export const usePagesPathUpdate = ({ _id, deckName }: TrainingDTO): OnLastCard => {
+  const { history } = useRouter();
+  const pagesInfoDispatch = usePagesInfoDispatch();
+
+  useMount(() => {
+    pagesInfoDispatch({ type: 'SET', payload: { path: [{ id: _id, name: deckName }] } });
+  });
+
+  return () => {
+    history.push(STUDY);
+    pagesInfoDispatch({ type: 'CLEAR' });
+  };
 };

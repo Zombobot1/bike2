@@ -12,14 +12,14 @@ import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
 import { PagesInfoProvider } from './components/context/user-position-provider';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { startWorker } from './api/fake-api';
 
 let redirect = STUDY;
 
 if (process.env.NODE_ENV === 'development') {
   redirect = _SANDBOX;
   (async () => {
-    const { worker } = await import('./api/fake-api');
-    worker.start().catch(console.error);
+    await startWorker();
   })();
 }
 
@@ -31,6 +31,7 @@ ReactDOM.render(
       <InfoProvider>
         <PagesInfoProvider>
           <QueryClientProvider client={queryClient}>
+            {/*<ReactQueryDevtools />*/}
             <Switch>
               <Redirect exact from={_ROOT} to={redirect} />
               {PAGES.map(buildRoutes)}

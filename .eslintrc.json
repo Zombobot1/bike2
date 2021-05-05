@@ -25,9 +25,10 @@
     "react/prop-types": 0,
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "react/display-name": 0,
+    "@typescript-eslint/no-empty-function": 0,
     "no-unused-vars": "off",
-    "unused-imports/no-unused-imports": "error",
-    "@typescript-eslint/no-unused-vars": ["error", {
+    "unused-imports/no-unused-imports": "warn",
+    "@typescript-eslint/no-unused-vars": ["warn", {
       "vars": "all", "varsIgnorePattern": "^_",
       "args": "after-used", "argsIgnorePattern": "^_"
     }],

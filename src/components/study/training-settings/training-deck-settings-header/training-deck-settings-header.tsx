@@ -1,8 +1,8 @@
 import './training-deck-settings-header.scss';
-import { BoolStateT } from '../../../forms/hoc/with-validation';
 import { ReactComponent as Left } from '../../../icons/chevron-left.svg';
 import { cn } from '../../../../utils/utils';
 import React from 'react';
+import { BoolStateT } from '../../../../utils/types';
 
 export interface TrainingDeckSettingsHeaderP {
   deckName: string;

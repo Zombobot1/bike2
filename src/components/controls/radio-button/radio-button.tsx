@@ -1,5 +1,5 @@
-import { StrStateT } from '../../forms/hoc/with-validation';
 import React from 'react';
+import { StrStateT } from '../../../utils/types';
 
 export interface RadioButtonP {
   id: string;

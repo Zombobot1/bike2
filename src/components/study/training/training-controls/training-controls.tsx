@@ -1,15 +1,15 @@
 import './training-controls.scss';
-import { StateT } from '../../../forms/hoc/with-validation';
 import { capitalizeFirstLetter, cn } from '../../../../utils/utils';
 import { ReactComponent as BackI } from '../../../pages/_sandbox/next-gen/arrow-left-short.svg';
 import React from 'react';
 import { TrainingTimer } from './training-timer';
 import { CardEstimation, CardSide } from '../types';
+import { NumStateT, StateT } from '../../../../utils/types';
 
 export interface TrainingControlsP {
-  cardSideS: StateT<CardSide>;
-  secsLeftS: StateT<number>;
   estimate: (v: CardEstimation) => void;
+  currentCardSideS: StateT<CardSide>;
+  timeToAnswerS: NumStateT;
 }
 
 export interface EstimationBtnP {
@@ -24,21 +24,21 @@ export const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP
   </button>
 );
 
-export const TrainingControls = ({ cardSideS, secsLeftS, estimate }: TrainingControlsP) => {
-  const [cardSide, setCardSide] = cardSideS;
-
+export const TrainingControls = ({ estimate, timeToAnswerS, currentCardSideS }: TrainingControlsP) => {
   const fail = () => estimate('BAD');
 
-  const backICN = cn('bi bi-arrow-left-short transparent-button', { invisible: cardSide === 'FRONT' });
+  const [currentCardSide, setCurrentSide] = currentCardSideS;
+
+  const backICN = cn('bi bi-arrow-left-short transparent-button', { invisible: currentCardSide === 'FRONT' });
   return (
     <div className="controls">
-      <BackI className={backICN} onClick={() => setCardSide('FRONT')} />
-      {cardSide === 'FRONT' && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={() => setCardSide('BACK')}>
+      <BackI className={backICN} onClick={() => setCurrentSide('FRONT')} />
+      {currentCardSide === 'FRONT' && (
+        <button className="btn btn-lg btn-primary estimate-btn" onClick={() => setCurrentSide('BACK')}>
           Estimate
         </button>
       )}
-      {cardSide === 'BACK' && (
+      {currentCardSide === 'BACK' && (
         <div className="btn-group" role="group">
           <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'BAD'} />
           <EstimationBtn btnClass="btn-warning" estimate={estimate} estimation={'POOR'} />
@@ -46,7 +46,7 @@ export const TrainingControls = ({ cardSideS, secsLeftS, estimate }: TrainingCon
           <EstimationBtn btnClass="btn-info" estimate={estimate} estimation={'EASY'} />
         </div>
       )}
-      <TrainingTimer secsLeftS={secsLeftS} onTimeout={fail} />
+      <TrainingTimer onTimeout={fail} timeToAnswerS={timeToAnswerS} />
     </div>
   );
 };

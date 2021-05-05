@@ -1,5 +1,5 @@
 import { NotificationP } from './components/cards/notification';
-import { FieldT } from './components/study/training/types';
+import { CardDTO, FieldT } from './components/study/training/types';
 import hospital from './hospital.png';
 import { TrainingDTO } from './components/study/training/training';
 import { LastTrainingCardP } from './components/cards/last-training-card';
@@ -348,7 +348,7 @@ const field5: FieldT = {
   side: 'BACK',
 };
 
-export const card1 = {
+export const uCard: CardDTO = {
   _id: '1',
   fields: [field6, field3, field4, field5, field7],
   timeToAnswer: 3000,
@@ -372,21 +372,26 @@ export const card3 = {
   priority: 2,
 };
 
-export const training = {
-  cards: [card1, card2],
-  highestPriority: '0',
-  updatedAt: 'now',
+export const uTraining: TrainingDTO = {
+  _id: '1',
+  overdue: 'NONE',
+  deckColor: '#FF5151',
+  deckName: 'Bayesian approach',
+  deckPath: 'Statistical methods / Lectures',
+  trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  cards: [uCard, card2],
 };
 
 const mathTrainings: TrainingDTO[] = [
+  uTraining,
   {
     _id: '1',
-    overdue: 'NONE',
+    overdue: 'WARNING',
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -395,7 +400,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -404,7 +409,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -413,16 +418,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
-  },
-  {
-    _id: '1',
-    overdue: 'WARNING',
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
 ];
 const jsTrainings: TrainingDTO[] = [
@@ -433,7 +429,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Functions',
     deckPath: 'Basics',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -442,7 +438,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Functions',
     deckPath: 'Basics',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -451,7 +447,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Workers',
     deckPath: 'Browsers',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -460,7 +456,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Async & Await',
     deckPath: 'Advanced',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -469,7 +465,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Proxy',
     deckPath: 'Advanced',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -478,7 +474,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Proxy',
     deckPath: 'Advanced',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
 ];
 const englishTrainings: TrainingDTO[] = [
@@ -489,7 +485,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -498,7 +494,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -507,7 +503,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -516,7 +512,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -525,7 +521,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
 ];
 const cppTrainings: TrainingDTO[] = [
@@ -536,7 +532,7 @@ const cppTrainings: TrainingDTO[] = [
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -545,7 +541,7 @@ const cppTrainings: TrainingDTO[] = [
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -554,7 +550,7 @@ const cppTrainings: TrainingDTO[] = [
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
 ];
 const pythonTrainings: TrainingDTO[] = [
@@ -565,7 +561,7 @@ const pythonTrainings: TrainingDTO[] = [
     deckName: 'Pathlib',
     deckPath: 'Libraries',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -574,7 +570,7 @@ const pythonTrainings: TrainingDTO[] = [
     deckName: 'Pathlib',
     deckPath: 'Libraries',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
 ];
 const cookingTrainings: TrainingDTO[] = [
@@ -585,7 +581,7 @@ const cookingTrainings: TrainingDTO[] = [
     deckName: 'Borsh',
     deckPath: 'Recepies',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
   {
     _id: '1',
@@ -594,7 +590,7 @@ const cookingTrainings: TrainingDTO[] = [
     deckName: 'Borsh',
     deckPath: 'Recepies',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    ...training,
+    cards: [uCard, card2],
   },
 ];
 
