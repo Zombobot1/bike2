@@ -1,8 +1,7 @@
 import { CardDTO, CardDTOs, CardEstimation, CardSide } from '../types';
 import { useEffect, useState } from 'react';
 import { estimateAnswer } from '../../../../api/api';
-import { useEffectedState } from '../../training-deck/training-deck';
-import { useMount } from '../../../../utils/hooks-utils';
+import { useEffectedState, useMount } from '../../../../utils/hooks-utils';
 import { Fn } from '../../../../utils/types';
 import { useRouter } from '../../../utils/hooks/use-router';
 import { usePagesInfoDispatch } from '../../../context/user-position-provider';

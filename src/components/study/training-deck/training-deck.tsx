@@ -1,22 +1,16 @@
 import './training-deck.scss';
 import { rnd } from '../../../utils/utils';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import TrainingCard from '../../cards/training-card';
 import TrainingDeckHeading, { TrainingsGroupDTO } from './training-deck-heading';
-import { StateT } from '../../../utils/types';
+import { useRQState } from '../../../utils/hooks-utils';
 
 export interface NamedDeck {
   deckName: string;
 }
 
-export const useEffectedState = <T,>(init: T): StateT<T> => {
-  const [state, setState] = useState(init);
-  useEffect(() => setState(init), [init]);
-  return [state, setState];
-};
-
 const TrainingDeck = ({ rootDeckName, trainings }: TrainingsGroupDTO) => {
-  const [displayedTrainings, setDisplayedTrainings] = useEffectedState(trainings);
+  const [displayedTrainings, setDisplayedTrainings] = useRQState(trainings);
   const collapseId = `c${rnd(1e3)}`;
   return (
     <div className="training-deck mb-3">
