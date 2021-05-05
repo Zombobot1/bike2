@@ -5,12 +5,24 @@ stages:
 variables:
   BUILD_DIR: "build"
 
-build:
+check:
+  except:
+    - master
   tags: [front]
   stage: build
   script:
     - npm i
-    - npm run before-commit
+    - npm run after-commit
+
+build:
+  only:
+    - master
+  tags: [front]
+  stage: build
+  script:
+    - npm i
+    - npm run after-commit
+    - npm run build
   artifacts:
     paths:
       - $BUILD_DIR
@@ -22,5 +34,4 @@ deploy:
   tags: [front]
   stage: deploy
   script:
-    - npm run build
     - netlify deploy --dir=$BUILD_DIR --prod
