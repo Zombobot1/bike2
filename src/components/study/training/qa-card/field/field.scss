@@ -7,15 +7,20 @@
   line-height: calc(.55em + 3vh);
 }
 
-.qa-card__img {
+.qa-card__image {
   width: 96%;
-  height: auto;
+  height: 45%;
   border-radius: 5px;
-
   margin-bottom: 15px;
+
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .qa-card__audio {
+  padding-bottom: 15px;
+
   .bi {
     width: 60px;
     height: 60px;

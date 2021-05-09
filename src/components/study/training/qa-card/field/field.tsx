@@ -38,13 +38,13 @@ const Player = ({ className, src }: PlayerP) => {
 };
 
 export const Field = ({ data, type }: FieldP) => {
-  if (!data.length) return null;
+  if (!data) return null;
 
   const alignCenter = cn({ 'text-center': data.split(' ').length < 4 });
   return (
     <>
       {type === 'PRE' && <pre className={'qa-card__pre ' + alignCenter}>{data}</pre>}
-      {type === 'IMG' && <img className="qa-card__img" src={data} alt="img" />}
+      {type === 'IMG' && <div className="qa-card__image" style={{ backgroundImage: `url("${data}")` }} />}
       {type === 'AUDIO' && <Player className="qa-card__audio" src={data} />}
     </>
   );
