@@ -4,6 +4,7 @@ import { FieldP } from '../../types';
 import { cn } from '../../../../../utils/utils';
 import { ReactComponent as PlayI } from '../../../../icons/bi-play-circle-fill.svg';
 import { ReactComponent as PauseI } from '../../../../icons/bi-pause-circle-fill.svg';
+import { useMount } from '../../../../../utils/hooks-utils';
 
 export interface PlayerP {
   className?: string;
@@ -37,8 +38,17 @@ const Player = ({ className, src }: PlayerP) => {
   );
 };
 
+const preloadImage = (src: string) => {
+  const img = new Image();
+  img.src = src;
+};
+
 export const Field = ({ data, type }: FieldP) => {
   if (!data) return null;
+
+  useMount(() => {
+    if (type === 'IMG') preloadImage(data); // for chrome mobile
+  });
 
   const alignCenter = cn({ 'text-center': data.split(' ').length < 4 });
   return (

@@ -366,7 +366,7 @@ export const card2 = {
 
 export const card3 = {
   _id: '3',
-  fields: [field1, field2],
+  fields: [field3, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
   priority: 2,
@@ -379,7 +379,7 @@ export const uTraining: TrainingDTO = {
   deckName: 'Bayesian approach',
   deckPath: 'Statistical methods / Lectures',
   trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  cards: [uCard, card2],
+  cards: [card2, uCard],
 };
 
 const mathTrainings: TrainingDTO[] = [

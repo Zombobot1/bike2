@@ -6,4 +6,7 @@ import { getTrainings, getTraining } from '../../api/api';
 export const useTrainings = () => useQuery<TrainingsGroupDTO[], Error>('trainings', () => getTrainings());
 
 export const useTraining = (id: string) =>
-  useQuery<TrainingDTO, Error, TrainingDTO>(['trainings', id], () => getTraining(id), { refetchOnWindowFocus: false });
+  useQuery<TrainingDTO, Error, TrainingDTO>(['trainings', id], () => getTraining(id), {
+    refetchOnWindowFocus: false,
+    cacheTime: 0,
+  });

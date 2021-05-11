@@ -2,7 +2,6 @@ import './_sandbox.scss';
 import React from 'react';
 import NavBar from '../../navigation/navbar';
 import Breadcrumb from '../../navigation/breadcrumb';
-import Footer from '../../footer';
 import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
 import { getIds } from '../../../utils/utils';
@@ -28,7 +27,6 @@ const Sandbox = () => {
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
         <Rec _id={id()} isHidden={true} />
-        <Footer className="footer" />
       </main>
     </>
   );
