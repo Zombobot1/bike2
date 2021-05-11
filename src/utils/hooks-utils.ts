@@ -11,3 +11,18 @@ export const useEffectedState = <T>(init: T): StateT<T> => {
 
 // React Query returns cached value and then actual
 export const useRQState = useEffectedState;
+
+const isDocumentHidden = (): boolean => !document['hidden'];
+
+export const usePageVisibility = () => {
+  const [isVisible, setIsVisible] = useState(isDocumentHidden());
+  const onVisibilityChange = () => setIsVisible(isDocumentHidden());
+
+  useEffect(() => {
+    const visibilityChange = 'visibilitychange';
+    document.addEventListener(visibilityChange, onVisibilityChange, false);
+    return () => document.removeEventListener(visibilityChange, onVisibilityChange);
+  }, []);
+
+  return isVisible;
+};

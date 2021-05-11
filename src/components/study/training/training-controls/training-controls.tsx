@@ -5,6 +5,7 @@ import React from 'react';
 import { TrainingTimer } from './training-timer';
 import { CardEstimation, CardSide } from '../types';
 import { NumStateT, StateT } from '../../../../utils/types';
+import { usePageVisibility } from '../../../../utils/hooks-utils';
 
 export interface TrainingControlsP {
   estimate: (v: CardEstimation) => void;
@@ -28,6 +29,7 @@ export const TrainingControls = ({ estimate, timeToAnswerS, currentCardSideS }: 
   const fail = () => estimate('BAD');
 
   const [currentCardSide, setCurrentSide] = currentCardSideS;
+  const isPageVisible = usePageVisibility();
 
   const backICN = cn('bi bi-arrow-left-short transparent-button', { invisible: currentCardSide === 'FRONT' });
   return (
@@ -46,7 +48,7 @@ export const TrainingControls = ({ estimate, timeToAnswerS, currentCardSideS }: 
           <EstimationBtn btnClass="btn-info" estimate={estimate} estimation={'EASY'} />
         </div>
       )}
-      <TrainingTimer onTimeout={fail} timeToAnswerS={timeToAnswerS} />
+      <TrainingTimer onTimeout={fail} timeToAnswerS={timeToAnswerS} isRunning={isPageVisible} />
     </div>
   );
 };

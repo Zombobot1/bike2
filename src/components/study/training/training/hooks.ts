@@ -24,7 +24,7 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const currentCardSideS = useState<CardSide>('FRONT');
   const goToNextCard = () => setCurrentCardIndex((i) => i + 1);
-  const timeToAnswerS = useState(0);
+  const timeToAnswerS = useState(cards[0].timeToAnswer);
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return;
@@ -37,7 +37,7 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
 
   const estimateCard = (e: CardEstimation) => {
     setIsLoading(true);
-    const hasCards = currentCardIndex < cards.length - 1; // premature optimization?
+    const hasCards = currentCardIndex < cards.length - 1; // premature optimization for slow 3g?
     estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]._id, estimation: e }).then((cards) => {
       setCards((cs) => [...cs, ...cards]);
       setIsLoading(false);
