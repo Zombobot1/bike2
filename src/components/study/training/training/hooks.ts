@@ -24,7 +24,7 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const currentCardSideS = useState<CardSide>('FRONT');
   const goToNextCard = () => setCurrentCardIndex((i) => i + 1);
-  const timeToAnswerS = useState(cards[0].timeToAnswer);
+  const timeToAnswerS = useState(cards[0]?.timeToAnswer || 0);
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return;
@@ -47,10 +47,20 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   };
 
   useEffect(() => {
-    if (!isLoading && currentCardIndex === cards.length) onLastCard();
+    if (!isLoading && currentCardIndex >= cards.length) onLastCard();
   }, [cards, isLoading, currentCardIndex]);
 
-  return { cards, currentCardSideS, currentCardIndex, timeToAnswerS, estimateCard, timeToFinish, progress };
+  return {
+    cards,
+    setCards,
+    currentCardSideS,
+    currentCardIndex,
+    setCurrentCardIndex,
+    timeToAnswerS,
+    estimateCard,
+    timeToFinish,
+    progress,
+  };
 };
 
 type OnLastCard = Fn;

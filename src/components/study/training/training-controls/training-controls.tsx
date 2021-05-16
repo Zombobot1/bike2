@@ -5,12 +5,12 @@ import React from 'react';
 import { TrainingTimer } from './training-timer';
 import { CardEstimation, CardSide } from '../types';
 import { NumStateT, StateT } from '../../../../utils/types';
-import { usePageVisibility } from '../../../../utils/hooks-utils';
 
 export interface TrainingControlsP {
   estimate: (v: CardEstimation) => void;
   currentCardSideS: StateT<CardSide>;
   timeToAnswerS: NumStateT;
+  isTimerRunning: boolean;
 }
 
 export interface EstimationBtnP {
@@ -25,11 +25,10 @@ export const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP
   </button>
 );
 
-export const TrainingControls = ({ estimate, timeToAnswerS, currentCardSideS }: TrainingControlsP) => {
+export const TrainingControls = ({ estimate, timeToAnswerS, currentCardSideS, isTimerRunning }: TrainingControlsP) => {
   const fail = () => estimate('BAD');
 
   const [currentCardSide, setCurrentSide] = currentCardSideS;
-  const isPageVisible = usePageVisibility();
 
   const backICN = cn('bi bi-arrow-left-short transparent-button', { invisible: currentCardSide === 'FRONT' });
   return (
@@ -48,7 +47,7 @@ export const TrainingControls = ({ estimate, timeToAnswerS, currentCardSideS }: 
           <EstimationBtn btnClass="btn-info" estimate={estimate} estimation={'EASY'} />
         </div>
       )}
-      <TrainingTimer onTimeout={fail} timeToAnswerS={timeToAnswerS} isRunning={isPageVisible} />
+      <TrainingTimer onTimeout={fail} timeToAnswerS={timeToAnswerS} isRunning={isTimerRunning} />
     </div>
   );
 };

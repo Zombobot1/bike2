@@ -1,6 +1,6 @@
 import './trainings-heading.scss';
 import React from 'react';
-import DeckSettingsModal, { DeckSettingsModalTrigger } from '../training-settings/deck-settings-modal';
+import DeckSettingsModal, { DeckSettingsModalTrigger } from '../trainings-settings/deck-settings-modal';
 
 const TrainingsHeading = () => (
   <div className="d-flex justify-content-between regular-trainings-heading">

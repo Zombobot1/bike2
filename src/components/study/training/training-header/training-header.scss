@@ -38,5 +38,6 @@
       transform: scale(.9);
       fill: config.$info-color;
     }
+    .bi-trash { fill: config.$danger-color; }
   }
 }

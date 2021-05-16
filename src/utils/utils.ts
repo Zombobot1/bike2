@@ -52,3 +52,5 @@ export const getIds = () => {
     return _id;
   };
 };
+
+export const removeElement = <T>(arr: T[], index: number) => arr.filter((_e, i) => i !== index);
