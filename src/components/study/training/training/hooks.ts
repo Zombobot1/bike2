@@ -1,12 +1,14 @@
 import { CardDTO, CardDTOs, CardEstimation, CardSide } from '../types';
 import { useEffect, useState } from 'react';
-import { estimateAnswer } from '../../../../api/api';
+import { deleteCard, estimateAnswer } from '../../../../api/api';
 import { useEffectedState, useMount } from '../../../../utils/hooks-utils';
-import { Fn } from '../../../../utils/types';
+import { Fn, NumStateT, StateT } from '../../../../utils/types';
 import { useRouter } from '../../../utils/hooks/use-router';
 import { usePagesInfoDispatch } from '../../../context/user-position-provider';
 import { STUDY } from '../../../pages';
 import { TrainingDTO } from './training';
+import { ActionOnCardHandlers } from '../training-controls/training-settings';
+import { removeElement } from '../../../../utils/utils';
 
 export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);
@@ -18,10 +20,38 @@ export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) =
   return { timeToFinish, progress };
 };
 
+export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardIndexS: NumStateT) => {
+  const [cards, setCards] = cardsS;
+  const [currentCardIndex, setCurrentCardIndex] = currentCardIndexS;
+
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
+  const pauseTimer = () => setIsTimerRunning(false);
+  const resumeTimer = () => setIsTimerRunning(true);
+
+  const cardEditingHandlers: ActionOnCardHandlers = {
+    onModalShow: pauseTimer,
+    onModalClose: resumeTimer,
+    onCardDelete: async () => {
+      await deleteCard(cards[currentCardIndex]._id);
+      setCards((cs) => {
+        const result = removeElement(cs, currentCardIndex);
+        if (currentCardIndex >= result.length) setCurrentCardIndex((i) => i + 1); // hack to end training
+        return result;
+      });
+    },
+  };
+  return { cardEditingHandlers, isTimerRunning };
+};
+
 export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard: Fn) => {
   const [cards, setCards] = useEffectedState<CardDTOs>(initialCards);
-
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
+
+  const { cardEditingHandlers, isTimerRunning } = useCardActionsHandlers(
+    [cards, setCards],
+    [currentCardIndex, setCurrentCardIndex],
+  );
+
   const currentCardSideS = useState<CardSide>('FRONT');
   const goToNextCard = () => setCurrentCardIndex((i) => i + 1);
   const timeToAnswerS = useState(cards[0]?.timeToAnswer || 0);
@@ -52,13 +82,13 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
 
   return {
     cards,
-    setCards,
+    cardEditingHandlers,
     currentCardSideS,
     currentCardIndex,
-    setCurrentCardIndex,
     timeToAnswerS,
     estimateCard,
     timeToFinish,
+    isTimerRunning,
     progress,
   };
 };

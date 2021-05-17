@@ -1,5 +1,5 @@
 import './training.scss';
-import React, { useState } from 'react';
+import React from 'react';
 import { CardDTOs } from '../types';
 import { TrainingHeader } from '../training-header';
 import { TrainingControls } from '../training-controls';
@@ -8,9 +8,6 @@ import { OverdueType } from '../../../cards/notification/notification';
 import { TrainingCardsInfoP } from '../../../cards/training-cards-info';
 import { CardCarousel } from './card-carousel';
 import { usePageVisibility } from '../../../../utils/hooks-utils';
-import { ActionOnCardHandlers } from '../training-controls/training-settings';
-import { removeElement } from '../../../../utils/utils';
-import { deleteCard } from '../../../../api/api';
 
 export interface TrainingDTO {
   _id: string;
@@ -27,34 +24,17 @@ export const Training = (trainingDTO: TrainingDTO) => {
 
   const {
     cards,
-    setCards,
+    cardEditingHandlers,
     currentCardSideS,
     currentCardIndex,
-    setCurrentCardIndex,
     timeToAnswerS,
     estimateCard,
     timeToFinish,
+    isTimerRunning,
     progress,
   } = useCards(trainingDTO._id, trainingDTO.cards, onLastCard);
 
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
-  const pauseTimer = () => setIsTimerRunning(false);
-  const resumeTimer = () => setIsTimerRunning(true);
-
   const isPageVisible = usePageVisibility();
-
-  const cardEditingHandlers: ActionOnCardHandlers = {
-    onModalShow: pauseTimer,
-    onModalClose: resumeTimer,
-    onCardDelete: async () => {
-      await deleteCard(cards[currentCardIndex]._id);
-      setCards((cs) => {
-        const result = removeElement(cs, currentCardIndex);
-        if (currentCardIndex >= result.length) setCurrentCardIndex((i) => i + 1); // hack to end training
-        return result;
-      });
-    },
-  };
 
   return (
     <div className="d-flex flex-column training">

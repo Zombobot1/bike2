@@ -13,7 +13,9 @@ export const QACard = ({ fields, stageColor, side }: QACardP) => {
   return (
     <div className="qa-card">
       <div className="fields-container">
-        {fields.map((f, i) => (f.side === side ? <Field type={f.type} data={f.data} key={i} /> : null))}
+        {fields.map((f, i) =>
+          f.side === side ? <Field type={f.type} data={f.data} key={i} isMediaActive={f.side === 'BACK'} /> : null,
+        )}
       </div>
       <div className="qa-card-bottom" style={{ backgroundColor: stageColor }} />
     </div>

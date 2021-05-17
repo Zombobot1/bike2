@@ -52,7 +52,7 @@ const ModalTemplate = (
 
   return (
     <div className="modal fade" ref={ref} id={id} tabIndex={-1} aria-labelledby={`${id}Label`} aria-hidden="true">
-      <div className="modal-dialog modal-dialog-scrollable">
+      <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
         <div className="modal-content">
           {Header && <Header />}
           <div className="modal-body">
@@ -78,4 +78,4 @@ export const Modal = (id: string, title: string, Body: FC) => () =>
   ModalTemplate(id, Body, ModalHeader(id, title), ClosingFooter);
 
 export const AcceptanceModal = (id: string, onAccept: Fn, onShow: Fn, onClose: Fn) => () =>
-  ModalTemplate(id, () => <span>Are you sure</span>, null, AcceptanceFooter(onAccept), onShow, onClose);
+  ModalTemplate(id, () => <p className="fs-5">Are you sure?</p>, null, AcceptanceFooter(onAccept), onShow, onClose);

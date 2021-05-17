@@ -1,3 +1,5 @@
+@import "../../../../../sass/config";
+
 .qa-card__pre {
   padding-right: 15px;
   overflow-y: hidden;
@@ -21,10 +23,21 @@
 .qa-card__audio {
   padding-bottom: 15px;
 
-  .bi {
+  .play-btn {
     width: 60px;
     height: 60px;
+    border-radius: 50%;
+    padding: 0;
 
-    &:hover { cursor: pointer;  }
+    .bi {
+      width: 40px;
+      height: 40px;
+
+      fill: $white-color;
+    }
+
+    .bi-play-fill {
+      margin-left: 4px;
+    }
   }
 }

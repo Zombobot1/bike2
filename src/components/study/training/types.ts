@@ -2,12 +2,12 @@ export type CardEstimation = 'BAD' | 'POOR' | 'GOOD' | 'EASY';
 
 export type CardSide = 'FRONT' | 'BACK';
 
-export interface FieldP {
+export interface FieldTBase {
   type: 'PRE' | 'IMG' | 'AUDIO';
   data: string;
 }
 
-export interface FieldT extends FieldP {
+export interface FieldT extends FieldTBase {
   side: CardSide;
 }
 

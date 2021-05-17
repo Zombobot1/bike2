@@ -339,7 +339,7 @@ const field6: FieldT = {
 const field7: FieldT = {
   type: 'AUDIO',
   data: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
-  side: 'FRONT',
+  side: 'BACK',
 };
 
 const field5: FieldT = {
