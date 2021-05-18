@@ -1,38 +1,30 @@
 import React from 'react';
+import { capitalizeFirstLetter } from '../../../utils/utils';
 
 export interface TrainingsFilterBtnP {
+  options: DisplayedTrainingType[];
   currentOption: DisplayedTrainingType;
   setCurrentOption: (option: DisplayedTrainingType) => void;
+  isActive?: boolean;
 }
 
-export enum DisplayedTrainingType {
-  All,
-  Warning,
-  Danger,
-}
+export type DisplayedTrainingType = 'ALL' | 'WARNING' | 'DANGER';
 
-const TrainingsFilterBtn = ({ currentOption, setCurrentOption }: TrainingsFilterBtnP) => {
+const TrainingsFilterBtn = ({ options, currentOption, setCurrentOption, isActive = true }: TrainingsFilterBtnP) => {
+  if (!isActive) return null;
   return (
     <>
-      <button className="btn btn-sm btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-        {DisplayedTrainingType[currentOption]}
+      <button className="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+        {capitalizeFirstLetter(currentOption)}
       </button>
       <ul className="dropdown-menu">
-        <li>
-          <div className="dropdown-item" onClick={() => setCurrentOption(DisplayedTrainingType.All)}>
-            All
-          </div>
-        </li>
-        <li>
-          <div className="dropdown-item" onClick={() => setCurrentOption(DisplayedTrainingType.Warning)}>
-            Warning
-          </div>
-        </li>
-        <li>
-          <div className="dropdown-item" onClick={() => setCurrentOption(DisplayedTrainingType.Danger)}>
-            Danger
-          </div>
-        </li>
+        {options.map((o) => (
+          <li key={o}>
+            <div className="dropdown-item" onClick={() => setCurrentOption(o)}>
+              {capitalizeFirstLetter(o)}
+            </div>
+          </li>
+        ))}
       </ul>
     </>
   );

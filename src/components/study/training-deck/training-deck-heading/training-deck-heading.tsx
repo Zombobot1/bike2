@@ -18,18 +18,31 @@ export interface TrainingDeckHeadingP extends TrainingsGroupDTO {
   collapseId: string;
 }
 
+const availableOptions = (trainings: TrainingDTO[]): DisplayedTrainingType[] => {
+  const overdues = [...new Set(trainings.map((t) => t.overdue))];
+  const result: DisplayedTrainingType[] = ['ALL'];
+  if (overdues.includes('WARNING')) result.push('WARNING');
+  if (overdues.includes('DANGER')) result.push('DANGER');
+  return result;
+};
+
+const hasDifferentOverdue = (trainings: TrainingDTO[]): boolean => {
+  if (trainings.length < 2) return false;
+  const firstType = trainings[0].overdue;
+  return Boolean(trainings.slice(1).find((t) => t.overdue !== firstType));
+};
+
 const TrainingDeckHeading = ({ rootDeckName, trainings, setDisplayedTrainings, collapseId }: TrainingDeckHeadingP) => {
   const hasDanger = trainings.find((e) => e.overdue === 'DANGER');
   const hasWarning = !hasDanger && trainings.find((e) => e.overdue === 'WARNING');
   const subheaderNames = cn('subheader', pcn('overdue-indicator', { '--warning': hasWarning, '--danger': hasDanger }));
 
   const [isCollapsed, setIsCollapsed] = useToggle(false);
-  const [option, setOption] = useState(DisplayedTrainingType.All);
+  const [option, setOption] = useState<DisplayedTrainingType>('ALL');
   const totalRepeatAndLearn = totalToRepeatAndToLearn(trainings);
   const filter = (option: DisplayedTrainingType) => {
-    if (option === DisplayedTrainingType.All) setDisplayedTrainings(trainings);
-    else if (option === DisplayedTrainingType.Danger)
-      setDisplayedTrainings(trainings.filter((e) => e.overdue === 'DANGER'));
+    if (option === 'ALL') setDisplayedTrainings(trainings);
+    else if (option === 'DANGER') setDisplayedTrainings(trainings.filter((e) => e.overdue === 'DANGER'));
     else setDisplayedTrainings(trainings.filter((e) => e.overdue === 'WARNING'));
     setOption(option);
   };
@@ -44,7 +57,14 @@ const TrainingDeckHeading = ({ rootDeckName, trainings, setDisplayedTrainings, c
         <CollapseI className={cn('chevron-up-icon', { collapsed: isCollapsed })} />
       </button>
       <h3 className={'me-auto ' + subheaderNames}>{chop(rootDeckName, 10)}</h3>
-      {!isCollapsed && <TrainingsFilterBtn currentOption={option} setCurrentOption={filter} />}
+      {!isCollapsed && (
+        <TrainingsFilterBtn
+          options={availableOptions(trainings)}
+          currentOption={option}
+          setCurrentOption={filter}
+          isActive={hasDifferentOverdue(trainings)}
+        />
+      )}
       {isCollapsed && <TrainingCardsInfo {...totalRepeatAndLearn} />}
     </div>
   );
