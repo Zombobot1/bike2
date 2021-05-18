@@ -26,7 +26,7 @@ const Player = ({ className, src, autoplay = false }: PlayerP) => {
   };
 
   useEffect(() => {
-    // if (autoplay) play();
+    if (autoplay) play();
   }, [audio, autoplay]);
 
   useMount(() => {
