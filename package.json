@@ -18,7 +18,7 @@
     "@nivo/line": "^0.67.0",
     "@nivo/pie": "^0.67.0",
     "axios": "^0.21.1",
-    "bootstrap": "^5.0.0-beta1",
+    "bootstrap": "^5.0.1",
     "class-validator": "^0.12.2",
     "classnames": "^2.2.6",
     "lodash": "^4.17.20",
@@ -29,6 +29,7 @@
     "react-query": "^3.12.1",
     "react-router-dom": "^5.2.0",
     "screenfull": "^5.1.0",
+    "slugify": "^1.5.3",
     "swiper": "^6.5.9"
   },
   "browserslist": {

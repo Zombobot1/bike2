@@ -4,24 +4,24 @@
 .qa-card {
   @extend %ui-card-base;
 
-  height: 100%;
+  border-radius: config.$ui-card-border-radius config.$ui-card-border-radius 0 0 ;
+
+  height: 97%;
   width: 100%;
   z-index: 1;
-  position: absolute;
   padding-right: 0;
+  overflow-y: auto;
 
-  .fields-container {
+  form {
+    width: 100%;
     height: 100%;
-    width: 100%;
-    overflow-y: auto;
   }
 
-  .qa-card-bottom {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 20px;
-    width: 100%;
-    border-radius: 0 0 config.$ui-card-border-radius config.$ui-card-border-radius;
-  }
+}
+
+.qa-card-bottom {
+  height: 20px;
+  width: 100%;
+  transform: translateY(-1px);
+  border-radius: 0 0 config.$ui-card-border-radius config.$ui-card-border-radius;
 }

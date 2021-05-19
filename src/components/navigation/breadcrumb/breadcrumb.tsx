@@ -5,6 +5,7 @@ import React, { FC } from 'react';
 import { ReactComponent as Burger } from './burger.svg';
 import { usePagesInfoDispatch, usePagesInfoState } from '../../context/user-position-provider';
 import { Link } from 'react-router-dom';
+import { safeSplit } from '../../../utils/algorithms';
 
 export interface BreadcrumbP {
   toggleNavbarVisibility: () => void;
@@ -45,11 +46,6 @@ export const AppPageIconLink = ({ to, Icon, className }: AppPageIconLinkP) => {
 };
 
 const TrainingLink = ({ id, name }: IdLinkP) => <Link to={`${STUDY}/${id}`}>{name}</Link>;
-
-const safeSplit = (str: string, sep: string) => {
-  const parts = str.split(sep);
-  return parts.filter((e) => e);
-};
 
 const pageName = (path: string) => {
   const parts = safeSplit(path, '/');

@@ -3,7 +3,7 @@ export type CardEstimation = 'BAD' | 'POOR' | 'GOOD' | 'EASY';
 export type CardSide = 'FRONT' | 'BACK';
 
 export interface FieldTBase {
-  type: 'PRE' | 'IMG' | 'AUDIO';
+  type: 'PRE' | 'IMG' | 'AUDIO' | 'RADIO' | 'INPUT' | 'CHECKS';
   data: string;
 }
 

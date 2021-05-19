@@ -5,6 +5,7 @@ import { cn } from '../../../../../utils/utils';
 import { ReactComponent as PlayI } from '../../../../icons/bi-play-fill.svg';
 import { ReactComponent as PauseI } from '../../../../icons/bi-pause-fill.svg';
 import { useMount } from '../../../../../utils/hooks-utils';
+import { RadioField } from '../../../../pages/_sandbox/_sandbox';
 
 export interface PlayerP {
   className?: string;
@@ -69,6 +70,7 @@ export const Field = ({ data, type, isMediaActive }: FieldP) => {
       {type === 'PRE' && <pre className={'qa-card__pre ' + alignCenter}>{data}</pre>}
       {type === 'IMG' && <div className="qa-card__image" style={{ backgroundImage: `url("${data}")` }} />}
       {type === 'AUDIO' && <Player className="qa-card__audio" src={data} autoplay={isMediaActive} />}
+      {type === 'RADIO' && <RadioField data={data} />}
     </>
   );
 };
