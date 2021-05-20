@@ -1,13 +1,14 @@
 import './_sandbox.scss';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
 import { cn, getIds } from '../../../utils/utils';
 import { FieldT } from '../../study/training/types';
 import { sslugify } from '../../../utils/sslugify';
-import { findAll, safeSplit, shuffle } from '../../../utils/algorithms';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
+import { DeepMap, FieldError, useForm, UseFormRegisterReturn } from 'react-hook-form';
+import { JSObject } from '../../../utils/types';
 
 const id = getIds();
 
@@ -39,19 +40,29 @@ export type Validity = 'VALID' | 'INVALID' | 'NONE';
 export interface RadioElementP {
   radioName: string;
   label: string;
-  validity: Validity;
+  register: UseFormRegisterReturn;
+  validity?: Validity;
   validFeedBack?: string;
+  invalidFeedBack?: string;
 }
-export const RadioElement = ({ radioName, label, validity, validFeedBack }: RadioElementP) => {
+export const RadioElement = ({
+  radioName,
+  label,
+  register,
+  validity = 'NONE',
+  validFeedBack,
+  invalidFeedBack,
+}: RadioElementP) => {
   const id = `${radioName}-${sslugify(label)}`;
   const cns = cn('form-check-input', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' });
   return (
     <div className="form-check">
-      <input className={cns} type="radio" name={radioName} id={id} />
+      <input className={cns} type="radio" {...register} value={label} id={id} />
       <label className="form-check-label" htmlFor={id}>
         {label}
       </label>
       {validFeedBack && <div className="valid-feedback">{validFeedBack}</div>}
+      {invalidFeedBack && <div className="invalid-feedback">{invalidFeedBack}</div>}
     </div>
   );
 };
@@ -59,72 +70,91 @@ export const RadioElement = ({ radioName, label, validity, validFeedBack }: Radi
 export interface RadioData {
   question: string;
   options: string[];
-  correctOption: string;
-  validFeedback?: string;
 }
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Errors = DeepMap<Record<string, any>, FieldError>;
 export interface RadioP extends RadioData {
   radioName: string;
-  checkValidity: boolean;
+  register: UseFormRegisterReturn;
+  errors: Errors;
 }
 
-export const Radio = ({ question, radioName, options, correctOption, validFeedback, checkValidity }: RadioP) => {
+export const Radio = ({ question, radioName, options, register, errors }: RadioP) => {
+  const error = errors[radioName]?.message;
   return (
-    <>
+    <div className={cn('radio', { 'radio--error': error })}>
       <p className="interactive-question">{question}</p>
       {options.map((o, i) => {
-        let validity: Validity = 'NONE';
-        if (checkValidity) validity = o === correctOption ? 'VALID' : 'INVALID';
-        return (
-          <RadioElement radioName={radioName} label={o} key={i} validity={validity} validFeedBack={validFeedback} />
-        );
+        return <RadioElement radioName={radioName} label={o} key={i} register={register} />;
       })}
-    </>
+      {error && <p className="radio__error">{error}</p>}
+    </div>
   );
 };
 
-const OPTIONS_R = /(?:\([*]*\) |\(\([*]*\)\) )/gm;
-const RADIO_SEP = '\n';
-const radioParser = (data: string): RadioData => {
-  const parts = safeSplit(data, RADIO_SEP);
-  if (parts.length < 2) throw new Error('Bad radio data');
-
-  const options = safeSplit(parts[1], OPTIONS_R);
-  const correctOptionIndex = findAll(data, OPTIONS_R).findIndex((s) => s.includes('*'));
-  return { question: parts[0], options, correctOption: options[correctOptionIndex], validFeedback: parts[2] };
-};
-
+// const OPTIONS_R = /(?:\([*]*\) |\(\([*]*\)\) )/gm;
+// const RADIO_SEP = '\n';
+// const radioParser = (data: string): RadioData => {
+//   const parts = safeSplit(data, RADIO_SEP);
+//   if (parts.length < 2) throw new Error('Bad radio data');
+//
+//   const options = safeSplit(parts[1], OPTIONS_R);
+//   const correctOptionIndex = findAll(data, OPTIONS_R).findIndex((s) => s.includes('*'));
+//   return { question: parts[0], options, correctOption: options[correctOptionIndex], validFeedback: parts[2] };
+// };
+//
 export interface RadioFieldP {
   data: string;
 }
-export const RadioField = ({ data }: RadioFieldP) => {
-  const [{ question, options, correctOption, validFeedback }] = useState(radioParser(data));
-  return (
-    <Radio
-      question={question}
-      radioName="radio"
-      options={shuffle(options)}
-      correctOption={correctOption}
-      checkValidity={false}
-      validFeedback={validFeedback}
-    />
-  );
+export const RadioField = ({ data: _data }: RadioFieldP) => {
+  return null;
+  // const [{ question, options, correctOption, validFeedback }] = useState(radioParser(data));
+  // return (
+  //   <Radio
+  //     question={question}
+  //     radioName="radio"
+  //     options={shuffle(options)}
+  //     correctOption={correctOption}
+  //     checkValidity={false}
+  //     validFeedback={validFeedback}
+  //   />
+  // );
 };
 
 const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
+  const {
+    handleSubmit,
+    register,
+    getValues,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data: JSObject) => console.log(data);
+
+  const name = 'radio' as const;
+  const reg = register(name, { validate: () => (getValues(name) ? true : 'Please select something!') });
+
   return (
-    // <div style={{ width: '500px', height: '85vh', position: 'relative', padding: '0', backgroundColor: COLORS.bg }}>
-    //   <Rec>
-    //     <RadioElement validity={'NONE'} label={'label'} radioName={'r'} />
-    //   </Rec>
-    //   // {/*<QACard fields={[field1]} stageColor={'red'} side={'FRONT'} />*/}
+    // <div
+    //   style={{ width: '500px', height: '85vh', position: 'relative', padding: '50px 50px', backgroundColor: COLORS.bg }}
+    // >
+    //   {/*<QACard fields={[field1]} stageColor={'red'} side={'FRONT'} />*/}
     // </div>
     <>
       <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
         <Rec _id={id()} isHidden={true} />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Radio
+            radioName={name}
+            register={reg}
+            question={'Important question'}
+            options={['Right', 'Wrong', 'Also wrong']}
+            errors={errors}
+          />
+          <input type="submit" />
+        </form>
       </main>
     </>
   );

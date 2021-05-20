@@ -1,22 +1,22 @@
 import { ResponsivePie } from '@nivo/pie';
 import React from 'react';
 import { COLORS } from '../../../../config';
-import { CardType } from '../../types';
+import { CardTypeInPieChart } from '../../types';
 import { sum } from '../../../../utils/algorithms';
 
 const chartColors = [COLORS.primary, COLORS.secondary, COLORS.tertiary, COLORS.info];
-const pieChartData = (cardTypes: CardType[]) => {
+const pieChartData = (cardTypes: CardTypeInPieChart[]) => {
   cardTypes.sort((a, b) => b.value - a.value);
   return chartColors.map((e, i) => ({ ...cardTypes[i], color: e }));
 };
 
 export interface PieP {
-  data: CardType[];
+  data: CardTypeInPieChart[];
 }
 
 const CardsTypesPie = ({ data }: PieP) => {
   const pieData = pieChartData(data);
-  const total = sum(data, (p: number, e: CardType) => p + e.value);
+  const total = sum(data, (p: number, e: CardTypeInPieChart) => p + e.value);
   return (
     <ResponsivePie
       data={pieData}

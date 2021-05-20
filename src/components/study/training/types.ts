@@ -11,12 +11,15 @@ export interface FieldT extends FieldTBase {
   side: CardSide;
 }
 
+export type CardType = 'PASSIVE' | 'INTERACTIVE';
+
 export interface CardDTO {
   _id: string;
   fields: FieldT[];
   timeToAnswer: number;
   stageColor: string;
   priority: number;
+  type: CardType;
 }
 
 export type CardDTOs = CardDTO[];

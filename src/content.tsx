@@ -354,22 +354,25 @@ export const uCard: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   priority: 1,
+  type: 'PASSIVE',
 };
 
-export const card2 = {
+export const card2: CardDTO = {
   _id: '2',
   fields: [field1, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
   priority: 2,
+  type: 'PASSIVE',
 };
 
-export const card3 = {
+export const card3: CardDTO = {
   _id: '3',
   fields: [field3, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
   priority: 2,
+  type: 'PASSIVE',
 };
 
 export const uTraining: TrainingDTO = {

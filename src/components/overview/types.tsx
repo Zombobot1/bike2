@@ -1,4 +1,4 @@
-export interface CardType {
+export interface CardTypeInPieChart {
   id: string;
   value: number;
 }

@@ -1,6 +1,22 @@
+@use "../../../sass/config";
 @use "../../../sass/common";
 @use "../../cards/common" as cards;
 @use "../../cards/training-cards-info/training-cards-info";
 
 
+.radio {
+  input {
+    height: 20px;
+    width: 20px;
+    transform: translateY(-4px);
+    margin-right: 10px;
+  }
+}
 
+.radio--error {
+  border-right: solid 0.5px config.$danger-color;
+}
+
+.radio__error {
+  color: config.$danger-color;
+}

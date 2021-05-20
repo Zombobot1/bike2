@@ -1,10 +1,10 @@
 import './cards-types.scss';
 import React from 'react';
-import { CardType } from '../types';
+import { CardTypeInPieChart } from '../types';
 import CardsTypesPie from '../graphs/cards-types-pie';
 
 export interface CardsTypesP {
-  data: CardType[];
+  data: CardTypeInPieChart[];
 }
 
 const CardsTypes = ({ data }: CardsTypesP) => {
