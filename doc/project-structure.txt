@@ -25,7 +25,7 @@ component-condiments
   icons - shared icons and their styles
   utils - shared utility components
   utils.ts - ts code utils
-  types.tsx - all shared types and interfaces
+  types.ts - all shared types and interfaces
 
 component - can contain auxiliary components (in own folders if necessary) which aren't used outside it
   ... - images

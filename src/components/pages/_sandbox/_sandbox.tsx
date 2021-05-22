@@ -2,13 +2,15 @@ import './_sandbox.scss';
 import React, { ReactNode } from 'react';
 import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
-import { cn, getIds } from '../../../utils/utils';
+import { catchError, cn, getIds } from '../../../utils/utils';
 import { FieldT } from '../../study/training/types';
 import { sslugify } from '../../../utils/sslugify';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
-import { DeepMap, FieldError, useForm, UseFormRegisterReturn } from 'react-hook-form';
 import { JSObject } from '../../../utils/types';
+import { FeedbackP, useUForm } from './uform';
+import { useMount } from '../../../utils/hooks-utils';
+import SubmitBtn from '../../forms/submit-btn';
 
 const id = getIds();
 
@@ -38,31 +40,28 @@ export const field2: FieldT = {
 
 export type Validity = 'VALID' | 'INVALID' | 'NONE';
 export interface RadioElementP {
-  radioName: string;
-  label: string;
-  register: UseFormRegisterReturn;
-  validity?: Validity;
-  validFeedBack?: string;
-  invalidFeedBack?: string;
+  name: string;
+  value: string;
+  // onBlur:
+  validity: Validity;
+  isFocused: boolean;
 }
-export const RadioElement = ({
-  radioName,
-  label,
-  register,
-  validity = 'NONE',
-  validFeedBack,
-  invalidFeedBack,
-}: RadioElementP) => {
-  const id = `${radioName}-${sslugify(label)}`;
-  const cns = cn('form-check-input', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' });
+export const URadioElement = ({ name, value, validity, isFocused }: RadioElementP) => {
+  const id = `${name}-${sslugify(value)}`;
+  const options = isFocused ? { autoFocus: true } : {};
   return (
     <div className="form-check">
-      <input className={cns} type="radio" {...register} value={label} id={id} />
+      <input
+        className={cn('form-check-input', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' })}
+        type="radio"
+        name={name}
+        value={value}
+        id={id}
+        {...options}
+      />
       <label className="form-check-label" htmlFor={id}>
-        {label}
+        {value}
       </label>
-      {validFeedBack && <div className="valid-feedback">{validFeedBack}</div>}
-      {invalidFeedBack && <div className="invalid-feedback">{invalidFeedBack}</div>}
     </div>
   );
 };
@@ -72,22 +71,19 @@ export interface RadioData {
   options: string[];
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Errors = DeepMap<Record<string, any>, FieldError>;
 export interface RadioP extends RadioData {
   radioName: string;
-  register: UseFormRegisterReturn;
-  errors: Errors;
 }
 
-export const Radio = ({ question, radioName, options, register, errors }: RadioP) => {
-  const error = errors[radioName]?.message;
+export const URadio = ({ question, radioName: _ }: RadioP) => {
+  // const error = errors[radioName]?.message;
   return (
-    <div className={cn('radio', { 'radio--error': error })}>
+    <div className={cn('radio', { 'radio--error': false })}>
       <p className="interactive-question">{question}</p>
-      {options.map((o, i) => {
-        return <RadioElement radioName={radioName} label={o} key={i} register={register} />;
-      })}
-      {error && <p className="radio__error">{error}</p>}
+      {/*{options.map((o, i) => {*/}
+      {/*  return <URadioElement name={radioName} value={o} key={i} register={register} />;*/}
+      {/*})}*/}
+      {/*{error && <p className="radio__error">{error}</p>}*/}
     </div>
   );
 };
@@ -121,18 +117,88 @@ export const RadioField = ({ data: _data }: RadioFieldP) => {
   // );
 };
 
+export interface UInputElementP {
+  name: string;
+  value: string;
+  label: string;
+  onChange: (v: string) => void;
+  validity: Validity;
+  feedBack?: string;
+}
+export const UInputElement = ({ name, value, label, validity, feedBack = '', onChange }: UInputElementP) => {
+  const id = `${name}-${sslugify(label)}`;
+
+  return (
+    <>
+      <label className="form-label" htmlFor={id}>
+        {label}
+      </label>
+      <input
+        className={cn('form-control', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' })}
+        type="text"
+        name={name}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        id={id}
+      />
+      {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
+      {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
+    </>
+  );
+};
+
+export interface UInputP {
+  name: string;
+  label: string;
+}
+
+export const UInput = ({ name, label }: UInputP) => {
+  const { addField, getFieldInfo, removeField, onChange } = useUForm();
+  const { value, error, praise } = getFieldInfo(name);
+
+  let validity: Validity = 'NONE';
+  if (error) validity = 'INVALID';
+  else if (praise) validity = 'VALID';
+
+  useMount(() => {
+    addField(name);
+    return () => removeField(name);
+  });
+
+  return (
+    <UInputElement
+      name={name}
+      value={value}
+      label={label}
+      onChange={(s) => onChange(name, s)}
+      validity={validity}
+      feedBack={error ? error : praise}
+    />
+  );
+};
+
+const UForm = () => {
+  const onSubmit = async (data: JSObject): FeedbackP => {
+    console.log(data);
+    return [{ name: 'text', error: '', praise: 'Cool!' }];
+  };
+
+  const { submit } = useUForm(onSubmit);
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit().catch(catchError);
+      }}
+    >
+      <UInput name="text" label="Enter sth" />
+      <SubmitBtn className="mt-3" text="Send" />
+    </form>
+  );
+};
+
 const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
-  const {
-    handleSubmit,
-    register,
-    getValues,
-    formState: { errors },
-  } = useForm();
-  const onSubmit = (data: JSObject) => console.log(data);
-
-  const name = 'radio' as const;
-  const reg = register(name, { validate: () => (getValues(name) ? true : 'Please select something!') });
 
   return (
     // <div
@@ -145,16 +211,18 @@ const Sandbox = () => {
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
         <Rec _id={id()} isHidden={true} />
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <Radio
-            radioName={name}
-            register={reg}
-            question={'Important question'}
-            options={['Right', 'Wrong', 'Also wrong']}
-            errors={errors}
-          />
-          <input type="submit" />
-        </form>
+        <UForm />
+
+        {/*<form onSubmit={handleSubmit(onSubmit)}>*/}
+        {/*  <Radio*/}
+        {/*    radioName={name}*/}
+        {/*    register={reg}*/}
+        {/*    question={'Important question'}*/}
+        {/*    options={['Right', 'Wrong', 'Also wrong']}*/}
+        {/*    errors={errors}*/}
+        {/*  />*/}
+        {/*  <input type="submit" />*/}
+        {/*</form>*/}
       </main>
     </>
   );

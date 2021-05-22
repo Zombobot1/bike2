@@ -40,8 +40,8 @@ export const queryfy = (route: string, args: JSObject) => {
   return result;
 };
 
-export const s = <T>(o: T | undefined): T => {
-  if (!o) throw Error('Object is not safe');
+export const safe = <T>(o: T | undefined, error = 'Object is not safe'): T => {
+  if (!o) throw Error(error);
   return o;
 };
 
@@ -54,3 +54,8 @@ export const getIds = () => {
 };
 
 export const removeElement = <T>(arr: T[], index: number) => arr.filter((_e, i) => i !== index);
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const catchError = (e: any) => {
+  throw new Error(e);
+};

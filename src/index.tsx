@@ -13,6 +13,7 @@ import { buildRoutes } from './components/utils/routing';
 import { PagesInfoProvider } from './components/context/user-position-provider';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { startWorker } from './api/fake-api';
+import { RecoilRoot } from 'recoil';
 
 let redirect = STUDY;
 
@@ -31,11 +32,13 @@ ReactDOM.render(
       <InfoProvider>
         <PagesInfoProvider>
           <QueryClientProvider client={queryClient}>
-            {/*<ReactQueryDevtools />*/}
-            <Switch>
-              <Redirect exact from={_ROOT} to={redirect} />
-              {PAGES.map(buildRoutes)}
-            </Switch>
+            <RecoilRoot>
+              {/*<ReactQueryDevtools />*/}
+              <Switch>
+                <Redirect exact from={_ROOT} to={redirect} />
+                {PAGES.map(buildRoutes)}
+              </Switch>
+            </RecoilRoot>
           </QueryClientProvider>
         </PagesInfoProvider>
       </InfoProvider>

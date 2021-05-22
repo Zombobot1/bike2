@@ -1,6 +1,6 @@
 import React, { ReactNodeArray, useEffect, useState } from 'react';
 import SwiperClass from 'swiper/types/swiper-class';
-import { s } from '../../../../utils/utils';
+import { safe } from '../../../../utils/utils';
 import { Swiper } from 'swiper/react';
 import 'swiper/swiper.scss';
 
@@ -17,7 +17,7 @@ export const Presentation = ({ children, currentSlide, className }: Presentation
   useEffect(() => setIsReady(Boolean(swiper)), [swiper]);
 
   useEffect(() => {
-    if (isReady && currentSlide < children.length) s(swiper).slideTo(currentSlide);
+    if (isReady && currentSlide < children.length) safe(swiper).slideTo(currentSlide);
   }, [currentSlide]);
 
   return (
