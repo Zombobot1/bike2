@@ -13,10 +13,10 @@
   }
 }
 
-.radio--error {
-  border-right: solid 0.5px config.$danger-color;
-}
-
 .radio__error {
   color: config.$danger-color;
+}
+
+.radio__success {
+  color: config.$success-color;
 }

@@ -8,7 +8,7 @@ import { sslugify } from '../../../utils/sslugify';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
 import { JSObject } from '../../../utils/types';
-import { FeedbackP, useUForm } from './uform';
+import { EstimationsP, useUForm } from './uform';
 import { useMount } from '../../../utils/hooks-utils';
 import SubmitBtn from '../../forms/submit-btn';
 
@@ -41,26 +41,27 @@ export const field2: FieldT = {
 export type Validity = 'VALID' | 'INVALID' | 'NONE';
 export interface RadioElementP {
   name: string;
-  value: string;
-  // onBlur:
+  label: string;
+  onChange: (v: string) => void;
   validity: Validity;
-  isFocused: boolean;
 }
-export const URadioElement = ({ name, value, validity, isFocused }: RadioElementP) => {
-  const id = `${name}-${sslugify(value)}`;
-  const options = isFocused ? { autoFocus: true } : {};
+export const URadioElement = ({ name, label, validity, onChange }: RadioElementP) => {
+  const id = `${name}-${sslugify(label)}`;
   return (
     <div className="form-check">
       <input
         className={cn('form-check-input', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' })}
         type="radio"
         name={name}
-        value={value}
+        value={label}
+        onClick={() => {
+          console.log('clicked', label);
+          onChange(label);
+        }}
         id={id}
-        {...options}
       />
       <label className="form-check-label" htmlFor={id}>
-        {value}
+        {label}
       </label>
     </div>
   );
@@ -72,18 +73,34 @@ export interface RadioData {
 }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export interface RadioP extends RadioData {
-  radioName: string;
+  name: string;
 }
 
-export const URadio = ({ question, radioName: _ }: RadioP) => {
-  // const error = errors[radioName]?.message;
+export const URadio = ({ name, question, options }: RadioP) => {
+  const { addField, getFieldInfo, removeField, onChange } = useUForm();
+  const { validationError, value, correctAnswer, feedback } = getFieldInfo(name);
+
+  useMount(() => {
+    addField(name);
+    return () => removeField(name);
+  });
+
   return (
-    <div className={cn('radio', { 'radio--error': false })}>
+    <div className="radio">
       <p className="interactive-question">{question}</p>
-      {/*{options.map((o, i) => {*/}
-      {/*  return <URadioElement name={radioName} value={o} key={i} register={register} />;*/}
-      {/*})}*/}
-      {/*{error && <p className="radio__error">{error}</p>}*/}
+      {options.map((o, i) => {
+        let validity: Validity = 'NONE';
+        if (validationError) validity = 'INVALID';
+        else if (correctAnswer && feedback) {
+          if (o === correctAnswer) validity = 'VALID';
+          else if (o === value) validity = 'INVALID';
+          else validity = 'NONE';
+        } else if (!correctAnswer && feedback) validity = value === o ? 'VALID' : 'NONE';
+        return <URadioElement key={i} name={name} label={o} validity={validity} onChange={(v) => onChange(name, v)} />;
+      })}
+      {validationError && <p className="radio__error">{validationError}</p>}
+      {correctAnswer && <p className="radio__error">{feedback}</p>}
+      {!correctAnswer && feedback && <p className="radio__success">{feedback}</p>}
     </div>
   );
 };
@@ -149,16 +166,16 @@ export const UInputElement = ({ name, value, label, validity, feedBack = '', onC
 
 export interface UInputP {
   name: string;
-  label: string;
+  question: string;
 }
 
-export const UInput = ({ name, label }: UInputP) => {
+export const UInput = ({ name, question }: UInputP) => {
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
-  const { value, error, praise } = getFieldInfo(name);
+  const { value, validationError, feedback } = getFieldInfo(name);
 
   let validity: Validity = 'NONE';
-  if (error) validity = 'INVALID';
-  else if (praise) validity = 'VALID';
+  if (validationError) validity = 'INVALID';
+  else if (feedback) validity = 'VALID';
 
   useMount(() => {
     addField(name);
@@ -169,18 +186,18 @@ export const UInput = ({ name, label }: UInputP) => {
     <UInputElement
       name={name}
       value={value}
-      label={label}
+      label={question}
       onChange={(s) => onChange(name, s)}
       validity={validity}
-      feedBack={error ? error : praise}
+      feedBack={validationError ? validationError : feedback}
     />
   );
 };
 
 const UForm = () => {
-  const onSubmit = async (data: JSObject): FeedbackP => {
+  const onSubmit = async (data: JSObject): EstimationsP => {
     console.log(data);
-    return [{ name: 'text', error: '', praise: 'Cool!' }];
+    return [{ name: 'radio', correctAnswer: 'o3', feedback: 'Wrong' }];
   };
 
   const { submit } = useUForm(onSubmit);
@@ -191,7 +208,8 @@ const UForm = () => {
         submit().catch(catchError);
       }}
     >
-      <UInput name="text" label="Enter sth" />
+      {/*<UInput name="text" question="Enter sth" />*/}
+      <URadio name={'radio'} question={'Select sth'} options={['o1', 'o2', 'o3']} />
       <SubmitBtn className="mt-3" text="Send" />
     </form>
   );

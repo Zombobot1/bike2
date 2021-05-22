@@ -4,8 +4,9 @@ import { atom, useRecoilState } from 'recoil';
 
 export interface UFieldInfo {
   value: string;
-  error: string;
-  praise: string;
+  validationError: string;
+  correctAnswer: string;
+  feedback: string;
 }
 
 export interface UField extends UFieldInfo {
@@ -14,27 +15,29 @@ export interface UField extends UFieldInfo {
 }
 
 export type UFields = UField[];
+export type Estimation = { name: string; correctAnswer: string; feedback: string };
 
-export type Feedback = { name: string; error: string; praise: string }[];
-export type FeedbackP = Promise<Feedback>;
-type OnSubmit = (data: JSObjectStr) => FeedbackP;
+export type Estimations = Estimation[];
+export type EstimationsP = Promise<Estimations>;
+type OnSubmit = (data: JSObjectStr) => EstimationsP;
 
-const onSubmitDefault = async (_: JSObjectStr): FeedbackP => Promise.resolve([]);
+const onSubmitDefault = async (_: JSObjectStr): EstimationsP => Promise.resolve([]);
 
 const _required = (value: string): string => (value ? '' : 'This is a required field!');
 
-const _applyServerValidation = (fields: UFields, feedback: Feedback): UFields =>
-  feedback.map(
-    ({ name, error, praise }, i): UField => ({
+const _applyServerValidation = (fields: UFields, estimations: Estimations): UFields =>
+  estimations.map(
+    ({ name, correctAnswer, feedback }, i): UField => ({
       name,
-      praise,
-      error,
+      feedback,
+      correctAnswer,
+      validationError: '',
       value: fields[i].value,
       validator: _required,
     }),
   );
 
-const _validate = (fields: UFields): UFields => fields.map((f) => ({ ...f, error: f.validator(f.value) }));
+const _validate = (fields: UFields): UFields => fields.map((f) => ({ ...f, validationError: f.validator(f.value) }));
 
 const _data = (fields: UFields): JSObjectStr => {
   const result: JSObjectStr = {};
@@ -44,7 +47,7 @@ const _data = (fields: UFields): JSObjectStr => {
   return result;
 };
 
-const _isValid = (fields: UFields): boolean => !fields.find((f) => f.error);
+const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);
 
 class UFormState {
   fields: UFields = [];
@@ -69,7 +72,7 @@ export const useUForm = (onSubmit?: OnSubmit) => {
   const [form, setForm] = useRecoilState(uformState);
   const mutateFields = (f: (old: UFields) => UFields) =>
     setForm((form) => {
-      // console.log('mutateFields ', form.fields);
+      // console.log('mutateFields ', 'old', form.fields, 'new', f(form.fields));
       return { ...form, fields: f(form.fields) };
     });
   const setFields = (fields: UFields) => setForm((f) => ({ ...f, fields }));
@@ -77,19 +80,25 @@ export const useUForm = (onSubmit?: OnSubmit) => {
 
   const addField = (name: string) => {
     console.log('addField', fields.length);
-    mutateFields((old) => [...old, { name, value: '', validator: _required, error: '', praise: '' }]);
+    mutateFields((old) => [
+      ...old,
+      { name, value: '', validator: _required, validationError: '', feedback: '', correctAnswer: '' },
+    ]);
   };
 
   const removeField = (name: string) => {
     mutateFields((old) => old.filter((f) => f.name !== name));
   };
 
-  const onChange = (name: string, value: string) =>
-    mutateFields((old) => old.map((f) => (f.name === name ? { ...f, value: value, error: f.validator(value) } : f)));
+  const onChange = (name: string, value: string) => {
+    mutateFields((old) =>
+      old.map((f) => (f.name === name ? { ...f, value: value, validationError: f.validator(value) } : f)),
+    );
+  };
 
   const getFieldInfo = (name: string): UFieldInfo => {
     const result = fields.find((f) => f.name === name);
-    if (!result) return { error: '', praise: '', value: '' };
+    if (!result) return { validationError: '', feedback: '', value: '', correctAnswer: '' };
     return result;
   };
 
