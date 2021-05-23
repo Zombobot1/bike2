@@ -1,50 +1,42 @@
-import { JSObjectStr } from '../../../utils/types';
+import { voidP } from '../../../utils/types';
 import { useMount } from '../../../utils/hooks-utils';
-import { atom, useRecoilState } from 'recoil';
+import { atom, useAtom } from 'jotai';
+import { CardEstimation } from '../../study/training/types';
 
 export interface UFieldInfo {
   value: string;
   validationError: string;
-  correctAnswer: string;
-  feedback: string;
+  showAnswer: boolean;
 }
 
 export interface UField extends UFieldInfo {
   name: string;
   validator: (value: string) => string;
+  correctAnswer: string;
+  estimation?: CardEstimation;
 }
-
 export type UFields = UField[];
-export type Estimation = { name: string; correctAnswer: string; feedback: string };
 
+export interface Estimation {
+  name: string;
+  value: string;
+  estimation: CardEstimation;
+}
 export type Estimations = Estimation[];
-export type EstimationsP = Promise<Estimations>;
-type OnSubmit = (data: JSObjectStr) => EstimationsP;
 
-const onSubmitDefault = async (_: JSObjectStr): EstimationsP => Promise.resolve([]);
+type OnSubmit = (estimations: Estimations) => voidP;
+
+const onSubmitDefault = async (_: Estimations) => Promise.resolve();
 
 const _required = (value: string): string => (value ? '' : 'This is a required field!');
 
-const _applyServerValidation = (fields: UFields, estimations: Estimations): UFields =>
-  estimations.map(
-    ({ name, correctAnswer, feedback }, i): UField => ({
-      name,
-      feedback,
-      correctAnswer,
-      validationError: '',
-      value: fields[i].value,
-      validator: _required,
-    }),
-  );
-
 const _validate = (fields: UFields): UFields => fields.map((f) => ({ ...f, validationError: f.validator(f.value) }));
 
-const _data = (fields: UFields): JSObjectStr => {
-  const result: JSObjectStr = {};
-  fields.forEach((f) => {
-    result[f.name] = f.value;
-  });
-  return result;
+const _check = (fields: UFields): UFields =>
+  fields.map((f) => ({ ...f, estimation: f.value === f.correctAnswer ? 'GOOD' : 'BAD', showAnswer: true }));
+
+const _estimations = (fields: UFields): Estimations => {
+  return fields.map(({ name, value, estimation }) => ({ name, value, estimation: estimation || 'BAD' }));
 };
 
 const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);
@@ -54,35 +46,25 @@ class UFormState {
   handleSubmit = onSubmitDefault;
 }
 
-export const uformState = atom({
-  key: 'uform',
-  default: new UFormState(),
-});
-
-// const charCountState = selector({
-//   key: 'charCountState', // unique ID (with respect to other atoms/selectors)
-//   get: ({ get }) => {
-//     const text = get(uformState);
-//     console.log(text.fields);
-//     return text.fields;
-//   },
-// });
+export const uformState = atom(new UFormState());
 
 export const useUForm = (onSubmit?: OnSubmit) => {
-  const [form, setForm] = useRecoilState(uformState);
-  const mutateFields = (f: (old: UFields) => UFields) =>
-    setForm((form) => {
-      // console.log('mutateFields ', 'old', form.fields, 'new', f(form.fields));
-      return { ...form, fields: f(form.fields) };
-    });
+  const [form, setForm] = useAtom(uformState);
+  const mutateFields = (f: (old: UFields) => UFields) => setForm((form) => ({ ...form, fields: f(form.fields) }));
   const setFields = (fields: UFields) => setForm((f) => ({ ...f, fields }));
   const { fields, handleSubmit } = form;
 
-  const addField = (name: string) => {
-    console.log('addField', fields.length);
+  const addField = (name: string, correctAnswer: string) => {
     mutateFields((old) => [
       ...old,
-      { name, value: '', validator: _required, validationError: '', feedback: '', correctAnswer: '' },
+      {
+        name,
+        correctAnswer,
+        value: '',
+        validator: _required,
+        validationError: '',
+        showAnswer: false,
+      },
     ]);
   };
 
@@ -98,19 +80,17 @@ export const useUForm = (onSubmit?: OnSubmit) => {
 
   const getFieldInfo = (name: string): UFieldInfo => {
     const result = fields.find((f) => f.name === name);
-    if (!result) return { validationError: '', feedback: '', value: '', correctAnswer: '' };
+    if (!result) return { validationError: '', value: '', showAnswer: false };
     return result;
   };
 
   const submit = async () => {
     const validatedFields = _validate(fields);
-    if (!_isValid(validatedFields)) {
-      console.log('invalid', validatedFields);
-      return setFields(validatedFields);
-    }
+    if (!_isValid(validatedFields)) return setFields(validatedFields);
 
-    const feedBack = await handleSubmit(_data(fields));
-    if (feedBack.length) setFields(_applyServerValidation(fields, feedBack));
+    const checkedFields = _check(validatedFields);
+    setFields(checkedFields);
+    await handleSubmit(_estimations(fields));
   };
 
   useMount(() => {

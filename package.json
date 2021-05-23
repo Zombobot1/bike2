@@ -21,6 +21,7 @@
     "bootstrap": "^5.0.1",
     "class-validator": "^0.12.2",
     "classnames": "^2.2.6",
+    "jotai": "^0.16.6",
     "lodash": "^4.17.20",
     "popper.js": "^1.16.1",
     "query-string": "^6.13.7",
@@ -28,7 +29,6 @@
     "react-dom": "^17.0.1",
     "react-query": "^3.12.1",
     "react-router-dom": "^5.2.0",
-    "recoil": "^0.3.1",
     "screenfull": "^5.1.0",
     "slugify": "^1.5.3",
     "swiper": "^6.5.9"

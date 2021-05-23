@@ -7,8 +7,7 @@ import { FieldT } from '../../study/training/types';
 import { sslugify } from '../../../utils/sslugify';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
-import { JSObject } from '../../../utils/types';
-import { EstimationsP, useUForm } from './uform';
+import { Estimations, useUForm } from './uform';
 import { useMount } from '../../../utils/hooks-utils';
 import SubmitBtn from '../../forms/submit-btn';
 
@@ -31,13 +30,6 @@ export const field1: FieldT = {
   side: 'FRONT',
 };
 
-export const field2: FieldT = {
-  type: 'PRE',
-  data:
-    'awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj awdijawidjoiawjdoaiwj ',
-  side: 'FRONT',
-};
-
 export type Validity = 'VALID' | 'INVALID' | 'NONE';
 export interface RadioElementP {
   name: string;
@@ -54,10 +46,7 @@ export const URadioElement = ({ name, label, validity, onChange }: RadioElementP
         type="radio"
         name={name}
         value={label}
-        onClick={() => {
-          console.log('clicked', label);
-          onChange(label);
-        }}
+        onClick={() => onChange(label)}
         id={id}
       />
       <label className="form-check-label" htmlFor={id}>
@@ -67,21 +56,23 @@ export const URadioElement = ({ name, label, validity, onChange }: RadioElementP
   );
 };
 
-export interface RadioData {
+export interface Question {
   question: string;
+  correctAnswer: string;
+  explanation: string;
+}
+
+export interface RadioData extends Question {
   options: string[];
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export interface RadioP extends RadioData {
-  name: string;
-}
 
-export const URadio = ({ name, question, options }: RadioP) => {
+export const URadio = ({ question, correctAnswer, explanation, options }: RadioData) => {
+  const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
-  const { validationError, value, correctAnswer, feedback } = getFieldInfo(name);
+  const { validationError, value, showAnswer } = getFieldInfo(name);
 
   useMount(() => {
-    addField(name);
+    addField(name, correctAnswer);
     return () => removeField(name);
   });
 
@@ -91,16 +82,16 @@ export const URadio = ({ name, question, options }: RadioP) => {
       {options.map((o, i) => {
         let validity: Validity = 'NONE';
         if (validationError) validity = 'INVALID';
-        else if (correctAnswer && feedback) {
+        else if (showAnswer && value !== correctAnswer) {
           if (o === correctAnswer) validity = 'VALID';
           else if (o === value) validity = 'INVALID';
           else validity = 'NONE';
-        } else if (!correctAnswer && feedback) validity = value === o ? 'VALID' : 'NONE';
+        } else if (showAnswer && value === correctAnswer) validity = value === o ? 'VALID' : 'NONE';
         return <URadioElement key={i} name={name} label={o} validity={validity} onChange={(v) => onChange(name, v)} />;
       })}
       {validationError && <p className="radio__error">{validationError}</p>}
-      {correctAnswer && <p className="radio__error">{feedback}</p>}
-      {!correctAnswer && feedback && <p className="radio__success">{feedback}</p>}
+      {showAnswer && value !== correctAnswer && <p className="radio__error">{explanation}</p>}
+      {showAnswer && value === correctAnswer && <p className="radio__success">{explanation}</p>}
     </div>
   );
 };
@@ -164,21 +155,17 @@ export const UInputElement = ({ name, value, label, validity, feedBack = '', onC
   );
 };
 
-export interface UInputP {
-  name: string;
-  question: string;
-}
-
-export const UInput = ({ name, question }: UInputP) => {
+export const UInput = ({ question, correctAnswer, explanation }: Question) => {
+  const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
-  const { value, validationError, feedback } = getFieldInfo(name);
+  const { value, validationError, showAnswer } = getFieldInfo(name);
 
   let validity: Validity = 'NONE';
   if (validationError) validity = 'INVALID';
-  else if (feedback) validity = 'VALID';
+  else if (showAnswer) validity = value === correctAnswer ? 'VALID' : 'INVALID';
 
   useMount(() => {
-    addField(name);
+    addField(name, correctAnswer);
     return () => removeField(name);
   });
 
@@ -189,15 +176,14 @@ export const UInput = ({ name, question }: UInputP) => {
       label={question}
       onChange={(s) => onChange(name, s)}
       validity={validity}
-      feedBack={validationError ? validationError : feedback}
+      feedBack={validationError ? validationError : explanation}
     />
   );
 };
 
 const UForm = () => {
-  const onSubmit = async (data: JSObject): EstimationsP => {
+  const onSubmit = async (data: Estimations) => {
     console.log(data);
-    return [{ name: 'radio', correctAnswer: 'o3', feedback: 'Wrong' }];
   };
 
   const { submit } = useUForm(onSubmit);
@@ -209,7 +195,7 @@ const UForm = () => {
       }}
     >
       {/*<UInput name="text" question="Enter sth" />*/}
-      <URadio name={'radio'} question={'Select sth'} options={['o1', 'o2', 'o3']} />
+      <URadio question={'Select sth'} correctAnswer={'o2'} explanation={'Cuz'} options={['o1', 'o2', 'o3']} />
       <SubmitBtn className="mt-3" text="Send" />
     </form>
   );
