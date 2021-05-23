@@ -55,9 +55,10 @@ const preloadImage = (src: string) => {
 
 export interface FieldP extends FieldTBase {
   isMediaActive: boolean;
+  isCurrent: boolean;
 }
 
-export const Field = ({ data, type, isMediaActive }: FieldP) => {
+export const Field = ({ data, type, isMediaActive, isCurrent }: FieldP) => {
   if (!data) return null;
 
   useMount(() => {
@@ -70,7 +71,7 @@ export const Field = ({ data, type, isMediaActive }: FieldP) => {
       {type === 'PRE' && <pre className={'qa-card__pre ' + alignCenter}>{data}</pre>}
       {type === 'IMG' && <div className="qa-card__image" style={{ backgroundImage: `url("${data}")` }} />}
       {type === 'AUDIO' && <Player className="qa-card__audio" src={data} autoplay={isMediaActive} />}
-      {type === 'RADIO' && <RadioField data={data} />}
+      {type === 'RADIO' && <RadioField data={data} isCurrent={isCurrent} />}
     </>
   );
 };

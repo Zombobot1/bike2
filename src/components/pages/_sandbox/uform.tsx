@@ -1,4 +1,3 @@
-import { voidP } from '../../../utils/types';
 import { useMount } from '../../../utils/hooks-utils';
 import { atom, useAtom } from 'jotai';
 import { CardEstimation } from '../../study/training/types';
@@ -24,16 +23,22 @@ export interface Estimation {
 }
 export type Estimations = Estimation[];
 
-type OnSubmit = (estimations: Estimations) => voidP;
+type OnSubmit = (estimations: Estimations) => void;
 
-const onSubmitDefault = async (_: Estimations) => Promise.resolve();
+const onSubmitDefault = (_: Estimations) => {};
 
 const _required = (value: string): string => (value ? '' : 'This is a required field!');
 
 const _validate = (fields: UFields): UFields => fields.map((f) => ({ ...f, validationError: f.validator(f.value) }));
 
 const _check = (fields: UFields): UFields =>
-  fields.map((f) => ({ ...f, estimation: f.value === f.correctAnswer ? 'GOOD' : 'BAD', showAnswer: true }));
+  fields.map(
+    (f): UField => ({
+      ...f,
+      estimation: f.value === f.correctAnswer ? 'GOOD' : 'BAD',
+      showAnswer: true,
+    }),
+  );
 
 const _estimations = (fields: UFields): Estimations => {
   return fields.map(({ name, value, estimation }) => ({ name, value, estimation: estimation || 'BAD' }));
@@ -41,18 +46,30 @@ const _estimations = (fields: UFields): Estimations => {
 
 const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);
 
-class UFormState {
+const _hideAnswers = (fields: UFields): UFields => {
+  return fields.map((f) => ({ ...f, showAnswer: false }));
+};
+
+export class UFormState {
   fields: UFields = [];
   handleSubmit = onSubmitDefault;
+  isSubmitted = false;
 }
 
-export const uformState = atom(new UFormState());
+export const uformAtom = atom(new UFormState());
 
 export const useUForm = (onSubmit?: OnSubmit) => {
-  const [form, setForm] = useAtom(uformState);
-  const mutateFields = (f: (old: UFields) => UFields) => setForm((form) => ({ ...form, fields: f(form.fields) }));
+  const [form, setForm] = useAtom(uformAtom);
+  const { fields, handleSubmit, isSubmitted } = form;
+
+  const setIsSubmitted = (isSubmitted: boolean) => setForm((f) => ({ ...f, isSubmitted }));
+
+  const mutateFields = (f: (old: UFields) => UFields) =>
+    setForm((form) => {
+      if (!form.isSubmitted) return { ...form, fields: f(form.fields) };
+      return { ...form, isSubmitted: false, fields: _hideAnswers(f(form.fields)) };
+    });
   const setFields = (fields: UFields) => setForm((f) => ({ ...f, fields }));
-  const { fields, handleSubmit } = form;
 
   const addField = (name: string, correctAnswer: string) => {
     mutateFields((old) => [
@@ -84,13 +101,16 @@ export const useUForm = (onSubmit?: OnSubmit) => {
     return result;
   };
 
-  const submit = async () => {
+  const submit = () => {
+    if (isSubmitted) return;
+
     const validatedFields = _validate(fields);
     if (!_isValid(validatedFields)) return setFields(validatedFields);
 
     const checkedFields = _check(validatedFields);
     setFields(checkedFields);
-    await handleSubmit(_estimations(fields));
+    handleSubmit(_estimations(checkedFields));
+    setIsSubmitted(true);
   };
 
   useMount(() => {
@@ -103,5 +123,6 @@ export const useUForm = (onSubmit?: OnSubmit) => {
     removeField,
     onChange,
     submit,
+    isSubmitted,
   };
 };

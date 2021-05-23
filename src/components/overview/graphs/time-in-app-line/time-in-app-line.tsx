@@ -6,7 +6,7 @@ import { COLORS } from '../../../../config';
 import { transformedMax } from '../../../../utils/algorithms';
 
 const TimeInAppLine = ({ data }: LineGraph) => {
-  const max = transformedMax(data[0].data, (e: Datum) => e.y) * 1.1;
+  const max = transformedMax(data[0].data, (e: Datum) => Number(e.y)) * 1.1;
   const ticks = lineGraphTicks(max, 50, 4);
   return (
     <ResponsiveLine

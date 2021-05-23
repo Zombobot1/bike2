@@ -47,6 +47,7 @@ export const Training = (trainingDTO: TrainingDTO) => {
       />
       <CardCarousel cards={cards} currentCardIndex={currentCardIndex} currentCardSide={currentCardSideS[0]} />
       <TrainingControls
+        cardType={cards[currentCardIndex]?.type || 'PASSIVE'}
         estimate={estimateCard}
         currentCardSideS={currentCardSideS}
         timeToAnswerS={timeToAnswerS}

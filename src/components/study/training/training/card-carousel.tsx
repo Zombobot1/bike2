@@ -19,6 +19,7 @@ export const CardCarousel = ({ cards, currentCardIndex, currentCardSide }: CardC
             fields={c.fields}
             stageColor={c.stageColor}
             side={currentCardIndex === i ? currentCardSide : 'FRONT'}
+            isCurrent={currentCardIndex === i}
           />
         </SwiperSlide>
       ))}

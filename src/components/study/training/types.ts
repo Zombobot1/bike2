@@ -1,4 +1,11 @@
 export type CardEstimation = 'BAD' | 'POOR' | 'GOOD' | 'EASY';
+const WEIGHTS: { [K in CardEstimation]: number } = {
+  EASY: 2,
+  GOOD: 1,
+  POOR: 0,
+  BAD: -1,
+};
+export const cardEstimationToNumber = (a: CardEstimation): number => WEIGHTS[a];
 
 export type CardSide = 'FRONT' | 'BACK';
 
@@ -18,7 +25,6 @@ export interface CardDTO {
   fields: FieldT[];
   timeToAnswer: number;
   stageColor: string;
-  priority: number;
   type: CardType;
 }
 

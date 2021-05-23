@@ -348,13 +348,40 @@ const field5: FieldT = {
   side: 'BACK',
 };
 
+const field8: FieldT = {
+  type: 'RADIO',
+  data: 'Please select one:\n () option 1 (*) option 2\n  Cuz',
+  side: 'FRONT',
+};
+
+const field9: FieldT = {
+  type: 'RADIO',
+  data: 'Please select another one:\n (*) right () wrong\n  Cuz',
+  side: 'FRONT',
+};
+
 export const uCard: CardDTO = {
   _id: '1',
   fields: [field6, field3, field4, field5, field7],
   timeToAnswer: 3000,
   stageColor: 'red',
-  priority: 1,
   type: 'PASSIVE',
+};
+
+export const iCard1: CardDTO = {
+  _id: '10',
+  fields: [field8],
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'INTERACTIVE',
+};
+
+export const iCard2: CardDTO = {
+  _id: '11',
+  fields: [field9],
+  timeToAnswer: 3000,
+  stageColor: 'green',
+  type: 'INTERACTIVE',
 };
 
 export const card2: CardDTO = {
@@ -362,7 +389,6 @@ export const card2: CardDTO = {
   fields: [field1, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
-  priority: 2,
   type: 'PASSIVE',
 };
 
@@ -371,7 +397,6 @@ export const card3: CardDTO = {
   fields: [field3, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
-  priority: 2,
   type: 'PASSIVE',
 };
 
@@ -383,6 +408,16 @@ export const uTraining: TrainingDTO = {
   deckPath: 'Statistical methods / Lectures',
   trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
   cards: [card2, uCard],
+};
+
+export const iTraining: TrainingDTO = {
+  _id: '1',
+  overdue: 'NONE',
+  deckColor: '#FF5151',
+  deckName: 'Bayesian approach',
+  deckPath: 'Statistical methods / Lectures',
+  trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  cards: [iCard1, iCard2],
 };
 
 const mathTrainings: TrainingDTO[] = [

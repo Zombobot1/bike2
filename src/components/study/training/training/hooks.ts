@@ -43,6 +43,9 @@ export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardInde
   return { cardEditingHandlers, isTimerRunning };
 };
 
+type CardTransition = 'TRANSIT' | 'NO_TRANSITION';
+export type EstimateCard = (v: CardEstimation, ct?: CardTransition) => Fn | undefined;
+
 export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard: Fn) => {
   const [cards, setCards] = useEffectedState<CardDTOs>(initialCards);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
@@ -65,15 +68,19 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   const { timeToFinish, progress } = useTrainingProgress(cards, currentCardIndex);
   const [isLoading, setIsLoading] = useState(false);
 
-  const estimateCard = (e: CardEstimation) => {
+  const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'TRANSIT'): Fn | undefined => {
+    // debugger;
     setIsLoading(true);
-    const hasCards = currentCardIndex < cards.length - 1; // premature optimization for slow 3g?
+    const hasCards = currentCardIndex < cards.length - 1;
+
     estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]._id, estimation: e }).then((cards) => {
       setCards((cs) => [...cs, ...cards]);
       setIsLoading(false);
-      if (!hasCards) goToNextCard();
+      if (transition === 'TRANSIT' && !hasCards) goToNextCard();
     });
-    if (hasCards) goToNextCard();
+
+    if (transition === 'TRANSIT' && hasCards) goToNextCard();
+    else if (transition === 'NO_TRANSITION') return goToNextCard;
   };
 
   useEffect(() => {

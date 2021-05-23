@@ -7,7 +7,7 @@ import { FetchedData } from '../../../utils/hoc/fetched-data';
 
 export const TrainingContainer = () => {
   const { query } = useRouter();
-  const training = useTraining(query('id') || '');
+  const training = useTraining(query('id') || '1');
 
   return (
     <div className="d-flex justify-content-center align-items-center training-container">

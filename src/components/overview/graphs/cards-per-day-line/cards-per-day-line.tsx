@@ -6,7 +6,7 @@ import { COLORS } from '../../../../config';
 import { transformedMax } from '../../../../utils/algorithms';
 
 const CardsPerDayLine = ({ data }: LineGraph) => {
-  const dataMax = transformedMax(data[0].data, (e: Datum) => e.y) * 1.1;
+  const dataMax = transformedMax(data[0].data, (e: Datum): number => Number(e.y)) * 1.1;
   const ticks = lineGraphTicks(dataMax, 5, 5);
   return (
     <ResponsiveLine

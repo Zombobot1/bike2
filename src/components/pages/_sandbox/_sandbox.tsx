@@ -1,33 +1,33 @@
 import './_sandbox.scss';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
-import { catchError, cn, getIds } from '../../../utils/utils';
-import { FieldT } from '../../study/training/types';
+import { capitalizeFirstLetter, cn, getIds } from '../../../utils/utils';
 import { sslugify } from '../../../utils/sslugify';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
-import { Estimations, useUForm } from './uform';
+import { uformAtom, UFormState, useUForm } from './uform';
 import { useMount } from '../../../utils/hooks-utils';
 import SubmitBtn from '../../forms/submit-btn';
+import { findAll, safeSplit, shuffle } from '../../../utils/algorithms';
+import { useAtomDevtools } from 'jotai/devtools';
 
 const id = getIds();
 
 type RecP = { width?: number; height?: number; color?: string; isHidden?: boolean; _id?: string; children?: ReactNode };
-const Rec = ({ height = 100, width = 200, color = 'red', isHidden = false, _id = id(), children }: RecP) => (
-  <div
-    style={{ width: `${width}px`, height: `${height}px`, backgroundColor: color, display: isHidden ? 'none' : 'block' }}
-  >
-    {children}
-  </div>
-);
-
-const selection = 'Please select one:\n () option1 (*) option2\n  Right!';
-
-export const field1: FieldT = {
-  type: 'RADIO',
-  data: selection,
-  side: 'FRONT',
+const Rec = ({ height = 100, width = 200, color = 'red', isHidden = false, _id = id(), children }: RecP) => {
+  return (
+    <div
+      style={{
+        width: `${width}px`,
+        height: `${height}px`,
+        backgroundColor: color,
+        display: isHidden ? 'none' : 'block',
+      }}
+    >
+      {children}
+    </div>
+  );
 };
 
 export type Validity = 'VALID' | 'INVALID' | 'NONE';
@@ -39,16 +39,13 @@ export interface RadioElementP {
 }
 export const URadioElement = ({ name, label, validity, onChange }: RadioElementP) => {
   const id = `${name}-${sslugify(label)}`;
+  const cns = cn('form-check-input', {
+    'is-valid': validity === 'VALID',
+    'is-invalid': validity === 'INVALID',
+  });
   return (
-    <div className="form-check">
-      <input
-        className={cn('form-check-input', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' })}
-        type="radio"
-        name={name}
-        value={label}
-        onClick={() => onChange(label)}
-        id={id}
-      />
+    <div className="form-check uradio__input">
+      <input className={cns} type="radio" name={name} value={label} onClick={() => onChange(label)} id={id} />
       <label className="form-check-label" htmlFor={id}>
         {label}
       </label>
@@ -77,7 +74,7 @@ export const URadio = ({ question, correctAnswer, explanation, options }: RadioD
   });
 
   return (
-    <div className="radio">
+    <div className="uradio">
       <p className="interactive-question">{question}</p>
       {options.map((o, i) => {
         let validity: Validity = 'NONE';
@@ -96,33 +93,36 @@ export const URadio = ({ question, correctAnswer, explanation, options }: RadioD
   );
 };
 
-// const OPTIONS_R = /(?:\([*]*\) |\(\([*]*\)\) )/gm;
-// const RADIO_SEP = '\n';
-// const radioParser = (data: string): RadioData => {
-//   const parts = safeSplit(data, RADIO_SEP);
-//   if (parts.length < 2) throw new Error('Bad radio data');
-//
-//   const options = safeSplit(parts[1], OPTIONS_R);
-//   const correctOptionIndex = findAll(data, OPTIONS_R).findIndex((s) => s.includes('*'));
-//   return { question: parts[0], options, correctOption: options[correctOptionIndex], validFeedback: parts[2] };
-// };
-//
+const OPTIONS_R = /(?:\([*]*\) |\(\([*]*\)\) )/gm;
+const RADIO_SEP = '\n';
+const radioParser = (data: string): RadioData => {
+  const parts = safeSplit(data, RADIO_SEP);
+  if (parts.length < 2) throw new Error('Bad radio data');
+
+  const options = safeSplit(parts[1], OPTIONS_R).map((o) => capitalizeFirstLetter(o));
+  const correctOptionIndex = findAll(data, OPTIONS_R).findIndex((s) => s.includes('*'));
+  return {
+    question: capitalizeFirstLetter(parts[0]),
+    options,
+    correctAnswer: options[correctOptionIndex],
+    explanation: parts[2],
+  };
+};
+
+const radioParserShuffled = (data: string): RadioData => {
+  const result = radioParser(data);
+  return { ...result, options: shuffle(result.options) };
+};
+
 export interface RadioFieldP {
   data: string;
+  isCurrent: boolean;
 }
-export const RadioField = ({ data: _data }: RadioFieldP) => {
-  return null;
-  // const [{ question, options, correctOption, validFeedback }] = useState(radioParser(data));
-  // return (
-  //   <Radio
-  //     question={question}
-  //     radioName="radio"
-  //     options={shuffle(options)}
-  //     correctOption={correctOption}
-  //     checkValidity={false}
-  //     validFeedback={validFeedback}
-  //   />
-  // );
+
+export const RadioField = ({ data, isCurrent }: RadioFieldP) => {
+  if (!isCurrent) return null;
+  const [{ question, options, explanation, correctAnswer }] = useState(radioParserShuffled(data));
+  return <URadio question={question} options={options} correctAnswer={correctAnswer} explanation={explanation} />;
 };
 
 export interface UInputElementP {
@@ -181,28 +181,22 @@ export const UInput = ({ question, correctAnswer, explanation }: Question) => {
   );
 };
 
-const UForm = () => {
-  const onSubmit = async (data: Estimations) => {
-    console.log(data);
-  };
+const UF = () => {
+  const { submit, isSubmitted } = useUForm((e) => console.log(e[0]));
 
-  const { submit } = useUForm(onSubmit);
   return (
-    <form
-      onSubmit={(e) => {
-        e.preventDefault();
-        submit().catch(catchError);
-      }}
-    >
-      {/*<UInput name="text" question="Enter sth" />*/}
-      <URadio question={'Select sth'} correctAnswer={'o2'} explanation={'Cuz'} options={['o1', 'o2', 'o3']} />
-      <SubmitBtn className="mt-3" text="Send" />
-    </form>
+    <>
+      <RadioField data={'Q?\n  () wrong (*) right\n  Cuz'} isCurrent={true} />
+      <SubmitBtn onClick={submit} />
+      <p>{String(isSubmitted)}</p>
+    </>
   );
 };
 
 const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
+
+  useAtomDevtools<UFormState>(uformAtom);
 
   return (
     // <div
@@ -215,18 +209,9 @@ const Sandbox = () => {
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
         <Rec _id={id()} isHidden={true} />
-        <UForm />
+        <UF />
 
-        {/*<form onSubmit={handleSubmit(onSubmit)}>*/}
-        {/*  <Radio*/}
-        {/*    radioName={name}*/}
-        {/*    register={reg}*/}
-        {/*    question={'Important question'}*/}
-        {/*    options={['Right', 'Wrong', 'Also wrong']}*/}
-        {/*    errors={errors}*/}
-        {/*  />*/}
-        {/*  <input type="submit" />*/}
-        {/*</form>*/}
+        {/*<TrainingContainer />*/}
       </main>
     </>
   );
