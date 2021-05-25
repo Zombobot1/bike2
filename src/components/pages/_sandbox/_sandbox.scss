@@ -2,21 +2,3 @@
 @use "../../../sass/common";
 @use "../../cards/common" as cards;
 @use "../../cards/training-cards-info/training-cards-info";
-
-
-.uradio {
-  input {
-    height: 20px;
-    width: 20px;
-    transform: translateY(-3px);
-    margin-right: 10px;
-  }
-}
-
-.radio__error {
-  color: config.$danger-color;
-}
-
-.radio__success {
-  color: config.$success-color;
-}

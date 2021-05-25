@@ -11,7 +11,9 @@
     "compile": "rimraf build && tsc",
     "check": "npm run lint && npm run compile",
     "before-commit": "npm run check && git add .",
-    "after-commit": "npm run check"
+    "after-commit": "npm run check",
+    "storybook": "start-storybook -p 6006 -s public",
+    "build-storybook": "build-storybook -s public"
   },
   "dependencies": {
     "@nivo/core": "^0.67.0",
@@ -47,6 +49,13 @@
   },
   "devDependencies": {
     "@popperjs/core": "^2.6.0",
+    "@storybook/addon-actions": "^6.2.9",
+    "@storybook/addon-essentials": "^6.2.9",
+    "@storybook/addon-links": "^6.2.9",
+    "@storybook/node-logger": "^6.2.9",
+    "@storybook/preset-create-react-app": "^3.1.7",
+    "@storybook/preset-scss": "^1.0.3",
+    "@storybook/react": "^6.2.9",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
@@ -61,6 +70,7 @@
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",
     "cross-env": "^7.0.3",
+    "css-loader": "^4.3.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-prettier": "^7.1.0",
     "eslint-plugin-import": "^2.22.1",
@@ -73,11 +83,25 @@
     "prettier": "^2.2.1",
     "react-scripts": "^4.0.3",
     "rimraf": "^2.7.1",
-    "sass": "^1.32.8",
+    "sass": "^1.34.0",
+    "sass-loader": "^10.1.1",
+    "style-loader": "^1.3.0",
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
   "msw": {
     "workerDirectory": "public"
+  },
+  "eslintConfig": {
+    "overrides": [
+      {
+        "files": [
+          "**/*.stories.*"
+        ],
+        "rules": {
+          "import/no-anonymous-default-export": "off"
+        }
+      }
+    ]
   }
 }

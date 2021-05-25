@@ -62,7 +62,7 @@ type GoToNextFn = { go: Fn };
 const InteractiveEstimateBtn = ({ estimate }: InteractiveEstimateBtnP) => {
   const [goToNextCard, setGoToNextCard] = useState<GoToNextFn | null>(null);
 
-  const { submit, isSubmitted } = useUForm((estimations) => {
+  const { submit } = useUForm((estimations) => {
     const finalMark = min(estimations, (e) => cardEstimationToNumber(e.estimation));
     const gtnc = estimate(finalMark.estimation, 'NO_TRANSITION');
     if (gtnc) setGoToNextCard({ go: gtnc });
@@ -75,12 +75,12 @@ const InteractiveEstimateBtn = ({ estimate }: InteractiveEstimateBtnP) => {
   };
   return (
     <>
-      {!isSubmitted && (
+      {!goToNextCard && (
         <button className="btn btn-lg btn-primary estimate-btn" onClick={submit}>
           Estimate
         </button>
       )}
-      {isSubmitted && (
+      {goToNextCard && (
         <button className="btn btn-lg btn-primary estimate-btn" onClick={goToNext}>
           Next
         </button>

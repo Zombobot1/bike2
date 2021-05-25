@@ -1,0 +1,18 @@
+@use "../../../sass/config";
+
+.uradio {
+  input {
+    height: 20px;
+    width: 20px;
+    transform: translateY(-3px);
+    margin-right: 10px;
+  }
+}
+
+.uradio__error {
+  color: config.$danger-color;
+}
+
+.uradio__success {
+  color: config.$success-color;
+}
