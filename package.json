@@ -13,7 +13,8 @@
     "before-commit": "npm run check && git add .",
     "after-commit": "npm run check",
     "storybook": "start-storybook -p 6006 -s public",
-    "build-storybook": "build-storybook -s public"
+    "build-storybook": "build-storybook -s public",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@nivo/core": "^0.67.0",
@@ -79,6 +80,7 @@
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.0.0",
     "eslint-plugin-unused-imports": "^1.1.1",
+    "husky": "^6.0.0",
     "msw": "^0.27.1",
     "prettier": "^2.2.1",
     "react-scripts": "^4.0.3",

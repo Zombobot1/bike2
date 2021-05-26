@@ -2,9 +2,9 @@ import { sslugify } from '../../../utils/sslugify';
 import { cn } from '../../../utils/utils';
 import React from 'react';
 import { Question } from './uradio';
-import { useUForm } from '../../pages/_sandbox/uform';
+import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
-import { Validity } from '../../pages/_sandbox/_sandbox';
+import { Validity } from '../types';
 
 export interface UInputElementP {
   name: string;
@@ -31,7 +31,7 @@ export const UInputElement = ({ name, value, label, validity, feedBack = '', onC
         value={value}
         onChange={(e) => onChange(e.target.value)}
         id={id}
-        readOnly={readonly}
+        disabled={readonly}
       />
       {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
       {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
@@ -39,7 +39,7 @@ export const UInputElement = ({ name, value, label, validity, feedBack = '', onC
   );
 };
 
-export const UInput = ({ question, correctAnswer, explanation }: Question) => {
+export const UInput = ({ question, correctAnswer, explanation, initialAnswer = '' }: Question) => {
   const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { value, validationError, wasSubmitted } = getFieldInfo(name);
@@ -49,7 +49,7 @@ export const UInput = ({ question, correctAnswer, explanation }: Question) => {
   else if (wasSubmitted) validity = value === correctAnswer ? 'VALID' : 'INVALID';
 
   useMount(() => {
-    addField(name, correctAnswer);
+    addField(name, correctAnswer, initialAnswer);
     return () => removeField(name);
   });
 

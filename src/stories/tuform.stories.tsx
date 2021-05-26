@@ -12,30 +12,44 @@ export default {
 
 const Template: Story<TUFormP> = (args) => <TUForm {...args} />;
 
-const q = (question: string, correctAnswer: string, explanation: string) => ({ question, correctAnswer, explanation });
-const basicQ = q('Type: a', 'a', 'Just type it using keyboard');
+const q = (question: string, correctAnswer: string, explanation: string, initialAnswer = '') => ({
+  question,
+  correctAnswer,
+  explanation,
+  initialAnswer,
+});
+const basicQ = q('Type: a', 'a', 'Just type it using keyboard', 'a');
+const basicQ2 = q('Type: b', 'b', 'Just type it using keyboard', 'a');
 const sillyQ = q('Question 1', 'right', 'Cuz');
 
 export const DoNotSubmitIfEmpty = Template.bind({});
 DoNotSubmitIfEmpty.args = {
-  questions: [basicQ],
+  questions: [sillyQ],
   isExtensible: false,
+  submitOneByOne: false,
 };
 
 export const CheckAnswersOnSubmission = Template.bind({});
 CheckAnswersOnSubmission.args = {
-  questions: [basicQ, q('Type: b', 'b', 'Just type it using keyboard')],
+  questions: [basicQ, basicQ2],
   isExtensible: false,
+  submitOneByOne: false,
 };
 
 export const NoDataRaceOnAddRemove = Template.bind({});
 NoDataRaceOnAddRemove.args = {
   questions: [sillyQ],
   isExtensible: true,
+  submitOneByOne: false,
 };
 
 export const ReadOnlyAfterSubmit = Template.bind({});
 ReadOnlyAfterSubmit.args = {
-  questions: [basicQ, q('Type: b', 'b', 'Just type it using keyboard')],
+  questions: [basicQ, basicQ2],
   isExtensible: false,
+  submitOneByOne: false,
 };
+
+export const SequentialSubmit = () => (
+  <TUForm questions={[basicQ, basicQ2]} isExtensible={false} submitOneByOne={true} />
+);

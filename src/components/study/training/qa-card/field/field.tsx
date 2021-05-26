@@ -5,7 +5,7 @@ import { cn } from '../../../../../utils/utils';
 import { ReactComponent as PlayI } from '../../../../icons/bi-play-fill.svg';
 import { ReactComponent as PauseI } from '../../../../icons/bi-pause-fill.svg';
 import { useMount } from '../../../../../utils/hooks-utils';
-import { RadioField } from '../../../../pages/_sandbox/_sandbox';
+import { RadioField } from './radio-field';
 
 export interface PlayerP {
   className?: string;

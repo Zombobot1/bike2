@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
-import { Estimations, useUForm } from '../components/pages/_sandbox/uform';
+import React, { useEffect, useState } from 'react';
+import { Estimations, useUFormSubmit } from '../components/uform/uform';
 import { UInput } from '../components/uform/ufields/uinput';
+import { Question } from '../components/uform/ufields/uradio';
+import { useEffectedState } from '../utils/hooks-utils';
+import { sslugify } from '../utils/sslugify';
 
-type Question = { question: string; correctAnswer: string; explanation: string };
 type Questions = Question[];
 
-const useQuestions = (questions: Questions) => {
-  const [inputs, setInputs] = useState(questions);
+const useQuestions = (questions: Questions, submitOneByOne: boolean) => {
+  const [questionNumber, setQuestionNumber] = useState(0);
+  const [questionsPool, setQuestionsPool] = useState(submitOneByOne ? [questions[questionNumber]] : questions);
+  useEffect(() => setQuestionsPool([questions[questionNumber]]), [questionNumber]);
+  const [inputs, setInputs] = useEffectedState(questionsPool);
+
   const [counter, setCounter] = useState(2);
 
   const add = () => {
@@ -21,13 +27,13 @@ const useQuestions = (questions: Questions) => {
   };
 
   const addAndRemove = () => {
-    // edge case: if number of questions does not change instead of mounting/unmounting just properties changes happen
-    setInputs((is) => [...is, { question: `Random question ${counter}`, correctAnswer: 'right', explanation: 'Cuz' }]);
     add();
     remove();
   };
 
-  return { inputs, add, remove, addAndRemove };
+  const nextQuestion = () => setQuestionNumber((n) => n + 1);
+
+  return { inputs, add, remove, addAndRemove, nextQuestion };
 };
 
 const useSubmissionsInfo = () => {
@@ -47,22 +53,31 @@ const useSubmissionsInfo = () => {
 export type TUFormP = {
   questions: Questions;
   isExtensible: boolean;
+  submitOneByOne: boolean;
 };
 
-export const TUForm = ({ questions, isExtensible }: TUFormP) => {
-  const { inputs, add, remove, addAndRemove } = useQuestions(questions);
+export const TUForm = ({ questions, isExtensible, submitOneByOne }: TUFormP) => {
+  const { inputs, add, remove, addAndRemove, nextQuestion } = useQuestions(questions, submitOneByOne);
   const { info, onSubmit } = useSubmissionsInfo();
+  const handleSubmit = !submitOneByOne
+    ? onSubmit
+    : (es: Estimations) => {
+        onSubmit(es);
+        nextQuestion();
+      };
 
-  const { submit } = useUForm(onSubmit);
+  const { submit } = useUFormSubmit();
 
   return (
     <div className="w-25">
       {info && <div className="alert alert-success">{info}</div>}
-      {inputs.map((q, i) => (
-        <div key={i} className="mb-3">
-          <UInput {...q} />
-        </div>
-      ))}
+      {inputs
+        .filter((q) => Boolean(q))
+        .map((q) => (
+          <div key={sslugify(q.question)} className="mb-3">
+            <UInput {...q} />
+          </div>
+        ))}
       <div className="d-flex justify-content-end">
         {isExtensible && (
           <div className="pe-3">
@@ -79,7 +94,7 @@ export const TUForm = ({ questions, isExtensible }: TUFormP) => {
             </div>
           </div>
         )}
-        <button className="btn btn-primary" onClick={submit}>
+        <button className="btn btn-primary" onClick={() => submit(handleSubmit)}>
           Submit
         </button>
       </div>

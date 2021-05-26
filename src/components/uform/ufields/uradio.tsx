@@ -1,10 +1,10 @@
 import './uradio.scss';
 import { sslugify } from '../../../utils/sslugify';
-import { useUForm } from '../../pages/_sandbox/uform';
+import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import React from 'react';
 import { cn } from '../../../utils/utils';
-import { Validity } from '../../pages/_sandbox/_sandbox';
+import { Validity } from '../types';
 
 export interface URadioInputP {
   name: string;
@@ -45,6 +45,7 @@ export interface Question {
   question: string;
   correctAnswer: string;
   explanation: string;
+  initialAnswer?: string;
 }
 
 export interface RadioData extends Question {

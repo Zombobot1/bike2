@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { TrainingTimer } from './training-timer';
 import { CardEstimation, cardEstimationToNumber, CardSide, CardType } from '../types';
 import { Fn, NumStateT, StateT } from '../../../../utils/types';
-import { useUForm } from '../../../pages/_sandbox/uform';
+import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
 
@@ -62,11 +62,13 @@ type GoToNextFn = { go: Fn };
 const InteractiveEstimateBtn = ({ estimate }: InteractiveEstimateBtnP) => {
   const [goToNextCard, setGoToNextCard] = useState<GoToNextFn | null>(null);
 
-  const { submit } = useUForm((estimations) => {
+  const onSubmit = (estimations: Estimations) => {
     const finalMark = min(estimations, (e) => cardEstimationToNumber(e.estimation));
     const gtnc = estimate(finalMark.estimation, 'NO_TRANSITION');
     if (gtnc) setGoToNextCard({ go: gtnc });
-  });
+  };
+
+  const { submit } = useUFormSubmit();
 
   const goToNext = () => {
     if (!goToNextCard) return;
@@ -76,7 +78,7 @@ const InteractiveEstimateBtn = ({ estimate }: InteractiveEstimateBtnP) => {
   return (
     <>
       {!goToNextCard && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={submit}>
+        <button className="btn btn-lg btn-primary estimate-btn" onClick={() => submit(onSubmit)}>
           Estimate
         </button>
       )}

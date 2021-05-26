@@ -1,6 +1,5 @@
-import { useMount } from '../../../utils/hooks-utils';
 import { atom, useAtom } from 'jotai';
-import { CardEstimation } from '../../study/training/types';
+import { CardEstimation } from '../study/training/types';
 
 export interface UFieldInfo {
   value: string;
@@ -24,8 +23,6 @@ export interface Estimation {
 export type Estimations = Estimation[];
 
 type OnSubmit = (estimations: Estimations) => void;
-
-const onSubmitDefault = (_: Estimations) => {};
 
 const _required = (value: string): string => (value ? '' : 'This is a required field!');
 
@@ -56,14 +53,12 @@ const _estimations = (fields: UFields): Estimations => {
 const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);
 
 export const fieldsAtom = atom<UFields>([]);
-export const handleSubmitAtom = atom({ onSubmit: onSubmitDefault });
 
-export const useUForm = (onSubmit?: OnSubmit) => {
+export const useUForm = () => {
   const [fields, setFields] = useAtom(fieldsAtom);
-  const [handleSubmit, setHandleSubmit] = useAtom(handleSubmitAtom);
 
-  const addField = (name: string, correctAnswer: string) => {
-    setFields((old) => [...old, { ...FIELD, name, correctAnswer }]);
+  const addField = (name: string, correctAnswer: string, initialAnswer = '') => {
+    setFields((old) => [...old, { ...FIELD, name, correctAnswer, value: initialAnswer }]);
   };
 
   const removeField = (name: string) => {
@@ -82,25 +77,25 @@ export const useUForm = (onSubmit?: OnSubmit) => {
     return result;
   };
 
-  const submit = () => {
-    const validatedFields = _validate(fields);
-    if (!_isValid(validatedFields)) return setFields(validatedFields);
-
-    const checkedFields = _check(validatedFields);
-    setFields(checkedFields);
-    handleSubmit.onSubmit(_estimations(checkedFields));
-  };
-
-  useMount(() => {
-    if (onSubmit) setHandleSubmit({ onSubmit });
-  });
-
   return {
     getFieldInfo,
     addField,
     removeField,
     onChange,
-    submit,
-    isSubmitted: false,
   };
+};
+
+export const useUFormSubmit = () => {
+  const [fields, setFields] = useAtom(fieldsAtom);
+
+  const submit = (handleSubmit: OnSubmit) => {
+    const validatedFields = _validate(fields);
+    if (!_isValid(validatedFields)) return setFields(validatedFields);
+
+    const checkedFields = _check(validatedFields);
+    setFields(checkedFields);
+    handleSubmit(_estimations(checkedFields));
+  };
+
+  return { submit };
 };
