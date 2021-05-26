@@ -1,6 +1,7 @@
 stages:
   - build
   - deploy
+  - notify
 
 variables:
   BUILD_DIR: "build"
@@ -35,3 +36,13 @@ deploy:
   stage: deploy
   script:
     - netlify deploy --dir=$BUILD_DIR --prod
+    - sh ci-notify.sh ✅
+
+notify_error:
+  stage: notify
+  tags: [front]
+  script:
+    - sh ci-notify.sh ❌
+  when: on_failure
+
+
