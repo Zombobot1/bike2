@@ -1,5 +1,5 @@
 import './training-controls.scss';
-import { capitalizeFirstLetter, cn } from '../../../../utils/utils';
+import { capitalizeOnlyFirstLetter, cn } from '../../../../utils/utils';
 import { ReactComponent as BackI } from '../../../pages/_sandbox/next-gen/arrow-left-short.svg';
 import React, { useState } from 'react';
 import { TrainingTimer } from './training-timer';
@@ -25,7 +25,7 @@ interface EstimationBtnP {
 
 const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP) => (
   <button type="button" className={'btn ' + btnClass} onClick={() => estimate(estimation)}>
-    {capitalizeFirstLetter(estimation)}
+    {capitalizeOnlyFirstLetter(estimation)}
   </button>
 );
 

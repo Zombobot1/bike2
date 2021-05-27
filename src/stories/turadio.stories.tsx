@@ -13,7 +13,7 @@ const radioData = {
   question: 'Please select',
   options: ['Option 1', 'Option 2', 'Option 3'],
   correctAnswer: 'Option 1',
-  explanation: 'Cuz',
+  explanation: 'This is a loooooooooooooooooooooong Cuz',
 };
 
 export const Default = Template.bind({});

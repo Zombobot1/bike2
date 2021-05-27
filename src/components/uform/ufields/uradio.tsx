@@ -29,7 +29,7 @@ export const URadioInput = ({ name, label, validity, onChange, checked, readonly
         type="radio"
         name={name}
         value={label}
-        onClick={() => onChange(label)}
+        onChange={() => onChange(label)}
         id={id}
         checked={checked}
         disabled={readonly}
@@ -48,11 +48,11 @@ export interface Question {
   initialAnswer?: string;
 }
 
-export interface RadioData extends Question {
+export interface QuestionWithOptions extends Question {
   options: string[];
 }
 
-export interface URadioElementP extends RadioData {
+export interface URadioElementP extends QuestionWithOptions {
   name: string;
   value: string;
   onChange: (radioName: string, value: string) => void;
@@ -101,7 +101,7 @@ export const URadioElement = ({
   );
 };
 
-export const URadio = ({ question, correctAnswer, explanation, options }: RadioData) => {
+export const URadio = ({ question, correctAnswer, explanation, options }: QuestionWithOptions) => {
   const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { validationError, value, wasSubmitted } = getFieldInfo(name);

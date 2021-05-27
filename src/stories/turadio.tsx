@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { RadioData, URadioElement } from '../components/uform/ufields/uradio';
+import { QuestionWithOptions, URadioElement } from '../components/uform/ufields/uradio';
 import { sslugify } from '../utils/sslugify';
 
-export interface TURadioP extends RadioData {
+export interface TURadioP extends QuestionWithOptions {
   wasSubmitted: boolean;
   value: string;
 }

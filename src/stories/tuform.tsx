@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Estimations, useUFormSubmit } from '../components/uform/uform';
 import { UInput } from '../components/uform/ufields/uinput';
-import { Question } from '../components/uform/ufields/uradio';
+import { Question, QuestionWithOptions, URadio } from '../components/uform/ufields/uradio';
 import { useEffectedState } from '../utils/hooks-utils';
 import { sslugify } from '../utils/sslugify';
 
 type Questions = Question[];
 
-const useQuestions = (questions: Questions, submitOneByOne: boolean) => {
+const useWriteQuestions = (questions: Questions, submitOneByOne: boolean) => {
   const [questionNumber, setQuestionNumber] = useState(0);
   const [questionsPool, setQuestionsPool] = useState(submitOneByOne ? [questions[questionNumber]] : questions);
   useEffect(() => setQuestionsPool([questions[questionNumber]]), [questionNumber]);
@@ -51,13 +51,14 @@ const useSubmissionsInfo = () => {
 };
 
 export type TUFormP = {
-  questions: Questions;
+  writeQuestions: Questions;
   isExtensible: boolean;
   submitOneByOne: boolean;
+  selectOneQuestions?: QuestionWithOptions[];
 };
 
-export const TUForm = ({ questions, isExtensible, submitOneByOne }: TUFormP) => {
-  const { inputs, add, remove, addAndRemove, nextQuestion } = useQuestions(questions, submitOneByOne);
+export const TUForm = ({ writeQuestions, isExtensible, submitOneByOne, selectOneQuestions = [] }: TUFormP) => {
+  const { inputs, add, remove, addAndRemove, nextQuestion } = useWriteQuestions(writeQuestions, submitOneByOne);
   const { info, onSubmit } = useSubmissionsInfo();
   const handleSubmit = !submitOneByOne
     ? onSubmit
@@ -78,6 +79,9 @@ export const TUForm = ({ questions, isExtensible, submitOneByOne }: TUFormP) => 
             <UInput {...q} />
           </div>
         ))}
+      {selectOneQuestions?.map((q) => (
+        <URadio key={q.question} {...q} />
+      ))}
       <div className="d-flex justify-content-end">
         {isExtensible && (
           <div className="pe-3">

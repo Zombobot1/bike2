@@ -1,11 +1,11 @@
-import { RadioData, URadio } from '../../../../uform/ufields/uradio';
+import { QuestionWithOptions, URadio } from '../../../../uform/ufields/uradio';
 import { findAll, safeSplit, shuffle } from '../../../../../utils/algorithms';
 import React, { useState } from 'react';
 import { capitalizeFirstLetter } from '../../../../../utils/utils';
 
 const OPTIONS_R = /(?:\([*]*\) |\(\([*]*\)\) )/gm;
 const RADIO_SEP = '\n';
-const radioParser = (data: string): RadioData => {
+const radioParser = (data: string): QuestionWithOptions => {
   const parts = safeSplit(data, RADIO_SEP);
   if (parts.length < 2) throw new Error('Bad radio data');
 
@@ -18,7 +18,7 @@ const radioParser = (data: string): RadioData => {
     explanation: parts[2],
   };
 };
-const radioParserShuffled = (data: string): RadioData => {
+const radioParserShuffled = (data: string): QuestionWithOptions => {
   const result = radioParser(data);
   return { ...result, options: shuffle(result.options) };
 };

@@ -1,5 +1,5 @@
 import React from 'react';
-import { capitalizeFirstLetter } from '../../../utils/utils';
+import { capitalizeOnlyFirstLetter } from '../../../utils/utils';
 
 export interface TrainingsFilterBtnP {
   options: DisplayedTrainingType[];
@@ -15,13 +15,13 @@ const TrainingsFilterBtn = ({ options, currentOption, setCurrentOption, isActive
   return (
     <>
       <button className="btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
-        {capitalizeFirstLetter(currentOption)}
+        {capitalizeOnlyFirstLetter(currentOption)}
       </button>
       <ul className="dropdown-menu">
         {options.map((o) => (
           <li key={o}>
             <div className="dropdown-item" onClick={() => setCurrentOption(o)}>
-              {capitalizeFirstLetter(o)}
+              {capitalizeOnlyFirstLetter(o)}
             </div>
           </li>
         ))}

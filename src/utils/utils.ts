@@ -28,7 +28,9 @@ export default function compose(...funcs: Function[]) {
   return funcs.reduce((a, b) => (...args: any) => a(b(...args)));
 }
 
-export const capitalizeFirstLetter = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+export const capitalizeOnlyFirstLetter = (str: string): string =>
+  str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+export const capitalizeFirstLetter = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const idfy = (route: string, id: string) => `${route.split(':')[0]}${id}`;
 
