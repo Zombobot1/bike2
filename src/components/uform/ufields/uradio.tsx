@@ -5,6 +5,7 @@ import { useMount } from '../../../utils/hooks-utils';
 import React from 'react';
 import { cn } from '../../../utils/utils';
 import { Validity } from '../types';
+import { Question } from '../../study/training/types';
 
 export interface URadioInputP {
   name: string;
@@ -41,18 +42,13 @@ export const URadioInput = ({ name, label, validity, onChange, checked, readonly
   );
 };
 
-export interface Question {
-  question: string;
-  correctAnswer: string;
-  explanation: string;
+export interface QuestionP extends Question {
   initialAnswer?: string;
 }
 
-export interface QuestionWithOptions extends Question {
-  options: string[];
-}
+export type QuestionWithoutOptions = Omit<QuestionP, 'options'>;
 
-export interface URadioElementP extends QuestionWithOptions {
+export interface URadioElementP extends QuestionP {
   name: string;
   value: string;
   onChange: (radioName: string, value: string) => void;
@@ -101,7 +97,7 @@ export const URadioElement = ({
   );
 };
 
-export const URadio = ({ question, correctAnswer, explanation, options }: QuestionWithOptions) => {
+export const URadio = ({ question, correctAnswer, explanation, options }: Question) => {
   const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { validationError, value, wasSubmitted } = getFieldInfo(name);

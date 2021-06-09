@@ -1,5 +1,5 @@
 import { NotificationP } from './components/cards/notification';
-import { CardDTO, FieldT } from './components/study/training/types';
+import { CardDTO, FieldDTO } from './components/study/training/types';
 import hospital from './hospital.png';
 import { TrainingDTO } from './components/study/training/training';
 import { LastTrainingCardP } from './components/cards/last-training-card';
@@ -306,57 +306,67 @@ const question = `The English language is conventionally divided into three hist
 
 const answer = `(c) The period of Modern English extends from the 1500s to the present day. Shakespeare wrote his plays between 1590 and 1613.`;
 
-const field1: FieldT = {
+const field1: FieldDTO = {
   type: 'PRE',
-  data: question,
+  passiveData: question,
   side: 'FRONT',
 };
 
-const field2: FieldT = {
+const field2: FieldDTO = {
   type: 'PRE',
-  data: answer,
+  passiveData: answer,
   side: 'BACK',
 };
 
-const field3: FieldT = {
+const field3: FieldDTO = {
   type: 'PRE',
-  data: 'Hospital',
+  passiveData: 'Hospital',
   side: 'FRONT',
 };
 
-const field4: FieldT = {
+const field4: FieldDTO = {
   type: 'PRE',
-  data: 'ˈhɒspɪtl',
+  passiveData: 'ˈhɒspɪtl',
   side: 'FRONT',
 };
 
-const field6: FieldT = {
+const field6: FieldDTO = {
   type: 'IMG',
-  data: hospital,
+  passiveData: hospital,
   side: 'FRONT',
 };
 
-const field7: FieldT = {
+const field7: FieldDTO = {
   type: 'AUDIO',
-  data: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
+  passiveData: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
   side: 'BACK',
 };
 
-const field5: FieldT = {
+const field5: FieldDTO = {
   type: 'PRE',
-  data: 'das Krankenhaus',
+  passiveData: 'das Krankenhaus',
   side: 'BACK',
 };
 
-const field8: FieldT = {
+const field8: FieldDTO = {
   type: 'RADIO',
-  data: 'Please select one:\n () option 1 (*) option 2\n  Cuz',
+  interactiveData: {
+    question: 'Please select one:',
+    options: ['Option 1', 'Option 2'],
+    correctAnswer: 'Option 2',
+    explanation: 'Cuz',
+  },
   side: 'FRONT',
 };
 
-const field9: FieldT = {
+const field9: FieldDTO = {
   type: 'RADIO',
-  data: 'Please select another one:\n (*) right () wrong\n  Cuz',
+  interactiveData: {
+    question: 'Please select another one:',
+    options: ['Right', 'Wrong'],
+    correctAnswer: 'Right',
+    explanation: 'Cuz',
+  },
   side: 'FRONT',
 };
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Estimations, useUFormSubmit } from '../components/uform/uform';
 import { UInput } from '../components/uform/ufields/uinput';
-import { Question, QuestionWithOptions, URadio } from '../components/uform/ufields/uradio';
+import { QuestionP, QuestionWithoutOptions, URadio } from '../components/uform/ufields/uradio';
 import { useEffectedState } from '../utils/hooks-utils';
 import { sslugify } from '../utils/sslugify';
 
-type Questions = Question[];
+type Questions = QuestionWithoutOptions[];
 
 const useWriteQuestions = (questions: Questions, submitOneByOne: boolean) => {
   const [questionNumber, setQuestionNumber] = useState(0);
@@ -54,7 +54,7 @@ export type TUFormP = {
   writeQuestions: Questions;
   isExtensible: boolean;
   submitOneByOne: boolean;
-  selectOneQuestions?: QuestionWithOptions[];
+  selectOneQuestions?: QuestionP[];
 };
 
 export const TUForm = ({ writeQuestions, isExtensible, submitOneByOne, selectOneQuestions = [] }: TUFormP) => {

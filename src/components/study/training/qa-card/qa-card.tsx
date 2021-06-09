@@ -1,10 +1,10 @@
 import './qa-card.scss';
 import React from 'react';
-import { CardSide, FieldT } from '../types';
+import { CardSide, FieldDTO } from '../types';
 import { Field } from './field/field';
 
 export interface QACardP {
-  fields: FieldT[];
+  fields: FieldDTO[];
   stageColor: string;
   side: CardSide;
   isCurrent: boolean;
@@ -17,7 +17,14 @@ export const QACard = ({ fields, stageColor, side, isCurrent }: QACardP) => {
         <form>
           {fields.map((f, i) =>
             f.side === side ? (
-              <Field type={f.type} data={f.data} key={i} isMediaActive={f.side === 'BACK'} isCurrent={isCurrent} />
+              <Field
+                type={f.type}
+                passiveData={f.passiveData}
+                interactiveData={f.interactiveData}
+                key={i}
+                isMediaActive={f.side === 'BACK'}
+                isCurrent={isCurrent}
+              />
             ) : null,
           )}
         </form>

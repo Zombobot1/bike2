@@ -8,21 +8,27 @@ const WEIGHTS: { [K in CardEstimation]: number } = {
 export const cardEstimationToNumber = (a: CardEstimation): number => WEIGHTS[a];
 
 export type CardSide = 'FRONT' | 'BACK';
+export type FieldType = 'PRE' | 'IMG' | 'AUDIO' | 'RADIO' | 'INPUT' | 'CHECKS';
 
-export interface FieldTBase {
-  type: 'PRE' | 'IMG' | 'AUDIO' | 'RADIO' | 'INPUT' | 'CHECKS';
-  data: string;
+export interface Question {
+  question: string;
+  correctAnswer: string;
+  explanation: string;
+  options: string[];
 }
 
-export interface FieldT extends FieldTBase {
+export interface FieldDTO {
   side: CardSide;
+  type: FieldType;
+  passiveData?: string;
+  interactiveData?: Question;
 }
 
 export type CardType = 'PASSIVE' | 'INTERACTIVE';
 
 export interface CardDTO {
   _id: string;
-  fields: FieldT[];
+  fields: FieldDTO[];
   timeToAnswer: number;
   stageColor: string;
   type: CardType;

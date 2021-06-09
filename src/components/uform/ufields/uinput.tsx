@@ -1,10 +1,10 @@
 import { sslugify } from '../../../utils/sslugify';
 import { cn } from '../../../utils/utils';
 import React from 'react';
-import { Question } from './uradio';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import { Validity } from '../types';
+import { QuestionWithoutOptions } from './uradio';
 
 export interface UInputElementP {
   name: string;
@@ -39,7 +39,7 @@ export const UInputElement = ({ name, value, label, validity, feedBack = '', onC
   );
 };
 
-export const UInput = ({ question, correctAnswer, explanation, initialAnswer = '' }: Question) => {
+export const UInput = ({ question, correctAnswer, explanation, initialAnswer = '' }: QuestionWithoutOptions) => {
   const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { value, validationError, wasSubmitted } = getFieldInfo(name);
