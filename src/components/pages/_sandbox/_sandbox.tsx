@@ -5,27 +5,10 @@ import 'swiper/swiper.scss';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
 import { Rec } from './rec';
-import { TUForm } from '../../../stories/tuform';
-
-const longText = 'Looooooooooooooooooong text inside this option renders without visual deffects';
-
-const args = {
-  writeQuestions: [],
-  isExtensible: false,
-  selectOneQuestions: [
-    {
-      question: 'Select correct',
-      options: ['Correct option', longText],
-      correctAnswer: 'Correct option',
-      explanation: 'Cuz',
-    },
-  ],
-  submitOneByOne: false,
-};
+import { UInput } from '../../uform/ufields/uinput';
 
 export const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
-
   return (
     // <div
     //   style={{ width: '500px', height: '85vh', position: 'relative', padding: '50px 50px', backgroundColor: COLORS.bg }}
@@ -37,7 +20,7 @@ export const Sandbox = () => {
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
         <Rec isHidden={true} />
-        <TUForm {...args} />
+        <UInput question={'q?'} correctAnswer={'correct'} explanation={'cuz'} />
       </main>
     </>
   );

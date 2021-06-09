@@ -370,6 +370,35 @@ const field9: FieldDTO = {
   side: 'FRONT',
 };
 
+const field10: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'Listen and write the missing word:',
+  side: 'FRONT',
+};
+
+const field11: FieldDTO = {
+  type: 'AUDIO',
+  passiveData: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
+  side: 'FRONT',
+};
+
+const field12: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'I need to go to the ... to have an operation.',
+  side: 'FRONT',
+};
+
+const field13: FieldDTO = {
+  type: 'INPUT',
+  interactiveData: {
+    question: '',
+    options: [],
+    correctAnswer: 'hospital',
+    explanation: 'hospital',
+  },
+  side: 'FRONT',
+};
+
 export const uCard: CardDTO = {
   _id: '1',
   fields: [field6, field3, field4, field5, field7],
@@ -381,7 +410,15 @@ export const uCard: CardDTO = {
 export const iCard1: CardDTO = {
   _id: '10',
   fields: [field8],
-  timeToAnswer: 10,
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'INTERACTIVE',
+};
+
+export const iCardUInput: CardDTO = {
+  _id: '12',
+  fields: [field10, field11, field12, field13],
+  timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
 };
@@ -389,7 +426,7 @@ export const iCard1: CardDTO = {
 export const iCard2: CardDTO = {
   _id: '11',
   fields: [field9],
-  timeToAnswer: 10,
+  timeToAnswer: 3000,
   stageColor: 'green',
   type: 'INTERACTIVE',
 };
@@ -417,7 +454,7 @@ export const uTraining: TrainingDTO = {
   deckName: 'Bayesian approach',
   deckPath: 'Statistical methods / Lectures',
   trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  cards: [card2, uCard],
+  cards: [iCardUInput, card2, uCard],
 };
 
 export const iTraining: TrainingDTO = {

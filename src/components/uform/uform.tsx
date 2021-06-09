@@ -52,13 +52,16 @@ const _estimations = (fields: UFields): Estimations => {
 
 const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);
 
-export const fieldsAtom = atom<UFields>([]);
+const fieldsAtom = atom<UFields>([]);
+const fieldsCounterAtom = atom(0);
 
 export const useUForm = () => {
   const [fields, setFields] = useAtom(fieldsAtom);
+  const [fieldsCounter, setFieldsCounter] = useAtom(fieldsCounterAtom);
 
   const addField = (name: string, correctAnswer: string, initialAnswer = '') => {
     setFields((old) => [...old, { ...FIELD, name, correctAnswer, value: initialAnswer }]);
+    setFieldsCounter((f) => ++f);
   };
 
   const removeField = (name: string) => {
@@ -82,6 +85,7 @@ export const useUForm = () => {
     addField,
     removeField,
     onChange,
+    fieldsCounter,
   };
 };
 

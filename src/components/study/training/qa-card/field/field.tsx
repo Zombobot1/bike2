@@ -6,6 +6,7 @@ import { ReactComponent as PauseI } from '../../../../icons/bi-pause-fill.svg';
 import { useMount } from '../../../../../utils/hooks-utils';
 import { RadioField } from './radio-field';
 import { FieldDTO } from '../../types';
+import { UInput } from '../../../../uform/ufields/uinput';
 
 export interface PlayerP {
   className?: string;
@@ -55,7 +56,7 @@ const preloadImage = (src: string) => {
 
 export interface FieldP extends Omit<FieldDTO, 'side'> {
   isMediaActive: boolean;
-  isCurrent: boolean;
+  isCurrent: boolean; // if we render all interactive fields it would be impossible to submit one card
 }
 
 export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCurrent }: FieldP) => {
@@ -72,8 +73,13 @@ export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCur
         {type === 'AUDIO' && <Player className="qa-card__audio" src={passiveData} autoplay={isMediaActive} />}
       </>
     );
-  } else if (interactiveData) {
-    return <>{type === 'RADIO' && <RadioField {...interactiveData} isCurrent={isCurrent} />}</>;
+  } else if (interactiveData && isCurrent) {
+    return (
+      <>
+        {type === 'RADIO' && <RadioField {...interactiveData} />}
+        {type === 'INPUT' && <UInput {...interactiveData} />}
+      </>
+    );
   }
   return null;
 };
