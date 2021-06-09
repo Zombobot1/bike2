@@ -55,35 +55,24 @@ const PassiveEstimateBtn = ({ currentCardSideS, estimate }: PassiveEstimateBtnP)
   );
 };
 
+type GoToNextCard = { go: Fn } | null;
+
 interface InteractiveEstimateBtnP {
-  estimate: EstimateCard;
+  isSubmitted: boolean;
+  sumbit: Fn;
+  goToNextCard: Fn;
 }
-type GoToNextFn = { go: Fn };
-const InteractiveEstimateBtn = ({ estimate }: InteractiveEstimateBtnP) => {
-  const [goToNextCard, setGoToNextCard] = useState<GoToNextFn | null>(null);
 
-  const onSubmit = (estimations: Estimations) => {
-    const finalMark = min(estimations, (e) => cardEstimationToNumber(e.estimation));
-    const gtnc = estimate(finalMark.estimation, 'NO_TRANSITION');
-    if (gtnc) setGoToNextCard({ go: gtnc });
-  };
-
-  const { submit } = useUFormSubmit();
-
-  const goToNext = () => {
-    if (!goToNextCard) return;
-    goToNextCard.go();
-    setGoToNextCard(null);
-  };
+const InteractiveEstimateBtn = ({ isSubmitted, sumbit, goToNextCard }: InteractiveEstimateBtnP) => {
   return (
     <>
-      {!goToNextCard && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={() => submit(onSubmit)}>
+      {!isSubmitted && (
+        <button className="btn btn-lg btn-primary estimate-btn" onClick={sumbit}>
           Estimate
         </button>
       )}
-      {goToNextCard && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={goToNext}>
+      {isSubmitted && (
+        <button className="btn btn-lg btn-primary estimate-btn" onClick={goToNextCard}>
           Next
         </button>
       )}
@@ -98,6 +87,22 @@ export const TrainingControls = ({
   currentCardSideS,
   isTimerRunning,
 }: TrainingControlsP) => {
+  const { submit } = useUFormSubmit();
+
+  const [goToNextCardFn, setGoToNextCardFn] = useState<GoToNextCard | null>(null);
+
+  const onSubmit = (estimations: Estimations) => {
+    const finalMark = min(estimations, (e) => cardEstimationToNumber(e.estimation));
+    const gtnc = estimate(finalMark.estimation, 'NO_TRANSITION');
+    if (gtnc) setGoToNextCardFn({ go: gtnc });
+  };
+
+  const goToNextCard = () => {
+    if (!goToNextCardFn) return;
+    goToNextCardFn.go();
+    setGoToNextCardFn(null);
+  };
+
   const fail = () => estimate('BAD');
 
   const [currentCardSide, setCurrentSide] = currentCardSideS;
@@ -107,8 +112,18 @@ export const TrainingControls = ({
     <div className="controls">
       <BackI className={backICN} onClick={() => setCurrentSide('FRONT')} />
       {cardType === 'PASSIVE' && <PassiveEstimateBtn estimate={estimate} currentCardSideS={currentCardSideS} />}
-      {cardType === 'INTERACTIVE' && <InteractiveEstimateBtn estimate={estimate} />}
-      <TrainingTimer onTimeout={fail} timeToAnswerS={timeToAnswerS} isRunning={isTimerRunning} />
+      {cardType === 'INTERACTIVE' && (
+        <InteractiveEstimateBtn
+          sumbit={() => submit(onSubmit)}
+          goToNextCard={goToNextCard}
+          isSubmitted={Boolean(goToNextCardFn)}
+        />
+      )}
+      <TrainingTimer
+        onTimeout={() => (goToNextCardFn ? goToNextCard() : fail())}
+        timeToAnswerS={timeToAnswerS}
+        isRunning={isTimerRunning}
+      />
     </div>
   );
 };

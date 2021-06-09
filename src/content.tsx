@@ -381,7 +381,7 @@ export const uCard: CardDTO = {
 export const iCard1: CardDTO = {
   _id: '10',
   fields: [field8],
-  timeToAnswer: 3000,
+  timeToAnswer: 10,
   stageColor: 'red',
   type: 'INTERACTIVE',
 };
@@ -389,7 +389,7 @@ export const iCard1: CardDTO = {
 export const iCard2: CardDTO = {
   _id: '11',
   fields: [field9],
-  timeToAnswer: 3000,
+  timeToAnswer: 10,
   stageColor: 'green',
   type: 'INTERACTIVE',
 };

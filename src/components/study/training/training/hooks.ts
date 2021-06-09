@@ -69,7 +69,6 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   const [isLoading, setIsLoading] = useState(false);
 
   const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'TRANSIT'): Fn | undefined => {
-    // debugger;
     setIsLoading(true);
     const hasCards = currentCardIndex < cards.length - 1;
 

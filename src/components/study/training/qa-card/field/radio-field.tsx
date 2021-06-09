@@ -9,7 +9,7 @@ export interface RadioFieldP extends Question {
 
 export const RadioField = ({ question, explanation, correctAnswer, options, isCurrent }: RadioFieldP) => {
   if (!isCurrent) return null;
-  const [shuffledOptions] = useState(shuffle(options));
+  const [shuffledOptions] = useState(() => shuffle(options));
   return (
     <URadio question={question} options={shuffledOptions} correctAnswer={correctAnswer} explanation={explanation} />
   );

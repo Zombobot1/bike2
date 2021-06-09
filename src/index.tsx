@@ -12,13 +12,14 @@ import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
 import { PagesInfoProvider } from './components/context/user-position-provider';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { startWorker } from './api/fake-api';
 
 let redirect = STUDY;
 
 if (process.env.NODE_ENV === 'development') {
   redirect = _SANDBOX;
   (async () => {
-    // await startWorker();
+    await startWorker();
   })();
 }
 
