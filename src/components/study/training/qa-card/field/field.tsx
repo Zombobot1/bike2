@@ -65,7 +65,7 @@ export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCur
   });
 
   if (passiveData) {
-    const alignCenter = cn({ 'text-center': passiveData.split(' ').length < 4 });
+    const alignCenter = cn({ 'text-center': passiveData.length < 90 });
     return (
       <>
         {type === 'PRE' && <pre className={'qa-card__pre ' + alignCenter}>{passiveData}</pre>}
