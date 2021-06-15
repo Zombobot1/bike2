@@ -24,6 +24,8 @@ export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardInde
   const [cards, setCards] = cardsS;
   const [currentCardIndex, setCurrentCardIndex] = currentCardIndexS;
 
+  const timeToAnswerS = useState(cards[0]?.timeToAnswer || 0);
+  const [_, setTimeToAnswer] = timeToAnswerS;
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const pauseTimer = () => setIsTimerRunning(false);
   const resumeTimer = () => setIsTimerRunning(true);
@@ -35,12 +37,13 @@ export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardInde
       await deleteCard(cards[currentCardIndex]._id);
       setCards((cs) => {
         const result = removeElement(cs, currentCardIndex);
+        setTimeToAnswer(result[currentCardIndex]?.timeToAnswer || 0);
         if (currentCardIndex >= result.length) setCurrentCardIndex((i) => i + 1); // hack to end training
         return result;
       });
     },
   };
-  return { cardEditingHandlers, isTimerRunning };
+  return { cardEditingHandlers, isTimerRunning, timeToAnswerS };
 };
 
 type CardTransition = 'TRANSIT' | 'NO_TRANSITION';
@@ -50,14 +53,13 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   const [cards, setCards] = useEffectedState<CardDTOs>(initialCards);
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-  const { cardEditingHandlers, isTimerRunning } = useCardActionsHandlers(
+  const { cardEditingHandlers, isTimerRunning, timeToAnswerS } = useCardActionsHandlers(
     [cards, setCards],
     [currentCardIndex, setCurrentCardIndex],
   );
 
   const currentCardSideS = useState<CardSide>('FRONT');
   const goToNextCard = () => setCurrentCardIndex((i) => i + 1);
-  const timeToAnswerS = useState(cards[0]?.timeToAnswer || 0);
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return;
