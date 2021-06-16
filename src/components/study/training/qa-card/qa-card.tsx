@@ -1,33 +1,76 @@
 import './qa-card.scss';
 import React from 'react';
-import { CardSide, FieldDTO } from '../types';
+import { CardEstimation, CardSide, FieldDTO } from '../types';
 import { Field } from './field/field';
+import { COLORS } from '../../../../config';
 
 export interface QACardP {
   fields: FieldDTO[];
   stageColor: string;
   side: CardSide;
   isCurrent: boolean;
+  isMediaActive?: boolean;
+  showHidden?: boolean;
+  estimation?: CardEstimation;
 }
 
-export const QACard = ({ fields, stageColor, side, isCurrent }: QACardP) => {
+const estimationColor = (e: CardEstimation) => {
+  switch (e) {
+    case 'BAD':
+      return COLORS.danger;
+    case 'POOR':
+      return COLORS.warning;
+    case 'GOOD':
+      return COLORS.success;
+    case 'EASY':
+      return COLORS.info;
+  }
+};
+
+export const QACard = ({
+  fields,
+  stageColor,
+  side: _side,
+  isCurrent,
+  isMediaActive = true,
+  showHidden = false,
+  estimation,
+}: QACardP) => {
+  const fieldsToShow = fields.filter((f) => f.state === 'SHOW');
+  const hiddenFields = fields.filter((f) => !f.state || f.state === 'HIDE');
+
+  const backgroundColors = `linear-gradient(${COLORS.white} 0%, ${COLORS.white} 75%, ${stageColor} 75%, ${stageColor} 100%)`;
   return (
-    <>
+    <div className="qa-card-container" style={{ background: backgroundColors }}>
+      {estimation && (
+        <div className="estimation-bubble" style={{ backgroundColor: estimationColor(estimation) }}>
+          <span className="estimation">{estimation[0]}</span>
+        </div>
+      )}
       <div className="qa-card">
-        {fields.map((f, i) =>
-          f.side === side ? (
+        {fieldsToShow.map((f, i) => (
+          <Field
+            type={f.type}
+            passiveData={f.passiveData}
+            interactiveData={f.interactiveData}
+            key={i}
+            isMediaActive={isCurrent}
+            isCurrent={isCurrent}
+          />
+        ))}
+        {showHidden && <div className="fields-separator" />}
+        {showHidden &&
+          hiddenFields.map((f, i) => (
             <Field
               type={f.type}
               passiveData={f.passiveData}
               interactiveData={f.interactiveData}
               key={i}
-              isMediaActive={isCurrent}
+              isMediaActive={isCurrent && isMediaActive}
               isCurrent={isCurrent}
             />
-          ) : null,
-        )}
+          ))}
       </div>
-      <div className="qa-card-bottom" style={{ backgroundColor: stageColor }} />
-    </>
+    </div>
   );
 };

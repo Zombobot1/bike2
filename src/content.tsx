@@ -296,56 +296,82 @@ const overview = {
   ],
 };
 
-const question = `The English language is conventionally divided into three historical periods. In which of these periods did William Shakespeare write his plays?
+const question = `When do we use the definite article?`;
 
+const answer = `The is used to refer to specific or particular nouns.
 
-(a) Old English
-(b) Middle English
-(c) Modern English
-`;
+For example, if I say, "Let's read the book," I mean a specific book. If I say, "Let's read a book," I mean any book rather than a specific book.
 
-const answer = `(c) The period of Modern English extends from the 1500s to the present day. Shakespeare wrote his plays between 1590 and 1613.`;
+Here's another way to explain it: The is used to refer to a specific or particular member of a group. For example, "I just saw the most popular movie of the year." There are many movies, but only one particular movie is the most popular. Therefore, we use the.`;
 
 const field1: FieldDTO = {
   type: 'PRE',
   passiveData: question,
   side: 'FRONT',
+  state: 'SHOW',
 };
 
 const field2: FieldDTO = {
   type: 'PRE',
   passiveData: answer,
   side: 'BACK',
+  state: 'HIDE',
 };
 
-const field3: FieldDTO = {
+const hospitalEn: FieldDTO = {
   type: 'PRE',
   passiveData: 'Hospital',
   side: 'FRONT',
+  state: 'SHOW',
 };
 
-const field4: FieldDTO = {
+const hospitalIpa: FieldDTO = {
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
-  side: 'FRONT',
+  side: 'BACK',
+  state: 'HIDE',
 };
 
-const field6: FieldDTO = {
+const hospitalRu: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'Госпиталь',
+  side: 'BACK',
+  state: 'HIDE',
+};
+
+const hospitalEnLong: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'Hospital Hospital Hospital Hospital',
+  side: 'FRONT',
+  state: 'SHOW',
+};
+
+const hospitalIpaLong: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
+  side: 'BACK',
+  state: 'HIDE',
+};
+
+const hospitalImg: FieldDTO = {
   type: 'IMG',
   passiveData: hospital,
   side: 'FRONT',
+  state: 'SHOW',
 };
 
-const field7: FieldDTO = {
+const hospitalAudio: FieldDTO = {
   type: 'AUDIO',
   passiveData: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
   side: 'BACK',
+  state: 'HIDE',
 };
 
-const field5: FieldDTO = {
+const hospitalRuLong: FieldDTO = {
   type: 'PRE',
-  passiveData: 'das Krankenhaus',
+  passiveData: 'Госпиталь Госпиталь Госпиталь',
   side: 'BACK',
+  state: 'HIDE',
 };
 
 const field8: FieldDTO = {
@@ -399,9 +425,17 @@ const field13: FieldDTO = {
   side: 'FRONT',
 };
 
-export const uCard: CardDTO = {
+export const uCardLong: CardDTO = {
   _id: '1',
-  fields: [field6, field3, field4, field5, field7],
+  fields: [hospitalImg, hospitalEnLong, hospitalRuLong, hospitalIpaLong, hospitalAudio],
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'PASSIVE',
+};
+
+export const uCardMinimal: CardDTO = {
+  _id: '4',
+  fields: [hospitalEn, hospitalIpa, hospitalRu],
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'PASSIVE',
@@ -431,7 +465,7 @@ export const iCard2: CardDTO = {
   type: 'INTERACTIVE',
 };
 
-export const card2: CardDTO = {
+export const cardWithQandA: CardDTO = {
   _id: '2',
   fields: [field1, field2],
   timeToAnswer: 3000,
@@ -441,7 +475,7 @@ export const card2: CardDTO = {
 
 export const card3: CardDTO = {
   _id: '3',
-  fields: [field3, field2],
+  fields: [hospitalEnLong, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',
@@ -454,7 +488,7 @@ export const uTraining: TrainingDTO = {
   deckName: 'Bayesian approach',
   deckPath: 'Statistical methods / Lectures',
   trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  cards: [iCard1, iCardUInput, card2, uCard],
+  cards: [uCardLong, iCard1, iCardUInput, cardWithQandA],
 };
 
 export const iTraining: TrainingDTO = {
@@ -476,7 +510,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -485,7 +519,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -494,7 +528,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -503,7 +537,7 @@ const mathTrainings: TrainingDTO[] = [
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
 ];
 const jsTrainings: TrainingDTO[] = [
@@ -514,7 +548,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Functions',
     deckPath: 'Basics',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -523,7 +557,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Functions',
     deckPath: 'Basics',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -532,7 +566,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Workers',
     deckPath: 'Browsers',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -541,7 +575,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Async & Await',
     deckPath: 'Advanced',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -550,7 +584,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Proxy',
     deckPath: 'Advanced',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -559,7 +593,7 @@ const jsTrainings: TrainingDTO[] = [
     deckName: 'Proxy',
     deckPath: 'Advanced',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
 ];
 const englishTrainings: TrainingDTO[] = [
@@ -570,7 +604,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -579,7 +613,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -588,7 +622,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -597,7 +631,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -606,7 +640,7 @@ const englishTrainings: TrainingDTO[] = [
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
 ];
 const cppTrainings: TrainingDTO[] = [
@@ -617,7 +651,7 @@ const cppTrainings: TrainingDTO[] = [
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -626,7 +660,7 @@ const cppTrainings: TrainingDTO[] = [
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -635,7 +669,7 @@ const cppTrainings: TrainingDTO[] = [
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
 ];
 const pythonTrainings: TrainingDTO[] = [
@@ -646,7 +680,7 @@ const pythonTrainings: TrainingDTO[] = [
     deckName: 'Pathlib',
     deckPath: 'Libraries',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -655,7 +689,7 @@ const pythonTrainings: TrainingDTO[] = [
     deckName: 'Pathlib',
     deckPath: 'Libraries',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
 ];
 const cookingTrainings: TrainingDTO[] = [
@@ -666,7 +700,7 @@ const cookingTrainings: TrainingDTO[] = [
     deckName: 'Borsh',
     deckPath: 'Recepies',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
   {
     _id: '1',
@@ -675,7 +709,7 @@ const cookingTrainings: TrainingDTO[] = [
     deckName: 'Borsh',
     deckPath: 'Recepies',
     trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCard, card2],
+    cards: [uCardLong, cardWithQandA],
   },
 ];
 

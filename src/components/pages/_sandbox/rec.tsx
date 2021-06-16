@@ -7,6 +7,7 @@ type RecP = { width?: number; height?: number; color?: string; isHidden?: boolea
 export const Rec = ({ height = 100, width = 200, color = 'red', isHidden = false, _id = id(), children }: RecP) => {
   return (
     <div
+      className="rec"
       style={{
         width: `${width}px`,
         height: `${height}px`,

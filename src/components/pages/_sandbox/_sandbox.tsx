@@ -4,8 +4,6 @@ import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
-import { Rec } from './rec';
-import { UInput } from '../../uform/ufields/uinput';
 
 export const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
@@ -18,10 +16,7 @@ export const Sandbox = () => {
     <>
       <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
-      <main className="content-area">
-        <Rec isHidden={true} />
-        <UInput question={'q?'} correctAnswer={'correct'} explanation={'cuz'} />
-      </main>
+      <main className="content-area"></main>
     </>
   );
 };
