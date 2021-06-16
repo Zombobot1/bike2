@@ -2,10 +2,11 @@ import './uradio.scss';
 import { sslugify } from '../../../utils/sslugify';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { cn } from '../../../utils/utils';
 import { Validity } from '../types';
 import { Question } from '../../study/training/types';
+import { fn, Fn } from '../../../utils/types';
 
 export interface URadioInputP {
   name: string;
@@ -97,10 +98,26 @@ export const URadioElement = ({
   );
 };
 
-export const URadio = ({ question, correctAnswer, explanation, options }: Question) => {
+export interface URadioP extends Question {
+  onAnswer?: Fn;
+}
+
+export const URadio = ({ question, correctAnswer, explanation, options, onAnswer = fn }: URadioP) => {
   const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { validationError, value, wasSubmitted } = getFieldInfo(name);
+  const [canSubmit, setCanSubmit] = useState(false);
+
+  useEffect(() => {
+    if (value) setCanSubmit(true);
+  }, [value]);
+
+  useEffect(() => {
+    if (canSubmit) {
+      onAnswer();
+      setCanSubmit(false);
+    }
+  }, [canSubmit]);
 
   useMount(() => {
     addField(name, correctAnswer);

@@ -78,7 +78,7 @@ export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCur
   } else if (interactiveData && isCurrent) {
     return (
       <>
-        {type === 'RADIO' && <RadioField {...interactiveData} />}
+        {type === 'RADIO' && <RadioField {...interactiveData} onAnswer={interactiveSubmit} />}
         {type === 'INPUT' && <UInput {...interactiveData} onAnswer={interactiveSubmit} />}
       </>
     );

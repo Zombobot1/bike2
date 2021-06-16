@@ -1,11 +1,8 @@
-import { URadio } from '../../../../uform/ufields/uradio';
+import { URadio, URadioP } from '../../../../uform/ufields/uradio';
 import { shuffle } from '../../../../../utils/algorithms';
 import React, { useState } from 'react';
-import { Question } from '../../types';
 
-export const RadioField = ({ question, explanation, correctAnswer, options }: Question) => {
-  const [shuffledOptions] = useState(() => shuffle(options));
-  return (
-    <URadio question={question} options={shuffledOptions} correctAnswer={correctAnswer} explanation={explanation} />
-  );
+export const RadioField = (props: URadioP) => {
+  const [shuffledOptions] = useState(() => shuffle(props.options));
+  return <URadio {...props} options={shuffledOptions} />;
 };
