@@ -7,6 +7,7 @@ import { useMount } from '../../../../../utils/hooks-utils';
 import { RadioField } from './radio-field';
 import { FieldDTO } from '../../types';
 import { UInput } from '../../../../uform/ufields/uinput';
+import { useInteractiveSubmit } from '../../hooks';
 
 export interface PlayerP {
   className?: string;
@@ -60,6 +61,7 @@ export interface FieldP extends Omit<FieldDTO, 'side'> {
 }
 
 export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCurrent }: FieldP) => {
+  const { interactiveSubmit } = useInteractiveSubmit();
   useMount(() => {
     if (type === 'IMG' && passiveData) preloadImage(passiveData); // for chrome mobile
   });
@@ -77,7 +79,7 @@ export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCur
     return (
       <>
         {type === 'RADIO' && <RadioField {...interactiveData} />}
-        {type === 'INPUT' && <UInput {...interactiveData} />}
+        {type === 'INPUT' && <UInput {...interactiveData} onAnswer={interactiveSubmit} />}
       </>
     );
   }

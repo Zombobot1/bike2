@@ -454,7 +454,7 @@ export const uTraining: TrainingDTO = {
   deckName: 'Bayesian approach',
   deckPath: 'Statistical methods / Lectures',
   trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  cards: [iCardUInput, card2, uCard],
+  cards: [iCard1, iCardUInput, card2, uCard],
 };
 
 export const iTraining: TrainingDTO = {

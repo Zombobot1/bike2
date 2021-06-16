@@ -1,10 +1,11 @@
 import { sslugify } from '../../../utils/sslugify';
 import { cn } from '../../../utils/utils';
-import React, { useState } from 'react';
+import React, { useState, KeyboardEvent } from 'react';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import { Validity } from '../types';
 import { QuestionWithoutOptions } from './uradio';
+import { Fn, fn } from '../../../utils/types';
 
 type TipOnMobile = 'SHOW_TIP' | 'HIDE_TIP';
 
@@ -17,6 +18,7 @@ export interface UInputElementP {
   feedBack?: string;
   readonly: boolean;
   tipOnMobile?: TipOnMobile;
+  onEnter?: Fn;
 }
 
 export const UInputElement = ({
@@ -28,10 +30,16 @@ export const UInputElement = ({
   onChange,
   readonly,
   tipOnMobile = 'HIDE_TIP',
+  onEnter = fn,
 }: UInputElementP) => {
   const [type, setType] = useState(tipOnMobile === 'HIDE_TIP' ? 'password' : 'text');
   const id = `${name}-${sslugify(label)}`;
   const cns = cn('form-control', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' });
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == 'Enter') onEnter();
+  };
+
   return (
     <div className="uinput">
       {label && (
@@ -48,6 +56,7 @@ export const UInputElement = ({
         onFocus={() => setType('text')}
         id={id}
         disabled={readonly}
+        onKeyDown={handleKeyDown}
       />
       {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
       {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
@@ -57,6 +66,7 @@ export const UInputElement = ({
 
 export interface UInputP extends QuestionWithoutOptions {
   tipOnMobile?: TipOnMobile;
+  onAnswer?: Fn;
 }
 
 export const UInput = ({
@@ -65,6 +75,7 @@ export const UInput = ({
   explanation,
   initialAnswer = '',
   tipOnMobile = 'HIDE_TIP',
+  onAnswer = fn,
 }: UInputP) => {
   const { addField, getFieldInfo, removeField, onChange, fieldsCounter } = useUForm();
   const [fieldsCounterStr] = useState(() => String(fieldsCounter));
@@ -90,6 +101,7 @@ export const UInput = ({
       feedBack={validationError ? validationError : explanation}
       readonly={wasSubmitted}
       tipOnMobile={tipOnMobile}
+      onEnter={onAnswer}
     />
   );
 };

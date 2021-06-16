@@ -1,13 +1,14 @@
 import './training-controls.scss';
 import { capitalizeOnlyFirstLetter, cn } from '../../../../utils/utils';
 import { ReactComponent as BackI } from '../../../pages/_sandbox/next-gen/arrow-left-short.svg';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TrainingTimer } from './training-timer';
 import { CardEstimation, cardEstimationToNumber, CardSide, CardType } from '../types';
 import { Fn, NumStateT, StateT } from '../../../../utils/types';
 import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
+import { useInteractiveSubmit } from '../hooks';
 
 export interface TrainingControlsP {
   estimate: EstimateCard;
@@ -103,6 +104,12 @@ export const TrainingControls = ({
     setGoToNextCardFn(null);
   };
 
+  const { interactiveSubmit, setInteractiveSubmit } = useInteractiveSubmit();
+
+  useEffect(() => {
+    setInteractiveSubmit(() => submit(onSubmit));
+  }, [submit]);
+
   const fail = () => estimate('BAD');
 
   const [currentCardSide, setCurrentSide] = currentCardSideS;
@@ -114,7 +121,7 @@ export const TrainingControls = ({
       {cardType === 'PASSIVE' && <PassiveEstimateBtn estimate={estimate} currentCardSideS={currentCardSideS} />}
       {cardType === 'INTERACTIVE' && (
         <InteractiveEstimateBtn
-          sumbit={() => submit(onSubmit)}
+          sumbit={interactiveSubmit}
           goToNextCard={goToNextCard}
           isSubmitted={Boolean(goToNextCardFn)}
         />

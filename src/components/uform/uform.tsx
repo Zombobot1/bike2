@@ -1,5 +1,6 @@
 import { atom, useAtom } from 'jotai';
 import { CardEstimation } from '../study/training/types';
+import { useCallback } from 'react';
 
 export interface UFieldInfo {
   value: string;
@@ -92,7 +93,7 @@ export const useUForm = () => {
 export const useUFormSubmit = () => {
   const [fields, setFields] = useAtom(fieldsAtom);
 
-  const submit = (handleSubmit: OnSubmit) => {
+  const _submit = (handleSubmit: OnSubmit) => {
     const validatedFields = _validate(fields);
     if (!_isValid(validatedFields)) return setFields(validatedFields);
 
@@ -100,6 +101,8 @@ export const useUFormSubmit = () => {
     setFields(checkedFields);
     handleSubmit(_estimations(checkedFields));
   };
+
+  const submit = useCallback(_submit, [fields]);
 
   return { submit };
 };
