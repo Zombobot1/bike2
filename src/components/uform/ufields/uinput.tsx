@@ -1,11 +1,20 @@
 import { sslugify } from '../../../utils/sslugify';
 import { cn } from '../../../utils/utils';
-import React, { useState, KeyboardEvent } from 'react';
+import React, { useState, KeyboardEvent, useRef } from 'react';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import { Validity } from '../types';
 import { QuestionWithoutOptions } from './uradio';
 import { Fn, fn } from '../../../utils/types';
+
+const useFocus = () => {
+  const ref = useRef<HTMLInputElement>(null);
+  const focus = () => {
+    if (ref.current) ref.current.focus();
+  };
+
+  return { ref, focus };
+};
 
 type TipOnMobile = 'SHOW_TIP' | 'HIDE_TIP';
 
@@ -40,6 +49,12 @@ export const UInputElement = ({
     if (e.key == 'Enter') onEnter();
   };
 
+  // severe interference with swiper js: if focus is set until animation ends swiper might get broken (UB)
+  const { ref, focus } = useFocus();
+  useMount(() => {
+    setTimeout(focus, 250);
+  });
+
   return (
     <div className="uinput">
       {label && (
@@ -57,7 +72,7 @@ export const UInputElement = ({
         id={id}
         disabled={readonly}
         onKeyDown={handleKeyDown}
-        autoFocus
+        ref={ref}
       />
       {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
       {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
