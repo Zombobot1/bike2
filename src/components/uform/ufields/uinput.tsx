@@ -57,6 +57,7 @@ export const UInputElement = ({
         id={id}
         disabled={readonly}
         onKeyDown={handleKeyDown}
+        autoFocus
       />
       {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
       {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
