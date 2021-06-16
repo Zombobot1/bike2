@@ -3,9 +3,9 @@ import { useRouter } from '../../utils/hooks/use-router';
 import { iconForAppPage, STUDY, toAppPage } from '../../pages';
 import React, { FC } from 'react';
 import { ReactComponent as Burger } from './burger.svg';
-import { usePagesInfoDispatch, usePagesInfoState } from '../../context/user-position-provider';
 import { Link } from 'react-router-dom';
 import { safeSplit } from '../../../utils/algorithms';
+import { useUserPosition } from '../../context/user-position-provider';
 
 export interface BreadcrumbP {
   toggleNavbarVisibility: () => void;
@@ -20,10 +20,9 @@ export interface IdLinkP extends LinkP {
 }
 
 export const AppPageTextLink = ({ name }: LinkP) => {
-  const dispatch = usePagesInfoDispatch();
-  const clearPages = () => dispatch({ type: 'CLEAR' });
+  const { clearPath } = useUserPosition();
   return (
-    <Link to={toAppPage(name)} onClick={clearPages}>
+    <Link to={toAppPage(name)} onClick={clearPath}>
       {name}
     </Link>
   );
@@ -36,10 +35,9 @@ export interface AppPageIconLinkP {
 }
 
 export const AppPageIconLink = ({ to, Icon, className }: AppPageIconLinkP) => {
-  const dispatch = usePagesInfoDispatch();
-  const clearPages = () => dispatch({ type: 'CLEAR' });
+  const { clearPath } = useUserPosition();
   return (
-    <Link className={className} to={to} onClick={clearPages}>
+    <Link className={className} to={to} onClick={clearPath}>
       <Icon />
     </Link>
   );
@@ -59,7 +57,7 @@ const Breadcrumb = ({ toggleNavbarVisibility }: BreadcrumbP) => {
   const router = useRouter();
   const appPage = pageName(router.pathname);
   const Icon = iconForAppPage(appPage);
-  const { path } = usePagesInfoState();
+  const { path } = useUserPosition();
   return (
     <div className="d-flex breadcrumb-container">
       <Burger className="transparent-button burger-icon" onClick={toggleNavbarVisibility} />

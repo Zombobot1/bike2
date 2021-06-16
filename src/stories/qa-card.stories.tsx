@@ -5,7 +5,7 @@ import { Field } from '../components/study/training/qa-card/field/field';
 import { cardWithQandA, uCardLong, uCardMinimal } from '../content';
 
 export default {
-  title: 'QACard/Card',
+  title: 'Training/Card',
   component: QACard,
   subcomponents: { Field },
 } as Meta;

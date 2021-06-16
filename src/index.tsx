@@ -10,7 +10,6 @@ import './components/images/images.scss';
 import InfoProvider from './components/context/info-provider';
 import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
-import { PagesInfoProvider } from './components/context/user-position-provider';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { startWorker } from './api/fake-api';
 
@@ -29,15 +28,13 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <InfoProvider>
-        <PagesInfoProvider>
-          <QueryClientProvider client={queryClient}>
-            {/*<ReactQueryDevtools />*/}
-            <Switch>
-              <Redirect exact from={_ROOT} to={redirect} />
-              {PAGES.map(buildRoutes)}
-            </Switch>
-          </QueryClientProvider>
-        </PagesInfoProvider>
+        <QueryClientProvider client={queryClient}>
+          {/*<ReactQueryDevtools />*/}
+          <Switch>
+            <Redirect exact from={_ROOT} to={redirect} />
+            {PAGES.map(buildRoutes)}
+          </Switch>
+        </QueryClientProvider>
       </InfoProvider>
     </Router>
   </React.StrictMode>,

@@ -4,11 +4,11 @@ import { deleteCard, estimateAnswer } from '../../../../api/api';
 import { useEffectedState, useMount } from '../../../../utils/hooks-utils';
 import { Fn, NumStateT, StateT } from '../../../../utils/types';
 import { useRouter } from '../../../utils/hooks/use-router';
-import { usePagesInfoDispatch } from '../../../context/user-position-provider';
 import { STUDY } from '../../../pages';
 import { TrainingDTO } from './training';
 import { ActionOnCardHandlers } from '../training-controls/training-settings';
 import { removeElement } from '../../../../utils/utils';
+import { useUserPosition } from '../../../context/user-position-provider';
 
 export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);
@@ -104,14 +104,14 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
 type OnLastCard = Fn;
 export const usePagesPathUpdate = ({ _id, deckName }: TrainingDTO): OnLastCard => {
   const { history } = useRouter();
-  const pagesInfoDispatch = usePagesInfoDispatch();
+  const { setPath, clearPath } = useUserPosition();
 
   useMount(() => {
-    pagesInfoDispatch({ type: 'SET', payload: { path: [{ id: _id, name: deckName }] } });
+    setPath([{ id: _id, name: deckName }]);
   });
 
   return () => {
     history.push(STUDY);
-    pagesInfoDispatch({ type: 'CLEAR' });
+    clearPath();
   };
 };
