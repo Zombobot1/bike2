@@ -1,12 +1,9 @@
-import React, { FC, useContext } from 'react';
 import appData from '../../content';
+import { atom, useAtom } from 'jotai';
 
-const InfoProviderContext = React.createContext(appData);
+const appDataAtom = atom(appData);
 
-export const useInfo = () => useContext(InfoProviderContext);
-
-const InfoProvider: FC = ({ children }) => {
-  return <InfoProviderContext.Provider value={appData}>{children}</InfoProviderContext.Provider>;
+export const useInfo = () => {
+  const [appData] = useAtom(appDataAtom);
+  return { info: appData };
 };
-
-export default InfoProvider;

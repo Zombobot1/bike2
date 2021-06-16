@@ -11,7 +11,8 @@ export const DeckSettingsModalTrigger = () => (
 );
 
 const DeckSettingsModal = () => {
-  const settings = useInfo().study.trainingDecksSettings;
+  const { info } = useInfo();
+  const settings = info.study.trainingDecksSettings;
   const Modal = HeadlessModal(deckSettingsModalId, () => <TrainingDecksSettings {...settings} />);
   return <Modal />;
 };

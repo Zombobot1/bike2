@@ -7,7 +7,7 @@ import { useInfo } from '../context/info-provider';
 import { cn } from '../../utils/utils';
 
 const Notifications = () => {
-  const info = useInfo();
+  const { info } = useInfo();
   const [hasNew, setHasNew] = useState(true);
   const ref = useEventListener('show.bs.dropdown', () => setHasNew(false));
   const containerNames = cn('transparent-button bell-container', { 'bell-container--active': hasNew });

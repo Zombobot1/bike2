@@ -14,7 +14,7 @@ const scroller = (ways: Map<string, any>) => {
 };
 
 export const Landing = () => {
-  const info = useInfo();
+  const { info } = useInfo();
   const heroRefName = 'hero';
   const featuresRefName = 'features';
   const featuresRef = useRef(null);

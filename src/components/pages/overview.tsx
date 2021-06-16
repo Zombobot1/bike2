@@ -9,7 +9,7 @@ import CardsTypes from '../overview/cards-types';
 import LastEdited from '../overview/last-edited';
 
 export const Overview = () => {
-  const info = useInfo();
+  const { info } = useInfo();
   return (
     <div className="statistics">
       <div className="d-flex mb-3">
