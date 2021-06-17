@@ -17,6 +17,7 @@ export const QACard = ({ fields, stageColor, isCurrent, isMediaActive = true, sh
   const fieldsToShow = fields.filter((f) => f.state === 'SHOW');
   const hiddenFields = fields.filter((f) => !f.state || f.state === 'HIDE');
   const backgroundColors = `linear-gradient(${COLORS.white} 0%, ${COLORS.white} 75%, ${stageColor} 75%, ${stageColor} 100%)`;
+  console.log(fieldsToShow.length);
   return (
     <div className="qa-card-container" style={{ background: backgroundColors }}>
       {estimation && (

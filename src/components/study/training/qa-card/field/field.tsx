@@ -55,7 +55,7 @@ const preloadImage = (src: string) => {
   img.src = src;
 };
 
-export interface FieldP extends Omit<FieldDTO, 'side'> {
+export interface FieldP extends Omit<FieldDTO, 'state'> {
   isMediaActive: boolean;
   isCurrent: boolean; // if we render all interactive fields it would be impossible to submit one card
 }

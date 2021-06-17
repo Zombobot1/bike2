@@ -329,6 +329,24 @@ const hospitalIpa: FieldDTO = {
   state: 'HIDE',
 };
 
+const theatreEn: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'Theatre',
+  state: 'SHOW',
+};
+
+const theatreIpa: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'ˈθiətər',
+  state: 'HIDE',
+};
+
+const theatreRu: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'Театр',
+  state: 'HIDE',
+};
+
 const hospitalRu: FieldDTO = {
   type: 'PRE',
   passiveData: 'Госпиталь',
@@ -369,10 +387,11 @@ const field8: FieldDTO = {
   type: 'RADIO',
   interactiveData: {
     question: 'Please select one:',
-    options: ['Option 1', 'Option 2'],
-    correctAnswer: 'Option 2',
+    options: ['Correct', 'Wrong'],
+    correctAnswer: 'Correct',
     explanation: 'Cuz',
   },
+  state: 'SHOW',
 };
 
 const field9: FieldDTO = {
@@ -383,21 +402,25 @@ const field9: FieldDTO = {
     correctAnswer: 'Right',
     explanation: 'Cuz',
   },
+  state: 'SHOW',
 };
 
 const field10: FieldDTO = {
   type: 'PRE',
   passiveData: 'Listen and write the missing word:',
+  state: 'SHOW',
 };
 
 const field11: FieldDTO = {
   type: 'AUDIO',
   passiveData: hospitalMp3,
+  state: 'SHOW',
 };
 
 const field12: FieldDTO = {
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
+  state: 'SHOW',
 };
 
 const field13: FieldDTO = {
@@ -408,6 +431,29 @@ const field13: FieldDTO = {
     correctAnswer: 'hospital',
     explanation: 'hospital',
   },
+  state: 'SHOW',
+};
+
+const field14: FieldDTO = {
+  type: 'INPUT',
+  interactiveData: {
+    question: 'Please type a and use enter to submit:',
+    options: [],
+    correctAnswer: 'a',
+    explanation: 'a',
+  },
+  state: 'SHOW',
+};
+
+const field15: FieldDTO = {
+  type: 'INPUT',
+  interactiveData: {
+    question: 'Please type a and DO NOT use enter to submit:',
+    options: [],
+    correctAnswer: 'b',
+    explanation: 'b',
+  },
+  state: 'SHOW',
 };
 
 export const uCardLong: CardDTO = {
@@ -418,9 +464,25 @@ export const uCardLong: CardDTO = {
   type: 'PASSIVE',
 };
 
+export const uCardLongWithUpdate: CardDTO = {
+  _id: 'get update',
+  fields: [hospitalImg, hospitalEnLong, hospitalRuLong, hospitalIpaLong, hospitalAudio],
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'PASSIVE',
+};
+
 export const uCardMinimal: CardDTO = {
   _id: '4',
   fields: [hospitalEn, hospitalIpa, hospitalRu],
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'PASSIVE',
+};
+
+export const cardForUpdate: CardDTO = {
+  _id: 'update',
+  fields: [theatreEn, theatreIpa, theatreRu],
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'PASSIVE',
@@ -437,6 +499,22 @@ export const iCard1: CardDTO = {
 export const iCardUInput: CardDTO = {
   _id: '12',
   fields: [field10, field11, field12, field13],
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'INTERACTIVE',
+};
+
+export const iCardUInputWithEnter: CardDTO = {
+  _id: 'iCardUInputWithEnter',
+  fields: [field14],
+  timeToAnswer: 3000,
+  stageColor: 'red',
+  type: 'INTERACTIVE',
+};
+
+export const iCardUInputWithoutEnter: CardDTO = {
+  _id: 'iCardUInputWithoutEnter',
+  fields: [field15],
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
@@ -466,7 +544,7 @@ export const card3: CardDTO = {
   type: 'PASSIVE',
 };
 
-const simple: TrainingDTO = {
+const basic: TrainingDTO = {
   _id: 'simple',
   overdue: 'NONE',
   deckColor: '#FF5151',
@@ -476,8 +554,28 @@ const simple: TrainingDTO = {
   cards: [uCardLong, uCardMinimal],
 };
 
+const simple: TrainingDTO = {
+  ...basic,
+  _id: 'simple',
+  cards: [uCardLong, uCardMinimal],
+};
+
+const withUpdateFromServer: TrainingDTO = {
+  ...basic,
+  _id: 'simple',
+  cards: [uCardLongWithUpdate, uCardMinimal],
+};
+
+const interactive: TrainingDTO = {
+  ...basic,
+  _id: 'interactive',
+  cards: [iCardUInputWithoutEnter, iCard1, iCardUInputWithEnter],
+};
+
 export const trainings = {
   simple,
+  withUpdateFromServer,
+  interactive,
 };
 
 export const uTraining: TrainingDTO = {

@@ -33,7 +33,7 @@ export interface Question {
 
 export interface FieldDTO {
   type: FieldType;
-  state?: FieldState;
+  state: FieldState;
   passiveData?: string;
   interactiveData?: Question;
 }
