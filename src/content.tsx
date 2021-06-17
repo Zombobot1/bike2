@@ -1,6 +1,7 @@
 import { NotificationP } from './components/cards/notification';
 import { CardDTO, FieldDTO } from './components/study/training/types';
 import hospital from './hospital.png';
+import hospitalMp3 from './hospital.mp3';
 import { TrainingDTO } from './components/study/training/training';
 import { LastTrainingCardP } from './components/cards/last-training-card';
 import { TrainingsGroupDTO } from './components/study/training-deck/training-deck-heading';
@@ -362,7 +363,7 @@ const hospitalImg: FieldDTO = {
 
 const hospitalAudio: FieldDTO = {
   type: 'AUDIO',
-  passiveData: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
+  passiveData: hospitalMp3,
   side: 'BACK',
   state: 'HIDE',
 };
@@ -404,7 +405,7 @@ const field10: FieldDTO = {
 
 const field11: FieldDTO = {
   type: 'AUDIO',
-  passiveData: 'https://dictionary.cambridge.org/media/english/uk_pron/u/ukh/ukhor/ukhorsi013.mp3',
+  passiveData: hospitalMp3,
   side: 'FRONT',
 };
 
@@ -426,7 +427,7 @@ const field13: FieldDTO = {
 };
 
 export const uCardLong: CardDTO = {
-  _id: '1',
+  _id: '5',
   fields: [hospitalImg, hospitalEnLong, hospitalRuLong, hospitalIpaLong, hospitalAudio],
   timeToAnswer: 3000,
   stageColor: 'red',
@@ -479,6 +480,20 @@ export const card3: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',
+};
+
+const simple: TrainingDTO = {
+  _id: 'simple',
+  overdue: 'NONE',
+  deckColor: '#FF5151',
+  deckName: 'Bayesian approach',
+  deckPath: 'Statistical methods / Lectures',
+  trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  cards: [uCardLong, uCardMinimal],
+};
+
+export const trainings = {
+  simple,
 };
 
 export const uTraining: TrainingDTO = {

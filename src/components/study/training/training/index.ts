@@ -1,2 +1,2 @@
-export { Training } from './training';
+export { TrainingWrapper } from './training';
 export type { TrainingDTO } from './training';

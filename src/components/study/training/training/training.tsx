@@ -8,6 +8,7 @@ import { OverdueType } from '../../../cards/notification/notification';
 import { TrainingCardsInfoP } from '../../../cards/training-cards-info';
 import { CardCarousel } from './card-carousel';
 import { usePageVisibility } from '../../../../utils/hooks-utils';
+import { Fn } from '../../../../utils/types';
 
 export interface TrainingDTO {
   _id: string;
@@ -19,9 +20,12 @@ export interface TrainingDTO {
   cards: CardDTOs;
 }
 
-export const Training = (trainingDTO: TrainingDTO) => {
-  const onLastCard = usePagesPathUpdate(trainingDTO);
+export interface TrainingP {
+  dto: TrainingDTO;
+  onLastCard: Fn;
+}
 
+export const Training = ({ dto, onLastCard }: TrainingP) => {
   const {
     cards,
     cardEditingHandlers,
@@ -32,7 +36,7 @@ export const Training = (trainingDTO: TrainingDTO) => {
     timeToFinish,
     isTimerRunning,
     progress,
-  } = useCards(trainingDTO._id, trainingDTO.cards, onLastCard);
+  } = useCards(dto._id, dto.cards, onLastCard);
 
   const isPageVisible = usePageVisibility();
 
@@ -40,7 +44,7 @@ export const Training = (trainingDTO: TrainingDTO) => {
     <div className="d-flex flex-column training">
       <TrainingHeader
         progress={progress}
-        deckName={trainingDTO.deckName}
+        deckName={dto.deckName}
         timeToFinish={timeToFinish}
         handlers={cardEditingHandlers}
         cardId={cards[currentCardIndex]?._id || ''}
@@ -55,4 +59,9 @@ export const Training = (trainingDTO: TrainingDTO) => {
       />
     </div>
   );
+};
+
+export const TrainingWrapper = (trainingDTO: TrainingDTO) => {
+  const onLastCard = usePagesPathUpdate(trainingDTO);
+  return <Training dto={trainingDTO} onLastCard={onLastCard} />;
 };
