@@ -41,8 +41,8 @@ const useSubmissionsInfo = () => {
   const [info, setInfo] = useState('');
 
   const onSubmit = (es: Estimations) => {
-    const right = es.filter((e) => e.estimation === 'GOOD').length;
-    const wrong = es.filter((e) => e.estimation === 'BAD').length;
+    const right = es.filter((e) => e.estimation === 'RIGHT').length;
+    const wrong = es.filter((e) => e.estimation === 'WRONG').length;
     setInfo(`Submission ${counter}. Correct: ${right}. Wrong: ${wrong}`);
     setCounter((c) => c + 1);
   };

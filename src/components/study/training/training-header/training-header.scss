@@ -1,43 +1,58 @@
 @use "../../../../sass/config";
 
-.header {
-  font-weight: bold;
-  font-size: 20px;
-  margin-bottom: 0;
-
-  @include config.xs { display: none; }
-}
-
 .heading {
+  width: 100%;
+  height: 39px;
+  position: relative;
 
-  .progress { width: 130px;  }
-
-  .cards-left-info {
-    color: config.$secondary-text-color;
-    font-size: 14px;
+  .training-timer {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
-  .fs-trigger {
-    margin-right: 15px;
+  .progress-info {
+    position: absolute;
+    right: 50%;
+    transform: translateX(50%);
+
+    .cards-left-info {
+      color: config.$secondary-text-color;
+      font-size: 14px;
+    }
+
+    .progress { width: 230px;  }
   }
 
-  .settings {
 
-    .three-dots-icon {
-      opacity: .5;
-      transform: scale(2);
-      margin-right: 10px;
+  .options {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+
+    .fs-trigger {
+      margin-right: 15px;
     }
 
-    .dropdown-menu { transform: translate(-165px, 0) !important; }
+    .settings {
 
-    .bi { margin-right: 5px; }
-    .bi-patch-exclamation { fill: config.$danger-color; }
-    .bi-hourglass { fill: config.$warning-color }
-    .bi-pen {
-      transform: scale(.9);
-      fill: config.$info-color;
+      .three-dots-icon {
+        opacity: .5;
+        transform: scale(2);
+        margin-right: 10px;
+      }
+
+      .dropdown-menu { transform: translate(-165px, 0) !important; }
+
+      .bi { margin-right: 5px; }
+      .bi-patch-exclamation { fill: config.$danger-color; }
+      .bi-hourglass { fill: config.$warning-color }
+      .bi-pen {
+        transform: scale(.9);
+        fill: config.$info-color;
+      }
+      .bi-trash { fill: config.$danger-color; }
     }
-    .bi-trash { fill: config.$danger-color; }
   }
 }

@@ -10,30 +10,25 @@ import { ActionOnCardHandlers } from '../training-controls/training-settings';
 import { removeElement } from '../../../../utils/utils';
 import { useUserPosition } from '../../../context/user-position-provider';
 import { CardData, CardDatas } from './card-carousel';
+import { useTrainingTimer } from '../training-timer/training-timer';
 
-export const useTrainingProgress = (cards: CardDatas, currentCardIndex: number) => {
+export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);
   const timeLeft = (from: number) => cards.slice(from).reduce((p, e) => p + e.dto.timeToAnswer, 0);
   useEffect(() => setTimeToFinish(timeLeft(currentCardIndex)), [currentCardIndex, cards]);
 
-  const [progress, setProgress] = useState(0);
-  useEffect(() => setProgress(currentCardIndex / cards.length), [currentCardIndex, cards]);
-  return { timeToFinish, progress };
+  return { timeToFinish };
 };
 
 export const useCardActionsHandlers = (cardsS: StateT<CardDatas>, currentCardIndexS: NumStateT) => {
   const [cards, setCards] = cardsS;
   const [currentCardIndex, setCurrentCardIndex] = currentCardIndexS;
 
-  const timeToAnswerS = useState(cards[0]?.dto?.timeToAnswer || 0);
-  const [_, setTimeToAnswer] = timeToAnswerS;
-  const [isTimerRunning, setIsTimerRunning] = useState(true);
-  const pauseTimer = () => setIsTimerRunning(false);
-  const resumeTimer = () => setIsTimerRunning(true);
+  const { setTimeToAnswer, resume, pause } = useTrainingTimer();
 
   const cardEditingHandlers: ActionOnCardHandlers = {
-    onModalShow: pauseTimer,
-    onModalClose: resumeTimer,
+    onModalShow: pause,
+    onModalClose: resume,
     onCardDelete: async () => {
       await deleteCard(cards[currentCardIndex].dto._id);
       setCards((cs) => {
@@ -44,7 +39,7 @@ export const useCardActionsHandlers = (cardsS: StateT<CardDatas>, currentCardInd
       });
     },
   };
-  return { cardEditingHandlers, isTimerRunning, timeToAnswerS };
+  return { cardEditingHandlers, setTimeToAnswer };
 };
 
 type CardTransition = 'TRANSIT' | 'NO_TRANSITION';
@@ -57,7 +52,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
   const [cards, setCards] = useState<CardDatas>(cardDTOsToCardDatas(initialCards));
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-  const { cardEditingHandlers, isTimerRunning, timeToAnswerS } = useCardActionsHandlers(
+  const { cardEditingHandlers, setTimeToAnswer } = useCardActionsHandlers(
     [cards, setCards],
     [currentCardIndex, setCurrentCardIndex],
   );
@@ -70,10 +65,10 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return;
-    timeToAnswerS[1](cards[currentCardIndex].dto.timeToAnswer);
+    setTimeToAnswer(cards[currentCardIndex].dto.timeToAnswer);
   }, [currentCardIndex]);
 
-  const { timeToFinish, progress } = useTrainingProgress(cards, currentCardIndex);
+  const { timeToFinish } = useTimeToFinish(cards, currentCardIndex);
   const [isLoading, setIsLoading] = useState(false);
 
   const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'TRANSIT'): Fn | undefined => {
@@ -102,11 +97,8 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
     areFieldsHidden,
     showHiddenFields,
     currentCardIndex,
-    timeToAnswerS,
     estimateCard,
     timeToFinish,
-    isTimerRunning,
-    progress,
   };
 };
 

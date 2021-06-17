@@ -1,6 +1,6 @@
 import './qa-card.scss';
 import React from 'react';
-import { CardEstimation, FieldDTO } from '../types';
+import { CardEstimation, estimationColor, FieldDTO } from '../types';
 import { Field } from './field/field';
 import { COLORS } from '../../../../config';
 
@@ -12,19 +12,6 @@ export interface QACardP {
   showHidden: boolean;
   estimation?: CardEstimation;
 }
-
-const estimationColor = (e: CardEstimation) => {
-  switch (e) {
-    case 'BAD':
-      return COLORS.danger;
-    case 'POOR':
-      return COLORS.warning;
-    case 'GOOD':
-      return COLORS.success;
-    case 'EASY':
-      return COLORS.info;
-  }
-};
 
 export const QACard = ({ fields, stageColor, isCurrent, isMediaActive = true, showHidden, estimation }: QACardP) => {
   const fieldsToShow = fields.filter((f) => f.state === 'SHOW');

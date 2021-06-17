@@ -16,7 +16,7 @@ export const Sandbox = () => {
     <>
       <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
-      <main className="content-area"></main>
+      <main className="content-area">{/*<Template {...interactiveCardControls} />*/}</main>
     </>
   );
 };

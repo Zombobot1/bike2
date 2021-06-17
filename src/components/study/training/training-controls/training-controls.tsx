@@ -1,9 +1,9 @@
 import './training-controls.scss';
 import { capitalizeOnlyFirstLetter } from '../../../../utils/utils';
 import React, { useEffect, useState } from 'react';
-import { TrainingTimer } from './training-timer';
+import { useTrainingTimer } from '../training-timer/training-timer';
 import { CardEstimation, cardEstimationToNumber, CardType } from '../types';
-import { Fn, NumStateT } from '../../../../utils/types';
+import { Fn } from '../../../../utils/types';
 import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
@@ -14,8 +14,7 @@ export interface TrainingControlsP {
   areFieldsHidden: boolean;
   showHiddenFields: Fn;
   cardType: CardType;
-  timeToAnswerS: NumStateT;
-  isTimerRunning: boolean;
+  currentCardIndex: number;
 }
 
 interface EstimationBtnP {
@@ -30,13 +29,13 @@ const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP) => (
   </button>
 );
 
-interface PassiveEstimateBtnP {
+interface SelfEstimateBtnP {
   areFieldsHidden: boolean;
   showHiddenFields: Fn;
   estimate: EstimateCard;
 }
 
-const PassiveEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: PassiveEstimateBtnP) => {
+const SelfEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: SelfEstimateBtnP) => {
   return (
     <>
       {areFieldsHidden && (
@@ -46,9 +45,9 @@ const PassiveEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: Pas
       )}
       {!areFieldsHidden && (
         <div className="btn-group" role="group">
-          <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'BAD'} />
-          <EstimationBtn btnClass="btn-warning" estimate={estimate} estimation={'POOR'} />
-          <EstimationBtn btnClass="btn-success" estimate={estimate} estimation={'GOOD'} />
+          <EstimationBtn btnClass="btn-warning" estimate={estimate} estimation={'SOSO'} />
+          <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'WRONG'} />
+          <EstimationBtn btnClass="btn-success" estimate={estimate} estimation={'RIGHT'} />
           <EstimationBtn btnClass="btn-info" estimate={estimate} estimation={'EASY'} />
         </div>
       )}
@@ -58,13 +57,13 @@ const PassiveEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: Pas
 
 type GoToNextCard = { go: Fn } | null;
 
-interface InteractiveEstimateBtnP {
+interface EstimateBtnP {
   isSubmitted: boolean;
   sumbit: Fn;
   goToNextCard: Fn;
 }
 
-const InteractiveEstimateBtn = ({ isSubmitted, sumbit, goToNextCard }: InteractiveEstimateBtnP) => {
+const EstimateBtn = ({ isSubmitted, sumbit, goToNextCard }: EstimateBtnP) => {
   return (
     <>
       {!isSubmitted && (
@@ -84,18 +83,19 @@ const InteractiveEstimateBtn = ({ isSubmitted, sumbit, goToNextCard }: Interacti
 export const TrainingControls = ({
   cardType,
   estimate,
-  timeToAnswerS,
   areFieldsHidden,
   showHiddenFields,
-  isTimerRunning,
+  currentCardIndex,
 }: TrainingControlsP) => {
   const { submit } = useUFormSubmit();
 
   const [goToNextCardFn, setGoToNextCardFn] = useState<GoToNextCard | null>(null);
 
   const onSubmit = (estimations: Estimations) => {
-    const finalMark = min(estimations, (e) => cardEstimationToNumber(e.estimation));
-    const gtnc = estimate(finalMark.estimation, 'NO_TRANSITION');
+    const finalMark = estimations.length
+      ? min(estimations, (e) => cardEstimationToNumber(e.estimation)).estimation
+      : 'WRONG';
+    const gtnc = estimate(finalMark, 'NO_TRANSITION');
     if (gtnc) setGoToNextCardFn({ go: gtnc });
   };
 
@@ -111,25 +111,21 @@ export const TrainingControls = ({
     setInteractiveSubmit(() => submit(onSubmit));
   }, [submit]);
 
-  const fail = () => estimate('BAD');
+  const { setOnTimeout } = useTrainingTimer();
+  const fail = () => estimate('WRONG');
+  const onTimeout = () => (goToNextCardFn ? goToNextCard() : fail());
+  useEffect(() => {
+    setOnTimeout(onTimeout);
+  }, [currentCardIndex]);
 
   return (
-    <div className="controls">
+    <div className="d-flex justify-content-center controls">
       {cardType === 'PASSIVE' && (
-        <PassiveEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />
+        <SelfEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />
       )}
       {cardType === 'INTERACTIVE' && (
-        <InteractiveEstimateBtn
-          sumbit={interactiveSubmit}
-          goToNextCard={goToNextCard}
-          isSubmitted={Boolean(goToNextCardFn)}
-        />
+        <EstimateBtn sumbit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
       )}
-      <TrainingTimer
-        onTimeout={() => (goToNextCardFn ? goToNextCard() : fail())}
-        timeToAnswerS={timeToAnswerS}
-        isRunning={isTimerRunning}
-      />
     </div>
   );
 };

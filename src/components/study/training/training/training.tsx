@@ -7,7 +7,6 @@ import { useCards, usePagesPathUpdate } from './hooks';
 import { OverdueType } from '../../../cards/notification/notification';
 import { TrainingCardsInfoP } from '../../../cards/training-cards-info';
 import { CardCarousel } from './card-carousel';
-import { usePageVisibility } from '../../../../utils/hooks-utils';
 import { Fn } from '../../../../utils/types';
 
 export interface TrainingDTO {
@@ -30,25 +29,20 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
     cards,
     cardEditingHandlers,
     currentCardIndex,
-    timeToAnswerS,
     estimateCard,
     timeToFinish,
-    isTimerRunning,
-    progress,
     showHiddenFields,
     areFieldsHidden,
   } = useCards(dto._id, dto.cards, onLastCard);
 
-  const isPageVisible = usePageVisibility();
-
   return (
     <div className="d-flex flex-column training">
       <TrainingHeader
-        progress={progress}
-        deckName={dto.deckName}
         timeToFinish={timeToFinish}
         handlers={cardEditingHandlers}
         cardId={cards[currentCardIndex]?.dto._id || ''}
+        currentCardIndex={currentCardIndex}
+        cardsLength={cards.length}
       />
       <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
       <TrainingControls
@@ -56,8 +50,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
         estimate={estimateCard}
         showHiddenFields={showHiddenFields}
         areFieldsHidden={areFieldsHidden}
-        timeToAnswerS={timeToAnswerS}
-        isTimerRunning={isPageVisible && isTimerRunning}
+        currentCardIndex={currentCardIndex}
       />
     </div>
   );

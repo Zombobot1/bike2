@@ -8,6 +8,7 @@ export const COLORS = {
   warning: '#f5b759',
   danger: '#fa5252',
   bg: '#F5F8FB',
+  light: '#eaedf2',
 };
 
 export const SM = '(max-width: 550px)';

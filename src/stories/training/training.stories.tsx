@@ -1,11 +1,11 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { TrainingWrapper, TrainingDTO } from '../components/study/training/training';
-import { handlers } from '../api/fake-api';
-import { trainings } from '../content';
+import { TrainingWrapper, TrainingDTO } from '../../components/study/training/training';
+import { handlers } from '../../api/fake-api';
+import { trainings } from '../../content';
 import { MemoryRouter } from 'react-router-dom';
-import { Training } from '../components/study/training/training/training';
-import { useToggle } from '../components/utils/hooks/use-toggle';
+import { Training } from '../../components/study/training/training/training';
+import { useToggle } from '../../components/utils/hooks/use-toggle';
 
 export default {
   title: 'Training/Training',

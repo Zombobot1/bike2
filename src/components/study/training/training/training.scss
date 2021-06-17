@@ -7,8 +7,8 @@
   .card-carousel {
     width: 100%;
     height: 100%;
-    padding-top: 10px;
-    padding-bottom: 15px; // anomaly: it should be 5px greater than padding top
+    padding-top: 15px;
+    padding-bottom: 15px;
   }
 
   @include config.xs { width: 380px; }

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { QACard, QACardP } from '../components/study/training/qa-card';
-import { Field } from '../components/study/training/qa-card/field/field';
-import { cardWithQandA, uCardLong, uCardMinimal } from '../content';
+import { QACard, QACardP } from '../../components/study/training/qa-card';
+import { Field } from '../../components/study/training/qa-card/field/field';
+import { cardWithQandA, uCardLong, uCardMinimal } from '../../content';
 
 export default {
   title: 'Training/Card',
@@ -40,7 +40,7 @@ Estimated.args = {
   isMediaActive: false,
   showHidden: true,
   fields: uCardLong.fields,
-  estimation: 'GOOD',
+  estimation: 'RIGHT',
 };
 
 export const Minimal = Template.bind({});
