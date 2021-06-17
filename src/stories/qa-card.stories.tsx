@@ -20,7 +20,6 @@ export const Hidden = Template.bind({});
 Hidden.args = {
   isCurrent: true,
   stageColor: '#6C38FF',
-  side: 'FRONT',
   showHidden: false,
   fields: uCardLong.fields,
 };
@@ -29,7 +28,6 @@ export const AllFieldsShown = Template.bind({});
 AllFieldsShown.args = {
   isCurrent: true,
   stageColor: '#6C38FF',
-  side: 'FRONT',
   isMediaActive: false,
   showHidden: true,
   fields: uCardLong.fields,
@@ -39,7 +37,6 @@ export const Estimated = Template.bind({});
 Estimated.args = {
   isCurrent: true,
   stageColor: '#6C38FF',
-  side: 'FRONT',
   isMediaActive: false,
   showHidden: true,
   fields: uCardLong.fields,
@@ -50,7 +47,6 @@ export const Minimal = Template.bind({});
 Minimal.args = {
   isCurrent: true,
   stageColor: '#6C38FF',
-  side: 'FRONT',
   isMediaActive: false,
   showHidden: true,
   fields: uCardMinimal.fields,
@@ -60,7 +56,6 @@ export const MinimalHidden = Template.bind({});
 MinimalHidden.args = {
   isCurrent: true,
   stageColor: '#6C38FF',
-  side: 'FRONT',
   isMediaActive: false,
   showHidden: false,
   fields: uCardMinimal.fields,
@@ -70,7 +65,6 @@ export const LongText = Template.bind({});
 LongText.args = {
   isCurrent: true,
   stageColor: '#6C38FF',
-  side: 'FRONT',
   isMediaActive: false,
   showHidden: true,
   fields: cardWithQandA.fields,

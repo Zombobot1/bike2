@@ -1,10 +1,9 @@
 import './training-controls.scss';
-import { capitalizeOnlyFirstLetter, cn } from '../../../../utils/utils';
-import { ReactComponent as BackI } from '../../../pages/_sandbox/next-gen/arrow-left-short.svg';
+import { capitalizeOnlyFirstLetter } from '../../../../utils/utils';
 import React, { useEffect, useState } from 'react';
 import { TrainingTimer } from './training-timer';
-import { CardEstimation, cardEstimationToNumber, CardSide, CardType } from '../types';
-import { Fn, NumStateT, StateT } from '../../../../utils/types';
+import { CardEstimation, cardEstimationToNumber, CardType } from '../types';
+import { Fn, NumStateT } from '../../../../utils/types';
 import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
@@ -12,7 +11,8 @@ import { useInteractiveSubmit } from '../hooks';
 
 export interface TrainingControlsP {
   estimate: EstimateCard;
-  currentCardSideS: StateT<CardSide>;
+  areFieldsHidden: boolean;
+  showHiddenFields: Fn;
   cardType: CardType;
   timeToAnswerS: NumStateT;
   isTimerRunning: boolean;
@@ -31,20 +31,20 @@ const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP) => (
 );
 
 interface PassiveEstimateBtnP {
-  currentCardSideS: StateT<CardSide>;
+  areFieldsHidden: boolean;
+  showHiddenFields: Fn;
   estimate: EstimateCard;
 }
 
-const PassiveEstimateBtn = ({ currentCardSideS, estimate }: PassiveEstimateBtnP) => {
-  const [currentCardSide, setCurrentSide] = currentCardSideS;
+const PassiveEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: PassiveEstimateBtnP) => {
   return (
     <>
-      {currentCardSide === 'FRONT' && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={() => setCurrentSide('BACK')}>
+      {areFieldsHidden && (
+        <button className="btn btn-lg btn-primary estimate-btn" onClick={showHiddenFields}>
           Estimate
         </button>
       )}
-      {currentCardSide === 'BACK' && (
+      {!areFieldsHidden && (
         <div className="btn-group" role="group">
           <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'BAD'} />
           <EstimationBtn btnClass="btn-warning" estimate={estimate} estimation={'POOR'} />
@@ -85,7 +85,8 @@ export const TrainingControls = ({
   cardType,
   estimate,
   timeToAnswerS,
-  currentCardSideS,
+  areFieldsHidden,
+  showHiddenFields,
   isTimerRunning,
 }: TrainingControlsP) => {
   const { submit } = useUFormSubmit();
@@ -112,13 +113,11 @@ export const TrainingControls = ({
 
   const fail = () => estimate('BAD');
 
-  const [currentCardSide, setCurrentSide] = currentCardSideS;
-
-  const backICN = cn('bi bi-arrow-left-short transparent-button', { invisible: currentCardSide === 'FRONT' });
   return (
     <div className="controls">
-      <BackI className={backICN} onClick={() => setCurrentSide('FRONT')} />
-      {cardType === 'PASSIVE' && <PassiveEstimateBtn estimate={estimate} currentCardSideS={currentCardSideS} />}
+      {cardType === 'PASSIVE' && (
+        <PassiveEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />
+      )}
       {cardType === 'INTERACTIVE' && (
         <InteractiveEstimateBtn
           sumbit={interactiveSubmit}

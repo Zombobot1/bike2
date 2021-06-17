@@ -1,7 +1,7 @@
-import { CardDTO, CardDTOs, CardEstimation, CardSide } from '../types';
+import { CardDTO, CardDTOs, CardEstimation } from '../types';
 import { useEffect, useState } from 'react';
 import { deleteCard, estimateAnswer } from '../../../../api/api';
-import { useEffectedState, useMount } from '../../../../utils/hooks-utils';
+import { useMount } from '../../../../utils/hooks-utils';
 import { Fn, NumStateT, StateT } from '../../../../utils/types';
 import { useRouter } from '../../../utils/hooks/use-router';
 import { STUDY } from '../../../pages';
@@ -9,10 +9,11 @@ import { TrainingDTO } from './training';
 import { ActionOnCardHandlers } from '../training-controls/training-settings';
 import { removeElement } from '../../../../utils/utils';
 import { useUserPosition } from '../../../context/user-position-provider';
+import { CardData, CardDatas } from './card-carousel';
 
-export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) => {
+export const useTrainingProgress = (cards: CardDatas, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);
-  const timeLeft = (from: number) => cards.slice(from).reduce((p, e) => p + e.timeToAnswer, 0);
+  const timeLeft = (from: number) => cards.slice(from).reduce((p, e) => p + e.dto.timeToAnswer, 0);
   useEffect(() => setTimeToFinish(timeLeft(currentCardIndex)), [currentCardIndex, cards]);
 
   const [progress, setProgress] = useState(0);
@@ -20,11 +21,11 @@ export const useTrainingProgress = (cards: CardDTOs, currentCardIndex: number) =
   return { timeToFinish, progress };
 };
 
-export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardIndexS: NumStateT) => {
+export const useCardActionsHandlers = (cardsS: StateT<CardDatas>, currentCardIndexS: NumStateT) => {
   const [cards, setCards] = cardsS;
   const [currentCardIndex, setCurrentCardIndex] = currentCardIndexS;
 
-  const timeToAnswerS = useState(cards[0]?.timeToAnswer || 0);
+  const timeToAnswerS = useState(cards[0]?.dto?.timeToAnswer || 0);
   const [_, setTimeToAnswer] = timeToAnswerS;
   const [isTimerRunning, setIsTimerRunning] = useState(true);
   const pauseTimer = () => setIsTimerRunning(false);
@@ -34,10 +35,10 @@ export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardInde
     onModalShow: pauseTimer,
     onModalClose: resumeTimer,
     onCardDelete: async () => {
-      await deleteCard(cards[currentCardIndex]._id);
+      await deleteCard(cards[currentCardIndex].dto._id);
       setCards((cs) => {
         const result = removeElement(cs, currentCardIndex);
-        setTimeToAnswer(result[currentCardIndex]?.timeToAnswer || 0);
+        setTimeToAnswer(result[currentCardIndex]?.dto?.timeToAnswer || 0);
         if (currentCardIndex >= result.length) setCurrentCardIndex((i) => i + 1); // hack to end training
         return result;
       });
@@ -49,8 +50,11 @@ export const useCardActionsHandlers = (cardsS: StateT<CardDTOs>, currentCardInde
 type CardTransition = 'TRANSIT' | 'NO_TRANSITION';
 export type EstimateCard = (v: CardEstimation, ct?: CardTransition) => Fn | undefined;
 
-export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard: Fn) => {
-  const [cards, setCards] = useEffectedState<CardDTOs>(initialCards);
+const cardDTOToCardData = (dto: CardDTO): CardData => ({ dto, showHidden: false });
+const cardDTOsToCardDatas = (dtos: CardDTOs) => dtos.map(cardDTOToCardData);
+
+export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard: Fn) => {
+  const [cards, setCards] = useState<CardDatas>(cardDTOsToCardDatas(initialCards));
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const { cardEditingHandlers, isTimerRunning, timeToAnswerS } = useCardActionsHandlers(
@@ -58,13 +62,15 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
     [currentCardIndex, setCurrentCardIndex],
   );
 
-  const currentCardSideS = useState<CardSide>('FRONT');
+  const areFieldsHidden = !(cards[currentCardIndex]?.showHidden ?? false);
+  const showHiddenFields = () =>
+    setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, showHidden: true } : c)));
+
   const goToNextCard = () => setCurrentCardIndex((i) => i + 1);
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return;
-    currentCardSideS[1]('FRONT');
-    timeToAnswerS[1](cards[currentCardIndex].timeToAnswer);
+    timeToAnswerS[1](cards[currentCardIndex].dto.timeToAnswer);
   }, [currentCardIndex]);
 
   const { timeToFinish, progress } = useTrainingProgress(cards, currentCardIndex);
@@ -74,8 +80,10 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
     setIsLoading(true);
     const hasCards = currentCardIndex < cards.length - 1;
 
-    estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]._id, estimation: e }).then((cards) => {
-      setCards((cs) => [...cs, ...cards]);
+    setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)));
+
+    estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex].dto._id, estimation: e }).then((cards) => {
+      setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)]);
       setIsLoading(false);
       if (transition === 'TRANSIT' && !hasCards) goToNextCard();
     });
@@ -91,7 +99,8 @@ export const useCards = (trainingId: string, initialCards: CardDTO[], onLastCard
   return {
     cards,
     cardEditingHandlers,
-    currentCardSideS,
+    areFieldsHidden,
+    showHiddenFields,
     currentCardIndex,
     timeToAnswerS,
     estimateCard,

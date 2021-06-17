@@ -308,70 +308,60 @@ Here's another way to explain it: The is used to refer to a specific or particul
 const field1: FieldDTO = {
   type: 'PRE',
   passiveData: question,
-  side: 'FRONT',
   state: 'SHOW',
 };
 
 const field2: FieldDTO = {
   type: 'PRE',
   passiveData: answer,
-  side: 'BACK',
   state: 'HIDE',
 };
 
 const hospitalEn: FieldDTO = {
   type: 'PRE',
   passiveData: 'Hospital',
-  side: 'FRONT',
   state: 'SHOW',
 };
 
 const hospitalIpa: FieldDTO = {
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
-  side: 'BACK',
   state: 'HIDE',
 };
 
 const hospitalRu: FieldDTO = {
   type: 'PRE',
   passiveData: 'Госпиталь',
-  side: 'BACK',
   state: 'HIDE',
 };
 
 const hospitalEnLong: FieldDTO = {
   type: 'PRE',
   passiveData: 'Hospital Hospital Hospital Hospital',
-  side: 'FRONT',
   state: 'SHOW',
 };
 
 const hospitalIpaLong: FieldDTO = {
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
-  side: 'BACK',
   state: 'HIDE',
 };
 
 const hospitalImg: FieldDTO = {
   type: 'IMG',
   passiveData: hospital,
-  side: 'FRONT',
   state: 'SHOW',
 };
 
 const hospitalAudio: FieldDTO = {
   type: 'AUDIO',
   passiveData: hospitalMp3,
-  side: 'BACK',
   state: 'HIDE',
 };
 
 const hospitalRuLong: FieldDTO = {
   type: 'PRE',
   passiveData: 'Госпиталь Госпиталь Госпиталь',
-  side: 'BACK',
   state: 'HIDE',
 };
 
@@ -383,7 +373,6 @@ const field8: FieldDTO = {
     correctAnswer: 'Option 2',
     explanation: 'Cuz',
   },
-  side: 'FRONT',
 };
 
 const field9: FieldDTO = {
@@ -394,25 +383,21 @@ const field9: FieldDTO = {
     correctAnswer: 'Right',
     explanation: 'Cuz',
   },
-  side: 'FRONT',
 };
 
 const field10: FieldDTO = {
   type: 'PRE',
   passiveData: 'Listen and write the missing word:',
-  side: 'FRONT',
 };
 
 const field11: FieldDTO = {
   type: 'AUDIO',
   passiveData: hospitalMp3,
-  side: 'FRONT',
 };
 
 const field12: FieldDTO = {
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
-  side: 'FRONT',
 };
 
 const field13: FieldDTO = {
@@ -423,7 +408,6 @@ const field13: FieldDTO = {
     correctAnswer: 'hospital',
     explanation: 'hospital',
   },
-  side: 'FRONT',
 };
 
 export const uCardLong: CardDTO = {

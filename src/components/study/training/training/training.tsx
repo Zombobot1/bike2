@@ -29,13 +29,14 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
   const {
     cards,
     cardEditingHandlers,
-    currentCardSideS,
     currentCardIndex,
     timeToAnswerS,
     estimateCard,
     timeToFinish,
     isTimerRunning,
     progress,
+    showHiddenFields,
+    areFieldsHidden,
   } = useCards(dto._id, dto.cards, onLastCard);
 
   const isPageVisible = usePageVisibility();
@@ -47,13 +48,14 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
         deckName={dto.deckName}
         timeToFinish={timeToFinish}
         handlers={cardEditingHandlers}
-        cardId={cards[currentCardIndex]?._id || ''}
+        cardId={cards[currentCardIndex]?.dto._id || ''}
       />
-      <CardCarousel cards={cards} currentCardIndex={currentCardIndex} currentCardSide={currentCardSideS[0]} />
+      <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
       <TrainingControls
-        cardType={cards[currentCardIndex]?.type || 'PASSIVE'}
+        cardType={cards[currentCardIndex]?.dto.type || 'PASSIVE'}
         estimate={estimateCard}
-        currentCardSideS={currentCardSideS}
+        showHiddenFields={showHiddenFields}
+        areFieldsHidden={areFieldsHidden}
         timeToAnswerS={timeToAnswerS}
         isTimerRunning={isPageVisible && isTimerRunning}
       />
