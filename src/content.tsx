@@ -383,7 +383,7 @@ const hospitalRuLong: FieldDTO = {
   state: 'HIDE',
 };
 
-const field8: FieldDTO = {
+const selectRight: FieldDTO = {
   type: 'RADIO',
   interactiveData: {
     question: 'Please select one:',
@@ -417,9 +417,15 @@ const field11: FieldDTO = {
   state: 'SHOW',
 };
 
-const field12: FieldDTO = {
+const passiveText: FieldDTO = {
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
+  state: 'SHOW',
+};
+
+const anotherPassiveText: FieldDTO = {
+  type: 'PRE',
+  passiveData: 'Some short text',
   state: 'SHOW',
 };
 
@@ -434,7 +440,7 @@ const field13: FieldDTO = {
   state: 'SHOW',
 };
 
-const field14: FieldDTO = {
+const typeA: FieldDTO = {
   type: 'INPUT',
   interactiveData: {
     question: 'Please type a and use enter to submit:',
@@ -490,7 +496,7 @@ export const cardForUpdate: CardDTO = {
 
 export const iCard1: CardDTO = {
   _id: '10',
-  fields: [field8],
+  fields: [selectRight],
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
@@ -498,7 +504,7 @@ export const iCard1: CardDTO = {
 
 export const iCardUInput: CardDTO = {
   _id: '12',
-  fields: [field10, field11, field12, field13],
+  fields: [field10, field11, passiveText, field13],
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
@@ -506,7 +512,7 @@ export const iCardUInput: CardDTO = {
 
 export const iCardUInputWithEnter: CardDTO = {
   _id: 'iCardUInputWithEnter',
-  fields: [field14],
+  fields: [typeA],
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
@@ -526,6 +532,14 @@ export const iCard2: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'green',
   type: 'INTERACTIVE',
+};
+
+export const cardWithDifferentFields: CardDTO = {
+  _id: 'cardWithDifferentFields',
+  fields: [passiveText, selectRight, typeA, anotherPassiveText],
+  timeToAnswer: 3000,
+  stageColor: 'blue',
+  type: 'PASSIVE',
 };
 
 export const cardWithQandA: CardDTO = {

@@ -58,7 +58,7 @@ export const UInputElement = ({
   return (
     <div className="uinput">
       {label && (
-        <label className="form-label" htmlFor={id}>
+        <label className="form-label interactive-question" htmlFor={id}>
           {label}
         </label>
       )}

@@ -1,5 +1,7 @@
 @import "../../../../../sass/config";
 
+$mb: 20px;
+
 .qa-card__pre {
   padding-right: 15px;
   overflow-y: hidden;
@@ -8,7 +10,7 @@
   white-space: pre-wrap;
   font-size: 2em;
   line-height: 34px;
-  margin-bottom: 20px;
+  margin-bottom: $mb;
   flex: 0 0 auto;
 }
 
@@ -16,7 +18,7 @@
   width: 96%;
   height: 45%;
   border-radius: 5px;
-  margin-bottom: 20px;
+  margin-bottom: $mb;
 
   background-position: 50% 50%;
   background-repeat: no-repeat;
@@ -24,7 +26,8 @@
 }
 
 .qa-card__audio {
-  margin-bottom: 20px;
+  margin-bottom: $mb;
+
   .play-btn {
     width: 60px;
     height: 60px;
@@ -44,18 +47,21 @@
   }
 }
 
-.uradio__input {
-  margin-bottom: 20px;
-}
-
 .qa-card {
   .uinput {
     width: 96%;
+    margin-bottom: $mb;
   }
+
+  .uradio {
+    margin-bottom: $mb;
+  }
+
 }
 .interactive-question {
   font-size: 1.3em;
   letter-spacing: .1px;
   word-break: break-word;
+  margin-bottom: 1rem;
 }
 

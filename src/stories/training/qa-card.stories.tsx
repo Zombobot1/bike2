@@ -1,71 +1,42 @@
 import React from 'react';
 import { Story, Meta } from '@storybook/react';
-import { QACard, QACardP } from '../../components/study/training/qa-card';
-import { Field } from '../../components/study/training/qa-card/field/field';
-import { cardWithQandA, uCardLong, uCardMinimal } from '../../content';
+import { QACardP } from '../../components/study/training/qa-card';
+
+import {
+  allFieldsShownA,
+  estimatedA,
+  hiddenA,
+  interactiveAndPassiveA,
+  longTextA,
+  minimalA,
+  minimalHiddenA,
+  QACardT,
+} from '../../components/study/training/qa-card/qa-card-stories';
 
 export default {
   title: 'Training/Card',
-  component: QACard,
-  subcomponents: { Field },
+  component: QACardT,
 } as Meta;
 
-const Template: Story<QACardP> = (args) => (
-  <div style={{ width: '500px', height: '715px' }}>
-    <QACard {...args} />
-  </div>
-);
+const Template: Story<QACardP> = (args) => <QACardT {...args} />;
 
 export const Hidden = Template.bind({});
-Hidden.args = {
-  isCurrent: true,
-  stageColor: '#6C38FF',
-  showHidden: false,
-  fields: uCardLong.fields,
-};
+Hidden.args = { ...hiddenA };
 
 export const AllFieldsShown = Template.bind({});
-AllFieldsShown.args = {
-  isCurrent: true,
-  stageColor: '#6C38FF',
-  isMediaActive: false,
-  showHidden: true,
-  fields: uCardLong.fields,
-};
+AllFieldsShown.args = { ...allFieldsShownA };
 
 export const Estimated = Template.bind({});
-Estimated.args = {
-  isCurrent: true,
-  stageColor: '#6C38FF',
-  isMediaActive: false,
-  showHidden: true,
-  fields: uCardLong.fields,
-  estimation: 'RIGHT',
-};
-
-export const Minimal = Template.bind({});
-Minimal.args = {
-  isCurrent: true,
-  stageColor: '#6C38FF',
-  isMediaActive: false,
-  showHidden: true,
-  fields: uCardMinimal.fields,
-};
+Estimated.args = { ...estimatedA };
 
 export const MinimalHidden = Template.bind({});
-MinimalHidden.args = {
-  isCurrent: true,
-  stageColor: '#6C38FF',
-  isMediaActive: false,
-  showHidden: false,
-  fields: uCardMinimal.fields,
-};
+MinimalHidden.args = { ...minimalHiddenA };
+
+export const Minimal = Template.bind({});
+Minimal.args = { ...minimalA };
 
 export const LongText = Template.bind({});
-LongText.args = {
-  isCurrent: true,
-  stageColor: '#6C38FF',
-  isMediaActive: false,
-  showHidden: true,
-  fields: cardWithQandA.fields,
-};
+LongText.args = { ...longTextA };
+
+export const InteractiveAndPassive = Template.bind({});
+InteractiveAndPassive.args = { ...interactiveAndPassiveA };

@@ -15,17 +15,18 @@ export interface URadioInputP {
   checked: boolean;
   validity: Validity;
   readonly: boolean;
+  isLast: boolean;
 }
 
-export const URadioInput = ({ name, label, validity, onChange, checked, readonly }: URadioInputP) => {
+export const URadioInput = ({ name, label, validity, onChange, checked, readonly, isLast }: URadioInputP) => {
   const id = `${name}-${sslugify(label)}`;
   const cns = cn('form-check-input', {
     'is-valid': validity === 'VALID',
     'is-invalid': validity === 'INVALID',
   });
-
+  const divcns = cn('form-check uradio_input', { 'mb-2': !isLast, 'mb-0': isLast });
   return (
-    <div className="form-check uradio__input mb-2">
+    <div className={divcns}>
       <input
         className={cns}
         type="radio"
@@ -88,6 +89,7 @@ export const URadioElement = ({
             onChange={(v) => onChange(name, v)}
             checked={value === o}
             readonly={wasSubmitted}
+            isLast={i === options.length - 1}
           />
         );
       })}
