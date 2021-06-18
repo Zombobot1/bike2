@@ -60,7 +60,7 @@ const Breadcrumb = ({ toggleNavbarVisibility }: BreadcrumbP) => {
   const { path } = useUserPosition();
   return (
     <div className="d-flex breadcrumb-container">
-      <Burger className="transparent-button burger-icon" onClick={toggleNavbarVisibility} />
+      <Burger className="transparent-button bi-burger" onClick={toggleNavbarVisibility} />
       {Icon && <Icon />}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">

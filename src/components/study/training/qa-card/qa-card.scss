@@ -40,16 +40,17 @@
 
     z-index: 1;
 
-    padding: 20px 0 20px 20px;
+    padding: 20px 20px 20px 20px;
     border-radius: 25px;
 
     background-color: config.$white-color;
 
-    .fields-separator {
-      width: 96%;
+    hr {
       min-height: 1px;
       margin-bottom: 20px;
-      background-color: rgba(config.$primary-color, 0.1);
+      margin-top: 0;
+      opacity: 0.1;
+      @include config.xs { margin-bottom: 10px; }
     }
   }
 

@@ -586,34 +586,21 @@ const interactive: TrainingDTO = {
   cards: [iCardUInputWithoutEnter, iCard1, iCardUInputWithEnter],
 };
 
+const combined: TrainingDTO = {
+  ...basic,
+  _id: 'combined',
+  cards: [uCardLong, uCardMinimal, iCard1, iCardUInputWithEnter],
+};
+
 export const trainings = {
   simple,
   withUpdateFromServer,
   interactive,
-};
-
-export const uTraining: TrainingDTO = {
-  _id: '1',
-  overdue: 'NONE',
-  deckColor: '#FF5151',
-  deckName: 'Bayesian approach',
-  deckPath: 'Statistical methods / Lectures',
-  trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  cards: [uCardLong, iCard1, iCardUInput, cardWithQandA],
-};
-
-export const iTraining: TrainingDTO = {
-  _id: '1',
-  overdue: 'NONE',
-  deckColor: '#FF5151',
-  deckName: 'Bayesian approach',
-  deckPath: 'Statistical methods / Lectures',
-  trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
-  cards: [iCard1, iCard2],
+  combined,
 };
 
 const mathTrainings: TrainingDTO[] = [
-  uTraining,
+  trainings.simple,
   {
     _id: '1',
     overdue: 'WARNING',

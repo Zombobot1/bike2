@@ -42,13 +42,13 @@ const _check = (fields: UFields): UFields =>
   fields.map(
     (f): UField => ({
       ...f,
-      estimation: f.value === f.correctAnswer ? 'RIGHT' : 'WRONG',
+      estimation: f.value === f.correctAnswer ? 'GOOD' : 'BAD',
       wasSubmitted: true,
     }),
   );
 
 const _estimations = (fields: UFields): Estimations => {
-  return fields.map(({ name, value, estimation }) => ({ name, value, estimation: estimation || 'WRONG' }));
+  return fields.map(({ name, value, estimation }) => ({ name, value, estimation: estimation || 'BAD' }));
 };
 
 const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);

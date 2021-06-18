@@ -22,12 +22,12 @@ export const TrainingHeader = ({ timeToFinish, cardsLength, currentCardIndex, ha
       <div className="heading">
         <TrainingTimer />
         <div className="d-flex flex-column align-items-center progress-info">
-          <span className="cards-left-info mb-1">
-            {fancyTime(timeToFinish)} for {cardsLeft}
+          <span className="cards-left-info">
+            {cardsLeft} ~ {fancyTime(timeToFinish)}
           </span>
           <ProgressBar className="align-self-center me-2" value={progress} color={COLORS.tertiary} />
         </div>
-        <div className="options">
+        <div className="d-flex align-items-center options">
           <FullScreenTrigger />
           <TrainingSettings handlers={handlers} cardId={cardId} />
         </div>

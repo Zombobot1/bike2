@@ -29,7 +29,7 @@ export const allFieldsShownA: QACardP = {
 
 export const estimatedA: QACardP = {
   ...template1,
-  estimation: 'RIGHT',
+  estimation: 'GOOD',
 };
 
 const template2 = {

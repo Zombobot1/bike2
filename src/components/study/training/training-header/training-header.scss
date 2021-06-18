@@ -2,7 +2,7 @@
 
 .heading {
   width: 100%;
-  height: 39px;
+  height: 37px;
   position: relative;
   z-index: 100; // for training settings dropdown
 
@@ -18,28 +18,40 @@
     transform: translateX(50%);
 
     .cards-left-info {
+      margin-bottom: 2px;
+      margin-right: 8px;
       color: config.$secondary-text-color;
       font-size: 14px;
     }
 
-    .progress { width: 230px;  }
+    .progress {
+      width: 230px;
+
+      @include config.xs { width: 190px; }
+    }
   }
 
 
   .options {
     position: absolute;
     right: 0;
-    top: 50%;
+    top: 51%;
     transform: translateY(-50%);
 
     .fs-trigger {
+      transform: translateY(-1px);
       margin-right: 15px;
+
+      .bi {
+        height: 18px;
+        width: 18px;
+      }
     }
 
     .settings {
 
       .three-dots-icon {
-        opacity: .5;
+        opacity: .65;
         transform: scale(2);
         margin-right: 10px;
       }

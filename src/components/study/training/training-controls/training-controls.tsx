@@ -46,8 +46,8 @@ const SelfEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: SelfEs
       {!areFieldsHidden && (
         <div className="btn-group" role="group">
           <EstimationBtn btnClass="btn-warning" estimate={estimate} estimation={'SOSO'} />
-          <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'WRONG'} />
-          <EstimationBtn btnClass="btn-success" estimate={estimate} estimation={'RIGHT'} />
+          <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'BAD'} />
+          <EstimationBtn btnClass="btn-success" estimate={estimate} estimation={'GOOD'} />
           <EstimationBtn btnClass="btn-info" estimate={estimate} estimation={'EASY'} />
         </div>
       )}
@@ -94,7 +94,7 @@ export const TrainingControls = ({
   const onSubmit = (estimations: Estimations) => {
     const finalMark = estimations.length
       ? min(estimations, (e) => cardEstimationToNumber(e.estimation)).estimation
-      : 'WRONG';
+      : 'BAD';
     const gtnc = estimate(finalMark, 'NO_TRANSITION');
     if (gtnc) setGoToNextCardFn({ go: gtnc });
   };
@@ -112,7 +112,7 @@ export const TrainingControls = ({
   }, [submit]);
 
   const { setOnTimeout } = useTrainingTimer();
-  const fail = () => estimate('WRONG');
+  const fail = () => estimate('BAD');
   const onTimeout = () => (goToNextCardFn ? goToNextCard() : fail());
   useEffect(() => {
     setOnTimeout(onTimeout);

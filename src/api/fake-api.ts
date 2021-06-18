@@ -1,5 +1,5 @@
 import { rest, setupWorker } from 'msw';
-import { cardForUpdate, trainingDecks, uTraining } from '../content';
+import { cardForUpdate, trainingDecks, trainings } from '../content';
 import { BASE_URL } from './axi';
 import { DELETE_CARD, GET_TRAINING, GET_TRAINING_UPDATE_ON_ANSWER, GET_TRAININGS_GROUPS } from './api';
 import { w, WR } from '../utils/msw-utils';
@@ -7,7 +7,7 @@ import { w, WR } from '../utils/msw-utils';
 /* eslint prefer-const: 0 */
 
 let getTrainingsGroups = () => trainingDecks;
-let getTraining = () => uTraining;
+let getTraining = () => trainings.combined;
 let getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') === 'get update' ? [cardForUpdate] : []);
 let deleteCard = () => [];
 // let isFirst = true;

@@ -12,17 +12,23 @@
     position: fixed;
     z-index: 998;
     padding-bottom: 5px;
-    padding-top: 10px;
+    padding-top: 7px;
     padding-left: 10px;
     border-bottom: solid 1px $border-color;
+
+    font-size: 1.1em;
   }
 
   [class*="icon"] {
-    margin-top: 6px;
-    margin-right: 5px;
+    margin-right: 6px;
+    margin-top: 4px;
+    width: 22px;
+    height: 22px;
+
+    @include xs { margin-top: 2px; }
   }
 
-  .burger-icon {
+  .bi-burger {
     display: none;
     width: 25px;
     height: 25px;
@@ -32,5 +38,8 @@
     @include xs { display: inline }
   }
 
-  .breadcrumb { margin-bottom: 0; }
+  .breadcrumb {
+    margin-top: 1px;
+    margin-bottom: 0;
+  }
 }
