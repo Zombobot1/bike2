@@ -4,6 +4,7 @@
   width: 100%;
   height: 39px;
   position: relative;
+  z-index: 100; // for training settings dropdown
 
   .training-timer {
     position: absolute;
@@ -43,7 +44,12 @@
         margin-right: 10px;
       }
 
-      .dropdown-menu { transform: translate(-165px, 0) !important; }
+      .dropdown-menu { transform: translate(-135px, 15px) !important; }
+
+      .three-dots-icon:hover .dropdown-menu {
+        display: block;
+        margin-top: 0; // remove the gap so it doesn't close
+      }
 
       .bi { margin-right: 5px; }
       .bi-patch-exclamation { fill: config.$danger-color; }
