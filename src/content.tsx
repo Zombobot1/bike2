@@ -308,79 +308,79 @@ Here's another way to explain it: The is used to refer to a specific or particul
 const field1: FieldDTO = {
   type: 'PRE',
   passiveData: question,
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const field2: FieldDTO = {
   type: 'PRE',
   passiveData: answer,
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const hospitalEn: FieldDTO = {
   type: 'PRE',
   passiveData: 'Hospital',
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const hospitalIpa: FieldDTO = {
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const theatreEn: FieldDTO = {
   type: 'PRE',
   passiveData: 'Theatre',
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const theatreIpa: FieldDTO = {
   type: 'PRE',
   passiveData: 'ˈθiətər',
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const theatreRu: FieldDTO = {
   type: 'PRE',
   passiveData: 'Театр',
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const hospitalRu: FieldDTO = {
   type: 'PRE',
   passiveData: 'Госпиталь',
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const hospitalEnLong: FieldDTO = {
   type: 'PRE',
   passiveData: 'Hospital Hospital Hospital Hospital',
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const hospitalIpaLong: FieldDTO = {
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const hospitalImg: FieldDTO = {
   type: 'IMG',
   passiveData: hospital,
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const hospitalAudio: FieldDTO = {
   type: 'AUDIO',
   passiveData: hospitalMp3,
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const hospitalRuLong: FieldDTO = {
   type: 'PRE',
   passiveData: 'Госпиталь Госпиталь Госпиталь',
-  state: 'HIDE',
+  status: 'HIDE',
 };
 
 const selectRight: FieldDTO = {
@@ -391,7 +391,7 @@ const selectRight: FieldDTO = {
     correctAnswer: 'Correct',
     explanation: 'Cuz',
   },
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const field9: FieldDTO = {
@@ -402,31 +402,31 @@ const field9: FieldDTO = {
     correctAnswer: 'Right',
     explanation: 'Cuz',
   },
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const field10: FieldDTO = {
   type: 'PRE',
   passiveData: 'Listen and write the missing word:',
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const field11: FieldDTO = {
   type: 'AUDIO',
   passiveData: hospitalMp3,
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const passiveText: FieldDTO = {
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const anotherPassiveText: FieldDTO = {
   type: 'PRE',
   passiveData: 'Some short text',
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const field13: FieldDTO = {
@@ -437,7 +437,7 @@ const field13: FieldDTO = {
     correctAnswer: 'hospital',
     explanation: 'hospital',
   },
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const typeA: FieldDTO = {
@@ -448,7 +448,7 @@ const typeA: FieldDTO = {
     correctAnswer: 'a',
     explanation: 'a',
   },
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 const field15: FieldDTO = {
@@ -459,7 +459,7 @@ const field15: FieldDTO = {
     correctAnswer: 'b',
     explanation: 'b',
   },
-  state: 'SHOW',
+  status: 'SHOW',
 };
 
 export const uCardLong: CardDTO = {
@@ -592,11 +592,18 @@ const combined: TrainingDTO = {
   cards: [uCardLong, uCardMinimal, iCard1, iCardUInputWithEnter],
 };
 
+const autofocusCheck: TrainingDTO = {
+  ...basic,
+  _id: 'autofocusCheck',
+  cards: [uCardLong, iCardUInputWithEnter, uCardMinimal],
+};
+
 export const trainings = {
   simple,
   withUpdateFromServer,
   interactive,
   combined,
+  autofocusCheck,
 };
 
 const mathTrainings: TrainingDTO[] = [

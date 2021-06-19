@@ -1,11 +1,13 @@
 import { sslugify } from '../../../utils/sslugify';
 import { cn } from '../../../utils/utils';
-import React, { useState, KeyboardEvent, useRef } from 'react';
+import React, { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import { Validity } from '../types';
 import { QuestionWithoutOptions } from './uradio';
 import { Fn, fn } from '../../../utils/types';
+import { usePresentationTransition } from '../../study/training/training/presentation';
+import { useToggle } from '../../utils/hooks/use-toggle';
 
 const useFocus = () => {
   const ref = useRef<HTMLInputElement>(null);
@@ -51,9 +53,14 @@ export const UInputElement = ({
 
   // severe interference with swiper js: if focus is set until animation ends swiper might get broken (UB)
   const { ref, focus } = useFocus();
-  useMount(() => {
-    setTimeout(focus, 250);
-  });
+  const { isInTransition } = usePresentationTransition();
+  const [tryFocus, toggleTryFocus] = useToggle(false);
+
+  useEffect(() => {
+    if (tryFocus && !isInTransition) focus();
+  }, [isInTransition, tryFocus]);
+
+  useMount(() => setTimeout(toggleTryFocus, 100));
 
   return (
     <div className="uinput">

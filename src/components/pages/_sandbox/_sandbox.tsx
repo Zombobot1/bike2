@@ -4,7 +4,8 @@ import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
-import { canDeleteCardA, TrainingHeaderT } from '../../study/training/training-header/training-header-stories';
+import { TrainingT } from '../../study/training/training/training-stories';
+import { trainings } from '../../../content';
 
 export const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
@@ -19,8 +20,8 @@ export const Sandbox = () => {
       <NavBar visibility={navBarVisibility} toggleVisibility={toggleNavBarVisibility} />
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
-        <TrainingHeaderT {...canDeleteCardA} />
-        {/*<ModalT {...survivesRerenders} />*/}
+        {/*<Rec />*/}
+        <TrainingT {...trainings.autofocusCheck} />
       </main>
     </>
   );

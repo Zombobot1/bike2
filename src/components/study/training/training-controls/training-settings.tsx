@@ -23,7 +23,6 @@ interface TrainingSettings_P extends TrainingSettingsP {
 
 const TrainingSettings_ = ({ deleteCard, isTimerRunning, pauseTimer, resumeTimer }: TrainingSettings_P) => {
   const CardDeleteModal = AcceptanceModal(DELETE_CARD_MODAL_ID, deleteCard, pauseTimer, resumeTimer);
-  console.log('memo ?');
   return (
     <>
       <CardDeleteModal />
