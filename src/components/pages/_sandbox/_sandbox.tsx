@@ -4,8 +4,7 @@ import { useToggle } from '../../utils/hooks/use-toggle';
 import 'swiper/swiper.scss';
 import Breadcrumb from '../../navigation/breadcrumb';
 import NavBar from '../../navigation/navbar';
-import { TrainingT } from '../../study/training/training/training-stories';
-import { trainings } from '../../../content';
+import { longestCardsLeftInfo, TrainingHeaderT } from '../../study/training/training-header/training-header-stories';
 
 export const Sandbox = () => {
   const [navBarVisibility, toggleNavBarVisibility] = useToggle(false);
@@ -21,7 +20,7 @@ export const Sandbox = () => {
       <Breadcrumb toggleNavbarVisibility={toggleNavBarVisibility} />
       <main className="content-area">
         {/*<Rec />*/}
-        <TrainingT {...trainings.autofocusCheck} />
+        <TrainingHeaderT {...longestCardsLeftInfo} />
       </main>
     </>
   );

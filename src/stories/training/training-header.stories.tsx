@@ -7,6 +7,7 @@ import {
   atStartA,
   atTimeoutA,
   canDeleteCardA,
+  longestCardsLeftInfo,
   originalHeaderA,
   TrainingHeaderT,
   TrainingHeaderTP,
@@ -33,3 +34,6 @@ AtTimeout.args = { ...atTimeoutA };
 
 export const CanDeleteCard = Template.bind({});
 CanDeleteCard.args = { ...canDeleteCardA };
+
+export const LongestCardsLeftInfo = Template.bind({});
+LongestCardsLeftInfo.args = { ...longestCardsLeftInfo };

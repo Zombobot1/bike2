@@ -16,3 +16,19 @@ const Template: Story<TrainingDTO> = (args) => <TrainingT {...args} />;
 export const Simple = Template.bind({});
 Simple.args = { ...trainings.simple };
 Simple.parameters = { msw: handlers };
+
+export const WithUpdateFromServer = Template.bind({});
+WithUpdateFromServer.args = { ...trainings.withUpdateFromServer };
+WithUpdateFromServer.parameters = { msw: handlers };
+
+export const Interactive = Template.bind({});
+Interactive.args = { ...trainings.interactive };
+Interactive.parameters = { msw: handlers };
+
+export const Combined = Template.bind({});
+Combined.args = { ...trainings.combined };
+Combined.parameters = { msw: handlers };
+
+export const AutofocusCheck = Template.bind({});
+AutofocusCheck.args = { ...trainings.autofocusCheck };
+AutofocusCheck.parameters = { msw: handlers };

@@ -63,27 +63,30 @@ export const UInputElement = ({
   useMount(() => setTimeout(toggleTryFocus, 100));
 
   return (
-    <div className="uinput">
-      {label && (
-        <label className="form-label interactive-question" htmlFor={id}>
-          {label}
-        </label>
-      )}
-      <input
-        className={cns}
-        type={type}
-        name={name}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setType('text')}
-        id={id}
-        disabled={readonly}
-        onKeyDown={handleKeyDown}
-        ref={ref}
-      />
-      {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
-      {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
-    </div>
+    <form>
+      <div className="uinput">
+        {label && (
+          <label className="form-label interactive-question" htmlFor={id}>
+            {label}
+          </label>
+        )}
+        <input
+          className={cns}
+          type={type}
+          name={name}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onFocus={() => setType('text')}
+          id={id}
+          disabled={readonly}
+          onKeyDown={handleKeyDown}
+          ref={ref}
+          autoComplete="one-time-code"
+        />
+        {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
+        {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
+      </div>
+    </form>
   );
 };
 

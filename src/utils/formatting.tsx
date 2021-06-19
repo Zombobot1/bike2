@@ -31,7 +31,7 @@ export const fancyNumber = (n: number): string => {
 
 export const percentage = (result: number) => Math.floor(result * 100) + '%'; // Result must be like 52%
 
-export const fancyTime = (secs: number) => {
+export const fancyTime = (secs: number, hoursOnly = false) => {
   const now = new Date();
   now.setSeconds(now.getSeconds() + secs);
   const delta = Math.round((+now - +new Date()) / 1000);
@@ -45,6 +45,7 @@ export const fancyTime = (secs: number) => {
   if (delta < minute) return `~${delta} sec${addS(delta)}`;
   if (delta < hour) return `${deltaMins} min${addS(deltaMins)}`;
   deltaMins = Math.floor((delta - deltaHrs * hour) / minute);
+  if (hoursOnly) return `${deltaHrs} hr${addS(deltaHrs)}`;
   return `${deltaHrs} hr${addS(deltaHrs)} ${deltaMins} min${addS(deltaMins)}`;
 };
 

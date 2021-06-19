@@ -589,7 +589,7 @@ const interactive: TrainingDTO = {
 const combined: TrainingDTO = {
   ...basic,
   _id: 'combined',
-  cards: [uCardLong, uCardMinimal, iCard1, iCardUInputWithEnter],
+  cards: [uCardLong, uCardMinimal, iCardUInputWithEnter, iCard1],
 };
 
 const autofocusCheck: TrainingDTO = {

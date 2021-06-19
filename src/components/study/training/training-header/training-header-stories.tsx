@@ -10,6 +10,7 @@ export interface TrainingHeaderTP {
   currentCardIndex: number;
   timeLeft: number;
   showMore?: boolean;
+  mobileWidth?: string;
 }
 
 export const TrainingHeaderT = ({
@@ -18,6 +19,7 @@ export const TrainingHeaderT = ({
   currentCardIndex,
   timeLeft,
   showMore = true,
+  mobileWidth,
 }: TrainingHeaderTP) => {
   const [cci, setCci] = useEffectedState(currentCardIndex);
   const [wasDeleted, setWasDeleted] = useState(false);
@@ -46,7 +48,7 @@ export const TrainingHeaderT = ({
   }
 
   return (
-    <div className="d-flex flex-column" style={{ width: '500px' }}>
+    <div className="d-flex flex-column" style={{ width: mobileWidth ? mobileWidth : '500px' }}>
       <TrainingHeader
         cardId={'1'}
         deleteCard={() => setWasDeleted(true)}
@@ -111,4 +113,11 @@ export const atEndA: TrainingHeaderTP = {
 
 export const canDeleteCardA: TrainingHeaderTP = {
   ...atStartA,
+};
+
+export const longestCardsLeftInfo: TrainingHeaderTP = {
+  ...atStartA,
+  cardsLength: 99,
+  oneCardTimeToAnswer: 70,
+  mobileWidth: '380px',
 };
