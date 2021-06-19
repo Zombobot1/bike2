@@ -4,7 +4,7 @@ import './prices.scss';
 import ContactUs from '../contact-us';
 import { SIGNIN } from '../../pages';
 import { BLink } from '../../utils/blink';
-import { ModalTrigger } from '../../utils/modal-trigger';
+import { ModalTrigger } from '../../utils/modal';
 
 export interface PricesP {
   pricingHeader: string;

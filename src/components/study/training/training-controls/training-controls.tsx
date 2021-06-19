@@ -1,7 +1,7 @@
 import './training-controls.scss';
 import { capitalizeOnlyFirstLetter } from '../../../../utils/utils';
 import React, { useEffect, useState } from 'react';
-import { useTrainingTimer } from '../training-timer/training-timer';
+import { TrainingTimer, useTrainingTimer } from '../training-timer/training-timer';
 import { CardEstimation, cardEstimationToNumber, CardType } from '../types';
 import { Fn } from '../../../../utils/types';
 import { Estimations, useUFormSubmit } from '../../../uform/uform';
@@ -119,13 +119,15 @@ export const TrainingControls = ({
   }, [currentCardIndex]);
 
   return (
-    <div className="d-flex justify-content-center controls">
+    <div className="d-flex align-items-center justify-content-between controls">
+      <TrainingTimer />
       {cardType === 'PASSIVE' && (
         <SelfEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />
       )}
       {cardType === 'INTERACTIVE' && (
         <EstimateBtn sumbit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
       )}
+      <div style={{ height: '5px', minWidth: '70px' }} />
     </div>
   );
 };

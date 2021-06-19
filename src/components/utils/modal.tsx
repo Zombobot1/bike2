@@ -18,8 +18,18 @@ const AcceptanceFooter = (onAccept: Fn) => () => (
     <button type="button" className="btn btn-outline-dark" data-bs-dismiss="modal">
       Cancel
     </button>
-    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={onAccept}>
-      Delete
+    <button
+      type="button"
+      className="btn btn-danger"
+      data-bs-dismiss="modal"
+      onClick={() => {
+        // eslint-disable-next-line no-debugger
+        debugger;
+        console.log('oA');
+        onAccept();
+      }}
+    >
+      Deleteawdawd
     </button>
   </>
 );
@@ -50,6 +60,11 @@ const ModalTemplate = (
     { event: 'show.bs.modal', handler: onShow },
   ]);
 
+  // useMount(() => {
+  //   console.log('modal mounted');
+  //   return () => console.log('modal unmounted');
+  // });
+
   return (
     <div className="modal fade" ref={ref} id={id} tabIndex={-1} aria-labelledby={`${id}Label`} aria-hidden="true">
       <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -79,3 +94,15 @@ export const Modal = (id: string, title: string, Body: FC) => () =>
 
 export const AcceptanceModal = (id: string, onAccept: Fn, onShow: Fn, onClose: Fn) => () =>
   ModalTemplate(id, () => <p className="fs-5">Are you sure?</p>, null, AcceptanceFooter(onAccept), onShow, onClose);
+
+export interface ModalTriggerP {
+  className?: string;
+  modalId: string;
+  text: string;
+}
+
+export const ModalTrigger = ({ className = 'btn btn-primary', modalId, text }: ModalTriggerP) => (
+  <button className={className} data-bs-toggle="modal" data-bs-target={`#${modalId}`}>
+    {text}
+  </button>
+);

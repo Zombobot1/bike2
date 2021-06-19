@@ -1,11 +1,13 @@
 @use "src/sass/config";
 
 .training-timer {
+  min-width: 70px;
+
   .bi {
     width: 20px;
     height: 20px;
     transform: translateY(-3px);
-    margin-right: 7px;
+    margin-right: 5px;
 
     @include config.xs { transform: translateY(0); }
   }

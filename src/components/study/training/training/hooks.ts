@@ -6,7 +6,6 @@ import { Fn, NumStateT, StateT } from '../../../../utils/types';
 import { useRouter } from '../../../utils/hooks/use-router';
 import { STUDY } from '../../../pages';
 import { TrainingDTO } from './training';
-import { ActionOnCardHandlers } from '../training-controls/training-settings';
 import { removeElement } from '../../../../utils/utils';
 import { useUserPosition } from '../../../context/user-position-provider';
 import { CardData, CardDatas } from './card-carousel';
@@ -20,26 +19,23 @@ export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
   return { timeToFinish };
 };
 
-export const useCardActionsHandlers = (cardsS: StateT<CardDatas>, currentCardIndexS: NumStateT) => {
+export const useCardSettings = (cardsS: StateT<CardDatas>, currentCardIndexS: NumStateT) => {
   const [cards, setCards] = cardsS;
   const [currentCardIndex, setCurrentCardIndex] = currentCardIndexS;
 
-  const { setTimeToAnswer, resume, pause } = useTrainingTimer();
+  const { setTimeToAnswer } = useTrainingTimer();
 
-  const cardEditingHandlers: ActionOnCardHandlers = {
-    onModalShow: pause,
-    onModalClose: resume,
-    onCardDelete: async () => {
-      await deleteCard(cards[currentCardIndex].dto._id);
-      setCards((cs) => {
-        const result = removeElement(cs, currentCardIndex);
-        setTimeToAnswer(result[currentCardIndex]?.dto?.timeToAnswer || 0);
-        if (currentCardIndex >= result.length) setCurrentCardIndex((i) => i + 1); // hack to end training
-        return result;
-      });
-    },
+  const onDeleteCard = async () => {
+    await deleteCard(cards[currentCardIndex].dto._id);
+    setCards((cs) => {
+      const result = removeElement(cs, currentCardIndex);
+      setTimeToAnswer(result[currentCardIndex]?.dto?.timeToAnswer || 0);
+      if (currentCardIndex >= result.length) setCurrentCardIndex((i) => i + 1); // hack to end training
+      return result;
+    });
   };
-  return { cardEditingHandlers, setTimeToAnswer };
+
+  return { onDeleteCard, setTimeToAnswer };
 };
 
 type CardTransition = 'TRANSIT' | 'NO_TRANSITION';
@@ -52,10 +48,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
   const [cards, setCards] = useState<CardDatas>(cardDTOsToCardDatas(initialCards));
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
-  const { cardEditingHandlers, setTimeToAnswer } = useCardActionsHandlers(
-    [cards, setCards],
-    [currentCardIndex, setCurrentCardIndex],
-  );
+  const { setTimeToAnswer, onDeleteCard } = useCardSettings([cards, setCards], [currentCardIndex, setCurrentCardIndex]);
 
   const areFieldsHidden = !(cards[currentCardIndex]?.showHidden ?? false);
   const showHiddenFields = () =>
@@ -93,7 +86,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
 
   return {
     cards,
-    cardEditingHandlers,
+    onDeleteCard,
     areFieldsHidden,
     showHiddenFields,
     currentCardIndex,

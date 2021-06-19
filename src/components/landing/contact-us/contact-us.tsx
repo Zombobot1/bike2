@@ -1,4 +1,4 @@
-import { FootlessModal } from '../../utils/footless-modal';
+import { FootlessModal } from '../../utils/modal';
 import ContactForm from '../../forms/forms/contact-form';
 import compose from '../../../utils/utils';
 

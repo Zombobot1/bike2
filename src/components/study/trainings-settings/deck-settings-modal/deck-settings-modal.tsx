@@ -1,6 +1,5 @@
-import { HeadlessModal } from '../../../utils/footless-modal';
+import { HeadlessModal, ModalTrigger } from '../../../utils/modal';
 import TrainingDecksSettings from '../training-decks-settings';
-import { ModalTrigger } from '../../../utils/modal-trigger';
 import React from 'react';
 import { useInfo } from '../../../context/info-provider';
 

@@ -27,7 +27,7 @@ const useTrainingTimer_ = () => {
 };
 
 export const useTrainingTimer = () => {
-  const { setOnTimeout, setIsRunning, setTimeToAnswer } = useTrainingTimer_();
+  const { setOnTimeout, setIsRunning, setTimeToAnswer, isRunning } = useTrainingTimer_();
 
   const pause = () => setIsRunning(false);
   const resume = () => setIsRunning(true);
@@ -37,6 +37,7 @@ export const useTrainingTimer = () => {
     pause,
     resume,
     setOnTimeout,
+    isRunning,
   };
 };
 

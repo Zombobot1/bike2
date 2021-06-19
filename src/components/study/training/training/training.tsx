@@ -27,7 +27,7 @@ export interface TrainingP {
 export const Training = ({ dto, onLastCard }: TrainingP) => {
   const {
     cards,
-    cardEditingHandlers,
+    onDeleteCard,
     currentCardIndex,
     estimateCard,
     timeToFinish,
@@ -39,7 +39,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
     <div className="d-flex flex-column training">
       <TrainingHeader
         timeToFinish={timeToFinish}
-        handlers={cardEditingHandlers}
+        deleteCard={onDeleteCard}
         cardId={cards[currentCardIndex]?.dto._id || ''}
         currentCardIndex={currentCardIndex}
         cardsLength={cards.length}
