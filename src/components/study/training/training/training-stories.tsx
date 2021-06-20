@@ -2,6 +2,7 @@ import { Training, TrainingDTO } from './training';
 import { useToggle } from '../../../utils/hooks/use-toggle';
 import { MemoryRouter } from 'react-router-dom';
 import React from 'react';
+import { trainings } from '../../../../content';
 
 export const TrainingT = (args: TrainingDTO) => {
   const [isFinished, toggle] = useToggle(false);
@@ -21,4 +22,12 @@ export const TrainingT = (args: TrainingDTO) => {
       </div>
     </MemoryRouter>
   );
+};
+
+export const STraining = {
+  Simple: () => <TrainingT {...trainings.simple} />,
+  WithUpdateFromServer: () => <TrainingT {...trainings.withUpdateFromServer} />,
+  Interactive: () => <TrainingT {...trainings.interactive} />,
+  Combined: () => <TrainingT {...trainings.combined} />,
+  AutofocusCheck: () => <TrainingT {...trainings.autofocusCheck} />,
 };

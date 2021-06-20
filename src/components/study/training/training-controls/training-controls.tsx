@@ -119,7 +119,7 @@ export const TrainingControls = ({
   }, [currentCardIndex]);
 
   return (
-    <div className="d-flex align-items-center justify-content-between controls">
+    <div className="d-flex align-items-center justify-content-between controls w-100">
       <TrainingTimer />
       {cardType === 'PASSIVE' && (
         <SelfEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />

@@ -12,21 +12,21 @@ export const useEventListener = (eventName: string, handler: (e: Event) => void)
   return ref;
 };
 
-type EventsAndHandlers = { event: string; handler: (e: Event) => void }[];
+type EventsAndHandlers<T extends Event> = { event: string; handler: (e: T) => void }[];
 type CleanUps = { cleanUp: Fn }[];
-export const useEventListeners = (listeners: EventsAndHandlers) => {
+export const useEventListeners = <T extends Event>(listeners: EventsAndHandlers<T>, addOneMoreTime = false) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref: any = useRef(null);
   useEffect(() => {
     const cleanUps: CleanUps = [];
     listeners.forEach((l) => {
-      const eventListener = (event: Event) => l.handler(event);
+      const eventListener = (event: T) => l.handler(event);
       ref.current.addEventListener(l.event, eventListener);
       cleanUps.push({ cleanUp: () => ref?.current?.removeEventListener(l.event, eventListener) });
     });
 
     return () => cleanUps.forEach((c) => c.cleanUp());
-  }, [ref]);
+  }, [ref, addOneMoreTime]);
   return ref;
 };
 

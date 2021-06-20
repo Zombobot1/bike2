@@ -25,6 +25,7 @@ import { FC } from 'react';
 import App from '../app';
 import Page404 from './page404';
 import { Redirect404 } from '../utils/routing';
+import { SoryBook } from '../../sorybook/sorybook';
 
 export const LANDING = '/landing';
 export const SIGNIN = '/signin';
@@ -42,6 +43,7 @@ export const SCHEDULE = APP + '/schedule';
 export const SETTINGS = APP + '/settings';
 export const _ANY = '*';
 export const _PAGE404 = '/404';
+export const _SORYBOOK = '/_stories';
 
 export const PAGES = [
   { path: LANDING, component: Landing },
@@ -51,6 +53,7 @@ export const PAGES = [
   { path: RESETPASSWORD, component: ResetPassword },
   { path: _SANDBOX, component: Sandbox },
   { path: _PAGE404, component: Page404 },
+  { path: _SORYBOOK, component: SoryBook },
   {
     path: APP,
     component: App,

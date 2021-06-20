@@ -1,0 +1,124 @@
+@use "../sass/config";
+
+.sorybook {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  overflow-x: hidden;
+
+
+  .nav-swipe-area {
+    position: absolute;
+    height: 100%;
+    width: 50px;
+    z-index: 0;
+  }
+
+  .offcanvas-start {
+    width: 230px;
+  }
+
+  .offcanvas-body {
+    padding: 0;
+  }
+
+  .pane {
+    padding: 15px;
+
+    @include config.xs { padding-top: 55px; }
+  }
+}
+
+.sorybook__breadcrumb {
+  position: absolute;
+  height: 45px;
+  width: 100%;
+  background-color: white;
+
+  .btn {
+    width: 45px;
+    height: 45px;
+    .burger-icon {
+      width: 25px;
+      height: 25px;
+    }
+  }
+
+}
+
+.sorybook__nav {
+  height: 100%;
+  min-width: 230px;
+
+  background-color: config.$white-color;
+  border-right: config.$border;
+
+  @include config.xs { min-width: 150px; }
+}
+
+.tree {
+  list-style-type: none;
+  padding-left: 0;
+  padding-top: 10px;
+
+  h5 {
+    padding-top: 5px;
+    padding-bottom: 5px;
+    margin-left: 17px;
+  }
+
+  .leaf {
+    padding-left: 18px;
+
+    &--active {
+      background-color: config.$light-color;
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: config.$light-color;
+    }
+  }
+
+  .tree-node {
+
+    ul {
+      margin-bottom: 0;
+      padding-left: 0;
+      list-style-type: none;
+    }
+
+    .collapse.show {
+      margin-bottom: 10px;
+    }
+
+    .node {
+      padding-left: 5px;
+
+      .bi {
+        margin-right: 3px;
+        transform: translateY(-2px);
+        width: 10px;
+        height: 10px;
+      }
+
+      &:hover {
+        cursor: pointer;
+        background-color: config.$light-color;
+      }
+    }
+
+    .use-case__label {
+      font-weight: bold;
+      color: config.$gray-color;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+  }
+  .use-case {
+    margin-bottom: 20px;
+  }
+}
+

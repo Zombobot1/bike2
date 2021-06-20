@@ -110,10 +110,10 @@ export const UInput = ({
 
   let validity: Validity = 'NONE';
   if (validationError) validity = 'INVALID';
-  else if (wasSubmitted) validity = value === correctAnswer ? 'VALID' : 'INVALID';
+  else if (wasSubmitted) validity = value === correctAnswer[0] ? 'VALID' : 'INVALID';
 
   useMount(() => {
-    addField(name, correctAnswer, initialAnswer);
+    addField(name, correctAnswer[0], initialAnswer);
     return () => removeField(name);
   });
 

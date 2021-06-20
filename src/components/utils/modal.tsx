@@ -18,18 +18,8 @@ const AcceptanceFooter = (onAccept: Fn) => () => (
     <button type="button" className="btn btn-outline-dark" data-bs-dismiss="modal">
       Cancel
     </button>
-    <button
-      type="button"
-      className="btn btn-danger"
-      data-bs-dismiss="modal"
-      onClick={() => {
-        // eslint-disable-next-line no-debugger
-        debugger;
-        console.log('oA');
-        onAccept();
-      }}
-    >
-      Deleteawdawd
+    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={onAccept}>
+      Delete
     </button>
   </>
 );
@@ -59,11 +49,6 @@ const ModalTemplate = (
     { event: 'hide.bs.modal', handler: onClose },
     { event: 'show.bs.modal', handler: onShow },
   ]);
-
-  // useMount(() => {
-  //   console.log('modal mounted');
-  //   return () => console.log('modal unmounted');
-  // });
 
   return (
     <div className="modal fade" ref={ref} id={id} tabIndex={-1} aria-labelledby={`${id}Label`} aria-hidden="true">

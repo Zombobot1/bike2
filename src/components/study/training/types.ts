@@ -26,7 +26,7 @@ export type FieldType = 'PRE' | 'IMG' | 'AUDIO' | 'RADIO' | 'INPUT' | 'CHECKS';
 
 export interface Question {
   question: string;
-  correctAnswer: string;
+  correctAnswer: string[];
   explanation: string;
   options: string[];
 }

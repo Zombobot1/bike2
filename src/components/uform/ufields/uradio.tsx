@@ -75,11 +75,11 @@ export const URadioElement = ({
       {options.map((o, i) => {
         let validity: Validity = 'NONE';
         if (validationError) validity = 'INVALID';
-        else if (wasSubmitted && value !== correctAnswer) {
-          if (o === correctAnswer) validity = 'VALID';
+        else if (wasSubmitted && value !== correctAnswer[0]) {
+          if (o === correctAnswer[0]) validity = 'VALID';
           else if (o === value) validity = 'INVALID';
           else validity = 'NONE';
-        } else if (wasSubmitted && value === correctAnswer) validity = value === o ? 'VALID' : 'NONE';
+        } else if (wasSubmitted && value === correctAnswer[0]) validity = value === o ? 'VALID' : 'NONE';
         return (
           <URadioInput
             key={i}
@@ -94,8 +94,8 @@ export const URadioElement = ({
         );
       })}
       {validationError && <p className="uradio__error mt-3">{validationError}</p>}
-      {wasSubmitted && value !== correctAnswer && <p className="uradio__error mt-3">{explanation}</p>}
-      {wasSubmitted && value === correctAnswer && <p className="uradio__success mt-3">{explanation}</p>}
+      {wasSubmitted && value !== correctAnswer[0] && <p className="uradio__error mt-3">{explanation}</p>}
+      {wasSubmitted && value === correctAnswer[0] && <p className="uradio__success mt-3">{explanation}</p>}
     </div>
   );
 };
@@ -122,7 +122,7 @@ export const URadio = ({ question, correctAnswer, explanation, options, onAnswer
   }, [canSubmit]);
 
   useMount(() => {
-    addField(name, correctAnswer);
+    addField(name, correctAnswer[0]);
     return () => removeField(name);
   });
 

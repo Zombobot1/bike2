@@ -8,7 +8,7 @@ export const QACardT = (args: QACardP) => (
   </div>
 );
 
-export const hiddenA: QACardP = {
+const hiddenA: QACardP = {
   isCurrent: true,
   stageColor: '#6C38FF',
   showHidden: false,
@@ -23,11 +23,11 @@ const template1 = {
   fields: uCardLong.fields,
 };
 
-export const allFieldsShownA: QACardP = {
+const allFieldsShownA: QACardP = {
   ...template1,
 };
 
-export const estimatedA: QACardP = {
+const estimatedA: QACardP = {
   ...template1,
   estimation: 'GOOD',
 };
@@ -40,21 +40,31 @@ const template2 = {
   fields: uCardMinimal.fields,
 };
 
-export const minimalA: QACardP = {
+const minimalA: QACardP = {
   ...template2,
   showHidden: false,
 };
 
-export const minimalHiddenA: QACardP = {
+const minimalHiddenA: QACardP = {
   ...template2,
 };
 
-export const longTextA: QACardP = {
+const longTextA: QACardP = {
   ...template1,
   fields: cardWithQandA.fields,
 };
 
-export const interactiveAndPassiveA: QACardP = {
+const interactiveAndPassiveA: QACardP = {
   ...template1,
   fields: cardWithDifferentFields.fields,
+};
+
+export const SQACard = {
+  Hidden: () => QACardT(hiddenA),
+  AllFieldsShown: () => QACardT(allFieldsShownA),
+  Estimated: () => QACardT(estimatedA),
+  Minimal: () => QACardT(minimalA),
+  MinimalHidden: () => QACardT(minimalHiddenA),
+  LongText: () => QACardT(longTextA),
+  InteractiveAndPassive: () => QACardT(interactiveAndPassiveA),
 };

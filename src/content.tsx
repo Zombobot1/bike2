@@ -371,6 +371,12 @@ const hospitalImg: FieldDTO = {
   status: 'SHOW',
 };
 
+const hospitalImgHide: FieldDTO = {
+  type: 'IMG',
+  passiveData: hospital,
+  status: 'HIDE',
+};
+
 const hospitalAudio: FieldDTO = {
   type: 'AUDIO',
   passiveData: hospitalMp3,
@@ -388,7 +394,7 @@ const selectRight: FieldDTO = {
   interactiveData: {
     question: 'Please select one:',
     options: ['Correct', 'Wrong'],
-    correctAnswer: 'Correct',
+    correctAnswer: ['Correct'],
     explanation: 'Cuz',
   },
   status: 'SHOW',
@@ -399,7 +405,7 @@ const field9: FieldDTO = {
   interactiveData: {
     question: 'Please select another one:',
     options: ['Right', 'Wrong'],
-    correctAnswer: 'Right',
+    correctAnswer: ['Right'],
     explanation: 'Cuz',
   },
   status: 'SHOW',
@@ -434,7 +440,7 @@ const field13: FieldDTO = {
   interactiveData: {
     question: '',
     options: [],
-    correctAnswer: 'hospital',
+    correctAnswer: ['hospital'],
     explanation: 'hospital',
   },
   status: 'SHOW',
@@ -445,7 +451,7 @@ const typeA: FieldDTO = {
   interactiveData: {
     question: 'Please type a and use enter to submit:',
     options: [],
-    correctAnswer: 'a',
+    correctAnswer: ['a'],
     explanation: 'a',
   },
   status: 'SHOW',
@@ -456,7 +462,7 @@ const field15: FieldDTO = {
   interactiveData: {
     question: 'Please type a and DO NOT use enter to submit:',
     options: [],
-    correctAnswer: 'b',
+    correctAnswer: ['b'],
     explanation: 'b',
   },
   status: 'SHOW',
@@ -537,6 +543,14 @@ export const iCard2: CardDTO = {
 export const cardWithDifferentFields: CardDTO = {
   _id: 'cardWithDifferentFields',
   fields: [passiveText, selectRight, typeA, anotherPassiveText],
+  timeToAnswer: 3000,
+  stageColor: 'blue',
+  type: 'PASSIVE',
+};
+
+export const testCard: CardDTO = {
+  _id: 'cardWithDifferentFields',
+  fields: [hospitalEn, hospitalImgHide, hospitalRu],
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',

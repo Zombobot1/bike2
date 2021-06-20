@@ -36,13 +36,18 @@ export const ModalT = ({ title, bodyText, rerenderInterval }: ModalTP) => {
   );
 };
 
-export const hidesWithoutWasteInDOMA: ModalTP = {
+const hidesWithoutWasteInDOMA: ModalTP = {
   title: 'Simple modal',
   bodyText: 'Hello from modal',
 };
 
-export const survivesRerendersA: ModalTP = {
+const survivesRerendersA: ModalTP = {
   title: 'Simple modal',
   bodyText: 'Hello from modal',
   rerenderInterval: 1e3,
+};
+
+export const SModal = {
+  SurvivesRerenders: () => <ModalT {...survivesRerendersA} />,
+  HidesWithoutWasteInDOM: () => <ModalT {...hidesWithoutWasteInDOMA} />,
 };
