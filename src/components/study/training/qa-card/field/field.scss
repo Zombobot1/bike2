@@ -74,17 +74,11 @@ $mb-xs: 10px;
     @include config.xs { margin-bottom: $mb-xs }
   }
 
-  .uradio {
+  .uchecks {
     margin-bottom: $mb;
 
     @include config.xs { margin-bottom: $mb-xs }
   }
 
-}
-.interactive-question {
-  font-size: 1.3em;
-  letter-spacing: .1px;
-  word-break: break-word;
-  margin-bottom: 1rem;
 }
 

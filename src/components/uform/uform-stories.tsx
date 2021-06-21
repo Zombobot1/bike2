@@ -1,23 +1,29 @@
-import { QuestionP, QuestionWithoutOptions, URadio, URadioElement } from './ufields/uradio';
+import { UChecks } from './ufields/uchecks';
 import React, { useEffect, useState } from 'react';
-import { useEffectedState } from '../../utils/hooks-utils';
 import { Estimations, useUFormSubmit } from './uform';
 import { sslugify } from '../../utils/sslugify';
 import { UInput } from './ufields/uinput';
+import { Question } from '../study/training/types';
 
-type Questions = QuestionWithoutOptions[];
+interface UQuestion extends Question {
+  initialAnswer?: string[];
+}
+type UQuestions = UQuestion[];
 
-const useWriteQuestions = (questions: Questions, submitOneByOne: boolean) => {
+const useQuestions = (questions: UQuestions, submitOneByOne: boolean) => {
   const [questionNumber, setQuestionNumber] = useState(0);
-  const [questionsPool, setQuestionsPool] = useState(submitOneByOne ? [questions[questionNumber]] : questions);
-  useEffect(() => setQuestionsPool([questions[questionNumber]]), [questionNumber]);
-  const [inputs, setInputs] = useEffectedState(questionsPool);
-
-  const [counter, setCounter] = useState(2);
+  const [inputs, setInputs] = useState(questions);
+  useEffect(() => {
+    if (submitOneByOne && questionNumber < questions.length) setInputs([questions[questionNumber]]);
+  }, [questionNumber]);
+  const [counter, setCounter] = useState(questions.length);
 
   const add = () => {
     if (inputs.length > 3) return;
-    setInputs((is) => [...is, { question: `Question ${counter}`, correctAnswer: ['right'], explanation: 'Cuz' }]);
+    setInputs((is) => [
+      ...is,
+      { question: `Question ${counter}`, correctAnswer: ['right'], explanation: 'Cuz', options: [] },
+    ]);
     setCounter((c) => c + 1);
   };
 
@@ -37,7 +43,7 @@ const useWriteQuestions = (questions: Questions, submitOneByOne: boolean) => {
 };
 
 const useSubmissionsInfo = () => {
-  const [counter, setCounter] = useState(0);
+  const [counter, setCounter] = useState(1);
   const [info, setInfo] = useState('');
 
   const onSubmit = (es: Estimations) => {
@@ -51,14 +57,14 @@ const useSubmissionsInfo = () => {
 };
 
 export type TUFormP = {
-  writeQuestions: Questions;
+  questions: Question[];
   isExtensible: boolean;
   submitOneByOne: boolean;
-  selectOneQuestions?: QuestionP[];
+  submitOnSelect: boolean;
 };
 
-export const TUForm = ({ writeQuestions, isExtensible, submitOneByOne, selectOneQuestions = [] }: TUFormP) => {
-  const { inputs, add, remove, addAndRemove, nextQuestion } = useWriteQuestions(writeQuestions, submitOneByOne);
+export const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUFormP) => {
+  const { inputs, add, remove, addAndRemove, nextQuestion } = useQuestions(questions, submitOneByOne);
   const { info, onSubmit } = useSubmissionsInfo();
   const handleSubmit = !submitOneByOne
     ? onSubmit
@@ -70,17 +76,22 @@ export const TUForm = ({ writeQuestions, isExtensible, submitOneByOne, selectOne
   const { submit } = useUFormSubmit();
 
   return (
-    <div className="w-50">
+    <div className="bg-white p-3 w-50 rounded" style={{ width: '400px' }}>
       {info && <div className="alert alert-success">{info}</div>}
-      {inputs
-        .filter((q) => Boolean(q))
-        .map((q) => (
-          <div key={sslugify(q.question)} className="mb-3">
-            <UInput {...q} />
-          </div>
-        ))}
-      {selectOneQuestions?.map((q) => (
-        <URadio key={q.question} {...q} />
+      {inputs.map((q) => (
+        <div key={sslugify(q.question)} className="mb-3">
+          {!q.options.length && (
+            <UInput {...q} tipOnMobile="SHOW_TIP" autoFocus={false} onAnswer={() => submit(handleSubmit)} />
+          )}
+          {q.options.length !== 0 && (
+            <UChecks
+              {...q}
+              onAnswer={() => submit(handleSubmit)}
+              submitOnSelect={submitOnSelect}
+              selectMultiple={q.correctAnswer.length > 1}
+            />
+          )}
+        </div>
       ))}
       <div className="d-flex justify-content-end">
         {isExtensible && (
@@ -106,60 +117,80 @@ export const TUForm = ({ writeQuestions, isExtensible, submitOneByOne, selectOne
   );
 };
 
-const q = (question: string, correctAnswer: string, explanation: string, initialAnswer = '') => ({
+const q = (question: string, correctAnswer: string, explanation: string, initialAnswer?: string[]): UQuestion => ({
   question,
   correctAnswer: [correctAnswer],
   explanation,
+  options: [],
   initialAnswer,
 });
-const basicQ = q('Type: a', 'a', 'Just type it using keyboard', 'a');
-const basicQ2 = q('Type: b', 'b', 'Just type it using keyboard', 'a');
+const basicQ = q('Type: a', 'a', 'Just type it using keyboard', ['a']);
+const basicQ2 = q('Type: b', 'b', 'Just type it using keyboard', ['a']);
 const sillyQ = q('Question 1', 'right', 'Cuz');
-
-const doNotSubmitIfEmpty = {
-  writeQuestions: [sillyQ],
-  isExtensible: false,
-  submitOneByOne: false,
+const select: Question = {
+  question: 'Select correct',
+  options: ['Correct option', 'Option 2'],
+  correctAnswer: ['Correct option'],
+  explanation: 'This answer is correct because: Cuz',
 };
 
-const checkAnswersOnSubmission = {
-  writeQuestions: [basicQ, basicQ2],
-  isExtensible: false,
-  submitOneByOne: false,
+const selectMultiple: UQuestion = {
+  question: 'Select several correct',
+  options: ['Right', 'Wrong', 'Also right', 'Option'],
+  correctAnswer: ['Right', 'Also right'],
+  explanation: 'This answer is correct because: Cuz',
+  initialAnswer: ['Wrong', 'Also right'],
 };
 
-const noDataRaceOnAddRemove = {
-  writeQuestions: [sillyQ],
+const selectWithInitialAnswer: UQuestion = {
+  ...select,
+  initialAnswer: ['Correct option'],
+};
+
+const default_: TUFormP = {
+  questions: [],
+  isExtensible: false,
+  submitOneByOne: false,
+  submitOnSelect: true,
+};
+
+const doNotSubmitIfEmpty: TUFormP = {
+  ...default_,
+  questions: [sillyQ],
+};
+
+const checkAnswersOnSubmission: TUFormP = {
+  ...default_,
+  questions: [basicQ, basicQ2],
+};
+
+const noDataRaceOnAddRemove: TUFormP = {
+  ...default_,
+  questions: [sillyQ],
   isExtensible: true,
-  submitOneByOne: false,
 };
 
-const readOnlyAfterSubmit = {
-  writeQuestions: [basicQ, basicQ2],
-  isExtensible: false,
-  submitOneByOne: false,
+const readOnlyAfterSubmit: TUFormP = {
+  ...default_,
+  questions: [basicQ, basicQ2],
 };
 
-const sequentialSubmit = {
-  writeQuestions: [basicQ, basicQ2],
-  isExtensible: false,
+const sequentialSubmit: TUFormP = {
+  ...default_,
+  questions: [basicQ, select, basicQ2],
   submitOneByOne: true,
 };
 
-const longText = 'Looooooooooooooooooong text inside this option renders without visual deffects';
+const autoSubmitForUInputAndSelectOne: TUFormP = {
+  ...default_,
+  questions: [basicQ, select],
+  submitOneByOne: true,
+};
 
-const composite = {
-  writeQuestions: [basicQ],
-  isExtensible: false,
-  selectOneQuestions: [
-    {
-      question: 'Select correct',
-      options: ['Correct option', longText],
-      correctAnswer: ['Correct option'],
-      explanation: 'Cuz',
-    },
-  ],
-  submitOneByOne: false,
+const composite: TUFormP = {
+  ...default_,
+  questions: [basicQ, selectWithInitialAnswer, selectMultiple],
+  submitOnSelect: false,
 };
 
 export const SUFormHook = {
@@ -169,50 +200,5 @@ export const SUFormHook = {
   readOnlyAfterSubmit: () => <TUForm {...readOnlyAfterSubmit} />,
   sequentialSubmit: () => <TUForm {...sequentialSubmit} />,
   composite: () => <TUForm {...composite} />,
-};
-
-export interface TURadioP extends QuestionP {
-  wasSubmitted: boolean;
-  value: string;
-}
-
-export const TURadio = ({ question, options, correctAnswer, explanation, value, wasSubmitted }: TURadioP) => {
-  const [value_, setValue] = useState(value);
-  return (
-    <URadioElement
-      name={sslugify(question)}
-      value={value_}
-      onChange={(_, v) => setValue(v)}
-      validationError={''}
-      wasSubmitted={wasSubmitted}
-      options={options}
-      question={question}
-      correctAnswer={correctAnswer}
-      explanation={explanation}
-    />
-  );
-};
-
-const radioData = {
-  question: 'Please select',
-  options: ['Option 1', 'Option 2', 'Option 3'],
-  correctAnswer: ['Option 1'],
-  explanation: 'This is a loooooooooooooooooooooong Cuz',
-};
-
-const default_ = {
-  ...radioData,
-  wasSubmitted: false,
-  value: '',
-};
-
-const submitted = {
-  ...radioData,
-  wasSubmitted: true,
-  value: 'Option 1',
-};
-
-export const SUradio = {
-  Default: () => <TURadio {...default_} />,
-  Submitted: () => <TURadio {...submitted} />,
+  autoSubmitForUInputAndSelectOne: () => <TUForm {...autoSubmitForUInputAndSelectOne} />,
 };

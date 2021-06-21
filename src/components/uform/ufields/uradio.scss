@@ -1,6 +1,6 @@
 @use "../../../sass/config";
 
-.uradio {
+.uchecks {
   input {
     height: 20px;
     width: 20px;
@@ -11,12 +11,54 @@
   }
 }
 
-.uradio__error {
-  color: config.$danger-color;
-  font-weight: bold;
+.uinput {
+  .form-control.is-valid, .form-control.is-invalid {
+    background-color: unset;
+    background-image: unset;
+    opacity: 0.5;
+  }
 }
 
-.uradio__success {
+.interactive-question {
+  font-size: 1.3em;
+  letter-spacing: .1px;
+  word-break: break-word;
+  margin-bottom: 1rem;
+
+  label {
+    margin-bottom: 0;
+  }
+
+  .bi {
+    width: 20px;
+    height: 20px;
+
+    transform: translateY(-2px);
+    margin-right: 12px;
+
+    fill: config.$danger-color;
+  }
+
+  .bi-check {
+    width: 30px;
+    height: 30px;
+
+    transform: translate(-7px, -2px);
+    margin-right: 0;
+
+    fill: config.$success-color;
+  }
+
+}
+
+.ufield__error {
+  color: config.$danger-color;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.ufield__success {
   color: config.$success-color;
   font-weight: bold;
+  margin-top: 10px;
 }

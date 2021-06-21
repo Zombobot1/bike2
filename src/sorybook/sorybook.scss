@@ -6,14 +6,6 @@
   display: flex;
   overflow-x: hidden;
 
-
-  .nav-swipe-area {
-    position: absolute;
-    height: 100%;
-    width: 50px;
-    z-index: 0;
-  }
-
   .offcanvas-start {
     width: 230px;
   }
@@ -47,6 +39,7 @@
 }
 
 .sorybook__nav {
+  padding-top: 10px;
   height: 100%;
   min-width: 230px;
 
@@ -59,7 +52,6 @@
 .tree {
   list-style-type: none;
   padding-left: 0;
-  padding-top: 10px;
 
   h5 {
     padding-top: 5px;
@@ -69,6 +61,7 @@
 
   .leaf {
     padding-left: 18px;
+    padding-right: 5px;
 
     &--active {
       background-color: config.$light-color;

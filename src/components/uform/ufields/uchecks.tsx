@@ -7,8 +7,11 @@ import { cn } from '../../../utils/utils';
 import { Validity } from '../types';
 import { Question } from '../../study/training/types';
 import { fn, Fn } from '../../../utils/types';
+import _ from 'lodash';
+import { InteractiveQuestion } from './interactive-question';
 
-export interface URadioInputP {
+export interface USelectInputP {
+  type: string;
   name: string;
   label: string;
   onChange: (v: string) => void;
@@ -18,7 +21,7 @@ export interface URadioInputP {
   isLast: boolean;
 }
 
-export const URadioInput = ({ name, label, validity, onChange, checked, readonly, isLast }: URadioInputP) => {
+export const USelectInput = ({ type, name, label, validity, onChange, checked, readonly, isLast }: USelectInputP) => {
   const id = `${name}-${sslugify(label)}`;
   const cns = cn('form-check-input', {
     'is-valid': validity === 'VALID',
@@ -29,7 +32,7 @@ export const URadioInput = ({ name, label, validity, onChange, checked, readonly
     <div className={divcns}>
       <input
         className={cns}
-        type="radio"
+        type={type}
         name={name}
         value={label}
         onChange={() => onChange(label)}
@@ -45,20 +48,27 @@ export const URadioInput = ({ name, label, validity, onChange, checked, readonly
 };
 
 export interface QuestionP extends Question {
-  initialAnswer?: string;
+  initialAnswer?: string[];
 }
 
 export type QuestionWithoutOptions = Omit<QuestionP, 'options'>;
 
-export interface URadioElementP extends QuestionP {
-  name: string;
-  value: string;
-  onChange: (radioName: string, value: string) => void;
-  validationError: string;
-  wasSubmitted: boolean;
+function optionValidity(option: string, value: string[], correctAnswer: string[]): Validity {
+  if (correctAnswer.includes(option)) return 'VALID';
+  else if (value.includes(option) && !correctAnswer.includes(option)) return 'INVALID';
+  return 'NONE';
 }
 
-export const URadioElement = ({
+export interface UChecksElementP extends QuestionP {
+  name: string;
+  value: string[];
+  onChange: (radioName: string, value: string[]) => void;
+  validationError: string;
+  wasSubmitted: boolean;
+  selectMultiple?: boolean;
+}
+
+export const UChecksElement = ({
   onChange,
   name,
   correctAnswer,
@@ -68,50 +78,80 @@ export const URadioElement = ({
   validationError,
   value,
   wasSubmitted,
-}: URadioElementP) => {
+  selectMultiple = false,
+}: UChecksElementP) => {
+  const [overallValidity, setOverallValidity] = useState<Validity>('NONE');
+
+  function onOptionClick(clickedOption: string) {
+    if (value.includes(clickedOption))
+      onChange(
+        name,
+        value.filter((v) => v !== clickedOption),
+      );
+    else if (!selectMultiple) onChange(name, [clickedOption]);
+    else onChange(name, [...value, clickedOption]);
+  }
+
+  useEffect(() => {
+    if (!wasSubmitted) return;
+    const invalidOption = options.find((o) => optionValidity(o, value, correctAnswer) === 'INVALID');
+    setOverallValidity(invalidOption ? 'INVALID' : 'VALID');
+  }, [wasSubmitted]);
+
   return (
-    <div className="uradio">
-      <p className="interactive-question">{question}</p>
+    <div className="uchecks">
+      <InteractiveQuestion question={question} status={overallValidity} />
       {options.map((o, i) => {
         let validity: Validity = 'NONE';
         if (validationError) validity = 'INVALID';
-        else if (wasSubmitted && value !== correctAnswer[0]) {
-          if (o === correctAnswer[0]) validity = 'VALID';
-          else if (o === value) validity = 'INVALID';
-          else validity = 'NONE';
-        } else if (wasSubmitted && value === correctAnswer[0]) validity = value === o ? 'VALID' : 'NONE';
+        else if (wasSubmitted) validity = optionValidity(o, value, correctAnswer);
         return (
-          <URadioInput
+          <USelectInput
+            type={selectMultiple ? 'checkbox' : 'radio'}
             key={i}
             name={name}
             label={o}
             validity={validity}
-            onChange={(v) => onChange(name, v)}
-            checked={value === o}
+            onChange={onOptionClick}
+            checked={value.includes(o)}
             readonly={wasSubmitted}
             isLast={i === options.length - 1}
           />
         );
       })}
-      {validationError && <p className="uradio__error mt-3">{validationError}</p>}
-      {wasSubmitted && value !== correctAnswer[0] && <p className="uradio__error mt-3">{explanation}</p>}
-      {wasSubmitted && value === correctAnswer[0] && <p className="uradio__success mt-3">{explanation}</p>}
+      {validationError && <p className="ufield__error">{validationError}</p>}
+      {wasSubmitted && _.difference(value, correctAnswer).length !== 0 && (
+        <p className="ufield__error">{explanation}</p>
+      )}
+      {wasSubmitted && !_.difference(value, correctAnswer).length && <p className="ufield__success">{explanation}</p>}
     </div>
   );
 };
 
-export interface URadioP extends Question {
+export interface UChecksP extends Question {
   onAnswer?: Fn;
+  initialAnswer?: string[];
+  selectMultiple?: boolean;
+  submitOnSelect?: boolean;
 }
 
-export const URadio = ({ question, correctAnswer, explanation, options, onAnswer = fn }: URadioP) => {
+export const UChecks = ({
+  question,
+  correctAnswer,
+  explanation,
+  options,
+  initialAnswer,
+  selectMultiple = false,
+  onAnswer = fn,
+  submitOnSelect = true,
+}: UChecksP) => {
   const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { validationError, value, wasSubmitted } = getFieldInfo(name);
   const [canSubmit, setCanSubmit] = useState(false);
 
   useEffect(() => {
-    if (value) setCanSubmit(true);
+    if (value[0] && submitOnSelect) setCanSubmit(true);
   }, [value]);
 
   useEffect(() => {
@@ -122,12 +162,12 @@ export const URadio = ({ question, correctAnswer, explanation, options, onAnswer
   }, [canSubmit]);
 
   useMount(() => {
-    addField(name, correctAnswer[0]);
+    addField(name, correctAnswer, initialAnswer);
     return () => removeField(name);
   });
 
   return (
-    <URadioElement
+    <UChecksElement
       name={name}
       onChange={onChange}
       value={value}
@@ -137,6 +177,7 @@ export const URadio = ({ question, correctAnswer, explanation, options, onAnswer
       question={question}
       validationError={validationError}
       wasSubmitted={wasSubmitted}
+      selectMultiple={selectMultiple}
     />
   );
 };

@@ -5,7 +5,8 @@ import { storify } from './utils';
 import { STrainingControls } from '../components/study/training/training-controls/training-controls-stories';
 import { SField } from '../components/study/training/qa-card/field/field-stories';
 import { SModal } from '../components/utils/modal-stories';
-import { SUFormHook, SUradio } from '../components/uform/uform-stories';
+import { SUFormHook } from '../components/uform/uform-stories';
+import { SUInputElement, SUChecksElement } from '../components/uform/ufields/ufields-stories';
 
 export const sories = [
   {
@@ -20,7 +21,7 @@ export const sories = [
   },
   {
     name: 'UForm',
-    components: [storify({ SUFormHook }), storify({ SUradio })],
+    components: [storify({ SUFormHook }), storify({ SUChecksElement }), storify({ SUInputElement })],
   },
   {
     name: 'Utils',

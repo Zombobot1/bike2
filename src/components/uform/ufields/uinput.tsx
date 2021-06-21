@@ -4,10 +4,11 @@ import React, { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import { Validity } from '../types';
-import { QuestionWithoutOptions } from './uradio';
+import { QuestionWithoutOptions } from './uchecks';
 import { Fn, fn } from '../../../utils/types';
 import { usePresentationTransition } from '../../study/training/training/presentation';
 import { useToggle } from '../../utils/hooks/use-toggle';
+import { InteractiveQuestion } from './interactive-question';
 
 const useFocus = () => {
   const ref = useRef<HTMLInputElement>(null);
@@ -18,34 +19,47 @@ const useFocus = () => {
   return { ref, focus };
 };
 
-type TipOnMobile = 'SHOW_TIP' | 'HIDE_TIP';
+export type TipOnMobile = 'SHOW_TIP' | 'HIDE_TIP';
 
 export interface UInputElementP {
   name: string;
   value: string;
-  label: string;
+  question: string;
   onChange: (v: string) => void;
-  validity: Validity;
-  feedBack?: string;
-  readonly: boolean;
-  tipOnMobile?: TipOnMobile;
+  correctAnswer: string;
+  explanation: string;
+  validationError: string;
+  wasSubmitted: boolean;
   onEnter?: Fn;
+  tipOnMobile?: TipOnMobile;
+  autoFocus?: boolean;
 }
 
 export const UInputElement = ({
   name,
   value,
-  label,
-  validity,
-  feedBack = '',
+  question,
+  correctAnswer,
+  explanation,
   onChange,
-  readonly,
+  wasSubmitted,
   tipOnMobile = 'HIDE_TIP',
   onEnter = fn,
+  autoFocus = true,
+  validationError,
 }: UInputElementP) => {
   const [type, setType] = useState(tipOnMobile === 'HIDE_TIP' ? 'password' : 'text');
-  const id = `${name}-${sslugify(label)}`;
-  const cns = cn('form-control', { 'is-valid': validity === 'VALID', 'is-invalid': validity === 'INVALID' });
+  const id = `${name}-${sslugify(question)}`;
+
+  let validity: Validity = 'NONE';
+  if (validationError) validity = 'INVALID';
+  else if (wasSubmitted && value !== correctAnswer) validity = 'INVALID';
+  else if (wasSubmitted && value === correctAnswer) validity = 'VALID';
+
+  const cns = cn('form-control', {
+    'is-valid': validity === 'VALID',
+    'is-invalid': validity === 'INVALID',
+  });
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter') onEnter();
@@ -57,19 +71,15 @@ export const UInputElement = ({
   const [tryFocus, toggleTryFocus] = useToggle(false);
 
   useEffect(() => {
-    if (tryFocus && !isInTransition) focus();
+    if (autoFocus && tryFocus && !isInTransition) focus();
   }, [isInTransition, tryFocus]);
 
   useMount(() => setTimeout(toggleTryFocus, 100));
 
   return (
-    <form>
+    <form onSubmit={(e) => e.preventDefault()}>
       <div className="uinput">
-        {label && (
-          <label className="form-label interactive-question" htmlFor={id}>
-            {label}
-          </label>
-        )}
+        <InteractiveQuestion question={question} id={id} status={validity} />
         <input
           className={cns}
           type={type}
@@ -78,13 +88,14 @@ export const UInputElement = ({
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setType('text')}
           id={id}
-          disabled={readonly}
+          disabled={wasSubmitted}
           onKeyDown={handleKeyDown}
           ref={ref}
           autoComplete="one-time-code"
         />
-        {validity === 'INVALID' && <div className="invalid-feedback">{feedBack}</div>}
-        {validity === 'VALID' && <div className="valid-feedback">{feedBack}</div>}
+        {validationError && <div className="ufield__error">{validationError}</div>}
+        {!validationError && validity === 'INVALID' && <div className="ufield__error">{explanation}</div>}
+        {validity === 'VALID' && <div className="ufield__success">{explanation}</div>}
       </div>
     </form>
   );
@@ -93,41 +104,40 @@ export const UInputElement = ({
 export interface UInputP extends QuestionWithoutOptions {
   tipOnMobile?: TipOnMobile;
   onAnswer?: Fn;
+  autoFocus?: boolean;
 }
 
 export const UInput = ({
   question,
   correctAnswer,
   explanation,
-  initialAnswer = '',
+  initialAnswer,
   tipOnMobile = 'HIDE_TIP',
   onAnswer = fn,
+  autoFocus = true,
 }: UInputP) => {
-  const { addField, getFieldInfo, removeField, onChange, fieldsCounter } = useUForm();
-  const [fieldsCounterStr] = useState(() => String(fieldsCounter));
-  const name = sslugify(question) + fieldsCounterStr;
+  const { addField, getFieldInfo, removeField, onChange } = useUForm();
+  const name = sslugify(question);
   const { value, validationError, wasSubmitted } = getFieldInfo(name);
 
-  let validity: Validity = 'NONE';
-  if (validationError) validity = 'INVALID';
-  else if (wasSubmitted) validity = value === correctAnswer[0] ? 'VALID' : 'INVALID';
-
   useMount(() => {
-    addField(name, correctAnswer[0], initialAnswer);
+    addField(name, correctAnswer, initialAnswer);
     return () => removeField(name);
   });
 
   return (
     <UInputElement
       name={name}
-      value={value}
-      label={question}
-      onChange={(s) => onChange(name, s)}
-      validity={validity}
-      feedBack={validationError ? validationError : explanation}
-      readonly={wasSubmitted}
+      correctAnswer={correctAnswer[0]}
+      validationError={validationError}
+      value={value[0]}
+      question={question}
+      onChange={(s) => onChange(name, [s])}
+      explanation={validationError ? validationError : explanation}
+      wasSubmitted={wasSubmitted}
       tipOnMobile={tipOnMobile}
       onEnter={onAnswer}
+      autoFocus={autoFocus}
     />
   );
 };
