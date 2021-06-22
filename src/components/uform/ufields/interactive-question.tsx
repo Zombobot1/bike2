@@ -14,9 +14,9 @@ export function InteractiveQuestion({ id, question, status }: InteractiveQuestio
 
   return (
     <div className="interactive-question">
-      {status === 'VALID' && <Ok />}
-      {status === 'INVALID' && <NotOk />}
       <label className="form-label" htmlFor={id ?? ''}>
+        {status === 'VALID' && <Ok />}
+        {status === 'INVALID' && <NotOk />}
         {question}
       </label>
     </div>

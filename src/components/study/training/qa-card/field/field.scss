@@ -68,7 +68,6 @@ $mb-xs: 10px;
 
 .qa-card {
   .uinput {
-    width: 96%;
     margin-bottom: $mb;
 
     @include config.xs { margin-bottom: $mb-xs }

@@ -135,7 +135,7 @@ const select: Question = {
 };
 
 const selectMultiple: UQuestion = {
-  question: 'Select several correct',
+  question: 'Select several correct options (long question to check word wrap)',
   options: ['Right', 'Wrong', 'Also right', 'Option'],
   correctAnswer: ['Right', 'Also right'],
   explanation: 'This answer is correct because: Cuz',
