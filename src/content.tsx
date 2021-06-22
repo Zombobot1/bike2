@@ -368,12 +368,6 @@ const hospitalIpaLong: FieldDTO = {
 const hospitalImg: FieldDTO = {
   type: 'IMG',
   passiveData: hospital,
-  status: 'SHOW',
-};
-
-const hospitalImgHide: FieldDTO = {
-  type: 'IMG',
-  passiveData: hospital,
   status: 'HIDE',
 };
 
@@ -400,29 +394,6 @@ const selectRight: FieldDTO = {
   status: 'SHOW',
 };
 
-const field9: FieldDTO = {
-  type: 'RADIO',
-  interactiveData: {
-    question: 'Please select another one:',
-    options: ['Right', 'Wrong'],
-    correctAnswer: ['Right'],
-    explanation: 'Cuz',
-  },
-  status: 'SHOW',
-};
-
-const field10: FieldDTO = {
-  type: 'PRE',
-  passiveData: 'Listen and write the missing word:',
-  status: 'SHOW',
-};
-
-const field11: FieldDTO = {
-  type: 'AUDIO',
-  passiveData: hospitalMp3,
-  status: 'SHOW',
-};
-
 const passiveText: FieldDTO = {
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
@@ -432,17 +403,6 @@ const passiveText: FieldDTO = {
 const anotherPassiveText: FieldDTO = {
   type: 'PRE',
   passiveData: 'Some short text',
-  status: 'SHOW',
-};
-
-const field13: FieldDTO = {
-  type: 'INPUT',
-  interactiveData: {
-    question: '',
-    options: [],
-    correctAnswer: ['hospital'],
-    explanation: 'hospital',
-  },
   status: 'SHOW',
 };
 
@@ -508,14 +468,6 @@ export const iCard1: CardDTO = {
   type: 'INTERACTIVE',
 };
 
-export const iCardUInput: CardDTO = {
-  _id: '12',
-  fields: [field10, field11, passiveText, field13],
-  timeToAnswer: 3000,
-  stageColor: 'red',
-  type: 'INTERACTIVE',
-};
-
 export const iCardUInputWithEnter: CardDTO = {
   _id: 'iCardUInputWithEnter',
   fields: [typeA],
@@ -532,25 +484,9 @@ export const iCardUInputWithoutEnter: CardDTO = {
   type: 'INTERACTIVE',
 };
 
-export const iCard2: CardDTO = {
-  _id: '11',
-  fields: [field9],
-  timeToAnswer: 3000,
-  stageColor: 'green',
-  type: 'INTERACTIVE',
-};
-
 export const cardWithDifferentFields: CardDTO = {
   _id: 'cardWithDifferentFields',
   fields: [passiveText, selectRight, typeA, anotherPassiveText],
-  timeToAnswer: 3000,
-  stageColor: 'blue',
-  type: 'PASSIVE',
-};
-
-export const testCard: CardDTO = {
-  _id: 'cardWithDifferentFields',
-  fields: [hospitalEn, hospitalImgHide, hospitalRu],
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',

@@ -3,6 +3,13 @@ import React from 'react';
 import { CardEstimation, estimationColor, FieldDTO } from '../types';
 import { Field } from './field/field';
 import { COLORS } from '../../../../config';
+import { useMount } from '../../../../utils/hooks-utils';
+
+const preloadImage = (field: FieldDTO) => {
+  if (field.type !== 'IMG' || !field.passiveData) return;
+  const img = new Image();
+  img.src = field.passiveData;
+};
 
 export interface QACardP {
   fields: FieldDTO[];
@@ -17,6 +24,9 @@ export const QACard = ({ fields, stageColor, isCurrent, isMediaActive = true, sh
   const fieldsToShow = fields.filter((f) => f.status === 'SHOW');
   const hiddenFields = fields.filter((f) => f.status === 'HIDE');
   const backgroundColors = `linear-gradient(${COLORS.white} 0%, ${COLORS.white} 92%, ${stageColor} 92%, ${stageColor} 100%)`;
+
+  useMount(() => fields.forEach(preloadImage));
+
   return (
     <div className="qa-card-container" style={{ background: backgroundColors }}>
       {estimation && (

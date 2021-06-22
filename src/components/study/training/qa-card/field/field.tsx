@@ -50,11 +50,6 @@ const Player = ({ className, src, autoplay = false }: PlayerP) => {
   );
 };
 
-const preloadImage = (src: string) => {
-  const img = new Image();
-  img.src = src;
-};
-
 export interface FieldP extends Omit<FieldDTO, 'status'> {
   isMediaActive: boolean;
   isCurrent: boolean; // if we render all interactive fields it would be impossible to submit one card
@@ -62,9 +57,6 @@ export interface FieldP extends Omit<FieldDTO, 'status'> {
 
 export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCurrent }: FieldP) => {
   const { interactiveSubmit } = useInteractiveSubmit();
-  useMount(() => {
-    if (type === 'IMG' && passiveData) preloadImage(passiveData); // for chrome mobile
-  });
 
   if (passiveData) {
     const alignCenter = cn({ 'text-center': passiveData.length < 90 });

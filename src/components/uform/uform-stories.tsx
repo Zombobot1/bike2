@@ -76,7 +76,7 @@ export const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect
   const { submit } = useUFormSubmit();
 
   return (
-    <div className="bg-white p-3 w-50 rounded" style={{ width: '400px' }}>
+    <div className="bg-white p-3 rounded" style={{ width: '400px' }}>
       {info && <div className="alert alert-success">{info}</div>}
       {inputs.map((q) => (
         <div key={sslugify(q.question)} className="mb-3">
