@@ -4,12 +4,12 @@ import { deleteCard, estimateAnswer } from '../../../../api/api';
 import { useMount } from '../../../../utils/hooks-utils';
 import { Fn, NumStateT, StateT } from '../../../../utils/types';
 import { useRouter } from '../../../utils/hooks/use-router';
-import { STUDY } from '../../../pages';
 import { TrainingDTO } from './training';
 import { removeElement } from '../../../../utils/utils';
-import { useUserPosition } from '../../../context/user-position-provider';
+import { useUserPosition } from '../../../navigation/breadcrumb/user-position-provider';
 import { CardData, CardDatas } from './card-carousel';
 import { useTrainingTimer } from '../training-timer/training-timer';
+import { STUDY } from '../../../navigation/utils';
 
 export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0);

@@ -1,15 +1,11 @@
 import './breadcrumb.scss';
 import { useRouter } from '../../utils/hooks/use-router';
-import { iconForAppPage, STUDY, toAppPage } from '../../pages';
 import React, { FC } from 'react';
 import { ReactComponent as Burger } from './burger.svg';
 import { Link } from 'react-router-dom';
 import { safeSplit } from '../../../utils/algorithms';
-import { useUserPosition } from '../../context/user-position-provider';
-
-export interface BreadcrumbP {
-  toggleNavbarVisibility: () => void;
-}
+import { useUserPosition } from './user-position-provider';
+import { iconForAppPage, STUDY, toAppPage } from '../utils';
 
 export interface LinkP {
   name: string;
@@ -53,14 +49,14 @@ const pageName = (path: string) => {
   return root[0].toUpperCase() + root.slice(1);
 };
 
-const Breadcrumb = ({ toggleNavbarVisibility }: BreadcrumbP) => {
+const Breadcrumb = () => {
   const router = useRouter();
   const appPage = pageName(router.pathname);
   const Icon = iconForAppPage(appPage);
   const { path } = useUserPosition();
   return (
     <div className="d-flex breadcrumb-container">
-      <Burger className="transparent-button bi-burger" onClick={toggleNavbarVisibility} />
+      <Burger className="transparent-button bi-burger" />
       {Icon && <Icon />}
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">

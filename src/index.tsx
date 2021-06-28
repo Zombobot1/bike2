@@ -5,12 +5,11 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
 
 import './components/icons/icons.scss';
-import './components/images/images.scss';
 
-import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/pages';
 import { buildRoutes } from './components/utils/routing';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { startWorker } from './api/fake-api';
+import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/navigation/utils';
 
 let redirect = STUDY;
 

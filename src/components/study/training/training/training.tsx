@@ -4,7 +4,6 @@ import { CardDTOs } from '../types';
 import { TrainingHeader } from '../training-header';
 import { TrainingControls } from '../training-controls';
 import { useCards, usePagesPathUpdate } from './hooks';
-import { OverdueType } from '../../../cards/notification/notification';
 import { TrainingCardsInfoP } from '../../../cards/training-cards-info';
 import { CardCarousel } from './card-carousel';
 import { Fn } from '../../../../utils/types';
@@ -12,11 +11,15 @@ import { Fn } from '../../../../utils/types';
 export interface TrainingDTO {
   _id: string;
   deckName: string;
-  overdue: OverdueType;
   deckColor: string;
   deckPath: string;
   trainingCardsInfo: TrainingCardsInfoP;
   cards: CardDTOs;
+}
+
+export interface TrainingsGroupDTO {
+  rootDeckName: string;
+  trainings: TrainingDTO[];
 }
 
 export interface TrainingP {

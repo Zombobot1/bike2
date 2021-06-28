@@ -6,8 +6,8 @@ import { eachNth } from '../utils';
 import TrainingDeck from '../training-deck';
 import { useTrainings } from '../hooks';
 import { useMedia } from '../../utils/hooks/use-media';
-import { TrainingsGroupDTO } from '../training-deck/training-deck-heading';
 import { FetchedData } from '../../utils/hoc/fetched-data';
+import { TrainingsGroupDTO } from '../training/training/training';
 
 export const DeckColumns = (columnNumber: number) => (decks: TrainingsGroupDTO[]) => {
   return (

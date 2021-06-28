@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { _PAGE404 } from '../pages';
+import { Route } from 'react-router-dom';
 
 export type Routed = {
   routes?: RouteT[];
@@ -25,5 +24,3 @@ const RouteWithSubRoutes = (route: RouteT) => {
 };
 
 export const buildRoutes = (route: RouteT, i: number) => <RouteWithSubRoutes key={i} {...route} />;
-
-export const Redirect404 = () => <Redirect to={_PAGE404} />;

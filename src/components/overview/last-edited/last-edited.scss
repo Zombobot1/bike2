@@ -1,8 +1,0 @@
-@import "../../../sass/common";
-@import "../common";
-
-.last-edited {
-  @extend %ui-card-base;
-  width: 35.6%;
-  height: $overview-card-height;
-}

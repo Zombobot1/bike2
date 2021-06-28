@@ -1,10 +1,21 @@
 import './training-header.scss';
 import { COLORS } from '../../../../config';
 import React from 'react';
-import { ProgressBar } from '../../../controls/progress-bar';
 import { FullScreenTrigger } from '../../../utils/full-screen-trigger';
-import { addS, fancyTime } from '../../../../utils/formatting';
+import { addS, fancyTime, percentage } from '../../../../utils/formatting';
 import { TrainingSettings, TrainingSettingsP } from '../training-controls/training-settings';
+
+export interface ProgressBarP {
+  className?: string;
+  value: number;
+  color: string;
+}
+
+export const ProgressBar = ({ className, color, value }: ProgressBarP) => (
+  <div className={className + ' progress'}>
+    <div className="progress-bar" style={{ width: percentage(value), backgroundColor: color }} />
+  </div>
+);
 
 export interface TrainingHeaderP extends TrainingSettingsP {
   timeToFinish: number;

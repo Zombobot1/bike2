@@ -7,12 +7,13 @@ import { ReactComponent as IDown } from '../components/icons/bi-caret-down-fill.
 import { ReactComponent as IRight } from '../components/icons/bi-caret-right-fill.svg';
 import React, { FC, useEffect } from 'react';
 import { useRouter } from '../components/utils/hooks/use-router';
-import { _SORYBOOK } from '../components/pages';
 import { sories } from './_stories';
 import { useMedia } from '../components/utils/hooks/use-media';
 import { SM } from '../config';
 import { ReactComponent as Burger } from '../components/navigation/breadcrumb/burger.svg';
 import { safeSplit } from '../utils/algorithms';
+
+export const _SORYBOOK = '/_stories';
 
 const activeNodeIdAtom = atom('');
 const activeStoryAtom = atom<{ story: FC }>({ story: () => null });
