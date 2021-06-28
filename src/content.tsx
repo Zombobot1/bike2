@@ -5,6 +5,7 @@ import hospitalMp3 from './hospital.mp3';
 import { TrainingDTO } from './components/study/training/training';
 import { LastTrainingCardP } from './components/cards/last-training-card';
 import { TrainingsGroupDTO } from './components/study/training-deck/training-deck-heading';
+import { TestimonialsP } from './components/landing/testimonials';
 
 const hero_header = 'Learn better with Uni';
 const paragraph =
@@ -44,24 +45,24 @@ const features = [
 ];
 
 const testimonialsHeader = 'Testimonials';
-const testimonials = [
-  {
-    image: 'man',
-    review:
-      'This application really helps me to deal with huge amount of information which I get at my university. I could not imagine what I would do without it.',
-    name: 'Simon Leuner',
-  },
-  {
-    image: 'woman',
-    review:
-      'Uni helped me to get rid of fear that I forget important information. Now I can track progress of every piece of my knowledge with easily. What a great tool!',
-    name: 'Eva Ruber',
-  },
-  {
-    image: 'man-2',
-    review: 'Wow! I am really happy to use this application everyday. 12 out of 10.',
-    name: 'Egor Veselov',
-  },
+const testimonials: TestimonialsP[] = [
+  // {
+  //   image: 'man',
+  //   review:
+  //     'This application really helps me to deal with huge amount of information which I get at my university. I could not imagine what I would do without it.',
+  //   _id: 'Simon Leuner',
+  // },
+  // {
+  //   image: 'woman',
+  //   review:
+  //     'Uni helped me to get rid of fear that I forget important information. Now I can track progress of every piece of my knowledge with easily. What a great tool!',
+  //   _id: 'Eva Ruber',
+  // },
+  // {
+  //   image: 'man-2',
+  //   review: 'Wow! I am really happy to use this application everyday. 12 out of 10.',
+  //   _id: 'Egor Veselov',
+  // },
 ];
 const pricingHeader = 'Pricing';
 const prices = [
@@ -306,84 +307,98 @@ For example, if I say, "Let's read the book," I mean a specific book. If I say, 
 Here's another way to explain it: The is used to refer to a specific or particular member of a group. For example, "I just saw the most popular movie of the year." There are many movies, but only one particular movie is the most popular. Therefore, we use the.`;
 
 const field1: FieldDTO = {
+  _id: 'field1',
   type: 'PRE',
   passiveData: question,
   status: 'SHOW',
 };
 
 const field2: FieldDTO = {
+  _id: 'field2',
   type: 'PRE',
   passiveData: answer,
   status: 'HIDE',
 };
 
 const hospitalEn: FieldDTO = {
+  _id: 'hospitalEn',
   type: 'PRE',
   passiveData: 'Hospital',
   status: 'SHOW',
 };
 
 const hospitalIpa: FieldDTO = {
+  _id: 'hospitalIpa',
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
   status: 'HIDE',
 };
 
 const theatreEn: FieldDTO = {
+  _id: 'theatreEn',
   type: 'PRE',
   passiveData: 'Theatre',
   status: 'SHOW',
 };
 
 const theatreIpa: FieldDTO = {
+  _id: 'theatreIpa',
   type: 'PRE',
   passiveData: 'ˈθiətər',
   status: 'HIDE',
 };
 
 const theatreRu: FieldDTO = {
+  _id: 'theatreRu',
   type: 'PRE',
   passiveData: 'Театр',
   status: 'HIDE',
 };
 
 const hospitalRu: FieldDTO = {
+  _id: 'hospitalRu',
   type: 'PRE',
   passiveData: 'Госпиталь',
   status: 'HIDE',
 };
 
 const hospitalEnLong: FieldDTO = {
+  _id: 'hospitalEnLong',
   type: 'PRE',
   passiveData: 'Hospital Hospital Hospital Hospital',
   status: 'SHOW',
 };
 
 const hospitalIpaLong: FieldDTO = {
+  _id: 'hospitalIpaLong',
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
   status: 'HIDE',
 };
 
 const hospitalImg: FieldDTO = {
+  _id: 'hospitalImg',
   type: 'IMG',
   passiveData: hospital,
   status: 'HIDE',
 };
 
 const hospitalAudio: FieldDTO = {
+  _id: 'hospitalAudio',
   type: 'AUDIO',
   passiveData: hospitalMp3,
   status: 'HIDE',
 };
 
 const hospitalRuLong: FieldDTO = {
+  _id: 'hospitalRuLong',
   type: 'PRE',
   passiveData: 'Госпиталь Госпиталь Госпиталь',
   status: 'HIDE',
 };
 
 const selectRight: FieldDTO = {
+  _id: 'selectRight',
   type: 'RADIO',
   interactiveData: {
     question: 'Please select one:',
@@ -395,18 +410,21 @@ const selectRight: FieldDTO = {
 };
 
 const passiveText: FieldDTO = {
+  _id: 'passiveText',
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
   status: 'SHOW',
 };
 
 const anotherPassiveText: FieldDTO = {
+  _id: 'anotherPassiveText',
   type: 'PRE',
   passiveData: 'Some short text',
   status: 'SHOW',
 };
 
 const typeA: FieldDTO = {
+  _id: 'typeA',
   type: 'INPUT',
   interactiveData: {
     question: 'Please type a and use enter to submit:',
@@ -418,6 +436,7 @@ const typeA: FieldDTO = {
 };
 
 const field15: FieldDTO = {
+  _id: 'field15',
   type: 'INPUT',
   interactiveData: {
     question: 'Please type a and DO NOT use enter to submit:',
@@ -495,14 +514,6 @@ export const cardWithDifferentFields: CardDTO = {
 export const cardWithQandA: CardDTO = {
   _id: '2',
   fields: [field1, field2],
-  timeToAnswer: 3000,
-  stageColor: 'blue',
-  type: 'PASSIVE',
-};
-
-export const card3: CardDTO = {
-  _id: '3',
-  fields: [hospitalEnLong, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',

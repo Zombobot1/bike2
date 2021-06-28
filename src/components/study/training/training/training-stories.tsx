@@ -29,9 +29,9 @@ export const TrainingT = (args: TrainingDTO) => {
 };
 
 export const STraining = {
-  Simple: () => <TrainingT {...trainings.simple} />,
-  WithUpdateFromServer: () => <TrainingT {...trainings.withUpdateFromServer} />,
-  Interactive: () => <TrainingT {...trainings.interactive} />,
-  Combined: () => <TrainingT {...trainings.combined} />,
-  AutofocusCheck: () => <TrainingT {...trainings.autofocusCheck} />,
+  simple: () => <TrainingT {...trainings.simple} />,
+  withUpdateFromServer: () => <TrainingT {...trainings.withUpdateFromServer} />,
+  interactive: () => <TrainingT {...trainings.interactive} />,
+  combined: () => <TrainingT {...trainings.combined} />,
+  autofocusCheck: () => <TrainingT {...trainings.autofocusCheck} />,
 };

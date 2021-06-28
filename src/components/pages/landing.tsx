@@ -28,7 +28,7 @@ export const Landing = () => {
     ]),
   );
   const { header, paragraph, btnText } = info.hero;
-  const { testimonialsHeader, testimonials, pricingHeader, prices } = info.pricing;
+  const { testimonialsHeader, pricingHeader, prices } = info.pricing;
   return (
     <>
       <Hero header={header} paragraph={paragraph} btnText={btnText} scroller={scr} refName={heroRefName} />
@@ -43,7 +43,7 @@ export const Landing = () => {
         prices={prices}
         pricingHeader={pricingHeader}
         reff={pricingRef}
-        testimonials={testimonials}
+        testimonials={[]}
         testimonialsHeader={testimonialsHeader}
       />
     </>

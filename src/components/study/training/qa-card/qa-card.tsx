@@ -37,6 +37,7 @@ export const QACard = ({ fields, stageColor, isCurrent, isMediaActive = true, sh
       <div className="qa-card">
         {fieldsToShow.map((f, i) => (
           <Field
+            _id={f._id}
             type={f.type}
             passiveData={f.passiveData}
             interactiveData={f.interactiveData}
@@ -49,6 +50,7 @@ export const QACard = ({ fields, stageColor, isCurrent, isMediaActive = true, sh
         {showHidden &&
           hiddenFields.map((f, i) => (
             <Field
+              _id={f._id}
               type={f.type}
               passiveData={f.passiveData}
               interactiveData={f.interactiveData}

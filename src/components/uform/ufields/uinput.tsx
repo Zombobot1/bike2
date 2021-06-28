@@ -22,7 +22,7 @@ const useFocus = () => {
 export type TipOnMobile = 'SHOW_TIP' | 'HIDE_TIP';
 
 export interface UInputElementP {
-  name: string;
+  _id: string;
   value: string;
   question: string;
   onChange: (v: string) => void;
@@ -36,7 +36,7 @@ export interface UInputElementP {
 }
 
 export const UInputElement = ({
-  name,
+  _id,
   value,
   question,
   correctAnswer,
@@ -49,7 +49,7 @@ export const UInputElement = ({
   validationError,
 }: UInputElementP) => {
   const [type, setType] = useState(tipOnMobile === 'HIDE_TIP' ? 'password' : 'text');
-  const id = `${name}-${sslugify(question)}`;
+  const id = `${_id}-${sslugify(question)}`;
 
   let validity: Validity = 'NONE';
   if (validationError) validity = 'INVALID';
@@ -83,7 +83,7 @@ export const UInputElement = ({
         <input
           className={cns}
           type={type}
-          name={name}
+          name={_id}
           value={value}
           onChange={(e) => onChange(e.target.value)}
           onFocus={() => setType('text')}
@@ -102,12 +102,14 @@ export const UInputElement = ({
 };
 
 export interface UInputP extends QuestionWithoutOptions {
+  _id: string;
   tipOnMobile?: TipOnMobile;
   onAnswer?: Fn;
   autoFocus?: boolean;
 }
 
 export const UInput = ({
+  _id,
   question,
   correctAnswer,
   explanation,
@@ -117,22 +119,21 @@ export const UInput = ({
   autoFocus = true,
 }: UInputP) => {
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
-  const name = sslugify(question);
-  const { value, validationError, wasSubmitted } = getFieldInfo(name);
+  const { value, validationError, wasSubmitted } = getFieldInfo(_id);
 
   useMount(() => {
-    addField(name, correctAnswer, initialAnswer);
-    return () => removeField(name);
+    addField(_id, correctAnswer, initialAnswer);
+    return () => removeField(_id);
   });
 
   return (
     <UInputElement
-      name={name}
+      _id={_id}
       correctAnswer={correctAnswer[0]}
       validationError={validationError}
       value={value[0]}
       question={question}
-      onChange={(s) => onChange(name, [s])}
+      onChange={(s) => onChange(_id, [s])}
       explanation={validationError ? validationError : explanation}
       wasSubmitted={wasSubmitted}
       tipOnMobile={tipOnMobile}

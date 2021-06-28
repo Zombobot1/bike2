@@ -6,6 +6,7 @@ import { UInput } from './ufields/uinput';
 import { Question } from '../study/training/types';
 
 interface UQuestion extends Question {
+  _id: string;
   initialAnswer?: string[];
 }
 type UQuestions = UQuestion[];
@@ -22,7 +23,7 @@ const useQuestions = (questions: UQuestions, submitOneByOne: boolean) => {
     if (inputs.length > 3) return;
     setInputs((is) => [
       ...is,
-      { question: `Question ${counter}`, correctAnswer: ['right'], explanation: 'Cuz', options: [] },
+      { _id: `${counter}`, question: `Question ${counter}`, correctAnswer: ['right'], explanation: 'Cuz', options: [] },
     ]);
     setCounter((c) => c + 1);
   };
@@ -57,7 +58,7 @@ const useSubmissionsInfo = () => {
 };
 
 export type TUFormP = {
-  questions: Question[];
+  questions: UQuestions;
   isExtensible: boolean;
   submitOneByOne: boolean;
   submitOnSelect: boolean;
@@ -117,24 +118,46 @@ export const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect
   );
 };
 
-const q = (question: string, correctAnswer: string, explanation: string, initialAnswer?: string[]): UQuestion => ({
+const q = (
+  _id: string,
+  question: string,
+  correctAnswer: string,
+  explanation: string,
+  initialAnswer?: string[],
+): UQuestion => ({
+  _id,
   question,
   correctAnswer: [correctAnswer],
   explanation,
   options: [],
   initialAnswer,
 });
-const basicQ = q('Type: a', 'a', 'Just type it using keyboard', ['a']);
-const basicQ2 = q('Type: b', 'b', 'Just type it using keyboard', ['a']);
-const sillyQ = q('Question 1', 'right', 'Cuz');
-const select: Question = {
+const basicQ = q('basicQ', 'Type: a', 'a', 'Just type it using keyboard', ['a']);
+const basicQ2 = q('basicQ2', 'Type: b', 'b', 'Just type it using keyboard', ['a']);
+const sillyQ = q('sillyQ', 'Question 1', 'right', 'Cuz');
+const select: UQuestion = {
+  _id: 'select',
   question: 'Select correct',
   options: ['Correct option', 'Option 2'],
   correctAnswer: ['Correct option'],
   explanation: 'This answer is correct because: Cuz',
 };
 
+const sameQuestion1: UQuestion = {
+  ...select,
+  _id: 'sameQuestion1',
+  question: 'Select correct (same question)',
+};
+
+const sameQuestion2: UQuestion = {
+  ...select,
+  _id: 'sameQuestion2',
+  question: 'Select correct (same question)',
+  correctAnswer: ['Option 2'],
+};
+
 const selectMultiple: UQuestion = {
+  _id: 'selectMultiple',
   question: 'Select several correct options (long question to check word wrap)',
   options: ['Right', 'Wrong', 'Also right', 'Option'],
   correctAnswer: ['Right', 'Also right'],
@@ -144,6 +167,7 @@ const selectMultiple: UQuestion = {
 
 const selectWithInitialAnswer: UQuestion = {
   ...select,
+  _id: 'selectWithInitialAnswer',
   initialAnswer: ['Correct option'],
 };
 
@@ -181,6 +205,12 @@ const sequentialSubmit: TUFormP = {
   submitOneByOne: true,
 };
 
+const canContainSameQuestions: TUFormP = {
+  ...default_,
+  questions: [sameQuestion1, sameQuestion2],
+  submitOnSelect: false,
+};
+
 const autoSubmitForUInputAndSelectOne: TUFormP = {
   ...default_,
   questions: [basicQ, select],
@@ -199,6 +229,7 @@ export const SUFormHook = {
   noDataRaceOnAddRemove: () => <TUForm {...noDataRaceOnAddRemove} />,
   readOnlyAfterSubmit: () => <TUForm {...readOnlyAfterSubmit} />,
   sequentialSubmit: () => <TUForm {...sequentialSubmit} />,
+  canContainSameQuestions: () => <TUForm {...canContainSameQuestions} />,
   composite: () => <TUForm {...composite} />,
   autoSubmitForUInputAndSelectOne: () => <TUForm {...autoSubmitForUInputAndSelectOne} />,
 };

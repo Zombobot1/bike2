@@ -1,9 +1,9 @@
 import { QuestionP, UChecksElement } from './uchecks';
 import { TipOnMobile, UInputElement } from './uinput';
 import React, { useState } from 'react';
-import { sslugify } from '../../../utils/sslugify';
 
 export interface TUChecksP extends QuestionP {
+  _id: string;
   wasSubmitted: boolean;
   value: string[];
   validationError: string;
@@ -11,6 +11,7 @@ export interface TUChecksP extends QuestionP {
 }
 
 export const TUChecks = ({
+  _id,
   question,
   options,
   correctAnswer,
@@ -24,7 +25,7 @@ export const TUChecks = ({
   return (
     <div className="bg-white p-3  w-50 rounded">
       <UChecksElement
-        name={sslugify(question)}
+        _id={_id}
         value={value_}
         onChange={(_, v) => setValue(v)}
         validationError={validationError}
@@ -47,6 +48,7 @@ const selectOneOptions = [
 const selectOneCorrectAnswer = ['Option 1'];
 
 const radioData: TUChecksP = {
+  _id: 'radioData',
   question: 'Please select',
   options: selectOneOptions,
   correctAnswer: selectOneCorrectAnswer,
@@ -95,6 +97,7 @@ export const SUChecksElement = {
 };
 
 interface TUInputP {
+  _id: string;
   question: string;
   explanation: string;
   value: string;
@@ -106,6 +109,7 @@ interface TUInputP {
 }
 
 export const TUInput = ({
+  _id,
   question,
   correctAnswer,
   explanation,
@@ -119,7 +123,7 @@ export const TUInput = ({
   return (
     <div className="bg-white p-3 w-50">
       <UInputElement
-        name={sslugify(question)}
+        _id={_id}
         value={value_}
         onChange={setValue}
         question={question}
@@ -134,6 +138,7 @@ export const TUInput = ({
   );
 };
 const defaultI: TUInputP = {
+  _id: 'defaultI',
   question: 'Enter abc',
   value: '',
   autoFocus: false,

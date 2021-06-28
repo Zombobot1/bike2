@@ -12,7 +12,7 @@ import { InteractiveQuestion } from './interactive-question';
 
 export interface USelectInputP {
   type: string;
-  name: string;
+  _id: string;
   label: string;
   onChange: (v: string) => void;
   checked: boolean;
@@ -21,8 +21,8 @@ export interface USelectInputP {
   isLast: boolean;
 }
 
-export const USelectInput = ({ type, name, label, validity, onChange, checked, readonly, isLast }: USelectInputP) => {
-  const id = `${name}-${sslugify(label)}`;
+export const USelectInput = ({ type, _id, label, validity, onChange, checked, readonly, isLast }: USelectInputP) => {
+  const id = `${_id}-${sslugify(label)}`;
   const cns = cn('form-check-input', {
     'is-valid': validity === 'VALID',
     'is-invalid': validity === 'INVALID',
@@ -33,7 +33,7 @@ export const USelectInput = ({ type, name, label, validity, onChange, checked, r
       <input
         className={cns}
         type={type}
-        name={name}
+        name={_id}
         value={label}
         onChange={() => onChange(label)}
         id={id}
@@ -60,7 +60,7 @@ function optionValidity(option: string, value: string[], correctAnswer: string[]
 }
 
 export interface UChecksElementP extends QuestionP {
-  name: string;
+  _id: string;
   value: string[];
   onChange: (radioName: string, value: string[]) => void;
   validationError: string;
@@ -70,7 +70,7 @@ export interface UChecksElementP extends QuestionP {
 
 export const UChecksElement = ({
   onChange,
-  name,
+  _id,
   correctAnswer,
   options,
   question,
@@ -85,11 +85,11 @@ export const UChecksElement = ({
   function onOptionClick(clickedOption: string) {
     if (value.includes(clickedOption))
       onChange(
-        name,
+        _id,
         value.filter((v) => v !== clickedOption),
       );
-    else if (!selectMultiple) onChange(name, [clickedOption]);
-    else onChange(name, [...value, clickedOption]);
+    else if (!selectMultiple) onChange(_id, [clickedOption]);
+    else onChange(_id, [...value, clickedOption]);
   }
 
   useEffect(() => {
@@ -109,7 +109,7 @@ export const UChecksElement = ({
           <USelectInput
             type={selectMultiple ? 'checkbox' : 'radio'}
             key={i}
-            name={name}
+            _id={_id}
             label={o}
             validity={validity}
             onChange={onOptionClick}
@@ -129,6 +129,7 @@ export const UChecksElement = ({
 };
 
 export interface UChecksP extends Question {
+  _id: string;
   onAnswer?: Fn;
   initialAnswer?: string[];
   selectMultiple?: boolean;
@@ -136,6 +137,7 @@ export interface UChecksP extends Question {
 }
 
 export const UChecks = ({
+  _id,
   question,
   correctAnswer,
   explanation,
@@ -145,9 +147,8 @@ export const UChecks = ({
   onAnswer = fn,
   submitOnSelect = true,
 }: UChecksP) => {
-  const name = sslugify(question);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
-  const { validationError, value, wasSubmitted } = getFieldInfo(name);
+  const { validationError, value, wasSubmitted } = getFieldInfo(_id);
   const [canSubmit, setCanSubmit] = useState(false);
 
   useEffect(() => {
@@ -162,13 +163,13 @@ export const UChecks = ({
   }, [canSubmit]);
 
   useMount(() => {
-    addField(name, correctAnswer, initialAnswer);
-    return () => removeField(name);
+    addField(_id, correctAnswer, initialAnswer);
+    return () => removeField(_id);
   });
 
   return (
     <UChecksElement
-      name={name}
+      _id={_id}
       onChange={onChange}
       value={value}
       explanation={explanation}

@@ -55,7 +55,7 @@ export interface FieldP extends Omit<FieldDTO, 'status'> {
   isCurrent: boolean; // if we render all interactive fields it would be impossible to submit one card
 }
 
-export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCurrent }: FieldP) => {
+export const Field = ({ _id, passiveData, interactiveData, type, isMediaActive, isCurrent }: FieldP) => {
   const { interactiveSubmit } = useInteractiveSubmit();
 
   if (passiveData) {
@@ -70,8 +70,8 @@ export const Field = ({ passiveData, interactiveData, type, isMediaActive, isCur
   } else if (interactiveData && isCurrent) {
     return (
       <>
-        {type === 'RADIO' && <RadioField {...interactiveData} onAnswer={interactiveSubmit} />}
-        {type === 'INPUT' && <UInput {...interactiveData} onAnswer={interactiveSubmit} />}
+        {type === 'RADIO' && <RadioField _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
+        {type === 'INPUT' && <UInput _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
       </>
     );
   }

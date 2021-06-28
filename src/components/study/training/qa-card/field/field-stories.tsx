@@ -1,8 +1,9 @@
 import React from 'react';
-import { Question } from '../../types';
 import { RadioField } from './radio-field';
+import { UChecksP } from '../../../../uform/ufields/uchecks';
 
-const radioFieldDefault: Question = {
+const radioFieldDefault: UChecksP = {
+  _id: 'radioFieldDefault',
   question: 'Select one:',
   explanation: 'Cuz',
   correctAnswer: ['This is Correctly Capitalized option'],

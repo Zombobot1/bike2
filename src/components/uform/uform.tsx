@@ -9,7 +9,7 @@ export interface UFieldInfo {
 }
 
 export interface UField extends UFieldInfo {
-  name: string;
+  _id: string;
   validator: (value: string[]) => string;
   correctAnswer: string[];
   estimation?: CardEstimation;
@@ -17,7 +17,7 @@ export interface UField extends UFieldInfo {
 export type UFields = UField[];
 
 export interface Estimation {
-  name: string;
+  _id: string;
   value: string[];
   estimation: CardEstimation;
 }
@@ -28,7 +28,7 @@ type OnSubmit = (estimations: Estimations) => void;
 const _required = (value: string[]): string => (value[0] ? '' : 'This is a required field!');
 
 const FIELD: UField = {
-  name: '',
+  _id: '',
   correctAnswer: [''],
   value: [''],
   validator: _required,
@@ -48,7 +48,7 @@ const _check = (fields: UFields): UFields =>
   );
 
 const _estimations = (fields: UFields): Estimations => {
-  return fields.map(({ name, value, estimation }) => ({ name, value, estimation: estimation || 'BAD' }));
+  return fields.map(({ _id, value, estimation }) => ({ _id, value, estimation: estimation || 'BAD' }));
 };
 
 const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationError);
@@ -58,22 +58,22 @@ const fieldsAtom = atom<UFields>([]);
 export const useUForm = () => {
   const [fields, setFields] = useAtom(fieldsAtom);
 
-  const addField = (name: string, correctAnswer: string[], initialAnswer = ['']) => {
-    setFields((old) => [...old, { ...FIELD, name, correctAnswer, value: initialAnswer }]);
+  const addField = (_id: string, correctAnswer: string[], initialAnswer = ['']) => {
+    setFields((old) => [...old, { ...FIELD, _id: _id, correctAnswer, value: initialAnswer }]);
   };
 
-  const removeField = (name: string) => {
-    setFields((old) => old.filter((f) => f.name !== name));
+  const removeField = (_id: string) => {
+    setFields((old) => old.filter((f) => f._id !== _id));
   };
 
-  const onChange = (name: string, value: string[]) => {
+  const onChange = (_id: string, value: string[]) => {
     setFields((old) =>
-      old.map((f) => (f.name === name ? { ...f, value: value, validationError: f.validator(value) } : f)),
+      old.map((f) => (f._id === _id ? { ...f, value: value, validationError: f.validator(value) } : f)),
     );
   };
 
-  const getFieldInfo = (name: string): UFieldInfo => {
-    const result = fields.find((f) => f.name === name);
+  const getFieldInfo = (_id: string): UFieldInfo => {
+    const result = fields.find((f) => f._id === _id);
     if (!result) return { ...FIELD };
     return result;
   };
