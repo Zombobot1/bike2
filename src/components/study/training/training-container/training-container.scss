@@ -1,7 +1,7 @@
-@use "../../../../sass/config";
+@import "../../../../sass/config";
 
 .training-container {
   height: 85vh;
 
-  @include config.xs { height: 91vh; }
+  @include xs { height: 91vh; }
 }

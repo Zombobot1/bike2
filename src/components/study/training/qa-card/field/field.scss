@@ -1,4 +1,4 @@
-@use "../../../../../sass/config";
+@import "../../../../../sass/config";
 
 $mb: 20px;
 
@@ -14,7 +14,7 @@ $mb-xs: 10px;
   margin-bottom: $mb;
   flex: 0 0 auto;
 
-  @include config.xs {
+  @include xs {
     margin-bottom: $mb-xs;
     font-size: 1.7em;
   }
@@ -29,7 +29,7 @@ $mb-xs: 10px;
   background-repeat: no-repeat;
   background-size: cover;
 
-  @include config.xs { margin-bottom: $mb-xs }
+  @include xs { margin-bottom: $mb-xs }
 }
 
 .qa-card__audio {
@@ -45,15 +45,15 @@ $mb-xs: 10px;
       width: 40px;
       height: 40px;
 
-      fill: config.$white-color;
+      fill: $white-color;
 
-      @include config.xs {
+      @include xs {
         width: 30px;
         height: 30px;
       }
     }
 
-    @include config.xs {
+    @include xs {
       width: 45px;
       height: 45px;
     }
@@ -63,20 +63,20 @@ $mb-xs: 10px;
     }
   }
 
-  @include config.xs { margin-bottom: $mb-xs }
+  @include xs { margin-bottom: $mb-xs }
 }
 
 .qa-card {
   .uinput {
     margin-bottom: $mb;
 
-    @include config.xs { margin-bottom: $mb-xs }
+    @include xs { margin-bottom: $mb-xs }
   }
 
   .uchecks {
     margin-bottom: $mb;
 
-    @include config.xs { margin-bottom: $mb-xs }
+    @include xs { margin-bottom: $mb-xs }
   }
 
 }

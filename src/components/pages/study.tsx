@@ -1,6 +1,6 @@
 import React from 'react';
-import RegularTrainings from './components/study/regular-trainings';
-import { TrainingContainer } from './components/study/training/training-container';
+import RegularTrainings from '../study/regular-trainings';
+import { TrainingContainer } from '../study/training/training-container';
 
 export const Study = () => {
   return (

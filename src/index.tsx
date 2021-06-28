@@ -11,6 +11,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { startWorker } from './api/fake-api';
 import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/navigation/utils';
 
+import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+
 let redirect = STUDY;
 
 if (process.env.NODE_ENV === 'development') {
@@ -36,3 +38,5 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root'),
 );
+
+serviceWorkerRegistration.register();

@@ -1,4 +1,4 @@
-@use "../../../../sass/config";
+@import "../../../../sass/config";
 
 .training {
   width: 500px;
@@ -11,5 +11,5 @@
     padding-bottom: 10px;
   }
 
-  @include config.xs { width: 380px; }
+  @include xs { width: 380px; }
 }

@@ -1,7 +1,7 @@
 import { Sandbox } from '../../_sandbox';
 import { _SORYBOOK, SoryBook } from '../../sorybook/sorybook';
 import App from '../app';
-import { Study, StudyTraining } from '../../study';
+import { Study, StudyTraining } from '../pages/study';
 import { FC } from 'react';
 import { ReactComponent as StudyT } from '../icons/study-icon.svg';
 import { ReactComponent as SandboxT } from '../icons/sandbox-icon.svg';

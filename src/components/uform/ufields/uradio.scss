@@ -1,4 +1,4 @@
-@use "../../../sass/config";
+@import "../../../sass/config";
 
 .uchecks {
   input {
@@ -36,7 +36,7 @@
     transform: translateY(-2px);
     margin-right: 12px;
 
-    fill: config.$danger-color;
+    fill: $danger-color;
   }
 
   .bi-check {
@@ -46,19 +46,19 @@
     transform: translate(-7px, -2px);
     margin-right: 0;
 
-    fill: config.$success-color;
+    fill: $success-color;
   }
 
 }
 
 .ufield__error {
-  color: config.$danger-color;
+  color: $danger-color;
   font-weight: bold;
   margin-top: 10px;
 }
 
 .ufield__success {
-  color: config.$success-color;
+  color: $success-color;
   font-weight: bold;
   margin-top: 10px;
 }

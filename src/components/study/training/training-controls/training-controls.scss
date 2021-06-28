@@ -1,10 +1,10 @@
-@use "../../../../sass/config";
+@import "../../../../sass/config";
 
 .controls {
   height: 48px;
 
   .estimate-btn {
-    @include config.xs {
+    @include xs {
       height: 38px;
       font-size: 14px;
       font-weight: bold;
@@ -12,13 +12,13 @@
   }
 
   .btn-group {
-    @include config.xs { height: 38px; }
+    @include xs { height: 38px; }
 
     .btn {
       width: 80px;
       font-size: 20px;
 
-      @include config.xs {
+      @include xs {
         width: 60px;
         font-size: 14px;
         font-weight: bold;

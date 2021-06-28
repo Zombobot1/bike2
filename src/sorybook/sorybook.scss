@@ -1,4 +1,4 @@
-@use "../sass/config";
+@import "../sass/config";
 
 .sorybook {
   height: 100vh;
@@ -17,7 +17,7 @@
   .pane {
     padding: 15px;
 
-    @include config.xs { padding-top: 55px; }
+    @include xs { padding-top: 55px; }
   }
 }
 
@@ -43,10 +43,10 @@
   height: 100%;
   min-width: 230px;
 
-  background-color: config.$white-color;
-  border-right: config.$border;
+  background-color: $white-color;
+  border-right: $border;
 
-  @include config.xs { min-width: 150px; }
+  @include xs { min-width: 150px; }
 }
 
 .tree {
@@ -64,12 +64,12 @@
     padding-right: 5px;
 
     &--active {
-      background-color: config.$light-color;
+      background-color: $light-color;
     }
 
     &:hover {
       cursor: pointer;
-      background-color: config.$light-color;
+      background-color: $light-color;
     }
   }
 
@@ -97,13 +97,13 @@
 
       &:hover {
         cursor: pointer;
-        background-color: config.$light-color;
+        background-color: $light-color;
       }
     }
 
     .use-case__label {
       font-weight: bold;
-      color: config.$gray-color;
+      color: $gray-color;
       margin-bottom: 10px;
       text-transform: uppercase;
       letter-spacing: 2px;

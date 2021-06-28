@@ -1,4 +1,4 @@
-@use "src/sass/config";
+@import "src/sass/config";
 
 .training-timer {
   min-width: 70px;
@@ -9,9 +9,9 @@
     transform: translateY(-3px);
     margin-right: 5px;
 
-    @include config.xs { transform: translateY(0); }
+    @include xs { transform: translateY(0); }
   }
   .text {
-    @include config.xs { font-size: 14px; }
+    @include xs { font-size: 14px; }
   }
 }

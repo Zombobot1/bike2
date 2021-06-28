@@ -1,5 +1,5 @@
 {
-  "name": "front",
+  "name": "new",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,6 +17,7 @@
     "prepare": "is-ci || husky install"
   },
   "dependencies": {
+    "@popperjs/core": "^2.6.0",
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "classnames": "^2.2.6",
@@ -24,13 +25,58 @@
     "lodash": "^4.17.20",
     "popper.js": "^1.16.1",
     "query-string": "^6.13.7",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "react-query": "^3.12.1",
     "react-router-dom": "^5.2.0",
     "screenfull": "^5.1.0",
     "slugify": "^1.5.3",
-    "swiper": "^6.5.9"
+    "swiper": "^6.5.9",
+    "workbox-background-sync": "^5.1.4",
+    "workbox-broadcast-update": "^5.1.4",
+    "workbox-cacheable-response": "^5.1.4",
+    "workbox-core": "^5.1.4",
+    "workbox-expiration": "^5.1.4",
+    "workbox-google-analytics": "^5.1.4",
+    "workbox-navigation-preload": "^5.1.4",
+    "workbox-precaching": "^5.1.4",
+    "workbox-range-requests": "^5.1.4",
+    "workbox-routing": "^5.1.4",
+    "workbox-strategies": "^5.1.4",
+    "workbox-streams": "^5.1.4"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.14.1",
+    "@testing-library/react": "^11.2.7",
+    "@testing-library/user-event": "^12.8.3",
+    "@types/bootstrap": "^5.0.16",
+    "@types/classnames": "^2.3.1",
+    "@types/jest": "^26.0.23",
+    "@types/lodash": "^4.14.167",
+    "@types/node": "^12.20.15",
+    "@types/react": "^16.14.8",
+    "@types/react-dom": "^16.9.13",
+    "@types/react-router-dom": "^5.1.6",
+    "@typescript-eslint/eslint-plugin": "^4.10.0",
+    "@typescript-eslint/parser": "^4.10.0",
+    "cross-env": "^7.0.3",
+    "eslint-config-airbnb": "^18.2.1",
+    "eslint-config-prettier": "^7.1.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.3.0",
+    "eslint-plugin-react": "^7.21.5",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "eslint-plugin-unused-imports": "^1.1.1",
+    "husky": "^6.0.0",
+    "is-ci": "^2.0.0",
+    "msw": "^0.27.2",
+    "node-sass": "^6.0.1",
+    "prettier": "^2.2.1",
+    "react-scripts": "4.0.3",
+    "rimraf": "^2.7.1",
+    "typescript": "^4.3.4",
+    "web-vitals": "^0.2.4"
   },
   "browserslist": {
     "production": [
@@ -44,57 +90,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "@popperjs/core": "^2.6.0",
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "@types/bootstrap": "^5.0.16",
-    "@types/classnames": "^2.2.11",
-    "@types/jest": "^26.0.15",
-    "@types/lodash": "^4.14.167",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.53",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-helmet": "^6.1.0",
-    "@types/react-router-dom": "^5.1.6",
-    "@typescript-eslint/eslint-plugin": "^4.10.0",
-    "@typescript-eslint/parser": "^4.10.0",
-    "cross-env": "^7.0.3",
-    "css-loader": "^4.3.0",
-    "eslint-config-airbnb": "^18.2.1",
-    "eslint-config-prettier": "^7.1.0",
-    "eslint-plugin-import": "^2.22.1",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.3.0",
-    "eslint-plugin-react": "^7.21.5",
-    "eslint-plugin-react-hooks": "^4.0.0",
-    "eslint-plugin-unused-imports": "^1.1.1",
-    "husky": "^6.0.0",
-    "is-ci": "^2.0.0",
-    "msw": "^0.27.2",
-    "prettier": "^2.2.1",
-    "react-scripts": "^4.0.3",
-    "rimraf": "^2.7.1",
-    "sass": "^1.34.0",
-    "sass-loader": "^10.1.1",
-    "style-loader": "^1.3.0",
-    "typescript": "^4.0.3",
-    "web-vitals": "^0.2.4"
-  },
   "msw": {
     "workerDirectory": "public"
-  },
-  "eslintConfig": {
-    "overrides": [
-      {
-        "files": [
-          "**/*.stories.*"
-        ],
-        "rules": {
-          "import/no-anonymous-default-export": "off"
-        }
-      }
-    ]
   }
 }

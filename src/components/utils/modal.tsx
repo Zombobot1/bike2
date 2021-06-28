@@ -13,16 +13,17 @@ const ClosingFooter = () => (
   </button>
 );
 
-const AcceptanceFooter = (onAccept: Fn) => () => (
-  <>
-    <button type="button" className="btn btn-outline-dark" data-bs-dismiss="modal">
-      Cancel
-    </button>
-    <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={onAccept}>
-      Delete
-    </button>
-  </>
-);
+const AcceptanceFooter = (onAccept: Fn) => () =>
+  (
+    <>
+      <button type="button" className="btn btn-outline-dark" data-bs-dismiss="modal">
+        Cancel
+      </button>
+      <button type="button" className="btn btn-danger" data-bs-dismiss="modal" onClick={onAccept}>
+        Delete
+      </button>
+    </>
+  );
 
 const ModalTitle = ({ id, title }: FootlessModalP) => (
   <p className="modal-title" id={`${id}Label`}>
@@ -30,12 +31,13 @@ const ModalTitle = ({ id, title }: FootlessModalP) => (
   </p>
 );
 
-const ModalHeader = (id: string, title: string) => () => (
-  <div className="modal-header">
-    <ModalTitle id={id} title={title} />
-    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
-  </div>
-);
+const ModalHeader = (id: string, title: string) => () =>
+  (
+    <div className="modal-header">
+      <ModalTitle id={id} title={title} />
+      <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" />
+    </div>
+  );
 
 const ModalTemplate = (
   id: string,
@@ -69,8 +71,11 @@ const ModalTemplate = (
   );
 };
 
-export const FootlessModal = ({ id, title }: FootlessModalP) => (Body: FC) => () =>
-  ModalTemplate(id, Body, ModalHeader(id, title));
+export const FootlessModal =
+  ({ id, title }: FootlessModalP) =>
+  (Body: FC) =>
+  () =>
+    ModalTemplate(id, Body, ModalHeader(id, title));
 
 export const HeadlessModal = (id: string, Body: FC) => () => ModalTemplate(id, Body, null, ClosingFooter);
 

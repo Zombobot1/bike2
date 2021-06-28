@@ -1,5 +1,5 @@
-@use "../../../../sass/config";
-@use "../../../../sass/common";
+@import "../../../../sass/config";
+@import "../../../../sass/common";
 
 .qa-card-container {
   position: relative;
@@ -9,7 +9,7 @@
   width: 100%;
 
   border-radius: 25px; // container background color interference fix
-  border: config.$border;
+  border: $border;
 
   .estimation-bubble {
     position: absolute;
@@ -21,7 +21,7 @@
     transform: translate(-80%, -30%);
 
     .estimation {
-      color: config.$white-color;
+      color: $white-color;
       font-weight: bold;
       font-size: 1.3em;
       display: inline-block;
@@ -43,14 +43,14 @@
     padding: 20px 20px 20px 20px;
     border-radius: 25px;
 
-    background-color: config.$white-color;
+    background-color: $white-color;
 
     hr {
       min-height: 1px;
       margin-bottom: 20px;
       margin-top: 0;
       opacity: 0.1;
-      @include config.xs { margin-bottom: 10px; }
+      @include xs { margin-bottom: 10px; }
     }
   }
 

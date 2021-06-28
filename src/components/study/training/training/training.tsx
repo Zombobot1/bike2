@@ -28,15 +28,8 @@ export interface TrainingP {
 }
 
 export const Training = ({ dto, onLastCard }: TrainingP) => {
-  const {
-    cards,
-    onDeleteCard,
-    currentCardIndex,
-    estimateCard,
-    timeToFinish,
-    showHiddenFields,
-    areFieldsHidden,
-  } = useCards(dto._id, dto.cards, onLastCard);
+  const { cards, onDeleteCard, currentCardIndex, estimateCard, timeToFinish, showHiddenFields, areFieldsHidden } =
+    useCards(dto._id, dto.cards, onLastCard);
 
   return (
     <div className="d-flex flex-column training">

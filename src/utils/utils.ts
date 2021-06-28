@@ -1,8 +1,8 @@
-import { ClassNamesFn, ClassValue } from 'classnames/types';
+import { Argument } from 'classnames';
 import classNames from 'classnames';
 import { JSObject } from './types';
 
-export const cn: ClassNamesFn = (...classes: ClassValue[]) => classNames(...classes);
+export const cn = (...classes: Argument[]): string => classNames(...classes);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const pcn = (main: string, ..._classes: any) => {
@@ -24,8 +24,12 @@ export default function compose(...funcs: Function[]) {
   if (funcs.length === 0) return <T>(arg: T) => arg;
   if (funcs.length === 1) return funcs[0];
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  return funcs.reduce((a, b) => (...args: any) => a(b(...args)));
+  return funcs.reduce(
+    (a, b) =>
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (...args: any) =>
+        a(b(...args)),
+  );
 }
 
 export const capitalizeOnlyFirstLetter = (str: string): string =>
