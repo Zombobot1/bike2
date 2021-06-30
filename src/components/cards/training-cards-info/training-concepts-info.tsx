@@ -4,13 +4,13 @@ import { ReactComponent as Glasses } from './glasses-icon.svg';
 import React from 'react';
 import { fancyNumber } from '../../../utils/formatting';
 
-export interface TrainingCardsInfoP {
+export interface TrainingConceptsInfoP {
   toRepeat: number;
   toLearn: number;
   className?: string;
 }
 
-const TrainingCardsInfo = ({ toRepeat, toLearn, className }: TrainingCardsInfoP) => {
+const TrainingConceptsInfo = ({ toRepeat, toLearn, className }: TrainingConceptsInfoP) => {
   const repeatInfo = () => (
     <span className="repeat-info">
       <Clocks />
@@ -31,4 +31,4 @@ const TrainingCardsInfo = ({ toRepeat, toLearn, className }: TrainingCardsInfoP)
   );
 };
 
-export default TrainingCardsInfo;
+export default TrainingConceptsInfo;

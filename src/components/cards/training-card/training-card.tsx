@@ -1,6 +1,6 @@
 import './training-card.scss';
 import { SmallDeckCard } from '../types';
-import TrainingCardsInfo, { TrainingCardsInfoP } from '../training-cards-info';
+import TrainingConceptsInfo, { TrainingConceptsInfoP } from '../training-cards-info';
 import React from 'react';
 import { useRouter } from '../../utils/hooks/use-router';
 import { TrainingDTO } from '../../study/training/training';
@@ -10,12 +10,12 @@ export interface DeckCard extends SmallDeckCard {
   deckPath: string;
 }
 
-export interface TrainingCardInfo {
+export interface TrainingConceptInfo {
   _id: string;
-  trainingCardsInfo: TrainingCardsInfoP;
+  trainingConceptsInfo: TrainingConceptsInfoP;
 }
 
-const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingCardsInfo }: TrainingDTO) => {
+const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConceptsInfo }: TrainingDTO) => {
   const { history } = useRouter();
   const onClick = () => history.push(`${STUDY}/${_id}`);
   return (
@@ -23,7 +23,7 @@ const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingCardsInfo }:
       <div className="deck-mark" style={{ backgroundColor: deckColor }} />
       <span className="deck-path">{deckPath}</span>
       <strong className="deck-name">{deckName}</strong>
-      <TrainingCardsInfo {...trainingCardsInfo} />
+      <TrainingConceptsInfo {...trainingConceptsInfo} />
     </div>
   );
 };

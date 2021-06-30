@@ -21,6 +21,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^5.0.1",
     "classnames": "^2.2.6",
+    "firebase": "^8.6.8",
     "jotai": "^0.16.6",
     "lodash": "^4.17.20",
     "popper.js": "^1.16.1",

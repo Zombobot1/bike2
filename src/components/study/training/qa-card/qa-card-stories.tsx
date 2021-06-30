@@ -1,6 +1,6 @@
 import { QACard, QACardP } from './qa-card';
 import React from 'react';
-import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../../content';
+import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../../content/content';
 
 export const QACardT = (args: QACardP) => (
   <div style={{ width: '500px', height: '715px' }}>

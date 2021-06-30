@@ -9,14 +9,15 @@ import './components/icons/icons.scss';
 import { buildRoutes } from './components/utils/routing';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { startWorker } from './api/fake-api';
-import { _ROOT, _SANDBOX, PAGES, STUDY } from './components/navigation/utils';
+import { _ROOT, PAGES, STUDY } from './components/navigation/utils';
 
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
+import { _SORYBOOK } from './sorybook/sorybook';
 
 let redirect = STUDY;
 
 if (process.env.NODE_ENV === 'development') {
-  redirect = _SANDBOX;
+  redirect = _SORYBOOK;
   (async () => {
     await startWorker();
   })();

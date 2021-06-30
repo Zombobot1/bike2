@@ -1,2 +1,2 @@
-export { default } from './training-cards-info';
-export type { TrainingCardsInfoP } from './training-cards-info';
+export { default } from './training-concepts-info';
+export type { TrainingConceptsInfoP } from './training-concepts-info';

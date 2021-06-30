@@ -1,8 +1,8 @@
-import { CardDTO, FieldDTO } from './components/study/training/types';
+import { CardDTO, FieldDTO } from '../components/study/training/types';
 import hospital from './hospital.png';
 import hospitalMp3 from './hospital.mp3';
-import { TrainingDTO } from './components/study/training/training';
-import { TrainingsGroupDTO } from './components/study/training/training/training';
+import { TrainingDTO } from '../components/study/training/training';
+import { TrainingsGroupDTO } from '../components/study/training/training/training';
 
 const question = `When do we use the definite article?`;
 
@@ -230,7 +230,7 @@ const basic: TrainingDTO = {
   deckColor: '#FF5151',
   deckName: 'Bayesian approach',
   deckPath: 'Statistical methods / Lectures',
-  trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+  trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
   cards: [uCardLong, uCardMinimal],
 };
 
@@ -279,7 +279,7 @@ const mathTrainings: TrainingDTO[] = [
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -288,7 +288,7 @@ const mathTrainings: TrainingDTO[] = [
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -297,7 +297,7 @@ const mathTrainings: TrainingDTO[] = [
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -306,7 +306,7 @@ const mathTrainings: TrainingDTO[] = [
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
     deckPath: 'Statistical methods / Lectures',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
 ];
@@ -317,7 +317,7 @@ const jsTrainings: TrainingDTO[] = [
     deckColor: '#FCA95C',
     deckName: 'Functions',
     deckPath: 'Basics',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -326,7 +326,7 @@ const jsTrainings: TrainingDTO[] = [
     deckColor: '#FCA95C',
     deckName: 'Functions',
     deckPath: 'Basics',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -335,7 +335,7 @@ const jsTrainings: TrainingDTO[] = [
     deckColor: '#FCA95C',
     deckName: 'Workers',
     deckPath: 'Browsers',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -344,7 +344,7 @@ const jsTrainings: TrainingDTO[] = [
     deckColor: '#eced2b',
     deckName: 'Async & Await',
     deckPath: 'Advanced',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -353,7 +353,7 @@ const jsTrainings: TrainingDTO[] = [
     deckColor: '#eced2b',
     deckName: 'Proxy',
     deckPath: 'Advanced',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -362,7 +362,7 @@ const jsTrainings: TrainingDTO[] = [
     deckColor: '#eced2b',
     deckName: 'Proxy',
     deckPath: 'Advanced',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
 ];
@@ -373,7 +373,7 @@ const englishTrainings: TrainingDTO[] = [
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -382,7 +382,7 @@ const englishTrainings: TrainingDTO[] = [
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -391,7 +391,7 @@ const englishTrainings: TrainingDTO[] = [
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -400,7 +400,7 @@ const englishTrainings: TrainingDTO[] = [
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -409,7 +409,7 @@ const englishTrainings: TrainingDTO[] = [
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
     deckPath: 'Nouns / Collocations',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
 ];
@@ -420,7 +420,7 @@ const cppTrainings: TrainingDTO[] = [
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -429,7 +429,7 @@ const cppTrainings: TrainingDTO[] = [
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -438,7 +438,7 @@ const cppTrainings: TrainingDTO[] = [
     deckColor: '#FC5C9F',
     deckName: 'Chapter 1',
     deckPath: 'C++ programming language',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
 ];
@@ -449,7 +449,7 @@ const pythonTrainings: TrainingDTO[] = [
     deckColor: '#2730FD',
     deckName: 'Pathlib',
     deckPath: 'Libraries',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -458,7 +458,7 @@ const pythonTrainings: TrainingDTO[] = [
     deckColor: '#2730FD',
     deckName: 'Pathlib',
     deckPath: 'Libraries',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
 ];
@@ -469,7 +469,7 @@ const cookingTrainings: TrainingDTO[] = [
     deckColor: '#DC5CFC',
     deckName: 'Borsh',
     deckPath: 'Recepies',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
   {
@@ -478,7 +478,7 @@ const cookingTrainings: TrainingDTO[] = [
     deckColor: '#DC5CFC',
     deckName: 'Borsh',
     deckPath: 'Recepies',
-    trainingCardsInfo: { toRepeat: 234, toLearn: 234 },
+    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
 ];

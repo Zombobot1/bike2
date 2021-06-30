@@ -4,6 +4,7 @@ stages:
   - notify
 
 variables:
+  ENV_FILE: /home/admin/universe/uni-conf/.env
   BUILD_DIR: "build"
 
 check:
@@ -23,6 +24,7 @@ build:
   script:
     - npm i
     - npm run after-commit
+    - cp $ENV_FILE .
     - npm run build
   artifacts:
     paths:

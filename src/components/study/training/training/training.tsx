@@ -4,7 +4,7 @@ import { CardDTOs } from '../types';
 import { TrainingHeader } from '../training-header';
 import { TrainingControls } from '../training-controls';
 import { useCards, usePagesPathUpdate } from './hooks';
-import { TrainingCardsInfoP } from '../../../cards/training-cards-info';
+import { TrainingConceptsInfoP } from '../../../cards/training-cards-info';
 import { CardCarousel } from './card-carousel';
 import { Fn } from '../../../../utils/types';
 
@@ -13,7 +13,7 @@ export interface TrainingDTO {
   deckName: string;
   deckColor: string;
   deckPath: string;
-  trainingCardsInfo: TrainingCardsInfoP;
+  trainingConceptsInfo: TrainingConceptsInfoP;
   cards: CardDTOs;
 }
 
