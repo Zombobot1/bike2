@@ -7,6 +7,7 @@ import { SField } from '../components/study/training/qa-card/field/field-stories
 import { SModal } from '../components/utils/modal-stories';
 import { SUFormHook } from '../components/uform/uform-stories';
 import { SUInputElement, SUChecksElement } from '../components/uform/ufields/ufields-stories';
+import { SControls } from '../components/utils/controls-s';
 
 export const sories = [
   {
@@ -25,6 +26,6 @@ export const sories = [
   },
   {
     name: 'Utils',
-    components: [storify({ SModal })],
+    components: [storify({ SModal }), storify({ SControls })],
   },
 ];

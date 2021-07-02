@@ -1,5 +1,6 @@
 import { Fn, StateT } from './types';
 import { useEffect, useState } from 'react';
+import { useMediaQuery, useTheme } from '@material-ui/core';
 
 export const useMount = (f: Fn) => useEffect(f, []);
 
@@ -26,3 +27,8 @@ export const usePageVisibility = () => {
 
   return isVisible;
 };
+
+export function useIsSM() {
+  const theme = useTheme();
+  return useMediaQuery(theme.breakpoints.up('sm'));
+}

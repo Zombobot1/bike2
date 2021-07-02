@@ -4,7 +4,7 @@ import 'swiper/swiper.scss';
 export const Sandbox = () => {
   return (
     <>
-      <main className="content-area">{/*<Rec />*/}</main>
+      <main className="content-area"></main>
     </>
   );
 };

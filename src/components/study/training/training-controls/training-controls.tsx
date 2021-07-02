@@ -1,13 +1,28 @@
 import './training-controls.scss';
-import { capitalizeOnlyFirstLetter } from '../../../../utils/utils';
+import { sfp } from '../../../../utils/utils';
 import React, { useEffect, useState } from 'react';
 import { TrainingTimer, useTrainingTimer } from '../training-timer/training-timer';
-import { CardEstimation, cardEstimationToNumber, CardType } from '../types';
+import { cardEstimationToNumber, CardType } from '../types';
 import { Fn } from '../../../../utils/types';
 import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
 import { useInteractiveSubmit } from '../hooks';
+import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@material-ui/core';
+import { useIsSM } from '../../../../utils/hooks-utils';
+import { Btn } from '../../../utils/controls';
+
+interface EstimationBtn extends ButtonProps {
+  isSM?: boolean;
+}
+
+const EstimationBtn = styled(
+  Button,
+  sfp('isSM'),
+)<EstimationBtn>(({ isSM, theme }) => ({
+  width: isSM ? 85 : 65,
+  color: theme.palette.common.white,
+}));
 
 export interface TrainingControlsP {
   estimate: EstimateCard;
@@ -17,18 +32,6 @@ export interface TrainingControlsP {
   currentCardIndex: number;
 }
 
-interface EstimationBtnP {
-  btnClass: string;
-  estimation: CardEstimation;
-  estimate: EstimateCard;
-}
-
-const EstimationBtn = ({ btnClass, estimate, estimation }: EstimationBtnP) => (
-  <button type="button" className={'btn ' + btnClass} onClick={() => estimate(estimation)}>
-    {capitalizeOnlyFirstLetter(estimation)}
-  </button>
-);
-
 interface SelfEstimateBtnP {
   areFieldsHidden: boolean;
   showHiddenFields: Fn;
@@ -36,20 +39,31 @@ interface SelfEstimateBtnP {
 }
 
 const SelfEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: SelfEstimateBtnP) => {
+  const bad = () => estimate('BAD');
+  const poor = () => estimate('POOR');
+  const good = () => estimate('GOOD');
+  const easy = () => estimate('EASY');
+
+  const isSM = useIsSM();
+  const size = isSM ? 'large' : 'medium';
   return (
     <>
-      {areFieldsHidden && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={showHiddenFields}>
-          Estimate
-        </button>
-      )}
+      {areFieldsHidden && <Btn text="Estimate" size={size} onClick={showHiddenFields} />}
       {!areFieldsHidden && (
-        <div className="btn-group" role="group">
-          <EstimationBtn btnClass="btn-warning" estimate={estimate} estimation={'SOSO'} />
-          <EstimationBtn btnClass="btn-danger" estimate={estimate} estimation={'BAD'} />
-          <EstimationBtn btnClass="btn-success" estimate={estimate} estimation={'GOOD'} />
-          <EstimationBtn btnClass="btn-info" estimate={estimate} estimation={'EASY'} />
-        </div>
+        <ButtonGroup variant="contained" size={size}>
+          <EstimationBtn isSM={isSM} color="warning" onClick={poor}>
+            Poor
+          </EstimationBtn>
+          <EstimationBtn isSM={isSM} color="error" onClick={bad}>
+            Bad
+          </EstimationBtn>
+          <EstimationBtn isSM={isSM} color="success" onClick={good}>
+            Good
+          </EstimationBtn>
+          <EstimationBtn isSM={isSM} color="info" onClick={easy}>
+            Easy
+          </EstimationBtn>
+        </ButtonGroup>
       )}
     </>
   );
@@ -64,18 +78,13 @@ interface EstimateBtnP {
 }
 
 const EstimateBtn = ({ isSubmitted, sumbit, goToNextCard }: EstimateBtnP) => {
+  const isSM = useIsSM();
+  const size = isSM ? 'large' : 'medium';
+
   return (
     <>
-      {!isSubmitted && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={sumbit}>
-          Estimate
-        </button>
-      )}
-      {isSubmitted && (
-        <button className="btn btn-lg btn-primary estimate-btn" onClick={goToNextCard}>
-          Next
-        </button>
-      )}
+      {!isSubmitted && <Btn text="Estimate" size={size} onClick={sumbit} />}
+      {isSubmitted && <Btn text="Next" size={size} onClick={goToNextCard} />}
     </>
   );
 };
@@ -119,7 +128,7 @@ export const TrainingControls = ({
   }, [currentCardIndex]);
 
   return (
-    <div className="d-flex align-items-center justify-content-between controls w-100">
+    <Stack sx={{ width: '100%' }} direction="row" justifyContent="space-between" alignItems="center" spacing={0}>
       <TrainingTimer />
       {cardType === 'PASSIVE' && (
         <SelfEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />
@@ -128,6 +137,6 @@ export const TrainingControls = ({
         <EstimateBtn sumbit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
       )}
       <div style={{ height: '5px', minWidth: '70px' }} />
-    </div>
+    </Stack>
   );
 };

@@ -4,6 +4,13 @@ import { JSObject } from './types';
 
 export const cn = (...classes: Argument[]): string => classNames(...classes);
 
+export function sfp(name: string) {
+  return {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    shouldForwardProp: (p: any) => p !== name,
+  };
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const pcn = (main: string, ..._classes: any) => {
   let hasTruthy = false;

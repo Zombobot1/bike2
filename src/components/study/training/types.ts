@@ -1,10 +1,10 @@
 import { COLORS } from '../../../config';
 
-export type CardEstimation = 'SOSO' | 'BAD' | 'GOOD' | 'EASY';
+export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY';
 const WEIGHTS: { [K in CardEstimation]: number } = {
   EASY: 2,
   GOOD: 1,
-  SOSO: 0,
+  POOR: 0,
   BAD: -1,
 };
 export const cardEstimationToNumber = (a: CardEstimation): number => WEIGHTS[a];
@@ -14,7 +14,7 @@ export const estimationColor = (e: CardEstimation) => {
       return COLORS.danger;
     case 'GOOD':
       return COLORS.success;
-    case 'SOSO':
+    case 'POOR':
       return COLORS.warning;
     case 'EASY':
       return COLORS.info;
