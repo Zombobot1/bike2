@@ -2,7 +2,7 @@ import './qa-card.scss';
 import React from 'react';
 import { CardEstimation, estimationColor, FieldDTO } from '../types';
 import { Field } from './field/field';
-import { COLORS } from '../../../../config';
+import { COLORS } from '../../../../theme';
 import { useMount } from '../../../../utils/hooks-utils';
 
 const preloadImage = (field: FieldDTO) => {

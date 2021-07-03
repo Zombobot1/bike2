@@ -1,49 +1,54 @@
 import './uradio.scss';
-import { sslugify } from '../../../utils/sslugify';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import React, { useEffect, useState } from 'react';
-import { cn } from '../../../utils/utils';
 import { Validity } from '../types';
 import { Question } from '../../study/training/types';
 import { fn, Fn } from '../../../utils/types';
 import _ from 'lodash';
 import { InteractiveQuestion } from './interactive-question';
+import { Checkbox, FormControlLabel, Radio, RadioGroup, styled } from '@material-ui/core';
+import { ErrorText, SuccessText } from './feedback';
+import { useValidationColor } from './useValidationColor';
+
+const Div = styled('div')({
+  marginBottom: 20,
+});
 
 export interface USelectInputP {
-  type: string;
+  selectMultiple: boolean;
   _id: string;
   label: string;
   onChange: (v: string) => void;
   checked: boolean;
   validity: Validity;
   readonly: boolean;
-  isLast: boolean;
 }
 
-export const USelectInput = ({ type, _id, label, validity, onChange, checked, readonly, isLast }: USelectInputP) => {
-  const id = `${_id}-${sslugify(label)}`;
-  const cns = cn('form-check-input', {
-    'is-valid': validity === 'VALID',
-    'is-invalid': validity === 'INVALID',
-  });
-  const divcns = cn('form-check uradio_input', { 'mb-2': !isLast, 'mb-0': isLast });
+export const USelectInput = ({ selectMultiple, _id, label, validity, onChange, checked, readonly }: USelectInputP) => {
+  const color = useValidationColor(validity);
+
+  const sx =
+    validity === 'NONE'
+      ? undefined
+      : {
+          '& .MuiFormControlLabel-label.Mui-disabled': { color },
+          '& .PrivateSwitchBase-root': {
+            color,
+            '&.Mui-checked': { color },
+          },
+        };
+
   return (
-    <div className={divcns}>
-      <input
-        className={cns}
-        type={type}
-        name={_id}
-        value={label}
-        onChange={() => onChange(label)}
-        id={id}
-        checked={checked}
-        disabled={readonly}
-      />
-      <label className="form-check-label" htmlFor={id}>
-        {label}
-      </label>
-    </div>
+    <FormControlLabel
+      value={label}
+      control={selectMultiple ? <Checkbox /> : <Radio />}
+      label={label}
+      sx={sx}
+      checked={checked}
+      disabled={readonly}
+      onChange={() => onChange(label)}
+    />
   );
 };
 
@@ -99,32 +104,31 @@ export const UChecksElement = ({
   }, [wasSubmitted]);
 
   return (
-    <div className="uchecks">
+    <Div>
       <InteractiveQuestion question={question} status={overallValidity} />
-      {options.map((o, i) => {
-        let validity: Validity = 'NONE';
-        if (validationError) validity = 'INVALID';
-        else if (wasSubmitted) validity = optionValidity(o, value, correctAnswer);
-        return (
-          <USelectInput
-            type={selectMultiple ? 'checkbox' : 'radio'}
-            key={i}
-            _id={_id}
-            label={o}
-            validity={validity}
-            onChange={onOptionClick}
-            checked={value.includes(o)}
-            readonly={wasSubmitted}
-            isLast={i === options.length - 1}
-          />
-        );
-      })}
-      {validationError && <p className="ufield__error">{validationError}</p>}
-      {wasSubmitted && _.difference(value, correctAnswer).length !== 0 && (
-        <p className="ufield__error">{explanation}</p>
-      )}
-      {wasSubmitted && !_.difference(value, correctAnswer).length && <p className="ufield__success">{explanation}</p>}
-    </div>
+      <RadioGroup name={_id}>
+        {options.map((o, i) => {
+          let validity: Validity = 'NONE';
+          if (validationError) validity = 'INVALID';
+          else if (wasSubmitted) validity = optionValidity(o, value, correctAnswer);
+          return (
+            <USelectInput
+              selectMultiple={selectMultiple}
+              key={i}
+              _id={_id}
+              label={o}
+              validity={validity}
+              onChange={onOptionClick}
+              checked={value.includes(o)}
+              readonly={wasSubmitted}
+            />
+          );
+        })}
+      </RadioGroup>
+      {validationError && <ErrorText>{validationError}</ErrorText>}
+      {wasSubmitted && _.difference(value, correctAnswer).length !== 0 && <ErrorText>{explanation}</ErrorText>}
+      {wasSubmitted && !_.difference(value, correctAnswer).length && <SuccessText>{explanation}</SuccessText>}
+    </Div>
   );
 };
 

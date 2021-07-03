@@ -1,5 +1,3 @@
-import { sslugify } from '../../../utils/sslugify';
-import { cn } from '../../../utils/utils';
 import React, { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
@@ -9,6 +7,13 @@ import { Fn, fn } from '../../../utils/types';
 import { usePresentationTransition } from '../../study/training/training/presentation';
 import { useToggle } from '../../utils/hooks/use-toggle';
 import { InteractiveQuestion } from './interactive-question';
+import { ErrorText, SuccessText } from './feedback';
+import { styled, TextField } from '@material-ui/core';
+import { useValidationColor } from './useValidationColor';
+
+const Form = styled('form')({
+  marginBottom: 20,
+});
 
 const useFocus = () => {
   const ref = useRef<HTMLInputElement>(null);
@@ -49,17 +54,23 @@ export const UInputElement = ({
   validationError,
 }: UInputElementP) => {
   const [type, setType] = useState(tipOnMobile === 'HIDE_TIP' ? 'password' : 'text');
-  const id = `${_id}-${sslugify(question)}`;
 
   let validity: Validity = 'NONE';
   if (validationError) validity = 'INVALID';
   else if (wasSubmitted && value !== correctAnswer) validity = 'INVALID';
   else if (wasSubmitted && value === correctAnswer) validity = 'VALID';
 
-  const cns = cn('form-control', {
-    'is-valid': validity === 'VALID',
-    'is-invalid': validity === 'INVALID',
-  });
+  const color = useValidationColor(validity);
+  const sx =
+    validity === 'NONE'
+      ? undefined
+      : {
+          '& .MuiInput-root:before': { borderBottomColor: color },
+          '& .MuiInputBase-input.Mui-disabled': {
+            color,
+            '-webkit-text-fill-color': 'unset',
+          },
+        };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Enter') onEnter();
@@ -77,27 +88,27 @@ export const UInputElement = ({
   useMount(() => setTimeout(toggleTryFocus, 100));
 
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
-      <div className="uinput">
-        <InteractiveQuestion question={question} id={id} status={validity} />
-        <input
-          className={cns}
-          type={type}
-          name={_id}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setType('text')}
-          id={id}
-          disabled={wasSubmitted}
-          onKeyDown={handleKeyDown}
-          ref={ref}
-          autoComplete="one-time-code"
-        />
-        {validationError && <div className="ufield__error">{validationError}</div>}
-        {!validationError && validity === 'INVALID' && <div className="ufield__error">{explanation}</div>}
-        {validity === 'VALID' && <div className="ufield__success">{explanation}</div>}
-      </div>
-    </form>
+    <Form onSubmit={(e) => e.preventDefault()}>
+      <InteractiveQuestion question={question} status={validity} />
+      <TextField
+        fullWidth
+        variant="standard"
+        placeholder="Your answer"
+        type={type}
+        id={_id}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setType('text')}
+        disabled={wasSubmitted}
+        onKeyPress={handleKeyDown}
+        inputRef={ref}
+        autoComplete="one-time-code"
+        sx={sx}
+      />
+      {validationError && <ErrorText>{validationError}</ErrorText>}
+      {!validationError && validity === 'INVALID' && <ErrorText>{explanation}</ErrorText>}
+      {validity === 'VALID' && <SuccessText>{explanation}</SuccessText>}
+    </Form>
   );
 };
 

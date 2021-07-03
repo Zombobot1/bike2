@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import React from 'react';
 import { trainings } from '../../../../content/content';
 import { useMedia } from '../../../utils/hooks/use-media';
-import { SM } from '../../../../config';
+import { SM } from '../../../../theme';
 
 export const TrainingT = (args: TrainingDTO) => {
   const [isFinished, toggle] = useToggle(false);

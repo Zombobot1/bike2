@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { TrainingHeader } from './training-header';
 import { fn } from '../../../../utils/types';
 import { useMedia } from '../../../utils/hooks/use-media';
-import { SM } from '../../../../config';
+import { SM } from '../../../../theme';
 
 export interface TrainingHeaderTP {
   oneCardTimeToAnswer: number;

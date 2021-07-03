@@ -13,7 +13,8 @@ import { _ROOT, PAGES, STUDY } from './components/navigation/utils';
 
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { _SORYBOOK } from './sorybook/sorybook';
-import { createTheme, ThemeProvider } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core';
+import { theme } from './theme';
 
 let redirect = STUDY;
 
@@ -25,39 +26,6 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 const queryClient = new QueryClient();
-const theme = createTheme({
-  typography: {
-    fontFamily: 'Nunito, Helvetica, sans-serif',
-    fontSize: 16,
-
-    button: {
-      textTransform: 'none',
-    },
-  },
-  shape: {
-    borderRadius: 10,
-  },
-  palette: {
-    primary: {
-      main: '#1C2540',
-    },
-    secondary: {
-      main: '#fca95c',
-    },
-    info: {
-      main: '#0948b3',
-    },
-    warning: {
-      main: '#f5b759',
-    },
-    success: {
-      main: '#05a677',
-    },
-    error: {
-      main: '#fa5252',
-    },
-  },
-});
 
 ReactDOM.render(
   <React.StrictMode>

@@ -1,7 +1,6 @@
 import './training-header.scss';
-import { COLORS } from '../../../../config';
+import { COLORS } from '../../../../theme';
 import React from 'react';
-import { FullScreenTrigger } from '../../../utils/full-screen-trigger';
 import { addS, fancyTime, percentage } from '../../../../utils/formatting';
 import { TrainingSettings, TrainingSettingsP } from '../training-controls/training-settings';
 
@@ -45,7 +44,6 @@ export const TrainingHeader = ({
         <div className="d-flex align-items-center progress-info">
           <ProgressBar className="align-self-center me-2" value={progress} color={COLORS.tertiary} />
           <span className="cards-left-info me-auto">{cardsLeftInfo(cardsLength, currentCardIndex, timeToFinish)}</span>
-          <FullScreenTrigger />
           <TrainingSettings deleteCard={deleteCard} cardId={cardId} />
         </div>
       </div>

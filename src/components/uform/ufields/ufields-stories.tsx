@@ -58,26 +58,44 @@ const radioData: TUChecksP = {
   value: [''],
   selectMultiple: false,
 };
-const defaultR: TUChecksP = {
+
+const selectMultipleOptions = ['Right', 'Also right', 'Wrong', 'Option', 'Also wrong'];
+const selectMultipleCorrectAnswer = ['Right', 'Also right'];
+
+const checksData: TUChecksP = {
+  _id: 'checksData',
+  question: 'Please select',
+  options: selectMultipleOptions,
+  correctAnswer: selectMultipleCorrectAnswer,
+  explanation: 'This is a loooooooooooooooooooooong Cuz',
+  validationError: '',
+  wasSubmitted: false,
+  value: [''],
+  selectMultiple: true,
+};
+
+const selectOne: TUChecksP = {
   ...radioData,
 };
-const rightR: TUChecksP = {
+
+const selectMany: TUChecksP = {
+  ...checksData,
+};
+
+const right: TUChecksP = {
   ...radioData,
   wasSubmitted: true,
   value: ['Option 1'],
 };
-const wrongR: TUChecksP = {
+const wrong: TUChecksP = {
   ...radioData,
   wasSubmitted: true,
   value: ['Option 2'],
 };
-const invalidR: TUChecksP = {
+const invalid: TUChecksP = {
   ...radioData,
   validationError: 'Required field',
 };
-
-const selectMultipleOptions = ['Right', 'Also right', 'Wrong', 'Option', 'Also wrong'];
-const selectMultipleCorrectAnswer = ['Right', 'Also right'];
 
 const wrongMultiple: TUChecksP = {
   ...radioData,
@@ -89,11 +107,12 @@ const wrongMultiple: TUChecksP = {
 };
 
 export const SUChecksElement = {
-  SelectOne: () => <TUChecks {...defaultR} />,
-  Right: () => <TUChecks {...rightR} />,
-  Wrong: () => <TUChecks {...wrongR} />,
-  WrongMultiple: () => <TUChecks {...wrongMultiple} />,
-  Invalid: () => <TUChecks {...invalidR} />,
+  selectOne: () => <TUChecks {...selectOne} />,
+  selectMany: () => <TUChecks {...selectMany} />,
+  right: () => <TUChecks {...right} />,
+  wrong: () => <TUChecks {...wrong} />,
+  wrongMultiple: () => <TUChecks {...wrongMultiple} />,
+  invalid: () => <TUChecks {...invalid} />,
 };
 
 interface TUInputP {
@@ -137,6 +156,7 @@ export const TUInput = ({
     </div>
   );
 };
+
 const defaultI: TUInputP = {
   _id: 'defaultI',
   question: 'Enter abc',
@@ -148,16 +168,19 @@ const defaultI: TUInputP = {
   validationError: '',
   tipOnMobile: 'SHOW_TIP',
 };
+
 const rightI: TUInputP = {
   ...defaultI,
   value: 'abc',
   wasSubmitted: true,
 };
+
 const wrongI: TUInputP = {
   ...defaultI,
   value: 'ab',
   wasSubmitted: true,
 };
+
 const invalidI: TUInputP = {
   ...defaultI,
   validationError: 'Required field',

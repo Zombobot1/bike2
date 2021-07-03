@@ -1,4 +1,4 @@
-import { COLORS } from '../../../config';
+import { COLORS } from '../../../theme';
 
 export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY';
 const WEIGHTS: { [K in CardEstimation]: number } = {

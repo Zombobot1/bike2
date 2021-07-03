@@ -1,24 +1,29 @@
+import { styled, Typography } from '@material-ui/core';
 import React from 'react';
-import { ReactComponent as Ok } from '../../icons/bi-check.svg';
-import { ReactComponent as NotOk } from '../../icons/bi-exclamation-circle.svg';
 import { Validity } from '../types';
+import CloseIcon from '@material-ui/icons/Close';
+import CheckIcon from '@material-ui/icons/Check';
 
 export interface InteractiveQuestionP {
   question: string;
-  id?: string;
   status: Validity;
 }
 
-export function InteractiveQuestion({ id, question, status }: InteractiveQuestionP) {
+const Question = styled(Typography)({
+  fontSize: 25,
+  marginBottom: 10,
+});
+
+export function InteractiveQuestion({ question, status }: InteractiveQuestionP) {
   if (!question) return null;
 
+  const sx = { marginBottom: 0.6, marginRight: 0.6 };
+
   return (
-    <div className="interactive-question">
-      <label className="form-label" htmlFor={id ?? ''}>
-        {status === 'VALID' && <Ok />}
-        {status === 'INVALID' && <NotOk />}
-        {question}
-      </label>
-    </div>
+    <Question>
+      {status === 'VALID' && <CheckIcon color="success" sx={sx} />}
+      {status === 'INVALID' && <CloseIcon color="error" sx={sx} />}
+      {question}
+    </Question>
   );
 }
