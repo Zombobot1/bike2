@@ -1,85 +1,146 @@
-import { ReactComponent as Dots } from '../../../icons/three-dots-icon.svg';
-import { ReactComponent as MarkI } from '../../../icons/patch-exclamation.svg';
-import { ReactComponent as EditI } from '../../../icons/pen.svg';
-import { ReactComponent as StopTimerI } from '../../../icons/hourglass.svg';
-import { ReactComponent as TrashI } from '../../../icons/bi-trash.svg';
-import React, { memo } from 'react';
-import { AcceptanceModal } from '../../../utils/modal';
-import { Fn } from '../../../../utils/types';
+import { BoolStateT, Fn } from '../../../../utils/types';
 import { useTrainingTimer } from '../training-timer/training-timer';
+import React, { MouseEvent, useState, memo } from 'react';
+import {
+  IconButton,
+  MenuItem,
+  Menu,
+  ListItemIcon,
+  ListItemText,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from '@material-ui/core';
+import TimerOffIcon from '@material-ui/icons/TimerOff';
+import DeleteIcon from '@material-ui/icons/Delete';
+import SettingsIcon from '@material-ui/icons/Settings';
 
-const DELETE_CARD_MODAL_ID = 'delete-card';
+interface AlertDialogP {
+  isOpenS: BoolStateT;
+  onAccept: Fn;
+  onClose: Fn;
+}
+
+function AlertDialog({ isOpenS, onAccept, onClose }: AlertDialogP) {
+  const [isOpen, setIsOpen] = isOpenS;
+
+  const handleClose = () => {
+    onClose();
+    setIsOpen(false);
+  };
+
+  const handleAccept = () => {
+    onAccept();
+    handleClose();
+  };
+
+  return (
+    <Dialog
+      open={isOpen}
+      onClose={handleClose}
+      aria-labelledby="alert-dialog-title"
+      aria-describedby="alert-dialog-description"
+    >
+      <DialogTitle id="alert-dialog-title">{'Accept dangerous action'}</DialogTitle>
+      <DialogContent>
+        <DialogContentText id="alert-dialog-description">Do you want to remove card?</DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button variant="contained" color="error" onClick={handleAccept} autoFocus>
+          Agree
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+}
 
 export interface TrainingSettingsP {
   deleteCard: Fn;
   cardId: string;
 }
 
-interface TrainingSettings_P extends TrainingSettingsP {
+export interface TrainingSettings_P extends TrainingSettingsP {
+  isTimerRunning: boolean;
   pauseTimer: Fn;
   resumeTimer: Fn;
-  isTimerRunning: boolean;
 }
 
-const TrainingSettings_ = ({ deleteCard, isTimerRunning, pauseTimer, resumeTimer }: TrainingSettings_P) => {
-  const CardDeleteModal = AcceptanceModal(DELETE_CARD_MODAL_ID, deleteCard, pauseTimer, resumeTimer);
+export function TrainingSettings_({ deleteCard, isTimerRunning, pauseTimer, resumeTimer }: TrainingSettings_P) {
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isMenuOpen = Boolean(anchorEl);
+  const handleMenuOpen = (event: MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+
+  const isAlertOpenS = useState(false);
+  const [_, setIsAlertOpen] = isAlertOpenS;
+
+  const deleteCardClick = () => {
+    handleMenuClose();
+    pauseTimer();
+    setIsAlertOpen(true);
+  };
+
+  const stopTimer = () => {
+    handleMenuClose();
+    if (isTimerRunning) pauseTimer();
+    else resumeTimer();
+  };
+
   return (
     <>
-      <CardDeleteModal />
-      <div className="btn-group dropleft settings">
-        <Dots className="dropdown-toggle transparent-button three-dots-icon" data-bs-toggle="dropdown" />
-        <ul className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <li>
-            <span className="dropdown-item d-flex align-items-center">
-              <MarkI />
-              Mark
-            </span>
-          </li>
-          <li>
-            <span className="dropdown-item d-flex align-items-center">
-              <EditI />
-              Edit
-            </span>
-          </li>
-          <li>
-            <span
-              className="dropdown-item d-flex align-items-center"
-              onClick={isTimerRunning ? pauseTimer : resumeTimer}
-            >
-              <StopTimerI />
-              {isTimerRunning ? 'Stop' : 'Resume'} timer
-            </span>
-          </li>
-          <li>
-            <span
-              className="dropdown-item d-flex align-items-center"
-              data-bs-toggle="modal"
-              data-bs-target={`#${DELETE_CARD_MODAL_ID}`}
-            >
-              <TrashI />
-              Delete
-            </span>
-          </li>
-        </ul>
-      </div>
+      <IconButton
+        id="demo-positioned-button"
+        aria-controls="demo-positioned-menu"
+        aria-haspopup="true"
+        aria-expanded={isMenuOpen ? 'true' : undefined}
+        onClick={handleMenuOpen}
+      >
+        <SettingsIcon />
+      </IconButton>
+      <AlertDialog isOpenS={isAlertOpenS} onAccept={deleteCard} onClose={resumeTimer} />
+      <Menu
+        id="demo-positioned-menu"
+        aria-labelledby="demo-positioned-button"
+        anchorEl={anchorEl}
+        open={isMenuOpen}
+        onClose={handleMenuClose}
+        // sx={{ transform: 'translate(-130px, -80px)' }}
+      >
+        <MenuItem onClick={stopTimer}>
+          <ListItemIcon>
+            <TimerOffIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>{isTimerRunning ? 'Stop' : 'Resume'} timer</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={deleteCardClick}>
+          <ListItemIcon>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText>Delete card</ListItemText>
+        </MenuItem>
+      </Menu>
     </>
   );
-};
+}
 
 const TrainingSettingsMemoized = memo(
   function (props: TrainingSettings_P) {
     return <TrainingSettings_ {...props} />;
   },
-  (p, n) => p.cardId === n.cardId,
+  (p, n) => p.cardId === n.cardId && p.isTimerRunning === n.isTimerRunning,
 );
 
 export const TrainingSettings = ({ deleteCard, cardId }: TrainingSettingsP) => {
   const { pause, resume, isRunning } = useTrainingTimer();
   return (
     <TrainingSettingsMemoized
+      isTimerRunning={isRunning}
       pauseTimer={pause}
       resumeTimer={resume}
-      isTimerRunning={isRunning}
       deleteCard={deleteCard}
       cardId={cardId}
     />

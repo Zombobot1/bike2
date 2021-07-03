@@ -1,11 +1,12 @@
 import './training-timer.scss';
 import React, { useEffect, useState } from 'react';
-import { ReactComponent as TimerI } from '../../../icons/bi-clock-history.svg';
 import { useInterval } from '../../../utils/hooks/use-interval';
 import { fancyTimerTime } from '../../../../utils/formatting';
 import { Fn, fn } from '../../../../utils/types';
 import { atom, useAtom } from 'jotai';
 import { usePageVisibility } from '../../../../utils/hooks-utils';
+import TimerIcon from '@material-ui/icons/Timer';
+import { IconButton, styled } from '@material-ui/core';
 
 const timeToAnswerAtom = atom(0);
 const isRunningAtom = atom(true);
@@ -41,6 +42,16 @@ export const useTrainingTimer = () => {
   };
 };
 
+const TimerContainer = styled('span')({
+  position: 'relative',
+});
+
+const Time = styled('span')(({ theme }) => ({
+  position: 'absolute',
+  right: 1,
+  color: theme.palette.error.main,
+}));
+
 export const TrainingTimer = () => {
   const isPageVisible = usePageVisibility();
   const { timeToAnswer, setTimeToAnswer, isRunning, onTimeout } = useTrainingTimer_();
@@ -55,9 +66,11 @@ export const TrainingTimer = () => {
   }, [timeToAnswer]);
 
   return (
-    <div className="training-timer">
-      <TimerI />
-      <span className="text">{fancyTimerTime(timeToAnswer)}</span>
-    </div>
+    <TimerContainer sx={{ position: 'relative' }}>
+      <IconButton color={timeToAnswer > 5 ? 'default' : 'error'} disabled={!isRunning}>
+        <TimerIcon />
+      </IconButton>
+      <Time>{fancyTimerTime(timeToAnswer)}</Time>
+    </TimerContainer>
   );
 };

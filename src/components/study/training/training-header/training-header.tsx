@@ -1,22 +1,27 @@
 import './training-header.scss';
-import { COLORS } from '../../../../theme';
 import React from 'react';
-import { addS, fancyTime, percentage } from '../../../../utils/formatting';
-import { TrainingSettings, TrainingSettingsP } from '../training-controls/training-settings';
+import { addS, fancyTime } from '../../../../utils/formatting';
+import { LinearProgress, Stack, styled, Typography } from '@material-ui/core';
+import { useIsSM } from '../../../../utils/hooks-utils';
 
 export interface ProgressBarP {
-  className?: string;
   value: number;
-  color: string;
 }
 
-export const ProgressBar = ({ className, color, value }: ProgressBarP) => (
-  <div className={className + ' progress'}>
-    <div className="progress-bar" style={{ width: percentage(value), backgroundColor: color }} />
-  </div>
-);
+const Progress = styled(LinearProgress)({
+  height: 10,
+  borderRadius: 5,
+  marginRight: 10,
+  '& .MuiLinearProgress-bar': { borderRadius: 5 },
+});
 
-export interface TrainingHeaderP extends TrainingSettingsP {
+const ProgressBar = ({ value }: ProgressBarP) => {
+  const isSM = useIsSM();
+  const sx = { width: isSM ? 320 : 220, marginRight: 'auto' };
+  return <Progress value={value} sx={sx} variant="determinate" color="success" />;
+};
+
+export interface TrainingHeaderP {
   timeToFinish: number;
   cardsLength: number;
   currentCardIndex: number;
@@ -29,24 +34,18 @@ const cardsLeftInfo = (cardsLength: number, currentCardIndex: number, timeToFini
   return `${cardsLeft} ~ ${fancyTime(timeToFinish, true)}`;
 };
 
-export const TrainingHeader = ({
-  timeToFinish,
-  cardsLength,
-  currentCardIndex,
-  deleteCard,
-  cardId,
-}: TrainingHeaderP) => {
-  const progress = currentCardIndex / cardsLength;
+const CardsLeft = styled(Typography)(({ theme }) => ({
+  color: theme.palette.text.secondary,
+  fontSize: 14,
+}));
+
+export const TrainingHeader = ({ timeToFinish, cardsLength, currentCardIndex }: TrainingHeaderP) => {
+  const progress = (currentCardIndex / cardsLength) * 100;
 
   return (
-    <>
-      <div className="heading">
-        <div className="d-flex align-items-center progress-info">
-          <ProgressBar className="align-self-center me-2" value={progress} color={COLORS.tertiary} />
-          <span className="cards-left-info me-auto">{cardsLeftInfo(cardsLength, currentCardIndex, timeToFinish)}</span>
-          <TrainingSettings deleteCard={deleteCard} cardId={cardId} />
-        </div>
-      </div>
-    </>
+    <Stack direction="row" alignItems="center">
+      <ProgressBar value={progress} />
+      <CardsLeft>{cardsLeftInfo(cardsLength, currentCardIndex, timeToFinish)}</CardsLeft>
+    </Stack>
   );
 };

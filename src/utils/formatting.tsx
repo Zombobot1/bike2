@@ -51,13 +51,10 @@ export const fancyTime = (secs: number, hoursOnly = false) => {
 
 const div = (num: number, denom: number) => Math.floor(num / denom);
 
-const format00 = (num: number) => (!div(num, 10) ? `0${num}` : `${num}`);
-
 export const fancyTimerTime = (secs_: number) => {
   const mins = div(secs_, 60);
   const secs = secs_ - mins * 60;
-  if (secs < 0 || mins < 0) return '00:00';
-  if (mins === 0) return `00:${format00(secs)}`;
-  if (mins > 99) return `99:99`;
-  return `${format00(mins)}:${format00(secs)}`;
+  if (mins > 0 || secs > 5) return '';
+  if (secs < 0 || mins < 0) return '0';
+  return '' + secs;
 };

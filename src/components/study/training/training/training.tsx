@@ -33,13 +33,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
 
   return (
     <div className="d-flex flex-column training">
-      <TrainingHeader
-        timeToFinish={timeToFinish}
-        deleteCard={onDeleteCard}
-        cardId={cards[currentCardIndex]?.dto._id || ''}
-        currentCardIndex={currentCardIndex}
-        cardsLength={cards.length}
-      />
+      <TrainingHeader timeToFinish={timeToFinish} currentCardIndex={currentCardIndex} cardsLength={cards.length} />
       <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
       <TrainingControls
         cardType={cards[currentCardIndex]?.dto.type || 'PASSIVE'}
@@ -47,6 +41,8 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
         showHiddenFields={showHiddenFields}
         areFieldsHidden={areFieldsHidden}
         currentCardIndex={currentCardIndex}
+        deleteCard={onDeleteCard}
+        cardId={cards[currentCardIndex]?.dto._id || ''}
       />
     </div>
   );

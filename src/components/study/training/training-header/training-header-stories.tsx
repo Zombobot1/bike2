@@ -1,9 +1,6 @@
 import { useEffectedState } from '../../../../utils/hooks-utils';
-import React, { useState } from 'react';
+import React from 'react';
 import { TrainingHeader } from './training-header';
-import { fn } from '../../../../utils/types';
-import { useMedia } from '../../../utils/hooks/use-media';
-import { SM } from '../../../../theme';
 
 export interface TrainingHeaderTP {
   oneCardTimeToAnswer: number;
@@ -19,34 +16,19 @@ export const TrainingHeaderT = ({
   showMore = true,
 }: TrainingHeaderTP) => {
   const [cci, setCci] = useEffectedState(currentCardIndex);
-  const [wasDeleted, setWasDeleted] = useState(false);
   const ttf = (cardsLength - cci) * oneCardTimeToAnswer;
 
   if (!showMore) {
     return (
       <div className="d-flex flex-column" style={{ width: '500px' }}>
-        <TrainingHeader
-          cardId={'1'}
-          deleteCard={fn}
-          timeToFinish={ttf}
-          cardsLength={cardsLength}
-          currentCardIndex={cci}
-        />
+        <TrainingHeader timeToFinish={ttf} cardsLength={cardsLength} currentCardIndex={cci} />
       </div>
     );
   }
 
-  const isMobile = useMedia([SM], [true], false);
-
   return (
-    <div className="d-flex flex-column" style={{ width: isMobile ? '380px' : '500px' }}>
-      <TrainingHeader
-        cardId={'1'}
-        deleteCard={() => setWasDeleted(true)}
-        timeToFinish={ttf}
-        cardsLength={cardsLength}
-        currentCardIndex={cci}
-      />
+    <div className="d-flex flex-column" style={{ width: '500px' }}>
+      <TrainingHeader timeToFinish={ttf} cardsLength={cardsLength} currentCardIndex={cci} />
       <hr className="w-25 mt-3 mb-2 align-self-center" />
       <label htmlFor="customRange3" className="form-label">
         Current index
@@ -61,7 +43,6 @@ export const TrainingHeaderT = ({
         value={cci}
         onChange={(e) => setCci(+e.target.value)}
       />
-      {wasDeleted && <h3 className="text-danger">Deleted card</h3>}
     </div>
   );
 };
@@ -84,10 +65,6 @@ const atEndA: TrainingHeaderTP = {
   currentCardIndex: 9,
 };
 
-const canDeleteCardA: TrainingHeaderTP = {
-  ...atStartA,
-};
-
 const longestCardsLeftInfo: TrainingHeaderTP = {
   ...atStartA,
   cardsLength: 99,
@@ -98,6 +75,5 @@ export const STrainingHeader = {
   OriginalHeader: () => <TrainingHeaderT {...originalHeaderA} />,
   AtStart: () => <TrainingHeaderT {...atStartA} />,
   AtEnd: () => <TrainingHeaderT {...atEndA} />,
-  CanDeleteCard: () => <TrainingHeaderT {...canDeleteCardA} />,
   LongestCardsLeftInfo: () => <TrainingHeaderT {...longestCardsLeftInfo} />,
 };

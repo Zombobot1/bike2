@@ -4,10 +4,10 @@ import { STrainingHeader } from '../components/study/training/training-header/tr
 import { storify } from './utils';
 import { STrainingControls } from '../components/study/training/training-controls/training-controls-stories';
 import { SField } from '../components/study/training/qa-card/field/field-stories';
-import { SModal } from '../components/utils/modal-stories';
 import { SUFormHook } from '../components/uform/uform-stories';
 import { SUInputElement, SUChecksElement } from '../components/uform/ufields/ufields-stories';
 import { SControls } from '../components/utils/controls-s';
+import { STrainingTimer } from '../components/study/training/training-timer/trainingTimerStories';
 
 export const sories = [
   {
@@ -15,9 +15,10 @@ export const sories = [
     components: [
       storify({ STraining }),
       storify({ STrainingHeader }),
-      storify({ STrainingControls }),
       storify({ SQACard }),
       storify({ SField }),
+      storify({ STrainingControls }),
+      storify({ STrainingTimer }),
     ],
   },
   {
@@ -26,6 +27,6 @@ export const sories = [
   },
   {
     name: 'Utils',
-    components: [storify({ SModal }), storify({ SControls })],
+    components: [storify({ SControls })],
   },
 ];

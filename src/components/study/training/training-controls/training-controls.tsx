@@ -1,5 +1,5 @@
 import './training-controls.scss';
-import { sfp } from '../../../../utils/utils';
+import { IsSM, rstyled } from '../../../../utils/utils';
 import React, { useEffect, useState } from 'react';
 import { TrainingTimer, useTrainingTimer } from '../training-timer/training-timer';
 import { cardEstimationToNumber, CardType } from '../types';
@@ -8,23 +8,18 @@ import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
 import { useInteractiveSubmit } from '../hooks';
-import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@material-ui/core';
+import { Button, ButtonGroup, ButtonProps, Stack } from '@material-ui/core';
 import { useIsSM } from '../../../../utils/hooks-utils';
 import { Btn } from '../../../utils/controls';
+import { TrainingSettings } from './training-settings';
+import { TrainingSettingsP } from './training-settings';
 
-interface EstimationBtn extends ButtonProps {
-  isSM?: boolean;
-}
-
-const EstimationBtn = styled(
-  Button,
-  sfp('isSM'),
-)<EstimationBtn>(({ isSM, theme }) => ({
+const EstimationBtn = rstyled(Button)<ButtonProps & IsSM>(({ isSM, theme }) => ({
   width: isSM ? 85 : 65,
   color: theme.palette.common.white,
 }));
 
-export interface TrainingControlsP {
+export interface TrainingControlsP extends TrainingSettingsP {
   estimate: EstimateCard;
   areFieldsHidden: boolean;
   showHiddenFields: Fn;
@@ -95,6 +90,8 @@ export const TrainingControls = ({
   areFieldsHidden,
   showHiddenFields,
   currentCardIndex,
+  cardId,
+  deleteCard,
 }: TrainingControlsP) => {
   const { submit } = useUFormSubmit();
 
@@ -136,7 +133,7 @@ export const TrainingControls = ({
       {cardType === 'INTERACTIVE' && (
         <EstimateBtn sumbit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
       )}
-      <div style={{ height: '5px', minWidth: '70px' }} />
+      <TrainingSettings cardId={cardId} deleteCard={deleteCard} />
     </Stack>
   );
 };

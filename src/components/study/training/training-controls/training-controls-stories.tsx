@@ -17,6 +17,7 @@ export const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: Train
   const [status, setStatus] = useState('');
 
   const [isTimeOut, setIsTimeOut] = useState(false);
+  const [wasDeleted, setWasDeleted] = useState(false);
   const { setTimeToAnswer, setOnTimeout } = useTrainingTimer();
 
   useMount(() => {
@@ -40,6 +41,7 @@ export const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: Train
       className="d-flex flex-column align-items-center pt-3 pb-3"
       style={{ width: '500px', backgroundColor: COLORS.light }}
     >
+      {wasDeleted && <h3 className="text-danger">Deleted card</h3>}
       {isTimeOut && (
         <button
           className="btn btn-outline-danger mb-3"
@@ -63,6 +65,8 @@ export const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: Train
         areFieldsHidden={areHidden}
         estimate={cardType === 'PASSIVE' ? estimatePassive : estimateInteractive}
         currentCardIndex={0}
+        deleteCard={() => setWasDeleted(true)}
+        cardId="1"
       />
     </div>
   );
@@ -87,7 +91,9 @@ const atTimeout: TrainingControlsTP = {
 };
 
 export const STrainingControls = {
-  PassiveCardControls: () => <TrainingControlsT {...passiveCardControls} />,
-  InteractiveCardControls: () => <TrainingControlsT {...interactiveCardControls} />,
-  AtTimeout: () => <TrainingControlsT {...atTimeout} />,
+  passiveCardControls: () => <TrainingControlsT {...passiveCardControls} />,
+  interactiveCardControls: () => <TrainingControlsT {...interactiveCardControls} />,
+  atTimeout: () => <TrainingControlsT {...atTimeout} />,
+  canDeleteCard: () => <TrainingControlsT {...passiveCardControls} />,
+  canPauseOrResumeTimer: () => <TrainingControlsT {...passiveCardControls} />,
 };
