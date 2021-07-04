@@ -4,7 +4,7 @@ import { useInterval } from '../../../utils/hooks/use-interval';
 import { fancyTimerTime } from '../../../../utils/formatting';
 import { Fn, fn } from '../../../../utils/types';
 import { atom, useAtom } from 'jotai';
-import { usePageVisibility } from '../../../../utils/hooks-utils';
+import { useIsPageVisible } from '../../../../utils/hooks-utils';
 import TimerIcon from '@material-ui/icons/Timer';
 import { IconButton, styled } from '@material-ui/core';
 
@@ -53,7 +53,7 @@ const Time = styled('span')(({ theme }) => ({
 }));
 
 export const TrainingTimer = () => {
-  const isPageVisible = usePageVisibility();
+  const isPageVisible = useIsPageVisible();
   const { timeToAnswer, setTimeToAnswer, isRunning, onTimeout } = useTrainingTimer_();
   const [delay, setDelay] = useState(1e3);
 

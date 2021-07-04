@@ -15,7 +15,7 @@ export const useRQState = useEffectedState;
 
 const isDocumentHidden = (): boolean => !document['hidden'];
 
-export const usePageVisibility = () => {
+export const useIsPageVisible = () => {
   const [isVisible, setIsVisible] = useState(isDocumentHidden());
   const onVisibilityChange = () => setIsVisible(isDocumentHidden());
 

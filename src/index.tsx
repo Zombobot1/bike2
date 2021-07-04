@@ -1,6 +1,6 @@
 import './sass/main.scss';
 import 'bootstrap';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
 
@@ -13,8 +13,10 @@ import { _ROOT, PAGES, STUDY } from './components/navigation/utils';
 
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { _SORYBOOK } from './sorybook/sorybook';
-import { ThemeProvider } from '@material-ui/core';
-import { theme } from './theme';
+import { Snackbar, ThemeProvider, Stack, Link } from '@material-ui/core';
+import MuiAlert, { AlertProps } from '@material-ui/core/Alert';
+import { COLORS, theme } from './theme';
+import { useIsPageVisible } from './utils/hooks-utils';
 
 let redirect = STUDY;
 
@@ -27,10 +29,67 @@ if (process.env.NODE_ENV === 'development') {
 
 const queryClient = new QueryClient();
 
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
+
+function SWController() {
+  const [showReload, setShowReload] = useState(false);
+  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+
+  const onSWUpdate = (registration: ServiceWorkerRegistration) => {
+    setShowReload(true);
+    setWaitingWorker(registration.waiting);
+  };
+
+  useEffect(() => {
+    serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
+  }, []);
+
+  const isVisible = useIsPageVisible();
+
+  useEffect(() => {
+    if (isVisible)
+      navigator.serviceWorker
+        .getRegistrations()
+        .then((regs) => regs.forEach((reg) => reg.update().catch(console.error)));
+  }, [isVisible]);
+
+  const reloadPage = () => {
+    waitingWorker?.postMessage({ type: 'SKIP_WAITING' });
+    setShowReload(false);
+    window.location.reload();
+  };
+
+  return (
+    <Snackbar open={showReload} onClick={reloadPage} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      <Alert severity="info">
+        <Stack direction="row" alignItems="center">
+          A new version is available!
+          <Link
+            component="a"
+            color={COLORS.white}
+            onClick={reloadPage}
+            sx={{
+              marginLeft: 2,
+              ':hover': {
+                cursor: 'pointer',
+                color: COLORS.white,
+              },
+            }}
+          >
+            Reload
+          </Link>
+        </Stack>
+      </Alert>
+    </Snackbar>
+  );
+}
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <Router>
+        <SWController />
         <QueryClientProvider client={queryClient}>
           {/*<ReactQueryDevtools />*/}
           <Switch>
@@ -43,5 +102,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root'),
 );
-
-serviceWorkerRegistration.register();
