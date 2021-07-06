@@ -1,6 +1,11 @@
 @import "../../../../sass/config";
 @import "../../../../sass/common";
 
+hr {
+
+  @include xs { margin-bottom: 10px; }
+}
+
 .qa-card-container {
   position: relative;
   overflow: hidden;
@@ -8,33 +13,12 @@
   height: 100%;
   width: 100%;
 
-  border-radius: 25px; // container background color interference fix
+  border-radius: 25px;
   border: $border;
-
-  .estimation-bubble {
-    position: absolute;
-    top: 0;
-    left: 100%;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    transform: translate(-80%, -30%);
-
-    .estimation {
-      color: $white-color;
-      font-weight: bold;
-      font-size: 1.3em;
-      display: inline-block;
-      transform: translate(40px, 45px);
-    }
-  }
 
   .qa-card {
     height: 97%;
     width: 100%;
-
-    display: flex;
-    flex-direction: column;
 
     overflow-y: auto;
 
@@ -45,13 +29,7 @@
 
     background-color: $white-color;
 
-    hr {
-      min-height: 1px;
-      margin-bottom: 20px;
-      margin-top: 0;
-      opacity: 0.1;
-      @include xs { margin-bottom: 10px; }
-    }
+
   }
 
   .qa-card::before, .qa-card::after { // auto margins act like justify content center but with overflow support

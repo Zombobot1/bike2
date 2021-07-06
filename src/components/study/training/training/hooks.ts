@@ -101,7 +101,7 @@ export const usePagesPathUpdate = ({ _id, deckName }: TrainingDTO): OnLastCard =
   const { setPath, clearPath } = useUserPosition();
 
   useMount(() => {
-    setPath([{ id: _id, name: deckName }]);
+    setPath([{ name: deckName }]);
   });
 
   return () => {

@@ -1,4 +1,4 @@
-import { Fn, StateT } from './types';
+import { Fn, JSObject, StateT } from './types';
 import { useEffect, useState } from 'react';
 import { useMediaQuery, useTheme } from '@material-ui/core';
 
@@ -31,4 +31,10 @@ export const useIsPageVisible = () => {
 export function useIsSM() {
   const theme = useTheme();
   return useMediaQuery(theme.breakpoints.up('sm'));
+}
+
+export function useMQ(mobile: JSObject, desktop: JSObject) {
+  const isSM = useIsSM();
+  const [style] = useEffectedState(isSM ? desktop : mobile);
+  return style;
 }

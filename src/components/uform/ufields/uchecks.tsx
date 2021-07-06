@@ -7,13 +7,9 @@ import { Question } from '../../study/training/types';
 import { fn, Fn } from '../../../utils/types';
 import _ from 'lodash';
 import { InteractiveQuestion } from './interactive-question';
-import { Checkbox, FormControlLabel, Radio, RadioGroup, styled } from '@material-ui/core';
+import { Checkbox, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { ErrorText, SuccessText } from './feedback';
 import { useValidationColor } from './useValidationColor';
-
-const Div = styled('div')({
-  marginBottom: 20,
-});
 
 export interface USelectInputP {
   selectMultiple: boolean;
@@ -104,7 +100,7 @@ export const UChecksElement = ({
   }, [wasSubmitted]);
 
   return (
-    <Div>
+    <div>
       <InteractiveQuestion question={question} status={overallValidity} />
       <RadioGroup name={_id}>
         {options.map((o, i) => {
@@ -128,7 +124,7 @@ export const UChecksElement = ({
       {validationError && <ErrorText>{validationError}</ErrorText>}
       {wasSubmitted && _.difference(value, correctAnswer).length !== 0 && <ErrorText>{explanation}</ErrorText>}
       {wasSubmitted && !_.difference(value, correctAnswer).length && <SuccessText>{explanation}</SuccessText>}
-    </Div>
+    </div>
   );
 };
 

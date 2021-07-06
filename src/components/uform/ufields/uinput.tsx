@@ -8,12 +8,8 @@ import { usePresentationTransition } from '../../study/training/training/present
 import { useToggle } from '../../utils/hooks/use-toggle';
 import { InteractiveQuestion } from './interactive-question';
 import { ErrorText, SuccessText } from './feedback';
-import { styled, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import { useValidationColor } from './useValidationColor';
-
-const Form = styled('form')({
-  marginBottom: 20,
-});
 
 const useFocus = () => {
   const ref = useRef<HTMLInputElement>(null);
@@ -88,7 +84,7 @@ export const UInputElement = ({
   useMount(() => setTimeout(toggleTryFocus, 100));
 
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => e.preventDefault()}>
       <InteractiveQuestion question={question} status={validity} />
       <TextField
         fullWidth
@@ -108,7 +104,7 @@ export const UInputElement = ({
       {validationError && <ErrorText>{validationError}</ErrorText>}
       {!validationError && validity === 'INVALID' && <ErrorText>{explanation}</ErrorText>}
       {validity === 'VALID' && <SuccessText>{explanation}</SuccessText>}
-    </Form>
+    </form>
   );
 };
 

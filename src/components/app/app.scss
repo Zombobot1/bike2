@@ -1,12 +1,10 @@
 @import "../../sass/config";
 
 .content-area {
-  position: relative;
-  width: 100%;
   background-color: $bg-color;
   padding: 20px $content-padding 0 $content-padding-left;
 
   @include xs {
-    padding: 55px 0 0;
+    padding: 5px 10px 0 10px;
   }
 }

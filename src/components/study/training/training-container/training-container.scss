@@ -1,7 +1,8 @@
 @import "../../../../sass/config";
 
 .training-container {
-  height: 85vh;
+  //height: auto;
+  //height: 85vh;
 
-  @include xs { height: 91vh; }
+  //@include xs { height: 91vh; }
 }

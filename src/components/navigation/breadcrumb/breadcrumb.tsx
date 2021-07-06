@@ -1,45 +1,25 @@
 import './breadcrumb.scss';
 import { useRouter } from '../../utils/hooks/use-router';
-import React, { FC } from 'react';
-import { ReactComponent as Burger } from './burger.svg';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { Link as RouterLink } from 'react-router-dom';
 import { safeSplit } from '../../../utils/algorithms';
 import { useUserPosition } from './user-position-provider';
-import { iconForAppPage, STUDY, toAppPage } from '../utils';
+import { toAppPage } from '../utils';
+import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
+import { IconButton, Stack, Link, LinkProps, Breadcrumbs, Typography, useTheme } from '@material-ui/core';
+import { useIsSM } from '../../../utils/hooks-utils';
 
-export interface LinkP {
+export interface LinkName {
   name: string;
 }
 
-export interface IdLinkP extends LinkP {
-  id: string;
-}
-
-export const AppPageTextLink = ({ name }: LinkP) => {
-  const { clearPath } = useUserPosition();
-  return (
-    <Link to={toAppPage(name)} onClick={clearPath}>
-      {name}
-    </Link>
-  );
-};
-
-export interface AppPageIconLinkP {
+interface LinkRouter extends LinkProps {
   to: string;
-  Icon: FC;
-  className: string;
+  replace?: boolean;
 }
 
-export const AppPageIconLink = ({ to, Icon, className }: AppPageIconLinkP) => {
-  const { clearPath } = useUserPosition();
-  return (
-    <Link className={className} to={to} onClick={clearPath}>
-      <Icon />
-    </Link>
-  );
-};
-
-const TrainingLink = ({ id, name }: IdLinkP) => <Link to={`${STUDY}/${id}`}>{name}</Link>;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const LinkRouter = (props: LinkRouter) => <Link {...props} component={RouterLink as any} />;
 
 const pageName = (path: string) => {
   const parts = safeSplit(path, '/');
@@ -50,27 +30,34 @@ const pageName = (path: string) => {
 };
 
 const Breadcrumb = () => {
+  const isSM = useIsSM();
+  const theme = useTheme();
+
   const router = useRouter();
   const appPage = pageName(router.pathname);
-  const Icon = iconForAppPage(appPage);
   const { path } = useUserPosition();
+
+  const hasPath = safeSplit(router.pathname, '/').length > 2 && path.length;
+
   return (
-    <div className="d-flex breadcrumb-container">
-      <Burger className="transparent-button bi-burger" />
-      {Icon && <Icon />}
-      <nav aria-label="breadcrumb">
-        <ol className="breadcrumb">
-          <li className="breadcrumb-item">
-            <AppPageTextLink name={appPage} />
-          </li>
-          {path.map((e, i) => (
-            <li className="breadcrumb-item" key={i}>
-              <TrainingLink {...e} />
-            </li>
-          ))}
-        </ol>
-      </nav>
-    </div>
+    <Stack
+      direction="row"
+      alignItems="center"
+      sx={isSM ? undefined : { borderBottom: `solid 1px ${theme.palette.grey['300']}` }}
+    >
+      <IconButton color="primary">
+        <MenuRoundedIcon />
+      </IconButton>
+      <Breadcrumbs aria-label="breadcrumb">
+        {!hasPath && <Typography>{appPage}</Typography>}
+        {hasPath && (
+          <LinkRouter underline="hover" color="inherit" to={toAppPage(appPage)}>
+            {appPage}
+          </LinkRouter>
+        )}
+        {hasPath && <Typography>{path[0].name}</Typography>}
+      </Breadcrumbs>
+    </Stack>
   );
 };
 

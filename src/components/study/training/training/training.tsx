@@ -7,6 +7,7 @@ import { useCards, usePagesPathUpdate } from './hooks';
 import { TrainingConceptsInfoP } from '../../../cards/training-cards-info';
 import { CardCarousel } from './card-carousel';
 import { Fn } from '../../../../utils/types';
+import { Box } from '@material-ui/core';
 
 export interface TrainingDTO {
   _id: string;
@@ -32,7 +33,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
     useCards(dto._id, dto.cards, onLastCard);
 
   return (
-    <div className="d-flex flex-column training">
+    <Box sx={{ height: '100%', maxWidth: 500, width: '100%', paddingBottom: 1 }}>
       <TrainingHeader timeToFinish={timeToFinish} currentCardIndex={currentCardIndex} cardsLength={cards.length} />
       <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
       <TrainingControls
@@ -44,7 +45,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
         deleteCard={onDeleteCard}
         cardId={cards[currentCardIndex]?.dto._id || ''}
       />
-    </div>
+    </Box>
   );
 };
 

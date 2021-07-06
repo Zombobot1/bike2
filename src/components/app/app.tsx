@@ -6,23 +6,37 @@ import { buildRoutes, Routed } from '../utils/routing';
 import Breadcrumb from '../navigation/breadcrumb';
 import { getToken, UNotification } from '../../firebase';
 import { subscribeForNotifications } from '../../api/api';
-import { useMount } from '../../utils/hooks-utils';
+import { useMount, useMQ } from '../../utils/hooks-utils';
+import { Stack, styled } from '@material-ui/core';
+
+const AppContainer = styled(Stack)({
+  width: '100vw',
+  height: '100vh',
+});
+
+const Main = styled('main')({
+  flexGrow: 1,
+});
 
 const App = ({ routes }: Routed) => {
   const [n, sn] = useState<UNotification>({ body: '', title: '' });
-  useMount(() => getToken(sn).then(subscribeForNotifications).catch(console.error));
+  useMount(() => {
+    if (process.env.NODE_ENV !== 'development') getToken(sn).then(subscribeForNotifications).catch(console.error);
+  });
 
   useEffect(() => {
     if (n.title) window.alert(`title: ${n.title}, body: ${n.body}`);
   }, [n]);
 
+  const sx = useMQ({ padding: '5px 10px 0 10px' }, { padding: '20px' });
+
   return (
-    <>
+    <AppContainer>
       <Breadcrumb />
-      <main className="content-area">
+      <Main sx={sx}>
         <Switch>{routes?.map(buildRoutes)}</Switch>
-      </main>
-    </>
+      </Main>
+    </AppContainer>
   );
 };
 

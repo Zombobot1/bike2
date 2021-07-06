@@ -14,9 +14,9 @@ import {
   DialogContentText,
   DialogActions,
 } from '@material-ui/core';
-import TimerOffIcon from '@material-ui/icons/TimerOff';
-import DeleteIcon from '@material-ui/icons/Delete';
-import SettingsIcon from '@material-ui/icons/Settings';
+import TimerOffRoundedIcon from '@material-ui/icons/TimerOffRounded';
+import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded';
+import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
 
 interface AlertDialogP {
   isOpenS: BoolStateT;
@@ -99,7 +99,7 @@ export function TrainingSettings_({ deleteCard, isTimerRunning, pauseTimer, resu
         aria-expanded={isMenuOpen ? 'true' : undefined}
         onClick={handleMenuOpen}
       >
-        <SettingsIcon />
+        <SettingsRoundedIcon />
       </IconButton>
       <AlertDialog isOpenS={isAlertOpenS} onAccept={deleteCard} onClose={resumeTimer} />
       <Menu
@@ -112,13 +112,13 @@ export function TrainingSettings_({ deleteCard, isTimerRunning, pauseTimer, resu
       >
         <MenuItem onClick={stopTimer}>
           <ListItemIcon>
-            <TimerOffIcon fontSize="small" />
+            <TimerOffRoundedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>{isTimerRunning ? 'Stop' : 'Resume'} timer</ListItemText>
         </MenuItem>
         <MenuItem onClick={deleteCardClick}>
           <ListItemIcon>
-            <DeleteIcon fontSize="small" />
+            <DeleteRoundedIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText>Delete card</ListItemText>
         </MenuItem>

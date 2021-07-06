@@ -9,9 +9,5 @@ export const TrainingContainer = () => {
   const { query } = useRouter();
   const training = useTraining(query('id') || '1');
 
-  return (
-    <div className="d-flex justify-content-center align-items-center training-container">
-      <FetchedData Base={TrainingWrapper} {...training} />
-    </div>
-  );
+  return <FetchedData Base={TrainingWrapper} {...training} />;
 };

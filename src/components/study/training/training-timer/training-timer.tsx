@@ -5,7 +5,7 @@ import { fancyTimerTime } from '../../../../utils/formatting';
 import { Fn, fn } from '../../../../utils/types';
 import { atom, useAtom } from 'jotai';
 import { useIsPageVisible } from '../../../../utils/hooks-utils';
-import TimerIcon from '@material-ui/icons/Timer';
+import TimerRoundedIcon from '@material-ui/icons/TimerRounded';
 import { IconButton, styled } from '@material-ui/core';
 
 const timeToAnswerAtom = atom(0);
@@ -68,7 +68,7 @@ export const TrainingTimer = () => {
   return (
     <TimerContainer sx={{ position: 'relative' }}>
       <IconButton color={timeToAnswer > 5 ? 'default' : 'error'} disabled={!isRunning}>
-        <TimerIcon />
+        <TimerRoundedIcon />
       </IconButton>
       <Time>{fancyTimerTime(timeToAnswer)}</Time>
     </TimerContainer>

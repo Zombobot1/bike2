@@ -17,7 +17,7 @@ const Progress = styled(LinearProgress)({
 
 const ProgressBar = ({ value }: ProgressBarP) => {
   const isSM = useIsSM();
-  const sx = { width: isSM ? 320 : 220, marginRight: 'auto' };
+  const sx = { width: isSM ? 320 : 220, marginRight: 2 };
   return <Progress value={value} sx={sx} variant="determinate" color="success" />;
 };
 

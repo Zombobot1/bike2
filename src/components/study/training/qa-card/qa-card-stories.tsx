@@ -60,11 +60,11 @@ const interactiveAndPassiveA: QACardP = {
 };
 
 export const SQACard = {
-  Hidden: () => QACardT(hiddenA),
-  AllFieldsShown: () => QACardT(allFieldsShownA),
-  Estimated: () => QACardT(estimatedA),
-  Minimal: () => QACardT(minimalA),
-  MinimalHidden: () => QACardT(minimalHiddenA),
-  LongText: () => QACardT(longTextA),
-  InteractiveAndPassive: () => QACardT(interactiveAndPassiveA),
+  hidden: () => QACardT(hiddenA),
+  allFieldsShown: () => QACardT(allFieldsShownA),
+  estimated: () => QACardT(estimatedA),
+  minimal: () => QACardT(minimalA),
+  minimalHidden: () => QACardT(minimalHiddenA),
+  longText: () => QACardT(longTextA),
+  interactiveAndPassive: () => QACardT(interactiveAndPassiveA),
 };

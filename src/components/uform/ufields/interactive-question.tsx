@@ -1,8 +1,8 @@
 import { styled, Typography } from '@material-ui/core';
 import React from 'react';
 import { Validity } from '../types';
-import CloseIcon from '@material-ui/icons/Close';
-import CheckIcon from '@material-ui/icons/Check';
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
 
 export interface InteractiveQuestionP {
   question: string;
@@ -21,8 +21,8 @@ export function InteractiveQuestion({ question, status }: InteractiveQuestionP) 
 
   return (
     <Question>
-      {status === 'VALID' && <CheckIcon color="success" sx={sx} />}
-      {status === 'INVALID' && <CloseIcon color="error" sx={sx} />}
+      {status === 'VALID' && <CheckRoundedIcon color="success" sx={sx} />}
+      {status === 'INVALID' && <CloseRoundedIcon color="error" sx={sx} />}
       {question}
     </Question>
   );

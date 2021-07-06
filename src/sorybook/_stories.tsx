@@ -8,6 +8,7 @@ import { SUFormHook } from '../components/uform/uform-stories';
 import { SUInputElement, SUChecksElement } from '../components/uform/ufields/ufields-stories';
 import { SControls } from '../components/utils/controls-s';
 import { STrainingTimer } from '../components/study/training/training-timer/trainingTimerStories';
+import { SBreadcrumb } from '../components/navigation/breadcrumb/breadcrumb-t';
 
 export const sories = [
   {
@@ -27,6 +28,6 @@ export const sories = [
   },
   {
     name: 'Utils',
-    components: [storify({ SControls })],
+    components: [storify({ SControls }), storify({ SBreadcrumb })],
   },
 ];

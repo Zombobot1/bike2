@@ -6,7 +6,6 @@ import 'swiper/swiper.scss';
 import { atom, useAtom } from 'jotai';
 
 export interface PresentationP {
-  className: string;
   currentSlide: number;
   children: ReactNodeArray;
 }
@@ -23,7 +22,7 @@ export const usePresentationTransition = () => {
   return { isInTransition };
 };
 
-export const Presentation = ({ children, currentSlide, className }: PresentationP) => {
+export const Presentation = ({ children, currentSlide }: PresentationP) => {
   const { setIsInTransition } = usePresentationTransition_();
   const [swiper, setSwiper] = useState<SwiperClass>();
   const [isReady, setIsReady] = useState(false);
@@ -36,8 +35,9 @@ export const Presentation = ({ children, currentSlide, className }: Presentation
 
   return (
     <Swiper
+      slidesPerView="auto"
+      style={{ height: '100%', width: '100%' }}
       spaceBetween={15}
-      className={className}
       onSwiper={(s: SwiperClass) => {
         s.allowTouchMove = false;
         s.on('slideChangeTransitionStart', () => setIsInTransition(true));
