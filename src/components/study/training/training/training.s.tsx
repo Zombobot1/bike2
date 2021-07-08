@@ -6,7 +6,7 @@ import { trainings } from '../../../../content/content';
 import { useMedia } from '../../../utils/hooks/use-media';
 import { SM } from '../../../../theme';
 
-export const TrainingT = (args: TrainingDTO) => {
+const TrainingT = (args: TrainingDTO) => {
   const [isFinished, toggle] = useToggle(false);
   const isMobile = useMedia([SM], [true], false);
 
@@ -28,10 +28,8 @@ export const TrainingT = (args: TrainingDTO) => {
   );
 };
 
-export const STraining = {
-  simple: () => <TrainingT {...trainings.simple} />,
-  withUpdateFromServer: () => <TrainingT {...trainings.withUpdateFromServer} />,
-  interactive: () => <TrainingT {...trainings.interactive} />,
-  combined: () => <TrainingT {...trainings.combined} />,
-  autofocusCheck: () => <TrainingT {...trainings.autofocusCheck} />,
-};
+export const Simple = () => <TrainingT {...trainings.simple} />;
+export const WithUpdateFromServer = () => <TrainingT {...trainings.withUpdateFromServer} />;
+export const Interactive = () => <TrainingT {...trainings.interactive} />;
+export const Combined = () => <TrainingT {...trainings.combined} />;
+export const AutofocusCheck = () => <TrainingT {...trainings.autofocusCheck} />;

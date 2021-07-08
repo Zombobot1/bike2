@@ -10,9 +10,9 @@ import { EstimateCard } from '../training/hooks';
 import { useInteractiveSubmit } from '../hooks';
 import { Button, ButtonGroup, ButtonProps, Stack } from '@material-ui/core';
 import { useIsSM } from '../../../../utils/hooks-utils';
-import { Btn } from '../../../utils/controls';
 import { TrainingSettings } from './training-settings';
 import { TrainingSettingsP } from './training-settings';
+import { Btn } from '../../../utils/controls';
 
 const EstimationBtn = rstyled(Button)<ButtonProps & IsSM>(({ isSM, theme }) => ({
   width: isSM ? 85 : 65,

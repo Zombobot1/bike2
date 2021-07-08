@@ -10,7 +10,7 @@ import { useRouter } from '../components/utils/hooks/use-router';
 import { sories } from './_stories';
 import { useMedia } from '../components/utils/hooks/use-media';
 import { SM } from '../theme';
-import { ReactComponent as Burger } from '../components/navigation/breadcrumb/burger.svg';
+import { ReactComponent as Burger } from './burger.svg';
 import { safeSplit } from '../utils/algorithms';
 
 export const _SORYBOOK = '/_stories';

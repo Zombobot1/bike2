@@ -11,7 +11,7 @@ interface TrainingControlsTP {
   timeLeft: number;
 }
 
-export const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingControlsTP) => {
+const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingControlsTP) => {
   const [areHidden, setHidden] = useState(areFieldsHidden);
   const [estimation, setEstimation] = useState<CardEstimation | null>(null);
   const [status, setStatus] = useState('');
@@ -90,10 +90,8 @@ const atTimeout: TrainingControlsTP = {
   timeLeft: 1,
 };
 
-export const STrainingControls = {
-  passiveCardControls: () => <TrainingControlsT {...passiveCardControls} />,
-  interactiveCardControls: () => <TrainingControlsT {...interactiveCardControls} />,
-  atTimeout: () => <TrainingControlsT {...atTimeout} />,
-  canDeleteCard: () => <TrainingControlsT {...passiveCardControls} />,
-  canPauseOrResumeTimer: () => <TrainingControlsT {...passiveCardControls} />,
-};
+export const PassiveCardControls = () => <TrainingControlsT {...passiveCardControls} />;
+export const InteractiveCardControls = () => <TrainingControlsT {...interactiveCardControls} />;
+export const AtTimeout = () => <TrainingControlsT {...atTimeout} />;
+export const CanDeleteCard = () => <TrainingControlsT {...passiveCardControls} />;
+export const CanPauseOrResumeTimer = () => <TrainingControlsT {...passiveCardControls} />;

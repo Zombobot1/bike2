@@ -10,6 +10,7 @@ import { InteractiveQuestion } from './interactive-question';
 import { Checkbox, FormControlLabel, Radio, RadioGroup } from '@material-ui/core';
 import { ErrorText, SuccessText } from './feedback';
 import { useValidationColor } from './useValidationColor';
+import { shuffle } from '../../../utils/algorithms';
 
 export interface USelectInputP {
   selectMultiple: boolean;
@@ -134,6 +135,7 @@ export interface UChecksP extends Question {
   initialAnswer?: string[];
   selectMultiple?: boolean;
   submitOnSelect?: boolean;
+  shuffleOptions?: boolean;
 }
 
 export const UChecks = ({
@@ -146,7 +148,9 @@ export const UChecks = ({
   selectMultiple = false,
   onAnswer = fn,
   submitOnSelect = true,
+  shuffleOptions = false,
 }: UChecksP) => {
+  const [options_, setOptions] = useState(options);
   const { addField, getFieldInfo, removeField, onChange } = useUForm();
   const { validationError, value, wasSubmitted } = getFieldInfo(_id);
   const [canSubmit, setCanSubmit] = useState(false);
@@ -163,6 +167,7 @@ export const UChecks = ({
   }, [canSubmit]);
 
   useMount(() => {
+    if (shuffleOptions) setOptions(shuffle(options));
     addField(_id, correctAnswer, initialAnswer);
     return () => removeField(_id);
   });
@@ -174,7 +179,7 @@ export const UChecks = ({
       value={value}
       explanation={explanation}
       correctAnswer={correctAnswer}
-      options={options}
+      options={options_}
       question={question}
       validationError={validationError}
       wasSubmitted={wasSubmitted}

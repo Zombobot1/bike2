@@ -33,8 +33,9 @@ export function useIsSM() {
   return useMediaQuery(theme.breakpoints.up('sm'));
 }
 
-export function useMQ(mobile: JSObject, desktop: JSObject) {
+export function useMQ(desktop: JSObject, mobile: JSObject) {
   const isSM = useIsSM();
-  const [style] = useEffectedState(isSM ? desktop : mobile);
+  const [style, setStyle] = useState(desktop);
+  useEffect(() => setStyle(isSM ? desktop : mobile), [isSM]);
   return style;
 }

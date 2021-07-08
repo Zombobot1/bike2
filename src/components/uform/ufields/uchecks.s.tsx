@@ -1,8 +1,7 @@
 import { QuestionP, UChecksElement } from './uchecks';
-import { TipOnMobile, UInputElement } from './uinput';
 import React, { useState } from 'react';
 
-export interface TUChecksP extends QuestionP {
+interface TUChecksP extends QuestionP {
   _id: string;
   wasSubmitted: boolean;
   value: string[];
@@ -10,7 +9,7 @@ export interface TUChecksP extends QuestionP {
   selectMultiple: boolean;
 }
 
-export const TUChecks = ({
+const TUChecks = ({
   _id,
   question,
   options,
@@ -106,89 +105,9 @@ const wrongMultiple: TUChecksP = {
   selectMultiple: true,
 };
 
-export const SUChecksElement = {
-  selectOne: () => <TUChecks {...selectOne} />,
-  selectMany: () => <TUChecks {...selectMany} />,
-  right: () => <TUChecks {...right} />,
-  wrong: () => <TUChecks {...wrong} />,
-  wrongMultiple: () => <TUChecks {...wrongMultiple} />,
-  invalid: () => <TUChecks {...invalid} />,
-};
-
-interface TUInputP {
-  _id: string;
-  question: string;
-  explanation: string;
-  value: string;
-  autoFocus: boolean;
-  wasSubmitted: boolean;
-  correctAnswer: string;
-  validationError: string;
-  tipOnMobile: TipOnMobile;
-}
-
-export const TUInput = ({
-  _id,
-  question,
-  correctAnswer,
-  explanation,
-  value,
-  wasSubmitted,
-  validationError,
-  autoFocus,
-  tipOnMobile,
-}: TUInputP) => {
-  const [value_, setValue] = useState(value);
-  return (
-    <div className="bg-white p-3 w-50">
-      <UInputElement
-        _id={_id}
-        value={value_}
-        onChange={setValue}
-        question={question}
-        wasSubmitted={wasSubmitted}
-        explanation={explanation}
-        autoFocus={autoFocus}
-        validationError={validationError}
-        correctAnswer={correctAnswer}
-        tipOnMobile={tipOnMobile}
-      />
-    </div>
-  );
-};
-
-const defaultI: TUInputP = {
-  _id: 'defaultI',
-  question: 'Enter abc',
-  value: '',
-  autoFocus: false,
-  wasSubmitted: false,
-  correctAnswer: 'abc',
-  explanation: 'abc',
-  validationError: '',
-  tipOnMobile: 'SHOW_TIP',
-};
-
-const rightI: TUInputP = {
-  ...defaultI,
-  value: 'abc',
-  wasSubmitted: true,
-};
-
-const wrongI: TUInputP = {
-  ...defaultI,
-  value: 'ab',
-  wasSubmitted: true,
-};
-
-const invalidI: TUInputP = {
-  ...defaultI,
-  validationError: 'Required field',
-  wasSubmitted: false,
-};
-export const SUInputElement = {
-  Default: () => <TUInput {...defaultI} />,
-  Right: () => <TUInput {...rightI} />,
-  Wrong: () => <TUInput {...wrongI} />,
-  Invalid: () => <TUInput {...invalidI} />,
-};
+export const SelectOne = () => <TUChecks {...selectOne} />;
+export const SelectMany = () => <TUChecks {...selectMany} />;
+export const Right = () => <TUChecks {...right} />;
+export const Wrong = () => <TUChecks {...wrong} />;
+export const WrongMultiple = () => <TUChecks {...wrongMultiple} />;
+export const Invalid = () => <TUChecks {...invalid} />;

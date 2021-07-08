@@ -57,14 +57,14 @@ const useSubmissionsInfo = () => {
   return { info, onSubmit };
 };
 
-export type TUFormP = {
+type TUFormP = {
   questions: UQuestions;
   isExtensible: boolean;
   submitOneByOne: boolean;
   submitOnSelect: boolean;
 };
 
-export const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUFormP) => {
+const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUFormP) => {
   const { inputs, add, remove, addAndRemove, nextQuestion } = useQuestions(questions, submitOneByOne);
   const { info, onSubmit } = useSubmissionsInfo();
   const handleSubmit = !submitOneByOne
@@ -223,13 +223,11 @@ const composite: TUFormP = {
   submitOnSelect: false,
 };
 
-export const SUFormHook = {
-  doNotSubmitIfEmpty: () => <TUForm {...doNotSubmitIfEmpty} />,
-  checkAnswersOnSubmission: () => <TUForm {...checkAnswersOnSubmission} />,
-  noDataRaceOnAddRemove: () => <TUForm {...noDataRaceOnAddRemove} />,
-  readOnlyAfterSubmit: () => <TUForm {...readOnlyAfterSubmit} />,
-  sequentialSubmit: () => <TUForm {...sequentialSubmit} />,
-  canContainSameQuestions: () => <TUForm {...canContainSameQuestions} />,
-  composite: () => <TUForm {...composite} />,
-  autoSubmitForUInputAndSelectOne: () => <TUForm {...autoSubmitForUInputAndSelectOne} />,
-};
+export const DoNotSubmitIfEmpty = () => <TUForm {...doNotSubmitIfEmpty} />;
+export const CheckAnswersOnSubmission = () => <TUForm {...checkAnswersOnSubmission} />;
+export const NoDataRaceOnAddRemove = () => <TUForm {...noDataRaceOnAddRemove} />;
+export const ReadOnlyAfterSubmit = () => <TUForm {...readOnlyAfterSubmit} />;
+export const SequentialSubmit = () => <TUForm {...sequentialSubmit} />;
+export const CanContainSameQuestions = () => <TUForm {...canContainSameQuestions} />;
+export const Composite = () => <TUForm {...composite} />;
+export const AutoSubmitForUInputAndSelectOne = () => <TUForm {...autoSubmitForUInputAndSelectOne} />;

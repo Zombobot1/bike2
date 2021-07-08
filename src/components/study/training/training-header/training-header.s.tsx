@@ -2,19 +2,14 @@ import { useEffectedState } from '../../../../utils/hooks-utils';
 import React from 'react';
 import { TrainingHeader } from './training-header';
 
-export interface TrainingHeaderTP {
+interface TrainingHeaderTP {
   oneCardTimeToAnswer: number;
   cardsLength: number;
   currentCardIndex: number;
   showMore?: boolean;
 }
 
-export const TrainingHeaderT = ({
-  cardsLength,
-  oneCardTimeToAnswer,
-  currentCardIndex,
-  showMore = true,
-}: TrainingHeaderTP) => {
+const TrainingHeaderT = ({ cardsLength, oneCardTimeToAnswer, currentCardIndex, showMore = true }: TrainingHeaderTP) => {
   const [cci, setCci] = useEffectedState(currentCardIndex);
   const ttf = (cardsLength - cci) * oneCardTimeToAnswer;
 
@@ -71,9 +66,7 @@ const longestCardsLeftInfo: TrainingHeaderTP = {
   oneCardTimeToAnswer: 70,
 };
 
-export const STrainingHeader = {
-  OriginalHeader: () => <TrainingHeaderT {...originalHeaderA} />,
-  AtStart: () => <TrainingHeaderT {...atStartA} />,
-  AtEnd: () => <TrainingHeaderT {...atEndA} />,
-  LongestCardsLeftInfo: () => <TrainingHeaderT {...longestCardsLeftInfo} />,
-};
+export const OriginalHeader = () => <TrainingHeaderT {...originalHeaderA} />;
+export const AtStart = () => <TrainingHeaderT {...atStartA} />;
+export const AtEnd = () => <TrainingHeaderT {...atEndA} />;
+export const LongestCardsLeftInfo = () => <TrainingHeaderT {...longestCardsLeftInfo} />;

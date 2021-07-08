@@ -1,13 +1,13 @@
 import './field.scss';
 import React, { useEffect, useState } from 'react';
 import { useIsSM, useMount } from '../../../../../utils/hooks-utils';
-import { RadioField } from './radio-field';
 import { FieldDTO } from '../../types';
 import { UInput } from '../../../../uform/ufields/uinput';
 import { useInteractiveSubmit } from '../../hooks';
 import { IconButton, styled, Stack } from '@material-ui/core';
 import PlayCircleRoundedIcon from '@material-ui/icons/PlayCircleRounded';
 import PauseCircleRoundedIcon from '@material-ui/icons/PauseCircleRounded';
+import { UChecks } from '../../../../uform/ufields/uchecks';
 
 export interface PlayerP {
   src: string;
@@ -97,7 +97,7 @@ export const Field = ({ _id, passiveData, interactiveData, type, isMediaActive, 
   } else if (interactiveData && isCurrent) {
     return (
       <>
-        {type === 'RADIO' && <RadioField _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
+        {type === 'RADIO' && <UChecks _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
         {type === 'INPUT' && <UInput _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
       </>
     );

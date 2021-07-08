@@ -1,33 +1,38 @@
-import { SQACard } from '../components/study/training/qa-card/qa-card-stories';
-import { STraining } from '../components/study/training/training/training-stories';
-import { STrainingHeader } from '../components/study/training/training-header/training-header-stories';
 import { storify } from './utils';
-import { STrainingControls } from '../components/study/training/training-controls/training-controls-stories';
-import { SField } from '../components/study/training/qa-card/field/field-stories';
-import { SUFormHook } from '../components/uform/uform-stories';
-import { SUInputElement, SUChecksElement } from '../components/uform/ufields/ufields-stories';
-import { SControls } from '../components/utils/controls-s';
-import { STrainingTimer } from '../components/study/training/training-timer/trainingTimerStories';
-import { SBreadcrumb } from '../components/navigation/breadcrumb/breadcrumb-t';
+import * as QACard from '../components/study/training/qa-card/qa-card-stories';
+import * as Training from '../components/study/training/training/training.s';
+import * as TrainingHeader from '../components/study/training/training-header/training-header.s';
+import * as TrainingControls from '../components/study/training/training-controls/training-controls.s';
+import * as UFormHook from '../components/uform/uform.s';
+import * as UChecksElement from '../components/uform/ufields/uchecks.s';
+import * as UInputElement from '../components/uform/ufields/uinput.s';
+import * as TrainingTimer from '../components/study/training/training-timer/trainingTimer.s';
+import * as Breadcrumb from '../components/navigation/breadcrumb/breadcrumb.s';
+import * as TrainingCard from '../components/study/training-card/trainingCard.s';
+import * as TrainingDeck from '../components/study/training-deck/TrainingDeck.s';
+import * as Trainings from '../components/study/Trainings.s';
+import * as FetchedData from '../components/utils/FetchedData.s';
 
 export const sories = [
   {
-    name: 'Training',
+    name: 'Trainings',
     components: [
-      storify({ STraining }),
-      storify({ STrainingHeader }),
-      storify({ SQACard }),
-      storify({ SField }),
-      storify({ STrainingControls }),
-      storify({ STrainingTimer }),
+      storify({ Trainings }),
+      storify({ TrainingDeck }),
+      storify({ TrainingCard }),
+      storify({ Training }),
+      storify({ TrainingHeader }),
+      storify({ QACard }),
+      storify({ TrainingControls }),
+      storify({ TrainingTimer }),
     ],
   },
   {
     name: 'UForm',
-    components: [storify({ SUFormHook }), storify({ SUChecksElement }), storify({ SUInputElement })],
+    components: [storify({ UFormHook }), storify({ UChecksElement }), storify({ UInputElement })],
   },
   {
     name: 'Utils',
-    components: [storify({ SControls }), storify({ SBreadcrumb })],
+    components: [storify({ FetchedData }), storify({ Breadcrumb })],
   },
 ];

@@ -1,37 +1,35 @@
-import Breadcrumb from './breadcrumb';
-import { Box } from '@material-ui/core';
+import { Breadcrumb } from './breadcrumb';
+import { Box, Button } from '@material-ui/core';
 import { COLORS } from '../../../theme';
 import { MemoryRouter, useHistory } from 'react-router-dom';
 import React from 'react';
-import { Btn } from '../../utils/controls';
 import { useUserPosition } from './user-position-provider';
 import { useMount } from '../../../utils/hooks-utils';
 
-function BreadcrumbT_() {
+function Template_() {
   const { setPath } = useUserPosition();
   useMount(() => setPath([{ name: 'Deck name' }]));
   const history = useHistory();
   return (
     <Box sx={{ maxWidth: 400, backgroundColor: COLORS.light, padding: 2 }}>
       <Breadcrumb />
-      <Btn
-        text="Go to deck"
+      <Button
         onClick={() => {
           history.push('/app/study/Deck name');
           setPath([{ name: 'Deck name' }]);
         }}
-      />
+      >
+        Go to deck
+      </Button>
     </Box>
   );
 }
 
-export const BreadcrumbT = () => (
+const Template = () => (
   <MemoryRouter initialEntries={['/app/study/Deck name']}>
-    <BreadcrumbT_ />
+    <Template_ />
   </MemoryRouter>
 );
 
-export const SBreadcrumb = {
-  goToDeck: () => <BreadcrumbT />,
-  goToStudy: () => <BreadcrumbT />,
-};
+export const GoToDeck = () => <Template />;
+export const GoToStudy = () => <Template />;

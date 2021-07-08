@@ -35,7 +35,7 @@ export const pcn = (main: string, ..._classes: any) => {
 export const rnd = (max: number) => Math.floor(Math.random() * max);
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export default function compose(...funcs: Function[]) {
+export function compose(...funcs: Function[]) {
   if (funcs.length === 0) return <T>(arg: T) => arg;
   if (funcs.length === 1) return funcs[0];
 
@@ -80,3 +80,5 @@ export const removeElement = <T>(arr: T[], index: number) => arr.filter((_e, i) 
 export const catchError = (e: any) => {
   throw new Error(e);
 };
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));

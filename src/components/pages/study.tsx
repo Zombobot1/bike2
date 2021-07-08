@@ -1,13 +1,13 @@
 import React from 'react';
-import RegularTrainings from '../study/regular-trainings';
-import { TrainingContainer } from '../study/training/training-container';
+import { Trainings } from '../study/regular-trainings/regular-trainings';
+import { TrainingWrapper } from '../study/training/training/training';
 
 export const Study = () => {
   return (
     <div className="study">
-      <RegularTrainings />
+      <Trainings />
     </div>
   );
 };
 
-export const StudyTraining = () => <TrainingContainer />;
+export const StudyTraining = () => <TrainingWrapper />;

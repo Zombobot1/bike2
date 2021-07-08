@@ -2,7 +2,7 @@ import { QACard, QACardP } from './qa-card';
 import React from 'react';
 import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../../content/content';
 
-export const QACardT = (args: QACardP) => (
+const QACardT = (args: QACardP) => (
   <div style={{ width: '500px', height: '715px' }}>
     <QACard {...args} />
   </div>
@@ -59,12 +59,10 @@ const interactiveAndPassiveA: QACardP = {
   fields: cardWithDifferentFields.fields,
 };
 
-export const SQACard = {
-  hidden: () => QACardT(hiddenA),
-  allFieldsShown: () => QACardT(allFieldsShownA),
-  estimated: () => QACardT(estimatedA),
-  minimal: () => QACardT(minimalA),
-  minimalHidden: () => QACardT(minimalHiddenA),
-  longText: () => QACardT(longTextA),
-  interactiveAndPassive: () => QACardT(interactiveAndPassiveA),
-};
+export const Hidden = () => QACardT(hiddenA);
+export const AllFieldsShown = () => QACardT(allFieldsShownA);
+export const Estimated = () => QACardT(estimatedA);
+export const Minimal = () => QACardT(minimalA);
+export const MinimalHidden = () => QACardT(minimalHiddenA);
+export const LongText = () => QACardT(longTextA);
+export const InteractiveAndPassive = () => QACardT(interactiveAndPassiveA);

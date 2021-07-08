@@ -3,12 +3,12 @@ import { COLORS } from '../../../../theme';
 import { useMount } from '../../../../utils/hooks-utils';
 import { TrainingTimer, useTrainingTimer } from './training-timer';
 
-interface TrainingTimerT {
+interface Template {
   isTimerRunning: boolean;
   initialTimeToAnswer: number;
 }
 
-function TrainingTimerT({ initialTimeToAnswer, isTimerRunning }: TrainingTimerT) {
+function Template({ initialTimeToAnswer, isTimerRunning }: Template) {
   const { setTimeToAnswer, pause, resume } = useTrainingTimer();
 
   useMount(() => {
@@ -24,29 +24,27 @@ function TrainingTimerT({ initialTimeToAnswer, isTimerRunning }: TrainingTimerT)
   );
 }
 
-const hasEnoughTime: TrainingTimerT = {
+const hasEnoughTime: Template = {
   isTimerRunning: true,
   initialTimeToAnswer: 99,
 };
 
-const lacksOfTime: TrainingTimerT = {
+const lacksOfTime: Template = {
   isTimerRunning: true,
   initialTimeToAnswer: 5,
 };
 
-const puased: TrainingTimerT = {
+const puased: Template = {
   isTimerRunning: false,
   initialTimeToAnswer: 50,
 };
 
-const lacksOfTimeAndPaused: TrainingTimerT = {
+const lacksOfTimeAndPaused: Template = {
   isTimerRunning: false,
   initialTimeToAnswer: 5,
 };
 
-export const STrainingTimer = {
-  hasEnoughTime: () => <TrainingTimerT {...hasEnoughTime} />,
-  lacksOfTime: () => <TrainingTimerT {...lacksOfTime} />,
-  puased: () => <TrainingTimerT {...puased} />,
-  lacksOfTimeAndPaused: () => <TrainingTimerT {...lacksOfTimeAndPaused} />,
-};
+export const HasEnoughTime = () => <Template {...hasEnoughTime} />;
+export const LacksOfTime = () => <Template {...lacksOfTime} />;
+export const Puased = () => <Template {...puased} />;
+export const LacksOfTimeAndPaused = () => <Template {...lacksOfTimeAndPaused} />;

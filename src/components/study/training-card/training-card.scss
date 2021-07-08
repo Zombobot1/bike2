@@ -1,5 +1,5 @@
 @import "../../../sass/common";
-@import "../common";
+@import "common";
 
 .training-card {
   @include mini-deck-card-base($dx: 5px, $dy: 0);

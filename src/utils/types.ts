@@ -28,4 +28,6 @@ export type NumStateT = StateT<number>;
 export type StrStateT = StateT<string>;
 export type BoolStateT = StateT<boolean>;
 
+export type SX = JSObject;
+
 // type R = Reducer<number, string>;

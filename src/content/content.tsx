@@ -1,7 +1,7 @@
 import { CardDTO, FieldDTO } from '../components/study/training/types';
 import hospital from './hospital.png';
 import hospitalMp3 from './hospital.mp3';
-import { TrainingDTO } from '../components/study/training/training';
+import { TrainingDTO } from '../components/study/training/training/training';
 import { TrainingsGroupDTO } from '../components/study/training/training/training';
 
 const question = `When do we use the definite article?`;

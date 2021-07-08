@@ -1,13 +1,5 @@
 import './training-container.scss';
-import React from 'react';
-import { TrainingWrapper } from '../training';
-import { useTraining } from '../../hooks';
-import { useRouter } from '../../../utils/hooks/use-router';
-import { FetchedData } from '../../../utils/hoc/fetched-data';
 
 export const TrainingContainer = () => {
-  const { query } = useRouter();
-  const training = useTraining(query('id') || '1');
-
-  return <FetchedData Base={TrainingWrapper} {...training} />;
+  return null;
 };

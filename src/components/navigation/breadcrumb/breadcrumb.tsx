@@ -5,8 +5,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { safeSplit } from '../../../utils/algorithms';
 import { useUserPosition } from './user-position-provider';
 import { toAppPage } from '../utils';
-import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
-import { IconButton, Stack, Link, LinkProps, Breadcrumbs, Typography, useTheme } from '@material-ui/core';
+import { Link, LinkProps, Breadcrumbs, Typography, useTheme } from '@material-ui/core';
 import { useIsSM } from '../../../utils/hooks-utils';
 
 export interface LinkName {
@@ -29,7 +28,7 @@ const pageName = (path: string) => {
   return root[0].toUpperCase() + root.slice(1);
 };
 
-const Breadcrumb = () => {
+export const Breadcrumb = () => {
   const isSM = useIsSM();
   const theme = useTheme();
 
@@ -40,14 +39,10 @@ const Breadcrumb = () => {
   const hasPath = safeSplit(router.pathname, '/').length > 2 && path.length;
 
   return (
-    <Stack
-      direction="row"
-      alignItems="center"
-      sx={isSM ? undefined : { borderBottom: `solid 1px ${theme.palette.grey['300']}` }}
-    >
-      <IconButton color="primary">
-        <MenuRoundedIcon />
-      </IconButton>
+    <div style={isSM ? undefined : { borderBottom: `solid 1px ${theme.palette.grey['300']}` }}>
+      {/*<IconButton color="primary">*/}
+      {/*  <MenuRoundedIcon />*/}
+      {/*</IconButton>*/}
       <Breadcrumbs aria-label="breadcrumb">
         {!hasPath && <Typography>{appPage}</Typography>}
         {hasPath && (
@@ -57,8 +52,6 @@ const Breadcrumb = () => {
         )}
         {hasPath && <Typography>{path[0].name}</Typography>}
       </Breadcrumbs>
-    </Stack>
+    </div>
   );
 };
-
-export default Breadcrumb;
