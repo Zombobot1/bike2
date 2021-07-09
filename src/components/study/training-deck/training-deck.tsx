@@ -10,7 +10,7 @@ export interface NamedDeck {
   deckName: string;
 }
 
-const Card = styled('div')(({ theme }) => ({
+const Card = styled('div', { label: 'TrainingDeck' })(({ theme }) => ({
   padding: '12px 16px 20px 16px',
   backgroundColor: theme.palette.common.white,
   border: `0.5px solid ${theme.palette.grey['200']}`,

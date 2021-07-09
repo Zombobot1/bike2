@@ -3,7 +3,7 @@ import React from 'react';
 import { FetchData } from '../../utils/fetched-data';
 import { useTrainings } from '../hooks';
 import { TrainingDeck } from '../training-deck/training-deck';
-import { styled } from '@material-ui/core';
+import { styled, Typography } from '@material-ui/core';
 
 import Masonry from 'react-masonry-css';
 import { useIsSM } from '../../../utils/hooks-utils';
@@ -14,6 +14,7 @@ const TrainingsMasonry = styled(Masonry)({
   // width: 'auto',
 
   '.my-masonry-grid_column': {
+    marginRight: '20px',
     paddingLeft: '20px' /* gutter size */,
     backgroundClip: 'padding-box',
   },
@@ -26,11 +27,6 @@ const Trainings_ = () => {
   const columns = isSM ? 4 : 1;
 
   return (
-    // <>
-    //   {data?.map((e, j) => (
-    //     <TrainingDeck {...e} key={j} />
-    //   ))}
-    // </>
     <TrainingsMasonry
       breakpointCols={columns}
       className="my-masonry-grid"
@@ -48,7 +44,9 @@ const Trainings_ = () => {
 export function Trainings() {
   return (
     <div>
-      <h2 className="page-header">Regular trainings</h2>
+      <Typography fontSize="large" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+        Regular trainings
+      </Typography>
       <FetchData>
         <Trainings_ />
       </FetchData>

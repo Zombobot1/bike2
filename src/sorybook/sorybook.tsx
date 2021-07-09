@@ -1,4 +1,4 @@
-import './sorybook.scss';
+import './sorybook.css';
 import { atom, useAtom } from 'jotai';
 import { useToggle } from '../components/utils/hooks/use-toggle';
 import { sslugify } from '../utils/sslugify';
@@ -39,16 +39,28 @@ interface TreeP {
 }
 type TreePs = TreeP[];
 
+function containsId(path: string, id?: string) {
+  if (!id) return false;
+
+  const _id = id?.split('--');
+  const _path = path.replace('/_stories/', '').split('--');
+  let result = true;
+  _id.forEach((p, i) => {
+    if (p !== _path[i]) result = false;
+  });
+  return result;
+}
+
 const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }: TreeP) => {
   const { history, location } = useRouter();
-  const [isOpen, toggleOpen] = useToggle(id ? location.pathname.includes(id) : false);
+
+  const _isOpen = containsId(location.pathname, id);
+  const [isOpen, toggleOpen] = useToggle(_isOpen);
 
   const { activeNodeId, setActiveStory } = useActiveStory();
   useEffect(() => {
     if (activeNodeId === id && story) setActiveStory(story);
   }, [activeNodeId]);
-
-  const collapseId = sslugify(`${label}-${id}`);
 
   if (!nodes) {
     const cns = cn('leaf', { 'leaf--active': activeNodeId === id });
@@ -58,22 +70,15 @@ const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }
       </li>
     );
   }
-  const cns = cn('collapse', { show: isOpen });
+
   return (
     <div className={'tree-node ' + (nodeClassName ?? '')}>
-      <li
-        className={'node ' + (nodeLabelClassName ?? '')}
-        data-bs-toggle="collapse"
-        data-bs-target={`#${collapseId}`}
-        aria-expanded="false"
-        aria-controls="collapseExample"
-        onClick={toggleOpen}
-      >
+      <li className={'node ' + (nodeLabelClassName ?? '')} onClick={toggleOpen}>
         {isOpen && <IDown />}
         {!isOpen && <IRight />}
         {label}
       </li>
-      <ul className={cns} id={collapseId}>
+      <ul className="collapse" style={{ display: isOpen ? 'block' : 'none' }}>
         {nodes.map((l) => (
           <TreeNode key={l.label} {...l} id={`${id}--${sslugify(l.label)}`} />
         ))}
@@ -84,8 +89,8 @@ const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }
 
 const Tree = (tree: TreeP) => {
   return (
-    <ul className="tree">
-      <h5>{tree.label}</h5>
+    <ul className="sorybook__tree">
+      <h4>{tree.label}</h4>
       {tree.nodes?.map((n) => (
         <TreeNode
           key={n.label}
@@ -132,31 +137,45 @@ function useCasesToTree(rootLabel: string, useCases: UseCases): TreeP {
     nodes: useCases.map((uc) => ({ label: uc.name, nodes: componentsToNodes(uc.components) })),
   };
 }
+const offcanvasA = atom(false);
+
+function useOffCanvas() {
+  const [isOpen, setIsOpen] = useAtom(offcanvasA);
+  const open = () => setIsOpen(true);
+  const close = () => setIsOpen(false);
+
+  return { isOpen, open, close };
+}
 
 const BreadCrumb = () => {
+  const { open } = useOffCanvas();
+
   const { activeNodeId } = useActiveStory();
   const story = safeSplit(activeNodeId, '--').slice(-1)[0];
 
   return (
-    <div className="d-flex justify-content-between align-items-center sorybook__breadcrumb">
-      <button className="btn shadow-none" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample">
+    <div className="sorybook__breadcrumb">
+      <button className="btn shadow-none" onClick={open}>
         <Burger />
       </button>
-      <h5 className="mb-0">{story ? capitalizeFirstLetter(story) : ''}</h5>
+      <h5>{story ? capitalizeFirstLetter(story) : ''}</h5>
       <div style={{ width: '45px', height: '45px' }} />
     </div>
   );
 };
 
 function NavMobile(tree: TreeP) {
+  const { isOpen, close } = useOffCanvas();
+
   return (
-    <div className="offcanvas offcanvas-start" tabIndex={-1} id="offcanvasExample">
-      <div className="offcanvas-body">
+    <>
+      <div className="offcanvas" style={isOpen ? { width: '230px' } : { width: '0' }}>
         <div className="sorybook__nav">
           <Tree {...tree} />
         </div>
       </div>
-    </div>
+      <div className="backdrop" style={isOpen ? { width: '100vw' } : { width: '0' }} onClick={close} />
+    </>
   );
 }
 
@@ -182,7 +201,7 @@ function Nav(tree: TreeP) {
 function Pane() {
   const { ActiveStory } = useActiveStory();
   return (
-    <div className="w-100 h-100 pane">
+    <div className="sorybook__pane">
       <ActiveStory />
     </div>
   );

@@ -17,7 +17,7 @@ export interface TrainingConceptInfo {
   trainingConceptsInfo: TrainingConceptsInfoP;
 }
 
-const Card = styled('div')(({ theme }) => ({
+const Card = styled('div', { label: 'TrainingCard' })(({ theme }) => ({
   width: '100%',
   minWidth: 270,
   height: 90,

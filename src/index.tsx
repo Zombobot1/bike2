@@ -1,9 +1,5 @@
-import './sass/main.scss';
-import 'bootstrap';
 import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
-
-import './components/icons/icons.scss';
 
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { startWorker } from './api/fake-api';
@@ -11,14 +7,13 @@ import { _ROOT, PAGES, STUDY } from './components/navigation/utils';
 
 import * as serviceWorkerRegistration from './serviceWorkerRegistration';
 import { _SORYBOOK } from './sorybook/sorybook';
-import { Snackbar, ThemeProvider, Stack, Link, IconButton, Typography, createTheme } from '@material-ui/core';
+import { Snackbar, ThemeProvider, Stack, Link } from '@material-ui/core';
 import MuiAlert, { AlertProps } from '@material-ui/core/Alert';
 import { COLORS, theme } from './theme';
 import { useIsPageVisible } from './utils/hooks-utils';
-import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
-import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined';
 import { buildRoutes } from './components/utils/routing';
 import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
+import { Global, css } from '@emotion/react';
 
 let redirect = STUDY;
 
@@ -95,24 +90,27 @@ function SWController() {
   );
 }
 
-export const theme2 = createTheme({ typography: { fontSize: 16 } });
-
-const _P = () => {
+function GlobalCss() {
   return (
-    <ThemeProvider theme={theme2}>
-      <IconButton color="primary">
-        <MenuRoundedIcon />
-      </IconButton>
-      <Typography fontSize="small">
-        <RemoveRedEyeOutlinedIcon sx={{ width: 15, height: 15 }} />
-        {'234'}
-      </Typography>
-    </ThemeProvider>
+    <Global
+      styles={css`
+        body,
+        html {
+          margin: 0;
+          padding: 0;
+        }
+
+        * {
+          box-sizing: border-box;
+        }
+      `}
+    />
   );
-};
+}
 
 ReactDOM.render(
   <React.StrictMode>
+    <GlobalCss />
     <ThemeProvider theme={theme}>
       <Router>
         <SWController />
