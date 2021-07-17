@@ -3,8 +3,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { safeSplit } from '../../../utils/algorithms';
 import { useUserPosition } from './user-position-provider';
 import { toAppPage } from '../utils';
-import { Link, LinkProps, Breadcrumbs, Typography, useTheme } from '@material-ui/core';
+import { Link, LinkProps, Breadcrumbs, Typography, useTheme, IconButton, Stack } from '@material-ui/core';
 import { useIsSM } from '../../../utils/hooks-utils';
+import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 
 export interface LinkName {
   name: string;
@@ -37,10 +38,16 @@ export const Breadcrumb = () => {
   const hasPath = safeSplit(router.pathname, '/').length > 2 && path.length;
 
   return (
-    <div style={isSM ? undefined : { borderBottom: `solid 1px ${theme.palette.grey['300']}` }}>
-      {/*<IconButton color="primary">*/}
-      {/*  <MenuRoundedIcon />*/}
-      {/*</IconButton>*/}
+    <Stack
+      direction="row"
+      alignItems="center"
+      sx={isSM ? undefined : { borderBottom: `solid 1px ${theme.palette.grey['300']}` }}
+    >
+      {!isSM && (
+        <IconButton color="primary">
+          <MenuRoundedIcon />
+        </IconButton>
+      )}
       <Breadcrumbs aria-label="breadcrumb">
         {!hasPath && <Typography>{appPage}</Typography>}
         {hasPath && (
@@ -50,6 +57,6 @@ export const Breadcrumb = () => {
         )}
         {hasPath && <Typography>{path[0].name}</Typography>}
       </Breadcrumbs>
-    </div>
+    </Stack>
   );
 };

@@ -229,7 +229,7 @@ const basic: TrainingDTO = {
   _id: 'simple',
   deckColor: '#FF5151',
   deckName: 'Bayesian approach',
-  deckPath: 'Statistical methods / Lectures',
+  deckPath: 'Statistical methods ',
   trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
   cards: [uCardLong, uCardMinimal],
 };
@@ -278,7 +278,7 @@ const mathTrainings: TrainingDTO[] = [
     _id: '1',
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
+    deckPath: 'Statistical methods ',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -287,7 +287,7 @@ const mathTrainings: TrainingDTO[] = [
 
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
+    deckPath: 'Statistical methods ',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -296,7 +296,7 @@ const mathTrainings: TrainingDTO[] = [
 
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
+    deckPath: 'Statistical methods ',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -305,7 +305,7 @@ const mathTrainings: TrainingDTO[] = [
 
     deckColor: '#FF5151',
     deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods / Lectures',
+    deckPath: 'Statistical methods ',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -372,7 +372,7 @@ const englishTrainings: TrainingDTO[] = [
 
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
+    deckPath: 'Collocations',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -381,7 +381,7 @@ const englishTrainings: TrainingDTO[] = [
 
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
+    deckPath: 'Collocations',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -390,7 +390,7 @@ const englishTrainings: TrainingDTO[] = [
 
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
+    deckPath: 'Collocations',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -399,7 +399,7 @@ const englishTrainings: TrainingDTO[] = [
 
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
+    deckPath: 'Collocations',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
@@ -408,7 +408,7 @@ const englishTrainings: TrainingDTO[] = [
 
     deckColor: '#735CFC',
     deckName: 'Exersices 1-10',
-    deckPath: 'Nouns / Collocations',
+    deckPath: 'Collocations',
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },

@@ -32,7 +32,6 @@ const Trainings_ = () => {
       {data?.map((e, j) => (
         <TrainingDeck {...e} key={j} />
       ))}
-      {/*<div className="w-100 trainings-footer" />*/}
     </TrainingsMasonry>
   );
 };
