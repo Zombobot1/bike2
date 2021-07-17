@@ -1,5 +1,4 @@
 import { useEffectedState } from '../../../../utils/hooks-utils';
-import React from 'react';
 import { TrainingHeader } from './training-header';
 
 interface TrainingHeaderTP {

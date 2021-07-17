@@ -1,4 +1,4 @@
-import React, { useState, KeyboardEvent, useRef, useEffect } from 'react';
+import { useState, KeyboardEvent, useRef, useEffect } from 'react';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
 import { Validity } from '../types';

@@ -1,10 +1,8 @@
-import './training-deck.scss';
-import React from 'react';
-import { TrainingCard } from '../training-card/training-card';
-import { TrainingsGroupDTO } from '../training/training/training';
-import { chop } from '../utils';
+import { TrainingsGroupDTO } from '../../training/training/training';
+import { chop } from '../../utils';
 import { Typography, Stack, styled } from '@material-ui/core';
-import { useMQ } from '../../../utils/hooks-utils';
+import { useMQ } from '../../../../utils/hooks-utils';
+import { TrainingCard } from './training-card/training-card';
 
 export interface NamedDeck {
   deckName: string;

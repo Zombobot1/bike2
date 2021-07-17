@@ -1,6 +1,4 @@
-import './breadcrumb.scss';
 import { useRouter } from '../../utils/hooks/use-router';
-import React from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { safeSplit } from '../../../utils/algorithms';
 import { useUserPosition } from './user-position-provider';

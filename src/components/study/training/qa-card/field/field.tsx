@@ -1,10 +1,9 @@
-import './field.scss';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useIsSM, useMount } from '../../../../../utils/hooks-utils';
 import { FieldDTO } from '../../types';
 import { UInput } from '../../../../uform/ufields/uinput';
 import { useInteractiveSubmit } from '../../hooks';
-import { IconButton, styled, Stack } from '@material-ui/core';
+import { IconButton, styled, Stack, Typography } from '@material-ui/core';
 import PlayCircleRoundedIcon from '@material-ui/icons/PlayCircleRounded';
 import PauseCircleRoundedIcon from '@material-ui/icons/PauseCircleRounded';
 import { UChecks } from '../../../../uform/ufields/uchecks';
@@ -61,7 +60,7 @@ export interface FieldP extends Omit<FieldDTO, 'status'> {
   isCurrent: boolean; // if we render all interactive fields it would be impossible to submit one card
 }
 
-const Pre = styled('pre')({
+const Pre = styled(Typography)({
   overflowY: 'hidden',
   overflowX: 'hidden',
   wordWrap: 'break-word',

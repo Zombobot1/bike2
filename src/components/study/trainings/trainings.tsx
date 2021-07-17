@@ -1,8 +1,6 @@
-import './regular-trainings.scss';
-import React from 'react';
 import { FetchData } from '../../utils/fetched-data';
 import { useTrainings } from '../hooks';
-import { TrainingDeck } from '../training-deck/training-deck';
+import { TrainingDeck } from './training-deck/training-deck';
 import { styled, Typography } from '@material-ui/core';
 
 import Masonry from 'react-masonry-css';
@@ -11,10 +9,8 @@ import { useIsSM } from '../../../utils/hooks-utils';
 const TrainingsMasonry = styled(Masonry)({
   display: 'flex',
   marginLeft: '-20px' /* gutter size offset */,
-  // width: 'auto',
 
   '.my-masonry-grid_column': {
-    marginRight: '20px',
     paddingLeft: '20px' /* gutter size */,
     backgroundClip: 'padding-box',
   },

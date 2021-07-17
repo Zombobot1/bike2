@@ -1,5 +1,5 @@
 import { CardEstimation, CardType, estimationColor } from '../types';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { COLORS } from '../../../../theme';
 import { TrainingControls } from './training-controls';
 import { useTrainingTimer } from '../training-timer/training-timer';

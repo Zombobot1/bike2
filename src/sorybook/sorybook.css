@@ -1,9 +1,9 @@
 :root {
-  --sory-border-color: #EBEBEB;
+  --sory-border-color: #ebebeb;
   --sory-white-color: white;
   --sory-black-color: black;
   --sory-light-color: #eaedf2;
-  --sory-primary-color: #1C2540;
+  --sory-primary-color: #1c2540;
   --sory-grey-color: #4a5073;
 }
 
@@ -63,7 +63,8 @@
   border: none;
 }
 
-.sorybook__breadcrumb .btn:hover, .sorybook__breadcrumb .btn:focus {
+.sorybook__breadcrumb .btn:hover,
+.sorybook__breadcrumb .btn:focus {
   background-color: var(--sory-light-color);
   outline: 0;
 }
@@ -100,7 +101,8 @@
   background-color: var(--sory-light-color);
 }
 
-.sorybook__tree .leaf:hover, .sorybook__tree .node:hover {
+.sorybook__tree .leaf:hover,
+.sorybook__tree .node:hover {
   cursor: pointer;
   background-color: var(--sory-light-color);
 }
@@ -123,7 +125,7 @@
 
 .sorybook__tree .node .bi {
   margin-right: 3px;
-  transform: translateY(-2px);
+  transform: translateY(-1px);
   width: 10px;
   height: 10px;
 }

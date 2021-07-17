@@ -1,5 +1,4 @@
 import { styled, Typography } from '@material-ui/core';
-import React from 'react';
 import { Validity } from '../types';
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import CheckRoundedIcon from '@material-ui/icons/CheckRounded';

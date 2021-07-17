@@ -1,6 +1,6 @@
 import { BoolStateT, Fn } from '../../../../utils/types';
 import { useTrainingTimer } from '../training-timer/training-timer';
-import React, { MouseEvent, useState, memo } from 'react';
+import { MouseEvent, useState, memo } from 'react';
 import {
   IconButton,
   MenuItem,

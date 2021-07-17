@@ -1,5 +1,3 @@
-import React from 'react';
-
 export type Scroller = {
   scrollFrom: (name: string) => void;
 };

@@ -1,5 +1,5 @@
 import { QuestionP, UChecksElement } from './uchecks';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 interface TUChecksP extends QuestionP {
   _id: string;

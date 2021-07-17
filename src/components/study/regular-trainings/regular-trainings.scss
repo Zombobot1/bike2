@@ -1,9 +1,0 @@
-.page-header {
-  display: inline-block;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.regular-trainings {
-  @media only screen and (max-width: 550px) { & { justify-content: center; } }
-}

@@ -1,7 +1,6 @@
-import './uradio.scss';
 import { useUForm } from '../uform';
 import { useMount } from '../../../utils/hooks-utils';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Validity } from '../types';
 import { Question } from '../../study/training/types';
 import { fn, Fn } from '../../../utils/types';

@@ -1,10 +1,9 @@
-import React from 'react';
-import { Trainings } from '../study/regular-trainings/regular-trainings';
+import { Trainings } from '../study/trainings/trainings';
 import { TrainingWrapper } from '../study/training/training/training';
 
 export const Study = () => {
   return (
-    <div className="study">
+    <div>
       <Trainings />
     </div>
   );

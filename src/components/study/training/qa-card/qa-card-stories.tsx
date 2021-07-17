@@ -1,5 +1,4 @@
 import { QACard, QACardP } from './qa-card';
-import React from 'react';
 import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../../content/content';
 
 const QACardT = (args: QACardP) => (

@@ -100,6 +100,10 @@ function GlobalCss() {
           padding: 0;
         }
 
+        pre {
+          margin: 0;
+        }
+
         * {
           box-sizing: border-box;
         }
@@ -110,8 +114,8 @@ function GlobalCss() {
 
 ReactDOM.render(
   <React.StrictMode>
-    <GlobalCss />
     <ThemeProvider theme={theme}>
+      <GlobalCss />
       <Router>
         <SWController />
         <QueryClientProvider client={queryClient}>

@@ -1,4 +1,4 @@
-import React, { ReactNodeArray, useEffect, useState } from 'react';
+import { ReactNodeArray, useEffect, useState } from 'react';
 import SwiperClass from 'swiper/types/swiper-class';
 import { safe } from '../../../../utils/utils';
 import { Swiper } from 'swiper/react';

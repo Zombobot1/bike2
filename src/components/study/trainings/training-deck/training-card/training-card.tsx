@@ -1,12 +1,10 @@
-import './training-card.scss';
 import { SmallDeckCard } from './types';
 import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info';
-import React from 'react';
-import { useRouter } from '../../utils/hooks/use-router';
-import { TrainingDTO } from '../../study/training/training/training';
-import { STUDY } from '../../navigation/utils';
+import { useRouter } from '../../../../utils/hooks/use-router';
+import { TrainingDTO } from '../../../../study/training/training/training';
+import { STUDY } from '../../../../navigation/utils';
 import { styled, Typography } from '@material-ui/core';
-import { chop } from '../utils';
+import { chop } from '../../../utils';
 
 export interface DeckCard extends SmallDeckCard {
   deckPath: string;
@@ -16,6 +14,23 @@ export interface TrainingConceptInfo {
   _id: string;
   trainingConceptsInfo: TrainingConceptsInfoP;
 }
+
+export type TrainingCard = Omit<TrainingDTO, 'cards'>;
+export const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConceptsInfo }: TrainingCard) => {
+  const { history } = useRouter();
+  const onClick = () => history.push(`${STUDY}/${_id}`);
+  return (
+    <Card onClick={onClick} sx={{ ':before': { backgroundColor: deckColor } }}>
+      <DeckPath fontSize="small" color="text.secondary">
+        {deckPath}
+      </DeckPath>
+      <DeckName>{chop(deckName, 40)}</DeckName>
+      <S>
+        <TrainingConceptsInfo {...trainingConceptsInfo} />
+      </S>
+    </Card>
+  );
+};
 
 const Card = styled('div', { label: 'TrainingCard' })(({ theme }) => ({
   width: '100%',
@@ -66,20 +81,3 @@ const S = styled('div')({
   bottom: 4,
   right: 8,
 });
-
-export type TrainingCard = Omit<TrainingDTO, 'cards'>;
-export const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConceptsInfo }: TrainingCard) => {
-  const { history } = useRouter();
-  const onClick = () => history.push(`${STUDY}/${_id}`);
-  return (
-    <Card onClick={onClick} sx={{ ':before': { backgroundColor: deckColor } }}>
-      <DeckPath fontSize="small" color="text.secondary">
-        {deckPath}
-      </DeckPath>
-      <DeckName>{chop(deckName, 40)}</DeckName>
-      <S>
-        <TrainingConceptsInfo {...trainingConceptsInfo} />
-      </S>
-    </Card>
-  );
-};

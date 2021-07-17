@@ -1,5 +1,4 @@
-import './app.scss';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Switch } from 'react-router-dom';
 
 import { buildRoutes, Routed } from '../utils/routing';

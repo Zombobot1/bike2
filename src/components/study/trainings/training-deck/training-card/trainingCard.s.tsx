@@ -1,9 +1,9 @@
 import { TrainingCard } from './training-card';
 import { TrainingConceptsInfoP } from './training-cards-info/training-concepts-info';
 import { MemoryRouter } from 'react-router-dom';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Box } from '@material-ui/core';
-import { COLORS } from '../../../theme';
+import { COLORS } from '../../../../../theme';
 
 type TrainingCardT = {
   name: string;

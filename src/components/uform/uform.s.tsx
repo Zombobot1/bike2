@@ -1,5 +1,5 @@
 import { UChecks } from './ufields/uchecks';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Estimations, useUFormSubmit } from './uform';
 import { sslugify } from '../../utils/sslugify';
 import { UInput } from './ufields/uinput';

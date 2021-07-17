@@ -1,10 +1,7 @@
-import './training.scss';
-import React from 'react';
 import { CardDTOs } from '../types';
 import { TrainingHeader } from '../training-header/training-header';
 import { TrainingControls } from '../training-controls/training-controls';
 import { useCards, usePagesPathUpdate } from './hooks';
-import { TrainingConceptsInfoP } from '../../training-card/training-cards-info/training-concepts-info';
 import { CardCarousel } from './card-carousel';
 import { Fn } from '../../../../utils/types';
 import { Box } from '@material-ui/core';
@@ -12,6 +9,7 @@ import { useRouter } from '../../../utils/hooks/use-router';
 import { useTraining } from '../../hooks';
 import { safe } from '../../../../utils/utils';
 import { FetchData } from '../../../utils/fetched-data';
+import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info';
 
 export interface TrainingDTO {
   _id: string;

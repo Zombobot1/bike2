@@ -8,9 +8,9 @@ import * as UChecksElement from '../components/uform/ufields/uchecks.s';
 import * as UInputElement from '../components/uform/ufields/uinput.s';
 import * as TrainingTimer from '../components/study/training/training-timer/trainingTimer.s';
 import * as Breadcrumb from '../components/navigation/breadcrumb/breadcrumb.s';
-import * as TrainingCard from '../components/study/training-card/trainingCard.s';
-import * as TrainingDeck from '../components/study/training-deck/TrainingDeck.s';
-import * as Trainings from '../components/study/Trainings.s';
+import * as TrainingCard from '../components/study/trainings/training-deck/training-card/trainingCard.s';
+import * as TrainingDeck from '../components/study/trainings/training-deck/TrainingDeck.s';
+import * as Trainings from '../components/study/trainings/Trainings.s';
 import * as FetchedData from '../components/utils/FetchedData.s';
 
 export const sories = [

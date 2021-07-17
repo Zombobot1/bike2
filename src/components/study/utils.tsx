@@ -1,4 +1,4 @@
-import { TrainingConceptsInfoP } from './training-card/training-cards-info/training-concepts-info';
+import { TrainingConceptsInfoP } from './trainings/training-deck/training-card/training-cards-info/training-concepts-info';
 import { TrainingDTO } from './training/training/training';
 
 export const eachNth = <T,>(arr: T[], n: number, from: number): T[] => arr.slice(from).filter((e, i) => i % n === 0);

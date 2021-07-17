@@ -1,6 +1,5 @@
 import { MemoryRouter } from 'react-router-dom';
-import React from 'react';
-import { Trainings } from './regular-trainings/regular-trainings';
+import { Trainings } from './trainings';
 
 function Template() {
   return (

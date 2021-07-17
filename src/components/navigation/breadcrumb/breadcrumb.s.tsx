@@ -2,7 +2,6 @@ import { Breadcrumb } from './breadcrumb';
 import { Box, Button } from '@material-ui/core';
 import { COLORS } from '../../../theme';
 import { MemoryRouter, useHistory } from 'react-router-dom';
-import React from 'react';
 import { useUserPosition } from './user-position-provider';
 import { useMount } from '../../../utils/hooks-utils';
 

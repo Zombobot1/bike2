@@ -1,7 +1,6 @@
 import { Training, TrainingDTO } from './training';
 import { useToggle } from '../../../utils/hooks/use-toggle';
 import { MemoryRouter } from 'react-router-dom';
-import React from 'react';
 import { trainings } from '../../../../content/content';
 import { useMedia } from '../../../utils/hooks/use-media';
 import { SM } from '../../../../theme';

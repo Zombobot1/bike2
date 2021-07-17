@@ -1,6 +1,5 @@
-import './training-controls.scss';
 import { IsSM, rstyled } from '../../../../utils/utils';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TrainingTimer, useTrainingTimer } from '../training-timer/training-timer';
 import { cardEstimationToNumber, CardType } from '../types';
 import { Fn } from '../../../../utils/types';

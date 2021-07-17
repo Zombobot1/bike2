@@ -1,5 +1,3 @@
-import './qa-card.scss';
-import React from 'react';
 import { CardEstimation, estimationColor, FieldDTO } from '../types';
 import { Field } from './field/field';
 import { useMount } from '../../../../utils/hooks-utils';
@@ -68,7 +66,7 @@ const Card = styled(Stack)(({ theme }) => ({
 const Hr = styled('hr')({
   minHeight: 1,
   marginTop: 0,
-  opacity: 0.1,
+  opacity: 0.2,
 });
 
 export const QACard = ({ fields, stageColor, isCurrent, isMediaActive = true, showHidden, estimation }: QACardP) => {

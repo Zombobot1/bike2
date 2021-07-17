@@ -1,7 +1,6 @@
 import { Presentation } from './presentation';
 import { SwiperSlide } from 'swiper/react';
 import { QACard } from '../qa-card/qa-card';
-import React from 'react';
 import { CardDTO, CardEstimation } from '../types';
 import { styled } from '@material-ui/core';
 
