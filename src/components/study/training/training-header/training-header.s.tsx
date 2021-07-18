@@ -1,3 +1,4 @@
+import { Stack, Typography, Slider } from '@material-ui/core';
 import { useEffectedState } from '../../../../utils/hooks-utils';
 import { TrainingHeader } from './training-header';
 
@@ -14,30 +15,21 @@ const TrainingHeaderT = ({ cardsLength, oneCardTimeToAnswer, currentCardIndex, s
 
   if (!showMore) {
     return (
-      <div className="d-flex flex-column" style={{ width: '500px' }}>
+      <div style={{ width: '500px' }}>
         <TrainingHeader timeToFinish={ttf} cardsLength={cardsLength} currentCardIndex={cci} />
       </div>
     );
   }
 
   return (
-    <div className="d-flex flex-column" style={{ width: '500px' }}>
+    <Stack sx={{ width: '500px' }} spacing={2}>
       <TrainingHeader timeToFinish={ttf} cardsLength={cardsLength} currentCardIndex={cci} />
-      <hr className="w-25 mt-3 mb-2 align-self-center" />
-      <label htmlFor="customRange3" className="form-label">
-        Current index
-      </label>
-      <input
-        type="range"
-        className="form-range mb-3"
-        min="0"
-        max={cardsLength - 1}
-        step="1"
-        id="customRange3"
-        value={cci}
-        onChange={(e) => setCci(+e.target.value)}
-      />
-    </div>
+      <hr style={{ minHeight: '1px', width: '100%' }} />
+      <div>
+        <Typography>Current index</Typography>
+        <Slider min={0} max={cardsLength - 1} step={1} value={cci} onChange={(_, v) => setCci(+v.toString())} />
+      </div>
+    </Stack>
   );
 };
 

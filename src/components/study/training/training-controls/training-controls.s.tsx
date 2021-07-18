@@ -4,6 +4,7 @@ import { COLORS } from '../../../../theme';
 import { TrainingControls } from './training-controls';
 import { useTrainingTimer } from '../training-timer/training-timer';
 import { useMount } from '../../../../utils/hooks-utils';
+import { Button, Stack, Typography } from '@material-ui/core';
 
 interface TrainingControlsTP {
   cardType: CardType;
@@ -37,28 +38,26 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingCont
   };
 
   return (
-    <div
-      className="d-flex flex-column align-items-center pt-3 pb-3"
-      style={{ width: '500px', backgroundColor: COLORS.light }}
-    >
-      {wasDeleted && <h3 className="text-danger">Deleted card</h3>}
+    <Stack alignItems="center" spacing={2} sx={{ width: '500px', backgroundColor: COLORS.light, padding: 2 }}>
+      {wasDeleted && (
+        <Typography component="h3" color="error">
+          Deleted card
+        </Typography>
+      )}
       {isTimeOut && (
-        <button
-          className="btn btn-outline-danger mb-3"
+        <Button
+          variant="outlined"
+          color="error"
           onClick={() => {
             setIsTimeOut(false);
             setTimeToAnswer(timeLeft);
           }}
         >
-          Timout! Relaunch
-        </button>
+          Timeout! Relaunch
+        </Button>
       )}
-      {status && <h3 className="mb-3">{status}</h3>}
-      {estimation && (
-        <h3 className="mb-3" style={{ color: estimationColor(estimation) }}>
-          {estimation}
-        </h3>
-      )}
+      {status && <h3>{status}</h3>}
+      {estimation && <h3 style={{ color: estimationColor(estimation) }}>{estimation}</h3>}
       <TrainingControls
         cardType={cardType}
         showHiddenFields={() => setHidden(false)}
@@ -68,7 +67,7 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingCont
         deleteCard={() => setWasDeleted(true)}
         cardId="1"
       />
-    </div>
+    </Stack>
   );
 };
 

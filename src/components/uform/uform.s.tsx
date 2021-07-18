@@ -4,6 +4,7 @@ import { Estimations, useUFormSubmit } from './uform';
 import { sslugify } from '../../utils/sslugify';
 import { UInput } from './ufields/uinput';
 import { Question } from '../study/training/types';
+import { Alert, Stack, Button, styled, Box, ButtonGroup } from '@material-ui/core';
 
 interface UQuestion extends Question {
   _id: string;
@@ -77,46 +78,44 @@ const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUF
   const { submit } = useUFormSubmit();
 
   return (
-    <div className="bg-white p-3 rounded" style={{ width: '400px' }}>
-      {info && <div className="alert alert-success">{info}</div>}
-      {inputs.map((q) => (
-        <div key={sslugify(q.question)} className="mb-3">
-          {!q.options.length && (
-            <UInput {...q} tipOnMobile="SHOW_TIP" autoFocus={false} onAnswer={() => submit(handleSubmit)} />
-          )}
-          {q.options.length !== 0 && (
-            <UChecks
-              {...q}
-              onAnswer={() => submit(handleSubmit)}
-              submitOnSelect={submitOnSelect}
-              selectMultiple={q.correctAnswer.length > 1}
-            />
-          )}
-        </div>
-      ))}
-      <div className="d-flex justify-content-end">
-        {isExtensible && (
-          <div className="pe-3">
-            <div className="btn-group">
-              <button className="btn btn-outline-primary" onClick={add}>
-                +
-              </button>
-              <button className="btn btn-outline-primary" onClick={addAndRemove}>
-                + -
-              </button>
-              <button className="btn btn-outline-primary" onClick={remove}>
-                -
-              </button>
-            </div>
+    <Box sx={{ width: '400px' }}>
+      <Stack spacing={2}>
+        {info && <Alert severity="info">{info}</Alert>}
+        {inputs.map((q) => (
+          <div key={sslugify(q.question)}>
+            {!q.options.length && (
+              <UInput {...q} tipOnMobile="SHOW_TIP" autoFocus={false} onAnswer={() => submit(handleSubmit)} />
+            )}
+            {q.options.length !== 0 && (
+              <UChecks
+                {...q}
+                onAnswer={() => submit(handleSubmit)}
+                submitOnSelect={submitOnSelect}
+                selectMultiple={q.correctAnswer.length > 1}
+              />
+            )}
           </div>
+        ))}
+      </Stack>
+      <Panel direction="row" spacing={2} justifyContent="flex-end">
+        {isExtensible && (
+          <ButtonGroup variant="outlined" aria-label="outlined button group">
+            <Button onClick={add}>+</Button>
+            <Button onClick={addAndRemove}>+ -</Button>
+            <Button onClick={remove}>-</Button>
+          </ButtonGroup>
         )}
-        <button className="btn btn-primary" onClick={() => submit(handleSubmit)}>
+        <Button variant="contained" onClick={() => submit(handleSubmit)}>
           Submit
-        </button>
-      </div>
-    </div>
+        </Button>
+      </Panel>
+    </Box>
   );
 };
+
+const Panel = styled(Stack)({
+  marginTop: 20,
+});
 
 const q = (
   _id: string,

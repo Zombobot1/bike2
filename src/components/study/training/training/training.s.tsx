@@ -4,6 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { trainings } from '../../../../content/content';
 import { useMedia } from '../../../utils/hooks/use-media';
 import { SM } from '../../../../theme';
+import { Stack, Button } from '@material-ui/core';
 
 const TrainingT = (args: TrainingDTO) => {
   const [isFinished, toggle] = useToggle(false);
@@ -11,18 +12,19 @@ const TrainingT = (args: TrainingDTO) => {
 
   return (
     <MemoryRouter initialEntries={['/app/study/']}>
-      <div
-        className="d-flex flex-column justify-content-center align-items-center"
+      <Stack
+        justifyContent="center"
+        alignItems="center"
         style={{ width: isMobile ? '380px' : '500px', height: isMobile ? '715px' : '830px' }}
       >
         {!isFinished && <Training dto={args} onLastCard={toggle} />}
-        {isFinished && <h3 className="mb-3">That's all!</h3>}
+        {isFinished && <h3>That's all!</h3>}
         {isFinished && (
-          <button className="btn btn-primary" onClick={toggle}>
+          <Button variant="contained" onClick={toggle}>
             Again
-          </button>
+          </Button>
         )}
-      </div>
+      </Stack>
     </MemoryRouter>
   );
 };

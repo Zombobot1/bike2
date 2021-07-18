@@ -26,7 +26,7 @@ const TUInput = ({
 }: TUInputP) => {
   const [value_, setValue] = useState(value);
   return (
-    <div className="bg-white p-3 w-50">
+    <div style={{ width: '50%' }}>
       <UInputElement
         _id={_id}
         value={value_}

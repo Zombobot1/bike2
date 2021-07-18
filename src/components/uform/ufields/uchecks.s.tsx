@@ -22,7 +22,7 @@ const TUChecks = ({
 }: TUChecksP) => {
   const [value_, setValue] = useState(value);
   return (
-    <div className="bg-white p-3  w-50 rounded">
+    <div style={{ width: '50%' }}>
       <UChecksElement
         _id={_id}
         value={value_}

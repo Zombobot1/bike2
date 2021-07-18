@@ -9,21 +9,11 @@ type RecP = {
   color?: string;
   isHidden?: boolean;
   _id?: string;
-  className?: string;
   children?: ReactNode;
 };
-export const Rec = ({
-  height = 100,
-  width = 200,
-  color = 'red',
-  isHidden = false,
-  _id = id(),
-  children,
-  className = '',
-}: RecP) => {
+export const Rec = ({ height = 100, width = 200, color = 'red', isHidden = false, _id = id(), children }: RecP) => {
   return (
     <div
-      className={'rec ' + className}
       style={{
         width: `${width}px`,
         height: `${height}px`,
