@@ -7,16 +7,19 @@ import { Estimations, useUFormSubmit } from '../../../uform/uform';
 import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
 import { useInteractiveSubmit } from '../hooks';
-import { Button, ButtonGroup, ButtonProps, Stack } from '@material-ui/core';
+import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@material-ui/core';
 import { useIsSM } from '../../../../utils/hooks-utils';
 import { TrainingSettings } from './training-settings';
 import { TrainingSettingsP } from './training-settings';
-import { Btn } from '../../../utils/controls';
 
-const EstimationBtn = rstyled(Button)<ButtonProps & IsSM>(({ isSM, theme }) => ({
+const EstimationBtn = rstyled(Button)<ButtonProps & IsSM>(({ isSM }) => ({
   width: isSM ? 85 : 65,
-  color: theme.palette.common.white,
+  fontWeight: 'bold',
 }));
+
+const Btn = styled(Button)({
+  fontWeight: 'bold',
+});
 
 export interface TrainingControlsP extends TrainingSettingsP {
   estimate: EstimateCard;
@@ -42,9 +45,13 @@ const SelfEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: SelfEs
   const size = isSM ? 'large' : 'medium';
   return (
     <>
-      {areFieldsHidden && <Btn text="Estimate" size={size} onClick={showHiddenFields} />}
+      {areFieldsHidden && (
+        <Btn variant="outlined" size={size} onClick={showHiddenFields}>
+          Estimate
+        </Btn>
+      )}
       {!areFieldsHidden && (
-        <ButtonGroup variant="contained" size={size}>
+        <ButtonGroup variant="text" size={size}>
           <EstimationBtn isSM={isSM} color="warning" onClick={poor}>
             Poor
           </EstimationBtn>
@@ -67,18 +74,26 @@ type GoToNextCard = { go: Fn } | null;
 
 interface EstimateBtnP {
   isSubmitted: boolean;
-  sumbit: Fn;
+  submit: Fn;
   goToNextCard: Fn;
 }
 
-const EstimateBtn = ({ isSubmitted, sumbit, goToNextCard }: EstimateBtnP) => {
+const EstimateBtn = ({ isSubmitted, submit, goToNextCard }: EstimateBtnP) => {
   const isSM = useIsSM();
   const size = isSM ? 'large' : 'medium';
 
   return (
     <>
-      {!isSubmitted && <Btn text="Estimate" size={size} onClick={sumbit} />}
-      {isSubmitted && <Btn text="Next" size={size} onClick={goToNextCard} />}
+      {!isSubmitted && (
+        <Btn variant="outlined" size={size} onClick={submit}>
+          Estimate
+        </Btn>
+      )}
+      {isSubmitted && (
+        <Btn variant="outlined" size={size} onClick={goToNextCard}>
+          Next
+        </Btn>
+      )}
     </>
   );
 };
@@ -130,7 +145,7 @@ export const TrainingControls = ({
         <SelfEstimateBtn estimate={estimate} areFieldsHidden={areFieldsHidden} showHiddenFields={showHiddenFields} />
       )}
       {cardType === 'INTERACTIVE' && (
-        <EstimateBtn sumbit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
+        <EstimateBtn submit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
       )}
       <TrainingSettings cardId={cardId} deleteCard={deleteCard} />
     </Stack>

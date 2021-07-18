@@ -9,14 +9,14 @@ export interface InteractiveQuestionP {
 }
 
 const Question = styled(Typography)({
-  fontSize: 25,
+  fontSize: 24,
   marginBottom: 10,
 });
 
 export function InteractiveQuestion({ question, status }: InteractiveQuestionP) {
   if (!question) return null;
 
-  const sx = { marginBottom: 0.6, marginRight: 0.6 };
+  const sx = { transform: 'translateY(5px)', marginRight: 0.6 };
 
   return (
     <Question>
