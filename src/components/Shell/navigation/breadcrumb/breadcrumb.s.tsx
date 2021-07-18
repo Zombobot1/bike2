@@ -1,9 +1,9 @@
 import { Breadcrumb } from './breadcrumb';
 import { Box, Button } from '@material-ui/core';
-import { COLORS } from '../../../theme';
+import { COLORS } from '../../../../theme';
 import { MemoryRouter, useHistory } from 'react-router-dom';
 import { useUserPosition } from './user-position-provider';
-import { useMount } from '../../../utils/hooks-utils';
+import { useMount } from '../../../../utils/hooks-utils';
 
 function Template_() {
   const { setPath } = useUserPosition();
@@ -14,7 +14,7 @@ function Template_() {
       <Breadcrumb />
       <Button
         onClick={() => {
-          history.push('/app/study/Deck name');
+          history.push('/study/Deck name');
           setPath([{ name: 'Deck name' }]);
         }}
       >
@@ -25,7 +25,7 @@ function Template_() {
 }
 
 const Template = () => (
-  <MemoryRouter initialEntries={['/app/study/Deck name']}>
+  <MemoryRouter initialEntries={['/study/Deck name']}>
     <Template_ />
   </MemoryRouter>
 );

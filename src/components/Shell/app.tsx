@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Switch } from 'react-router-dom';
 
 import { buildRoutes, Routed } from '../utils/routing';
-import { Breadcrumb } from '../navigation/breadcrumb/breadcrumb';
+import { Breadcrumb } from './navigation/breadcrumb/breadcrumb';
 import { getToken, UNotification } from '../../firebase';
 import { subscribeForNotifications } from '../../api/api';
 import { useMount, useMQ } from '../../utils/hooks-utils';

@@ -1,10 +1,10 @@
-import { useRouter } from '../../utils/hooks/use-router';
+import { useRouter } from '../../../utils/hooks/use-router';
 import { Link as RouterLink } from 'react-router-dom';
-import { safeSplit } from '../../../utils/algorithms';
+import { safeSplit } from '../../../../utils/algorithms';
 import { useUserPosition } from './user-position-provider';
-import { toAppPage } from '../utils';
+import { toAppPage } from '../pages';
 import { Link, LinkProps, Breadcrumbs, Typography, useTheme, IconButton, Stack } from '@material-ui/core';
-import { useIsSM } from '../../../utils/hooks-utils';
+import { useIsSM } from '../../../../utils/hooks-utils';
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded';
 
 export interface LinkName {
@@ -22,8 +22,8 @@ const LinkRouter = (props: LinkRouter) => <Link {...props} component={RouterLink
 const pageName = (path: string) => {
   const parts = safeSplit(path, '/');
   if (parts[0] === '_') return 'Sandbox';
-  if (parts.length < 2 || !parts[1]) return '';
-  const root = parts[1];
+  if (parts.length < 1) return '';
+  const root = parts[0];
   return root[0].toUpperCase() + root.slice(1);
 };
 
@@ -35,7 +35,7 @@ export const Breadcrumb = () => {
   const appPage = pageName(router.pathname);
   const { path } = useUserPosition();
 
-  const hasPath = safeSplit(router.pathname, '/').length > 2 && path.length;
+  const hasPath = safeSplit(router.pathname, '/').length > 1 && path.length;
 
   return (
     <Stack
