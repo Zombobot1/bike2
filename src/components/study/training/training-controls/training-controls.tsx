@@ -8,6 +8,8 @@ import { min } from '../../../../utils/algorithms';
 import { EstimateCard } from '../training/hooks';
 import { useInteractiveSubmit } from '../hooks';
 import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@material-ui/core';
+import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
+import ArrowRightAltRoundedIcon from '@material-ui/icons/ArrowRightAltRounded';
 import { useIsSM } from '../../../../utils/hooks-utils';
 import { TrainingSettings } from './training-settings';
 import { TrainingSettingsP } from './training-settings';
@@ -46,8 +48,8 @@ const SelfEstimateBtn = ({ areFieldsHidden, showHiddenFields, estimate }: SelfEs
   return (
     <>
       {areFieldsHidden && (
-        <Btn variant="outlined" size={size} onClick={showHiddenFields}>
-          Estimate
+        <Btn size={size} onClick={showHiddenFields} startIcon={<CheckRoundedIcon />}>
+          Grade
         </Btn>
       )}
       {!areFieldsHidden && (
@@ -85,12 +87,12 @@ const EstimateBtn = ({ isSubmitted, submit, goToNextCard }: EstimateBtnP) => {
   return (
     <>
       {!isSubmitted && (
-        <Btn variant="outlined" size={size} onClick={submit}>
-          Estimate
+        <Btn size={size} onClick={submit} startIcon={<CheckRoundedIcon />}>
+          Grade
         </Btn>
       )}
       {isSubmitted && (
-        <Btn variant="outlined" size={size} onClick={goToNextCard}>
+        <Btn size={size} onClick={goToNextCard} endIcon={<ArrowRightAltRoundedIcon />}>
           Next
         </Btn>
       )}

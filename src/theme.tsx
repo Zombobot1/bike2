@@ -19,10 +19,6 @@ export const theme = createTheme({
   typography: {
     fontFamily: 'Nunito, Helvetica, sans-serif',
     fontSize: 16,
-
-    button: {
-      textTransform: 'none',
-    },
   },
   shape: {
     borderRadius: 10,
