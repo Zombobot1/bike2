@@ -82,3 +82,9 @@ export const catchError = (e: any) => {
 }
 
 export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export function getEmptyStrings(len: number) {
+  const result = []
+  for (let i = 0; i < len; i++) result.push('')
+  return result
+}

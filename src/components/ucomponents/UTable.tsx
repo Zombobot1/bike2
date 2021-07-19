@@ -7,30 +7,66 @@ import TableRow from '@material-ui/core/TableRow'
 
 import { TextField, ClickAwayListener, useTheme, Typography } from '@material-ui/core'
 import { useCell, useRows, TableData } from './useTable'
+import { useMount } from '../../utils/hooks-utils'
+import { useEventListener } from '../../components/utils/hooks/use-event-listener'
+import { range } from 'lodash'
+import { KeyboardEvent } from 'react'
 
 interface Cell {
   i: number
   j: number
+  isLast?: boolean
 }
 
-function Cell({ i, j }: Cell) {
-  const { data, isInFocus, setData, setFocus } = useCell(i, j)
+function Cell({ i, j, isLast = false }: Cell) {
+  const { data, isInFocus, isEditing, setData, startEditing, finishEditing, setDataFromClipboard, unfocus } = useCell(
+    i,
+    j,
+    isLast,
+  )
   const theme = useTheme()
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key == 'Escape' && isEditing) {
+      finishEditing()
+      ref.current.focus()
+    } else if (e.key == 'Escape' && !isEditing) unfocus()
+    else if (e.ctrlKey && e.key === 'v' && !isEditing) {
+      navigator.clipboard
+        .readText()
+        .then(setDataFromClipboard)
+        .catch((err) => console.error('Failed to read clipboard contents: ', err))
+    }
+  }
+
+  const ref = useEventListener('keydown', handleKeyDown, isEditing)
+
   return (
     <TableCell
+      ref={ref}
       key={j}
       component="td"
       width="250px"
       scope="row"
-      onClick={() => setFocus()}
+      onClick={startEditing}
+      tabIndex={i * 100 + j}
       sx={
-        isInFocus
+        isEditing
           ? { padding: 0, paddingLeft: '2px', backgroundColor: `${theme.palette.grey[100]}` }
-          : { paddingTop: '17px' }
+          : {
+              paddingTop: data || isLast ? '17px' : '39px', // anomaly: cannot specify minHeight for row with no data
+              backgroundColor: isInFocus ? `${theme.palette.grey[100]}` : `${theme.palette.common.white}`,
+              outline: 'none',
+            }
       }
     >
-      {!isInFocus && data}
-      {isInFocus && (
+      {!isEditing && !isLast && data}
+      {!isEditing && isLast && j === 0 && (
+        <Typography color="text.secondary" sx={{ height: '22px' }}>
+          New row...
+        </Typography>
+      )}
+      {isEditing && (
         <TextField
           defaultValue={data}
           autoFocus
@@ -53,7 +89,9 @@ interface UTable {
   data?: TableData
 }
 export function UTable({ data }: UTable) {
-  const { rows, unfocus } = useRows(data)
+  const { rows, unfocus, reset } = useRows(2, data)
+
+  useMount(() => reset)
 
   return (
     <ClickAwayListener onClickAway={unfocus}>
@@ -74,12 +112,17 @@ export function UTable({ data }: UTable) {
         </TableHead>
         <TableBody>
           {rows.map((row, i) => (
-            <TableRow key={i} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+            <TableRow key={i}>
               {row.map((_, j) => (
                 <Cell key={j} i={i} j={j} />
               ))}
             </TableRow>
           ))}
+          <TableRow key={rows.length}>
+            {range(2).map((_, j) => (
+              <Cell key={j} i={rows.length} j={j} isLast={true} />
+            ))}
+          </TableRow>
         </TableBody>
       </Table>
     </ClickAwayListener>

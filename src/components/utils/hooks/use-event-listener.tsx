@@ -1,14 +1,18 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, SyntheticEvent } from 'react'
 import { Fn } from '../../../utils/types'
 
-export const useEventListener = (eventName: string, handler: (e: Event) => void) => {
+export const useEventListener = <T extends Event | SyntheticEvent, D>(
+  eventName: string,
+  handler: (e: T) => void,
+  dependency?: D,
+) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const ref: any = useRef(null)
   useEffect(() => {
-    const eventListener = (event: Event) => handler(event)
+    const eventListener = (event: T) => handler(event)
     ref.current.addEventListener(eventName, eventListener)
     return () => ref?.current?.removeEventListener(eventName, eventListener)
-  }, [eventName, ref])
+  }, [eventName, ref, dependency])
   return ref
 }
 

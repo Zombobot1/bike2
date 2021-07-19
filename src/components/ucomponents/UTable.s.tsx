@@ -1,8 +1,13 @@
 import { TableData } from './useTable'
 import { UTable } from './UTable'
-
-function Template({ data }: { data?: TableData }) {
-  return <UTable data={data} />
+import { Typography, Stack } from '@material-ui/core'
+function Template({ data, pasteData }: { data?: TableData; pasteData?: string }) {
+  return (
+    <Stack spacing={4}>
+      <UTable data={data} />
+      {pasteData && <Typography component="pre">Copy & Paste:{pasteData}</Typography>}
+    </Stack>
+  )
 }
 
 const data1 = [
@@ -13,5 +18,7 @@ const data1 = [
   ['Dogmeat 2', 'Псина 2'],
 ]
 
-export const CanEdit = () => <Template data={data1} />
-export const CanExtend = () => <Template />
+export const CanBeEdited = () => <Template data={data1} />
+export const CanBeSelected = () => <Template data={data1} />
+export const CanBeExtended = () => <Template />
+export const ParsesPastedData = () => <Template pasteData={'\na - b\nc - d'} />
