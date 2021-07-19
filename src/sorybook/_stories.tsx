@@ -1,18 +1,18 @@
-import { storify } from './utils';
-import * as QACard from '../components/study/training/qa-card/qa-card-stories';
-import * as Training from '../components/study/training/training/training.s';
-import * as TrainingHeader from '../components/study/training/training-header/training-header.s';
-import * as TrainingControls from '../components/study/training/training-controls/training-controls.s';
-import * as UFormHook from '../components/uform/uform.s';
-import * as UChecksElement from '../components/uform/ufields/uchecks.s';
-import * as UInputElement from '../components/uform/ufields/uinput.s';
-import * as UTable from '../components/ucomponents/UTable.s';
-import * as TrainingTimer from '../components/study/training/training-timer/trainingTimer.s';
-import * as Breadcrumb from '../components/Shell/navigation/breadcrumb/breadcrumb.s';
-import * as TrainingCard from '../components/study/trainings/training-deck/training-card/trainingCard.s';
-import * as TrainingDeck from '../components/study/trainings/training-deck/TrainingDeck.s';
-import * as Trainings from '../components/study/trainings/Trainings.s';
-import * as FetchedData from '../components/utils/FetchedData.s';
+import { storify } from './utils'
+import * as QACard from '../components/study/training/qa-card/qa-card-stories'
+import * as Training from '../components/study/training/training/training.s'
+import * as TrainingHeader from '../components/study/training/training-header/training-header.s'
+import * as TrainingControls from '../components/study/training/training-controls/training-controls.s'
+import * as UFormHook from '../components/uform/uform.s'
+import * as UChecksElement from '../components/uform/ufields/uchecks.s'
+import * as UInputElement from '../components/uform/ufields/uinput.s'
+import * as UTable from '../components/ucomponents/UTable.s'
+import * as TrainingTimer from '../components/study/training/training-timer/trainingTimer.s'
+import * as Breadcrumb from '../components/Shell/navigation/breadcrumb/breadcrumb.s'
+import * as TrainingCard from '../components/study/trainings/training-deck/training-card/trainingCard.s'
+import * as TrainingDeck from '../components/study/trainings/training-deck/TrainingDeck.s'
+import * as Trainings from '../components/study/trainings/Trainings.s'
+import * as FetchedData from '../components/utils/FetchedData.s'
 
 export const sories = [
   {
@@ -40,4 +40,4 @@ export const sories = [
     name: 'Utils',
     components: [storify({ FetchedData }), storify({ Breadcrumb })],
   },
-];
+]

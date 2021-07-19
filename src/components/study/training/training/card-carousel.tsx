@@ -1,19 +1,19 @@
-import { Presentation } from './presentation';
-import { SwiperSlide } from 'swiper/react';
-import { QACard } from '../qa-card/qa-card';
-import { CardDTO, CardEstimation } from '../types';
-import { styled } from '@material-ui/core';
+import { Presentation } from './presentation'
+import { SwiperSlide } from 'swiper/react'
+import { QACard } from '../qa-card/qa-card'
+import { CardDTO, CardEstimation } from '../types'
+import { styled } from '@material-ui/core'
 
 export interface CardData {
-  dto: CardDTO;
-  showHidden: boolean;
-  estimation?: CardEstimation;
+  dto: CardDTO
+  showHidden: boolean
+  estimation?: CardEstimation
 }
-export type CardDatas = CardData[];
+export type CardDatas = CardData[]
 
 export interface CardCarouselP {
-  cards: CardDatas;
-  currentCardIndex: number;
+  cards: CardDatas
+  currentCardIndex: number
 }
 
 const Cards = styled('div')({
@@ -21,7 +21,7 @@ const Cards = styled('div')({
   height: '90%',
   paddingTop: 5,
   paddingBottom: 7,
-});
+})
 
 export const CardCarousel = ({ cards, currentCardIndex }: CardCarouselP) => {
   return (
@@ -40,5 +40,5 @@ export const CardCarousel = ({ cards, currentCardIndex }: CardCarouselP) => {
         ))}
       </Presentation>
     </Cards>
-  );
-};
+  )
+}

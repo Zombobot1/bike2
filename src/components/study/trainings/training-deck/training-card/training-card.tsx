@@ -1,24 +1,24 @@
-import { SmallDeckCard } from './types';
-import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info';
-import { useRouter } from '../../../../utils/hooks/use-router';
-import { TrainingDTO } from '../../../../study/training/training/training';
-import { STUDY } from '../../../../Shell/navigation/pages';
-import { styled, Typography } from '@material-ui/core';
-import { chop } from '../../../utils';
+import { SmallDeckCard } from './types'
+import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
+import { useRouter } from '../../../../utils/hooks/use-router'
+import { TrainingDTO } from '../../../../study/training/training/training'
+import { STUDY } from '../../../../Shell/navigation/pages'
+import { styled, Typography } from '@material-ui/core'
+import { chop } from '../../../utils'
 
 export interface DeckCard extends SmallDeckCard {
-  deckPath: string;
+  deckPath: string
 }
 
 export interface TrainingConceptInfo {
-  _id: string;
-  trainingConceptsInfo: TrainingConceptsInfoP;
+  _id: string
+  trainingConceptsInfo: TrainingConceptsInfoP
 }
 
-export type TrainingCard = Omit<TrainingDTO, 'cards'>;
+export type TrainingCard = Omit<TrainingDTO, 'cards'>
 export const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConceptsInfo }: TrainingCard) => {
-  const { history } = useRouter();
-  const onClick = () => history.push(`${STUDY}/${_id}`);
+  const { history } = useRouter()
+  const onClick = () => history.push(`${STUDY}/${_id}`)
   return (
     <Card onClick={onClick} sx={{ ':before': { backgroundColor: deckColor } }}>
       <DeckPath fontSize="small" color="text.secondary">
@@ -29,8 +29,8 @@ export const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConce
         <TrainingConceptsInfo {...trainingConceptsInfo} />
       </S>
     </Card>
-  );
-};
+  )
+}
 
 const Card = styled('div', { label: 'TrainingCard' })(({ theme }) => ({
   width: '100%',
@@ -60,7 +60,7 @@ const Card = styled('div', { label: 'TrainingCard' })(({ theme }) => ({
     position: 'absolute',
     top: 0,
   },
-}));
+}))
 
 const DeckPath = styled(Typography)({
   whiteSpace: 'nowrap',
@@ -68,16 +68,16 @@ const DeckPath = styled(Typography)({
   textOverflow: 'ellipsis',
   marginLeft: 20,
   fontWeight: 'bold',
-});
+})
 
 const DeckName = styled(Typography)({
   marginLeft: 20,
   fontWeight: 'bold',
   lineHeight: 1.2,
-});
+})
 
 const S = styled('div')({
   position: 'absolute',
   bottom: 4,
   right: 8,
-});
+})

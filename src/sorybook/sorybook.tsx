@@ -1,74 +1,74 @@
-import './sorybook.css';
-import { atom, useAtom } from 'jotai';
-import { useToggle } from '../components/utils/hooks/use-toggle';
-import { sslugify } from '../utils/sslugify';
-import { capitalizeFirstLetter, cn } from '../utils/utils';
-import { ReactComponent as IDown } from './bi-caret-down-fill.svg';
-import { ReactComponent as IRight } from './bi-caret-right-fill.svg';
-import { FC, useEffect } from 'react';
-import { useRouter } from '../components/utils/hooks/use-router';
-import { sories } from './_stories';
-import { useMedia } from '../components/utils/hooks/use-media';
-import { SM } from '../theme';
-import { ReactComponent as Burger } from './burger.svg';
-import { safeSplit } from '../utils/algorithms';
+import './sorybook.css'
+import { atom, useAtom } from 'jotai'
+import { useToggle } from '../components/utils/hooks/use-toggle'
+import { sslugify } from '../utils/sslugify'
+import { capitalizeFirstLetter, cn } from '../utils/utils'
+import { ReactComponent as IDown } from './bi-caret-down-fill.svg'
+import { ReactComponent as IRight } from './bi-caret-right-fill.svg'
+import { FC, useEffect } from 'react'
+import { useRouter } from '../components/utils/hooks/use-router'
+import { sories } from './_stories'
+import { useMedia } from '../components/utils/hooks/use-media'
+import { SM } from '../theme'
+import { ReactComponent as Burger } from './burger.svg'
+import { safeSplit } from '../utils/algorithms'
 
-export const _SORYBOOK = '/_stories';
+export const _SORYBOOK = '/_stories'
 
-const activeNodeIdAtom = atom('');
-const activeStoryAtom = atom<{ story: FC }>({ story: () => null });
+const activeNodeIdAtom = atom('')
+const activeStoryAtom = atom<{ story: FC }>({ story: () => null })
 
 const useActiveStory = () => {
-  const [activeNodeId, setActiveNodeId] = useAtom(activeNodeIdAtom);
-  const [activeStory, setActiveStory] = useAtom(activeStoryAtom);
+  const [activeNodeId, setActiveNodeId] = useAtom(activeNodeIdAtom)
+  const [activeStory, setActiveStory] = useAtom(activeStoryAtom)
   return {
     activeNodeId,
     setActiveNodeId,
     ActiveStory: activeStory.story,
     setActiveStory: (s: FC) => setActiveStory({ story: s }),
-  };
-};
+  }
+}
 
 interface TreeP {
-  id?: string;
-  label: string;
-  nodes?: TreeP[];
-  nodeClassName?: string;
-  nodeLabelClassName?: string;
-  story?: FC;
+  id?: string
+  label: string
+  nodes?: TreeP[]
+  nodeClassName?: string
+  nodeLabelClassName?: string
+  story?: FC
 }
-type TreePs = TreeP[];
+type TreePs = TreeP[]
 
 function containsId(path: string, id?: string) {
-  if (!id) return false;
+  if (!id) return false
 
-  const _id = id?.split('--');
-  const _path = path.replace('/_stories/', '').split('--');
-  let result = true;
+  const _id = id?.split('--')
+  const _path = path.replace('/_stories/', '').split('--')
+  let result = true
   _id.forEach((p, i) => {
-    if (p !== _path[i]) result = false;
-  });
-  return result;
+    if (p !== _path[i]) result = false
+  })
+  return result
 }
 
 const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }: TreeP) => {
-  const { history, location } = useRouter();
+  const { history, location } = useRouter()
 
-  const _isOpen = containsId(location.pathname, id);
-  const [isOpen, toggleOpen] = useToggle(_isOpen);
+  const _isOpen = containsId(location.pathname, id)
+  const [isOpen, toggleOpen] = useToggle(_isOpen)
 
-  const { activeNodeId, setActiveStory } = useActiveStory();
+  const { activeNodeId, setActiveStory } = useActiveStory()
   useEffect(() => {
-    if (activeNodeId === id && story) setActiveStory(story);
-  }, [activeNodeId]);
+    if (activeNodeId === id && story) setActiveStory(story)
+  }, [activeNodeId])
 
   if (!nodes) {
-    const cns = cn('leaf', { 'leaf--active': activeNodeId === id });
+    const cns = cn('leaf', { 'leaf--active': activeNodeId === id })
     return (
       <li className={cns} onClick={() => history.push(_SORYBOOK + '/' + id)}>
         {label}
       </li>
-    );
+    )
   }
 
   return (
@@ -84,8 +84,8 @@ const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }
         ))}
       </ul>
     </div>
-  );
-};
+  )
+}
 
 const Tree = (tree: TreeP) => {
   return (
@@ -101,57 +101,57 @@ const Tree = (tree: TreeP) => {
         />
       ))}
     </ul>
-  );
-};
+  )
+}
 
 interface Sory {
-  name: string;
-  story: FC;
+  name: string
+  story: FC
 }
-type Stories = Sory[];
+type Stories = Sory[]
 
 interface Component {
-  name: string;
-  stories: Stories;
+  name: string
+  stories: Stories
 }
-export type ComponentWithStories = Component;
-type Components = Component[];
+export type ComponentWithStories = Component
+type Components = Component[]
 
 interface UseCase {
-  name: string;
-  components: Components;
+  name: string
+  components: Components
 }
-type UseCases = UseCase[];
+type UseCases = UseCase[]
 
 function storiesToNodes(stories: Stories): TreePs {
-  return stories.map((s) => ({ label: s.name, story: s.story }));
+  return stories.map((s) => ({ label: s.name, story: s.story }))
 }
 
 function componentsToNodes(components: Components): TreePs {
-  return components.map((c) => ({ label: c.name, nodes: storiesToNodes(c.stories) }));
+  return components.map((c) => ({ label: c.name, nodes: storiesToNodes(c.stories) }))
 }
 
 function useCasesToTree(rootLabel: string, useCases: UseCases): TreeP {
   return {
     label: rootLabel,
     nodes: useCases.map((uc) => ({ label: uc.name, nodes: componentsToNodes(uc.components) })),
-  };
+  }
 }
-const offcanvasA = atom(false);
+const offcanvasA = atom(false)
 
 function useOffCanvas() {
-  const [isOpen, setIsOpen] = useAtom(offcanvasA);
-  const open = () => setIsOpen(true);
-  const close = () => setIsOpen(false);
+  const [isOpen, setIsOpen] = useAtom(offcanvasA)
+  const open = () => setIsOpen(true)
+  const close = () => setIsOpen(false)
 
-  return { isOpen, open, close };
+  return { isOpen, open, close }
 }
 
 const BreadCrumb = () => {
-  const { open } = useOffCanvas();
+  const { open } = useOffCanvas()
 
-  const { activeNodeId } = useActiveStory();
-  const story = safeSplit(activeNodeId, '--').slice(-1)[0];
+  const { activeNodeId } = useActiveStory()
+  const story = safeSplit(activeNodeId, '--').slice(-1)[0]
 
   return (
     <div className="sorybook__breadcrumb">
@@ -161,11 +161,11 @@ const BreadCrumb = () => {
       <h5>{story ? capitalizeFirstLetter(story) : ''}</h5>
       <div style={{ width: '45px', height: '45px' }} />
     </div>
-  );
-};
+  )
+}
 
 function NavMobile(tree: TreeP) {
-  const { isOpen, close } = useOffCanvas();
+  const { isOpen, close } = useOffCanvas()
 
   return (
     <>
@@ -176,18 +176,18 @@ function NavMobile(tree: TreeP) {
       </div>
       <div className="backdrop" style={isOpen ? { width: '100vw' } : { width: '0' }} onClick={close} />
     </>
-  );
+  )
 }
 
 function Nav(tree: TreeP) {
-  const isMobile = useMedia([SM], [true], false);
+  const isMobile = useMedia([SM], [true], false)
 
   if (!isMobile) {
     return (
       <div className="sorybook__nav">
         <Tree {...tree} />
       </div>
-    );
+    )
   }
 
   return (
@@ -195,35 +195,35 @@ function Nav(tree: TreeP) {
       <BreadCrumb />
       <NavMobile {...tree} />
     </>
-  );
+  )
 }
 
 function Pane() {
-  const { ActiveStory } = useActiveStory();
+  const { ActiveStory } = useActiveStory()
   return (
     <div className="sorybook__pane">
       <ActiveStory />
     </div>
-  );
+  )
 }
 
 export const SoryBook = () => {
-  const { activeNodeId, setActiveNodeId } = useActiveStory();
-  const { location } = useRouter();
-  const activeId = location.pathname.replace(_SORYBOOK + '/', '');
+  const { activeNodeId, setActiveNodeId } = useActiveStory()
+  const { location } = useRouter()
+  const activeId = location.pathname.replace(_SORYBOOK + '/', '')
 
   useEffect(() => {
-    setActiveNodeId(activeId);
-  }, [location]);
+    setActiveNodeId(activeId)
+  }, [location])
 
   useEffect(() => {
-    if (!activeNodeId && activeId) setActiveNodeId(activeId);
-  }, [activeNodeId]);
+    if (!activeNodeId && activeId) setActiveNodeId(activeId)
+  }, [activeNodeId])
 
   return (
     <div className="sorybook">
       <Nav {...useCasesToTree('🤪 Sorybook', sories)} />
       <Pane />
     </div>
-  );
-};
+  )
+}

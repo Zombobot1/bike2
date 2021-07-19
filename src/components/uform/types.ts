@@ -1,1 +1,1 @@
-export type Validity = 'VALID' | 'INVALID' | 'NONE';
+export type Validity = 'VALID' | 'INVALID' | 'NONE'

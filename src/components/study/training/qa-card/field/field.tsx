@@ -1,44 +1,44 @@
-import { useEffect, useState } from 'react';
-import { useIsSM, useMount } from '../../../../../utils/hooks-utils';
-import { FieldDTO } from '../../types';
-import { UInput } from '../../../../uform/ufields/uinput';
-import { useInteractiveSubmit } from '../../hooks';
-import { IconButton, styled, Stack, Typography } from '@material-ui/core';
-import PlayCircleRoundedIcon from '@material-ui/icons/PlayCircleRounded';
-import PauseCircleRoundedIcon from '@material-ui/icons/PauseCircleRounded';
-import { UChecks } from '../../../../uform/ufields/uchecks';
+import { useEffect, useState } from 'react'
+import { useIsSM, useMount } from '../../../../../utils/hooks-utils'
+import { FieldDTO } from '../../types'
+import { UInput } from '../../../../uform/ufields/uinput'
+import { useInteractiveSubmit } from '../../hooks'
+import { IconButton, styled, Stack, Typography } from '@material-ui/core'
+import PlayCircleRoundedIcon from '@material-ui/icons/PlayCircleRounded'
+import PauseCircleRoundedIcon from '@material-ui/icons/PauseCircleRounded'
+import { UChecks } from '../../../../uform/ufields/uchecks'
 
 export interface PlayerP {
-  src: string;
-  autoplay?: boolean;
+  src: string
+  autoplay?: boolean
 }
 
 const Player = ({ src, autoplay = false }: PlayerP) => {
-  const [audio, setAudio] = useState<HTMLAudioElement>();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [audio, setAudio] = useState<HTMLAudioElement>()
+  const [isPlaying, setIsPlaying] = useState(false)
 
   const play = () => {
-    setIsPlaying(true);
-    audio?.play();
-  };
+    setIsPlaying(true)
+    audio?.play()
+  }
 
   const pause = () => {
-    setIsPlaying(false);
-    audio?.pause();
-  };
+    setIsPlaying(false)
+    audio?.pause()
+  }
 
   useEffect(() => {
-    if (autoplay) play();
-  }, [audio, autoplay]);
+    if (autoplay) play()
+  }, [audio, autoplay])
 
   useMount(() => {
-    const audioFile = new Audio(src);
-    setAudio(audioFile);
-    audioFile.load();
+    const audioFile = new Audio(src)
+    setAudio(audioFile)
+    audioFile.load()
 
-    audioFile.addEventListener('ended', () => setIsPlaying(false));
-  });
-  const sx = { width: 50, height: 50 };
+    audioFile.addEventListener('ended', () => setIsPlaying(false))
+  })
+  const sx = { width: 50, height: 50 }
   return (
     <Stack alignItems="center">
       {!isPlaying && (
@@ -52,12 +52,12 @@ const Player = ({ src, autoplay = false }: PlayerP) => {
         </IconButton>
       )}
     </Stack>
-  );
-};
+  )
+}
 
 export interface FieldP extends Omit<FieldDTO, 'status'> {
-  isMediaActive: boolean;
-  isCurrent: boolean; // if we render all interactive fields it would be impossible to submit one card
+  isMediaActive: boolean
+  isCurrent: boolean // if we render all interactive fields it would be impossible to submit one card
 }
 
 const Pre = styled(Typography)({
@@ -68,7 +68,7 @@ const Pre = styled(Typography)({
   marginBottom: 0,
   lineHeight: 1.12,
   flex: '0 0 auto',
-});
+})
 
 const ImageField = styled('div')({
   minHeight: '40%',
@@ -76,11 +76,11 @@ const ImageField = styled('div')({
   backgroundPosition: '50% 50%',
   backgroundRepeat: 'no-repeat',
   backgroundSize: 'cover',
-});
+})
 
 export const Field = ({ _id, passiveData, interactiveData, type, isMediaActive, isCurrent }: FieldP) => {
-  const { interactiveSubmit } = useInteractiveSubmit();
-  const isSM = useIsSM();
+  const { interactiveSubmit } = useInteractiveSubmit()
+  const isSM = useIsSM()
   if (passiveData) {
     return (
       <>
@@ -92,14 +92,14 @@ export const Field = ({ _id, passiveData, interactiveData, type, isMediaActive, 
         {type === 'IMG' && <ImageField sx={{ backgroundImage: `url("${passiveData}")` }} />}
         {type === 'AUDIO' && <Player src={passiveData} autoplay={isMediaActive} />}
       </>
-    );
+    )
   } else if (interactiveData && isCurrent) {
     return (
       <>
         {type === 'RADIO' && <UChecks _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
         {type === 'INPUT' && <UInput _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
       </>
-    );
+    )
   }
-  return null;
-};
+  return null
+}

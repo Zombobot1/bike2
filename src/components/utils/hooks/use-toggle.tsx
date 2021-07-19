@@ -1,3 +1,3 @@
-import { useReducer } from 'react';
+import { useReducer } from 'react'
 
-export const useToggle = (init: boolean) => useReducer((prev) => !prev, init);
+export const useToggle = (init: boolean) => useReducer((prev) => !prev, init)

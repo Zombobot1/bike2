@@ -1,7 +1,7 @@
-import { DefaultRequestBody, RequestParams, RestRequest } from 'msw';
-import { JSObject } from './types';
+import { DefaultRequestBody, RequestParams, RestRequest } from 'msw'
+import { JSObject } from './types'
 
-export type WR = RestRequest<DefaultRequestBody, RequestParams>;
+export type WR = RestRequest<DefaultRequestBody, RequestParams>
 
 export const w =
   (f: (r: WR) => JSObject) =>
@@ -13,4 +13,4 @@ export const w =
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ctx: any,
   ) =>
-    res(ctx.json(f(req)));
+    res(ctx.json(f(req)))

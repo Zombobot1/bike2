@@ -1,6 +1,6 @@
-import axios from 'axios';
+import axios from 'axios'
 
-export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://bike.maxvas.ru';
+export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://bike.maxvas.ru'
 
 export const axi = axios.create({
   baseURL: BASE_URL,
@@ -9,4 +9,4 @@ export const axi = axios.create({
     'Content-Type': 'application/json',
     accept: 'application/json',
   },
-});
+})

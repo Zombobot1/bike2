@@ -1,10 +1,10 @@
-import { FetchData } from '../../utils/fetched-data';
-import { useTrainings } from '../hooks';
-import { TrainingDeck } from './training-deck/training-deck';
-import { styled, Typography } from '@material-ui/core';
+import { FetchData } from '../../utils/fetched-data'
+import { useTrainings } from '../hooks'
+import { TrainingDeck } from './training-deck/training-deck'
+import { styled, Typography } from '@material-ui/core'
 
-import Masonry from 'react-masonry-css';
-import { useIsSM } from '../../../utils/hooks-utils';
+import Masonry from 'react-masonry-css'
+import { useIsSM } from '../../../utils/hooks-utils'
 
 const TrainingsMasonry = styled(Masonry)({
   display: 'flex',
@@ -14,13 +14,13 @@ const TrainingsMasonry = styled(Masonry)({
     paddingLeft: '20px' /* gutter size */,
     backgroundClip: 'padding-box',
   },
-});
+})
 
 const Trainings_ = () => {
-  const { data } = useTrainings();
+  const { data } = useTrainings()
 
-  const isSM = useIsSM();
-  const columns = isSM ? 4 : 1;
+  const isSM = useIsSM()
+  const columns = isSM ? 4 : 1
 
   return (
     <TrainingsMasonry
@@ -33,8 +33,8 @@ const Trainings_ = () => {
         <TrainingDeck {...e} key={j} />
       ))}
     </TrainingsMasonry>
-  );
-};
+  )
+}
 
 export function Trainings() {
   return (
@@ -46,5 +46,5 @@ export function Trainings() {
         <Trainings_ />
       </FetchData>
     </div>
-  );
+  )
 }

@@ -1,18 +1,18 @@
-import { TrainingsGroupDTO } from '../../training/training/training';
-import { Autocomplete, Stack, TextField, styled } from '@material-ui/core';
-import { useMQ } from '../../../../utils/hooks-utils';
-import { TrainingCard } from './training-card/training-card';
+import { TrainingsGroupDTO } from '../../training/training/training'
+import { Autocomplete, Stack, TextField, styled } from '@material-ui/core'
+import { useMQ } from '../../../../utils/hooks-utils'
+import { TrainingCard } from './training-card/training-card'
 
 export interface NamedDeck {
-  deckName: string;
+  deckName: string
 }
 
 const Card = styled('div', { label: 'TrainingDeck' })({
   marginBottom: '20px',
-});
+})
 
 export const TrainingDeck = ({ rootDeckName, trainings }: TrainingsGroupDTO) => {
-  const sx = useMQ({ width: 310 }, { width: '100%' });
+  const sx = useMQ({ width: 310 }, { width: '100%' })
 
   return (
     <Card sx={sx}>
@@ -29,5 +29,5 @@ export const TrainingDeck = ({ rootDeckName, trainings }: TrainingsGroupDTO) => 
         ))}
       </Stack>
     </Card>
-  );
-};
+  )
+}

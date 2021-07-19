@@ -1,20 +1,20 @@
-import { StrictMode } from 'react';
-import { QueryClientProvider } from 'react-query';
-import { _ROOT, PAGES } from './navigation/pages';
-import { ThemeProvider } from '@material-ui/core';
-import { theme } from '../../theme';
-import { buildRoutes } from '../utils/routing';
-import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom';
-import { Snackbar, Stack, Link } from '@material-ui/core';
-import MuiAlert, { AlertProps } from '@material-ui/core/Alert';
-import { COLORS } from '../../theme';
-import { useIsPageVisible } from '../../utils/hooks-utils';
-import { Global, css } from '@emotion/react';
-import { useEffect, useState, forwardRef } from 'react';
-import { QueryClient } from 'react-query';
-import * as serviceWorkerRegistration from '../../serviceWorkerRegistration';
-import { STUDY } from './navigation/pages';
-import { _SORYBOOK } from '../../sorybook/sorybook';
+import { StrictMode } from 'react'
+import { QueryClientProvider } from 'react-query'
+import { _ROOT, PAGES } from './navigation/pages'
+import { ThemeProvider } from '@material-ui/core'
+import { theme } from '../../theme'
+import { buildRoutes } from '../utils/routing'
+import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+import { Snackbar, Stack, Link } from '@material-ui/core'
+import MuiAlert, { AlertProps } from '@material-ui/core/Alert'
+import { COLORS } from '../../theme'
+import { useIsPageVisible } from '../../utils/hooks-utils'
+import { Global, css } from '@emotion/react'
+import { useEffect, useState, forwardRef } from 'react'
+import { QueryClient } from 'react-query'
+import * as serviceWorkerRegistration from '../../serviceWorkerRegistration'
+import { STUDY } from './navigation/pages'
+import { _SORYBOOK } from '../../sorybook/sorybook'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -23,39 +23,39 @@ const queryClient = new QueryClient({
       suspense: true,
     },
   },
-});
+})
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {
-  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-});
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />
+})
 
 function SWController() {
-  const [showReload, setShowReload] = useState(false);
-  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+  const [showReload, setShowReload] = useState(false)
+  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null)
 
   const onSWUpdate = (registration: ServiceWorkerRegistration) => {
-    setShowReload(true);
-    setWaitingWorker(registration.waiting);
-  };
+    setShowReload(true)
+    setWaitingWorker(registration.waiting)
+  }
 
   useEffect(() => {
-    serviceWorkerRegistration.register({ onUpdate: onSWUpdate });
-  }, []);
+    serviceWorkerRegistration.register({ onUpdate: onSWUpdate })
+  }, [])
 
-  const isVisible = useIsPageVisible();
+  const isVisible = useIsPageVisible()
 
   useEffect(() => {
     if (isVisible)
       navigator.serviceWorker
         .getRegistrations()
-        .then((regs) => regs.forEach((reg) => reg.update().catch(console.error)));
-  }, [isVisible]);
+        .then((regs) => regs.forEach((reg) => reg.update().catch(console.error)))
+  }, [isVisible])
 
   const reloadPage = () => {
-    waitingWorker?.postMessage({ type: 'SKIP_WAITING' });
-    setShowReload(false);
-    window.location.reload();
-  };
+    waitingWorker?.postMessage({ type: 'SKIP_WAITING' })
+    setShowReload(false)
+    window.location.reload()
+  }
 
   return (
     <Snackbar open={showReload} onClick={reloadPage} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
@@ -79,7 +79,7 @@ function SWController() {
         </Stack>
       </Alert>
     </Snackbar>
-  );
+  )
 }
 
 function GlobalCss() {
@@ -101,10 +101,10 @@ function GlobalCss() {
         }
       `}
     />
-  );
+  )
 }
 
-const redirect = process.env.NODE_ENV === 'development' ? _SORYBOOK : STUDY;
+const redirect = process.env.NODE_ENV === 'development' ? _SORYBOOK : STUDY
 
 export function Shell() {
   return (
@@ -123,5 +123,5 @@ export function Shell() {
         </Router>
       </ThemeProvider>
     </StrictMode>
-  );
+  )
 }

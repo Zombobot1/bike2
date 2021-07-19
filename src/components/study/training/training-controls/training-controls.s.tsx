@@ -1,41 +1,41 @@
-import { CardEstimation, CardType, estimationColor } from '../types';
-import { useState } from 'react';
-import { COLORS } from '../../../../theme';
-import { TrainingControls } from './training-controls';
-import { useTrainingTimer } from '../training-timer/training-timer';
-import { useMount } from '../../../../utils/hooks-utils';
-import { Button, Stack, Typography } from '@material-ui/core';
+import { CardEstimation, CardType, estimationColor } from '../types'
+import { useState } from 'react'
+import { COLORS } from '../../../../theme'
+import { TrainingControls } from './training-controls'
+import { useTrainingTimer } from '../training-timer/training-timer'
+import { useMount } from '../../../../utils/hooks-utils'
+import { Button, Stack, Typography } from '@material-ui/core'
 
 interface TrainingControlsTP {
-  cardType: CardType;
-  areFieldsHidden: boolean;
-  timeLeft: number;
+  cardType: CardType
+  areFieldsHidden: boolean
+  timeLeft: number
 }
 
 const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingControlsTP) => {
-  const [areHidden, setHidden] = useState(areFieldsHidden);
-  const [estimation, setEstimation] = useState<CardEstimation | null>(null);
-  const [status, setStatus] = useState('');
+  const [areHidden, setHidden] = useState(areFieldsHidden)
+  const [estimation, setEstimation] = useState<CardEstimation | null>(null)
+  const [status, setStatus] = useState('')
 
-  const [isTimeOut, setIsTimeOut] = useState(false);
-  const [wasDeleted, setWasDeleted] = useState(false);
-  const { setTimeToAnswer, setOnTimeout } = useTrainingTimer();
+  const [isTimeOut, setIsTimeOut] = useState(false)
+  const [wasDeleted, setWasDeleted] = useState(false)
+  const { setTimeToAnswer, setOnTimeout } = useTrainingTimer()
 
   useMount(() => {
-    setOnTimeout(() => setIsTimeOut(true));
-    setTimeToAnswer(timeLeft);
-  });
+    setOnTimeout(() => setIsTimeOut(true))
+    setTimeToAnswer(timeLeft)
+  })
 
   const estimatePassive = (e: CardEstimation) => {
-    setEstimation(e);
-    setHidden(true);
-    return undefined;
-  };
+    setEstimation(e)
+    setHidden(true)
+    return undefined
+  }
 
   const estimateInteractive = (_e: CardEstimation) => {
-    setStatus('Ready to go further');
-    return () => setStatus('This is next');
-  };
+    setStatus('Ready to go further')
+    return () => setStatus('This is next')
+  }
 
   return (
     <Stack alignItems="center" spacing={2} sx={{ width: '500px', backgroundColor: COLORS.light, padding: 2 }}>
@@ -49,8 +49,8 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingCont
           variant="outlined"
           color="error"
           onClick={() => {
-            setIsTimeOut(false);
-            setTimeToAnswer(timeLeft);
+            setIsTimeOut(false)
+            setTimeToAnswer(timeLeft)
           }}
         >
           Timeout! Relaunch
@@ -68,29 +68,29 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingCont
         cardId="1"
       />
     </Stack>
-  );
-};
+  )
+}
 
 const passiveCardControls: TrainingControlsTP = {
   cardType: 'PASSIVE',
   areFieldsHidden: true,
   timeLeft: 99,
-};
+}
 
 const interactiveCardControls: TrainingControlsTP = {
   cardType: 'INTERACTIVE',
   areFieldsHidden: true,
   timeLeft: 99,
-};
+}
 
 const atTimeout: TrainingControlsTP = {
   cardType: 'INTERACTIVE',
   areFieldsHidden: true,
   timeLeft: 1,
-};
+}
 
-export const PassiveCardControls = () => <TrainingControlsT {...passiveCardControls} />;
-export const InteractiveCardControls = () => <TrainingControlsT {...interactiveCardControls} />;
-export const AtTimeout = () => <TrainingControlsT {...atTimeout} />;
-export const CanDeleteCard = () => <TrainingControlsT {...passiveCardControls} />;
-export const CanPauseOrResumeTimer = () => <TrainingControlsT {...passiveCardControls} />;
+export const PassiveCardControls = () => <TrainingControlsT {...passiveCardControls} />
+export const InteractiveCardControls = () => <TrainingControlsT {...interactiveCardControls} />
+export const AtTimeout = () => <TrainingControlsT {...atTimeout} />
+export const CanDeleteCard = () => <TrainingControlsT {...passiveCardControls} />
+export const CanPauseOrResumeTimer = () => <TrainingControlsT {...passiveCardControls} />

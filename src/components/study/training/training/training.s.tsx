@@ -1,14 +1,14 @@
-import { Training, TrainingDTO } from './training';
-import { useToggle } from '../../../utils/hooks/use-toggle';
-import { MemoryRouter } from 'react-router-dom';
-import { trainings } from '../../../../content/content';
-import { useMedia } from '../../../utils/hooks/use-media';
-import { SM } from '../../../../theme';
-import { Stack, Button } from '@material-ui/core';
+import { Training, TrainingDTO } from './training'
+import { useToggle } from '../../../utils/hooks/use-toggle'
+import { MemoryRouter } from 'react-router-dom'
+import { trainings } from '../../../../content/content'
+import { useMedia } from '../../../utils/hooks/use-media'
+import { SM } from '../../../../theme'
+import { Stack, Button } from '@material-ui/core'
 
 const TrainingT = (args: TrainingDTO) => {
-  const [isFinished, toggle] = useToggle(false);
-  const isMobile = useMedia([SM], [true], false);
+  const [isFinished, toggle] = useToggle(false)
+  const isMobile = useMedia([SM], [true], false)
 
   return (
     <MemoryRouter initialEntries={['/app/study/']}>
@@ -26,11 +26,11 @@ const TrainingT = (args: TrainingDTO) => {
         )}
       </Stack>
     </MemoryRouter>
-  );
-};
+  )
+}
 
-export const Simple = () => <TrainingT {...trainings.simple} />;
-export const WithUpdateFromServer = () => <TrainingT {...trainings.withUpdateFromServer} />;
-export const Interactive = () => <TrainingT {...trainings.interactive} />;
-export const Combined = () => <TrainingT {...trainings.combined} />;
-export const AutofocusCheck = () => <TrainingT {...trainings.autofocusCheck} />;
+export const Simple = () => <TrainingT {...trainings.simple} />
+export const WithUpdateFromServer = () => <TrainingT {...trainings.withUpdateFromServer} />
+export const Interactive = () => <TrainingT {...trainings.interactive} />
+export const Combined = () => <TrainingT {...trainings.combined} />
+export const AutofocusCheck = () => <TrainingT {...trainings.autofocusCheck} />

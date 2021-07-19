@@ -7,4 +7,4 @@ export const currentState = `
  ( .        , )
   \\ \\_\\\\//_/ /
    ~~  ~~  ~~
-`;
+`

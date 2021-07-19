@@ -1,107 +1,107 @@
-import { CardDTO, FieldDTO } from '../components/study/training/types';
-import hospital from './hospital.png';
-import hospitalMp3 from './hospital.mp3';
-import { TrainingDTO } from '../components/study/training/training/training';
-import { TrainingsGroupDTO } from '../components/study/training/training/training';
+import { CardDTO, FieldDTO } from '../components/study/training/types'
+import hospital from './hospital.png'
+import hospitalMp3 from './hospital.mp3'
+import { TrainingDTO } from '../components/study/training/training/training'
+import { TrainingsGroupDTO } from '../components/study/training/training/training'
 
-const question = `When do we use the definite article?`;
+const question = `When do we use the definite article?`
 
 const answer = `The is used to refer to specific or particular nouns.
 
 For example, if I say, "Let's read the book," I mean a specific book. If I say, "Let's read a book," I mean any book rather than a specific book.
 
-Here's another way to explain it: The is used to refer to a specific or particular member of a group. For example, "I just saw the most popular movie of the year." There are many movies, but only one particular movie is the most popular. Therefore, we use the.`;
+Here's another way to explain it: The is used to refer to a specific or particular member of a group. For example, "I just saw the most popular movie of the year." There are many movies, but only one particular movie is the most popular. Therefore, we use the.`
 
 const field1: FieldDTO = {
   _id: 'field1',
   type: 'PRE',
   passiveData: question,
   status: 'SHOW',
-};
+}
 
 const field2: FieldDTO = {
   _id: 'field2',
   type: 'PRE',
   passiveData: answer,
   status: 'HIDE',
-};
+}
 
 const hospitalEn: FieldDTO = {
   _id: 'hospitalEn',
   type: 'PRE',
   passiveData: 'Hospital',
   status: 'SHOW',
-};
+}
 
 const hospitalIpa: FieldDTO = {
   _id: 'hospitalIpa',
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
   status: 'HIDE',
-};
+}
 
 const theatreEn: FieldDTO = {
   _id: 'theatreEn',
   type: 'PRE',
   passiveData: 'Theatre',
   status: 'SHOW',
-};
+}
 
 const theatreIpa: FieldDTO = {
   _id: 'theatreIpa',
   type: 'PRE',
   passiveData: 'ˈθiətər',
   status: 'HIDE',
-};
+}
 
 const theatreRu: FieldDTO = {
   _id: 'theatreRu',
   type: 'PRE',
   passiveData: 'Театр',
   status: 'HIDE',
-};
+}
 
 const hospitalRu: FieldDTO = {
   _id: 'hospitalRu',
   type: 'PRE',
   passiveData: 'Госпиталь',
   status: 'HIDE',
-};
+}
 
 const hospitalEnLong: FieldDTO = {
   _id: 'hospitalEnLong',
   type: 'PRE',
   passiveData: 'Hospital Hospital Hospital Hospital',
   status: 'SHOW',
-};
+}
 
 const hospitalIpaLong: FieldDTO = {
   _id: 'hospitalIpaLong',
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
   status: 'HIDE',
-};
+}
 
 const hospitalImg: FieldDTO = {
   _id: 'hospitalImg',
   type: 'IMG',
   passiveData: hospital,
   status: 'HIDE',
-};
+}
 
 const hospitalAudio: FieldDTO = {
   _id: 'hospitalAudio',
   type: 'AUDIO',
   passiveData: hospitalMp3,
   status: 'HIDE',
-};
+}
 
 const hospitalRuLong: FieldDTO = {
   _id: 'hospitalRuLong',
   type: 'PRE',
   passiveData: 'Госпиталь Госпиталь Госпиталь',
   status: 'HIDE',
-};
+}
 
 const selectRight: FieldDTO = {
   _id: 'selectRight',
@@ -113,21 +113,21 @@ const selectRight: FieldDTO = {
     explanation: 'Cuz',
   },
   status: 'SHOW',
-};
+}
 
 const passiveText: FieldDTO = {
   _id: 'passiveText',
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
   status: 'SHOW',
-};
+}
 
 const anotherPassiveText: FieldDTO = {
   _id: 'anotherPassiveText',
   type: 'PRE',
   passiveData: 'Some short text',
   status: 'SHOW',
-};
+}
 
 const typeA: FieldDTO = {
   _id: 'typeA',
@@ -139,7 +139,7 @@ const typeA: FieldDTO = {
     explanation: 'a',
   },
   status: 'SHOW',
-};
+}
 
 const field15: FieldDTO = {
   _id: 'field15',
@@ -151,7 +151,7 @@ const field15: FieldDTO = {
     explanation: 'b',
   },
   status: 'SHOW',
-};
+}
 
 export const uCardLong: CardDTO = {
   _id: '5',
@@ -159,7 +159,7 @@ export const uCardLong: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'PASSIVE',
-};
+}
 
 export const uCardLongWithUpdate: CardDTO = {
   _id: 'get update',
@@ -167,7 +167,7 @@ export const uCardLongWithUpdate: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'PASSIVE',
-};
+}
 
 export const uCardMinimal: CardDTO = {
   _id: '4',
@@ -175,7 +175,7 @@ export const uCardMinimal: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'PASSIVE',
-};
+}
 
 export const cardForUpdate: CardDTO = {
   _id: 'update',
@@ -183,7 +183,7 @@ export const cardForUpdate: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'PASSIVE',
-};
+}
 
 export const iCard1: CardDTO = {
   _id: '10',
@@ -191,7 +191,7 @@ export const iCard1: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
-};
+}
 
 export const iCardUInputWithEnter: CardDTO = {
   _id: 'iCardUInputWithEnter',
@@ -199,7 +199,7 @@ export const iCardUInputWithEnter: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
-};
+}
 
 export const iCardUInputWithoutEnter: CardDTO = {
   _id: 'iCardUInputWithoutEnter',
@@ -207,7 +207,7 @@ export const iCardUInputWithoutEnter: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'red',
   type: 'INTERACTIVE',
-};
+}
 
 export const cardWithDifferentFields: CardDTO = {
   _id: 'cardWithDifferentFields',
@@ -215,7 +215,7 @@ export const cardWithDifferentFields: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',
-};
+}
 
 export const cardWithQandA: CardDTO = {
   _id: '2',
@@ -223,7 +223,7 @@ export const cardWithQandA: CardDTO = {
   timeToAnswer: 3000,
   stageColor: 'blue',
   type: 'PASSIVE',
-};
+}
 
 const basic: TrainingDTO = {
   _id: 'simple',
@@ -232,37 +232,37 @@ const basic: TrainingDTO = {
   deckPath: 'Statistical methods ',
   trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
   cards: [uCardLong, uCardMinimal],
-};
+}
 
 const simple: TrainingDTO = {
   ...basic,
   _id: 'simple',
   cards: [uCardLong, uCardMinimal],
-};
+}
 
 const withUpdateFromServer: TrainingDTO = {
   ...basic,
   _id: 'simple',
   cards: [uCardLongWithUpdate, uCardMinimal],
-};
+}
 
 const interactive: TrainingDTO = {
   ...basic,
   _id: 'interactive',
   cards: [iCardUInputWithoutEnter, iCard1, iCardUInputWithEnter],
-};
+}
 
 const combined: TrainingDTO = {
   ...basic,
   _id: 'combined',
   cards: [uCardLong, uCardMinimal, iCardUInputWithEnter, iCard1],
-};
+}
 
 const autofocusCheck: TrainingDTO = {
   ...basic,
   _id: 'autofocusCheck',
   cards: [uCardLong, iCardUInputWithEnter, uCardMinimal],
-};
+}
 
 export const trainings = {
   simple,
@@ -270,7 +270,7 @@ export const trainings = {
   interactive,
   combined,
   autofocusCheck,
-};
+}
 
 const mathTrainings: TrainingDTO[] = [
   trainings.simple,
@@ -309,7 +309,7 @@ const mathTrainings: TrainingDTO[] = [
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
-];
+]
 const jsTrainings: TrainingDTO[] = [
   {
     _id: '1',
@@ -365,7 +365,7 @@ const jsTrainings: TrainingDTO[] = [
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
-];
+]
 const englishTrainings: TrainingDTO[] = [
   {
     _id: '1',
@@ -412,7 +412,7 @@ const englishTrainings: TrainingDTO[] = [
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
-];
+]
 const cppTrainings: TrainingDTO[] = [
   {
     _id: '1',
@@ -441,7 +441,7 @@ const cppTrainings: TrainingDTO[] = [
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
-];
+]
 const pythonTrainings: TrainingDTO[] = [
   {
     _id: '1',
@@ -461,7 +461,7 @@ const pythonTrainings: TrainingDTO[] = [
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
-];
+]
 const cookingTrainings: TrainingDTO[] = [
   {
     _id: '1',
@@ -481,7 +481,7 @@ const cookingTrainings: TrainingDTO[] = [
     trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
     cards: [uCardLong, cardWithQandA],
   },
-];
+]
 
 export const trainingDecks: TrainingsGroupDTO[] = [
   { rootDeckName: 'Math', trainings: mathTrainings },
@@ -490,4 +490,4 @@ export const trainingDecks: TrainingsGroupDTO[] = [
   { rootDeckName: 'C++', trainings: cppTrainings },
   { rootDeckName: 'Python', trainings: pythonTrainings },
   { rootDeckName: 'Cooking', trainings: cookingTrainings },
-];
+]

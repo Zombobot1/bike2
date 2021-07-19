@@ -1,7 +1,17 @@
-import { UTable } from './UTable';
+import { TableData } from './useTable'
+import { UTable } from './UTable'
 
-function Template() {
-  return <UTable />;
+function Template({ data }: { data?: TableData }) {
+  return <UTable data={data} />
 }
 
-export const Default = () => <Template />;
+const data1 = [
+  [
+    'Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 ',
+    'Псина 1',
+  ],
+  ['Dogmeat 2', 'Псина 2'],
+]
+
+export const CanEdit = () => <Template data={data1} />
+export const CanExtend = () => <Template />

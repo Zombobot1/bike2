@@ -1,4 +1,4 @@
 export interface SmallDeckCard {
-  deckColor: string;
-  deckName: string;
+  deckColor: string
+  deckName: string
 }

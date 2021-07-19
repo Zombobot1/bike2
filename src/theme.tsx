@@ -1,4 +1,4 @@
-import { createTheme } from '@material-ui/core';
+import { createTheme } from '@material-ui/core'
 
 export const COLORS = {
   white: '#fff',
@@ -11,9 +11,9 @@ export const COLORS = {
   danger: '#fa5252',
   bg: '#F5F8FB',
   light: '#eaedf2',
-};
+}
 
-export const SM = '(max-width: 550px)';
+export const SM = '(max-width: 550px)'
 
 export const theme = createTheme({
   typography: {
@@ -43,4 +43,4 @@ export const theme = createTheme({
       main: '#fa5252',
     },
   },
-});
+})

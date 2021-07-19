@@ -1,49 +1,87 @@
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
+/* eslint-disable react/jsx-key */
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
 
-function createData(name: string, calories: number, fat: number, carbs: number, protein: number) {
-  return { name, calories, fat, carbs, protein };
+import { TextField, ClickAwayListener, useTheme, Typography } from '@material-ui/core'
+import { useCell, useRows, TableData } from './useTable'
+
+interface Cell {
+  i: number
+  j: number
 }
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
-
-export function UTable() {
+function Cell({ i, j }: Cell) {
+  const { data, isInFocus, setData, setFocus } = useCell(i, j)
+  const theme = useTheme()
   return (
-    <TableContainer>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+    <TableCell
+      key={j}
+      component="td"
+      width="250px"
+      scope="row"
+      onClick={() => setFocus()}
+      sx={
+        isInFocus
+          ? { padding: 0, paddingLeft: '2px', backgroundColor: `${theme.palette.grey[100]}` }
+          : { paddingTop: '17px' }
+      }
+    >
+      {!isInFocus && data}
+      {isInFocus && (
+        <TextField
+          defaultValue={data}
+          autoFocus
+          onFocus={(event) => {
+            event.target.select()
+          }}
+          onBlur={(event) => setData(event.target.value)}
+          inputProps={{ style: { fontSize: 16, lineHeight: 1.4 } }}
+          sx={{
+            '.MuiOutlinedInput-notchedOutline': { border: 'none' },
+          }}
+          multiline
+        />
+      )}
+    </TableCell>
+  )
+}
+
+interface UTable {
+  data?: TableData
+}
+export function UTable({ data }: UTable) {
+  const { rows, unfocus } = useRows(data)
+
+  return (
+    <ClickAwayListener onClickAway={unfocus}>
+      <Table sx={{ width: 'unset' }} aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
+            <TableCell>
+              <Typography fontSize="large" fontWeight="bold">
+                Phrase
+              </Typography>
+            </TableCell>
+            <TableCell>
+              <Typography fontSize="large" fontWeight="bold">
+                Meaning
+              </Typography>
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.name} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
+          {rows.map((row, i) => (
+            <TableRow key={i} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              {row.map((_, j) => (
+                <Cell key={j} i={i} j={j} />
+              ))}
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </TableContainer>
-  );
+    </ClickAwayListener>
+  )
 }

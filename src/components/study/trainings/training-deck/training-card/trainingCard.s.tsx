@@ -1,18 +1,18 @@
-import { TrainingCard } from './training-card';
-import { TrainingConceptsInfoP } from './training-cards-info/training-concepts-info';
-import { MemoryRouter } from 'react-router-dom';
-import { useState } from 'react';
-import { Box } from '@material-ui/core';
-import { COLORS } from '../../../../../theme';
+import { TrainingCard } from './training-card'
+import { TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
+import { MemoryRouter } from 'react-router-dom'
+import { useState } from 'react'
+import { Box } from '@material-ui/core'
+import { COLORS } from '../../../../../theme'
 
 type TrainingCardT = {
-  name: string;
-  path: string;
-  conceptsInfo: TrainingConceptsInfoP;
-};
+  name: string
+  path: string
+  conceptsInfo: TrainingConceptsInfoP
+}
 
 function TrainingCardT({ name, path, conceptsInfo }: TrainingCardT) {
-  const [info, setInfo] = useState(conceptsInfo);
+  const [info, setInfo] = useState(conceptsInfo)
 
   return (
     <MemoryRouter initialEntries={['/app/study/']}>
@@ -23,7 +23,7 @@ function TrainingCardT({ name, path, conceptsInfo }: TrainingCardT) {
         <TrainingCard _id={'1'} deckName={name} deckPath={path} deckColor={'#735cfc'} trainingConceptsInfo={info} />
       </Box>
     </MemoryRouter>
-  );
+  )
 }
 
 export const MovesOnHover = () => (
@@ -35,7 +35,7 @@ export const MovesOnHover = () => (
       toRepeat: 99,
     }}
   />
-);
+)
 
 export const LotsOfInformation = () => (
   <TrainingCardT
@@ -46,7 +46,7 @@ export const LotsOfInformation = () => (
       toRepeat: 1500,
     }}
   />
-);
+)
 
 export const Pathless = () => (
   <TrainingCardT
@@ -57,7 +57,7 @@ export const Pathless = () => (
       toRepeat: 100,
     }}
   />
-);
+)
 
 export const NothingToLearn = () => (
   <TrainingCardT
@@ -68,7 +68,7 @@ export const NothingToLearn = () => (
       toRepeat: 100,
     }}
   />
-);
+)
 
 export const NothingToRepeat = () => (
   <TrainingCardT
@@ -79,4 +79,4 @@ export const NothingToRepeat = () => (
       toRepeat: 0,
     }}
   />
-);
+)

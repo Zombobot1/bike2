@@ -1,16 +1,16 @@
-import { useState } from 'react';
-import { TipOnMobile, UInputElement } from './uinput';
+import { useState } from 'react'
+import { TipOnMobile, UInputElement } from './uinput'
 
 interface TUInputP {
-  _id: string;
-  question: string;
-  explanation: string;
-  value: string;
-  autoFocus: boolean;
-  wasSubmitted: boolean;
-  correctAnswer: string;
-  validationError: string;
-  tipOnMobile: TipOnMobile;
+  _id: string
+  question: string
+  explanation: string
+  value: string
+  autoFocus: boolean
+  wasSubmitted: boolean
+  correctAnswer: string
+  validationError: string
+  tipOnMobile: TipOnMobile
 }
 
 const TUInput = ({
@@ -24,7 +24,7 @@ const TUInput = ({
   autoFocus,
   tipOnMobile,
 }: TUInputP) => {
-  const [value_, setValue] = useState(value);
+  const [value_, setValue] = useState(value)
   return (
     <div style={{ width: '50%' }}>
       <UInputElement
@@ -40,8 +40,8 @@ const TUInput = ({
         tipOnMobile={tipOnMobile}
       />
     </div>
-  );
-};
+  )
+}
 
 const defaultI: TUInputP = {
   _id: 'defaultI',
@@ -53,27 +53,27 @@ const defaultI: TUInputP = {
   explanation: 'abc',
   validationError: '',
   tipOnMobile: 'SHOW_TIP',
-};
+}
 
 const rightI: TUInputP = {
   ...defaultI,
   value: 'abc',
   wasSubmitted: true,
-};
+}
 
 const wrongI: TUInputP = {
   ...defaultI,
   value: 'ab',
   wasSubmitted: true,
-};
+}
 
 const invalidI: TUInputP = {
   ...defaultI,
   validationError: 'Required field',
   wasSubmitted: false,
-};
+}
 
-export const Default = () => <TUInput {...defaultI} />;
-export const Right = () => <TUInput {...rightI} />;
-export const Wrong = () => <TUInput {...wrongI} />;
-export const Invalid = () => <TUInput {...invalidI} />;
+export const Default = () => <TUInput {...defaultI} />
+export const Right = () => <TUInput {...rightI} />
+export const Wrong = () => <TUInput {...wrongI} />
+export const Invalid = () => <TUInput {...invalidI} />

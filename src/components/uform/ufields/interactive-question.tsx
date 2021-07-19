@@ -1,22 +1,22 @@
-import { styled, Typography } from '@material-ui/core';
-import { Validity } from '../types';
-import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
-import CheckRoundedIcon from '@material-ui/icons/CheckRounded';
+import { styled, Typography } from '@material-ui/core'
+import { Validity } from '../types'
+import CloseRoundedIcon from '@material-ui/icons/CloseRounded'
+import CheckRoundedIcon from '@material-ui/icons/CheckRounded'
 
 export interface InteractiveQuestionP {
-  question: string;
-  status: Validity;
+  question: string
+  status: Validity
 }
 
 const Question = styled(Typography)({
   fontSize: 24,
   marginBottom: 10,
-});
+})
 
 export function InteractiveQuestion({ question, status }: InteractiveQuestionP) {
-  if (!question) return null;
+  if (!question) return null
 
-  const sx = { transform: 'translateY(5px)', marginRight: 0.6 };
+  const sx = { transform: 'translateY(5px)', marginRight: 0.6 }
 
   return (
     <Question>
@@ -24,5 +24,5 @@ export function InteractiveQuestion({ question, status }: InteractiveQuestionP) 
       {status === 'INVALID' && <CloseRoundedIcon color="error" sx={sx} />}
       {question}
     </Question>
-  );
+  )
 }
