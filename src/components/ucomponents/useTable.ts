@@ -15,24 +15,17 @@ function parseData(data: string): TableData {
   return safeSplit(data, '\n').map((row) => safeSplit(row, ' - '))
 }
 
-function useRows_(columnsNumber: number, initialRows?: TableData) {
-  const [rows, setRows] = useAtom(rowsA)
-  const [focusedCell, setFocusedCell] = useAtom(focusedCellA)
-  const [_, setColumnsNumber] = useAtom(columnsNumberA)
-
-  const resetRows = useResetAtom(rowsA)
-  const resetFocus = useResetAtom(focusedCellA)
-  const resetColumnsNumber = useResetAtom(columnsNumberA)
-  const resetIsEditing = useResetAtom(isEditingA)
-
-  const reset = () => {
-    resetRows()
-    resetFocus()
-    resetColumnsNumber()
-    resetIsEditing()
-  }
-
+export function useRows() {
+  const [rows] = useAtom(rowsA)
+  const [_fc, setFocusedCell] = useAtom(focusedCellA)
   const unfocus = () => setFocusedCell({ i: -1, j: -1 })
+
+  return { rows, unfocus }
+}
+
+export function useUTable(columnsNumber: number, initialRows?: TableData) {
+  const [_rows, setRows] = useAtom(rowsA)
+  const [_, setColumnsNumber] = useAtom(columnsNumberA)
 
   useMount(() => {
     if (initialRows) setRows(initialRows)
@@ -40,13 +33,17 @@ function useRows_(columnsNumber: number, initialRows?: TableData) {
     setColumnsNumber(columnsNumber)
   })
 
-  return { rows, setRows, focusedCell, setFocusedCell, reset, unfocus }
-}
+  const resetRows = useResetAtom(rowsA)
+  const resetFocus = useResetAtom(focusedCellA)
+  const resetColumnsNumber = useResetAtom(columnsNumberA)
+  const resetIsEditing = useResetAtom(isEditingA)
 
-export function useRows(columnsNumber: number, initialRows?: TableData) {
-  const { rows, reset, unfocus } = useRows_(columnsNumber, initialRows)
-
-  return { rows, unfocus, reset }
+  return () => {
+    resetRows()
+    resetFocus()
+    resetColumnsNumber()
+    resetIsEditing()
+  }
 }
 
 export function useCell(i: number, j: number, isLast: boolean) {

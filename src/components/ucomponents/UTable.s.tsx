@@ -22,3 +22,4 @@ export const CanBeEdited = () => <Template data={data1} />
 export const CanBeSelected = () => <Template data={data1} />
 export const CanBeExtended = () => <Template />
 export const ParsesPastedData = () => <Template pasteData={'\na - b\nc - d'} />
+export const GoesToCardsGeneration = () => <Template />
