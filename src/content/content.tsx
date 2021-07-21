@@ -14,6 +14,7 @@ Here's another way to explain it: The is used to refer to a specific or particul
 
 const field1: FieldDTO = {
   _id: 'field1',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: question,
   status: 'SHOW',
@@ -21,6 +22,7 @@ const field1: FieldDTO = {
 
 const field2: FieldDTO = {
   _id: 'field2',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: answer,
   status: 'HIDE',
@@ -28,6 +30,7 @@ const field2: FieldDTO = {
 
 const hospitalEn: FieldDTO = {
   _id: 'hospitalEn',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Hospital',
   status: 'SHOW',
@@ -35,6 +38,7 @@ const hospitalEn: FieldDTO = {
 
 const hospitalIpa: FieldDTO = {
   _id: 'hospitalIpa',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
   status: 'HIDE',
@@ -42,6 +46,7 @@ const hospitalIpa: FieldDTO = {
 
 const theatreEn: FieldDTO = {
   _id: 'theatreEn',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Theatre',
   status: 'SHOW',
@@ -49,6 +54,7 @@ const theatreEn: FieldDTO = {
 
 const theatreIpa: FieldDTO = {
   _id: 'theatreIpa',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'ˈθiətər',
   status: 'HIDE',
@@ -56,6 +62,7 @@ const theatreIpa: FieldDTO = {
 
 const theatreRu: FieldDTO = {
   _id: 'theatreRu',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Театр',
   status: 'HIDE',
@@ -63,13 +70,15 @@ const theatreRu: FieldDTO = {
 
 const hospitalRu: FieldDTO = {
   _id: 'hospitalRu',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Госпиталь',
   status: 'HIDE',
 }
 
-const hospitalEnLong: FieldDTO = {
+export const hospitalEnLong: FieldDTO = {
   _id: 'hospitalEnLong',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Hospital Hospital Hospital Hospital',
   status: 'SHOW',
@@ -78,12 +87,14 @@ const hospitalEnLong: FieldDTO = {
 const hospitalIpaLong: FieldDTO = {
   _id: 'hospitalIpaLong',
   type: 'PRE',
+  name: 'PRE field',
   passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
   status: 'HIDE',
 }
 
 const hospitalImg: FieldDTO = {
   _id: 'hospitalImg',
+  name: 'IMG field',
   type: 'IMG',
   passiveData: hospital,
   status: 'HIDE',
@@ -91,6 +102,7 @@ const hospitalImg: FieldDTO = {
 
 const hospitalAudio: FieldDTO = {
   _id: 'hospitalAudio',
+  name: 'AUDIO field',
   type: 'AUDIO',
   passiveData: hospitalMp3,
   status: 'HIDE',
@@ -98,6 +110,7 @@ const hospitalAudio: FieldDTO = {
 
 const hospitalRuLong: FieldDTO = {
   _id: 'hospitalRuLong',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Госпиталь Госпиталь Госпиталь',
   status: 'HIDE',
@@ -105,6 +118,7 @@ const hospitalRuLong: FieldDTO = {
 
 const selectRight: FieldDTO = {
   _id: 'selectRight',
+  name: 'RADIO field',
   type: 'RADIO',
   interactiveData: {
     question: 'Please select one:',
@@ -117,6 +131,7 @@ const selectRight: FieldDTO = {
 
 const passiveText: FieldDTO = {
   _id: 'passiveText',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
   status: 'SHOW',
@@ -124,6 +139,7 @@ const passiveText: FieldDTO = {
 
 const anotherPassiveText: FieldDTO = {
   _id: 'anotherPassiveText',
+  name: 'PRE field',
   type: 'PRE',
   passiveData: 'Some short text',
   status: 'SHOW',
@@ -131,6 +147,7 @@ const anotherPassiveText: FieldDTO = {
 
 const typeA: FieldDTO = {
   _id: 'typeA',
+  name: 'INPUT field',
   type: 'INPUT',
   interactiveData: {
     question: 'Please type a and use enter to submit:',
@@ -143,6 +160,7 @@ const typeA: FieldDTO = {
 
 const field15: FieldDTO = {
   _id: 'field15',
+  name: 'INPUT field',
   type: 'INPUT',
   interactiveData: {
     question: 'Please type a and DO NOT use enter to submit:',

@@ -1,9 +1,9 @@
-import { QACard, QACardP } from './qa-card'
-import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../../content/content'
+import { UCard, QACardP } from './UCard'
+import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../content/content'
 
 const QACardT = (args: QACardP) => (
   <div style={{ width: '500px', height: '715px' }}>
-    <QACard {...args} />
+    <UCard {...args} />
   </div>
 )
 

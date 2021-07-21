@@ -1,6 +1,6 @@
 import { Presentation } from './presentation'
 import { SwiperSlide } from 'swiper/react'
-import { QACard } from '../qa-card/qa-card'
+import { UCard } from '../../../decks/UCard/UCard'
 import { CardDTO, CardEstimation } from '../types'
 import { styled } from '@material-ui/core'
 
@@ -29,7 +29,7 @@ export const CardCarousel = ({ cards, currentCardIndex }: CardCarouselP) => {
       <Presentation currentSlide={currentCardIndex}>
         {cards.map((c, i) => (
           <SwiperSlide key={c.dto._id}>
-            <QACard
+            <UCard
               fields={c.dto.fields}
               stageColor={c.dto.stageColor}
               isCurrent={currentCardIndex === i}

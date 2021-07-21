@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { getIds } from './utils'
+import { getIds } from '../../utils/utils'
 
 const id = getIds()
 

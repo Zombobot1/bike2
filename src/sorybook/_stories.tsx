@@ -1,5 +1,6 @@
 import { storify } from './utils'
-import * as QACard from '../components/study/training/qa-card/qa-card-stories'
+import * as UCard from '../components/decks/UCard/UCard.s'
+import * as UCardField from '../components/decks/UCard/UCardField/UCardField.s'
 import * as Training from '../components/study/training/training/training.s'
 import * as TrainingHeader from '../components/study/training/training-header/training-header.s'
 import * as TrainingControls from '../components/study/training/training-controls/training-controls.s'
@@ -23,7 +24,6 @@ export const sories = [
       storify({ TrainingCard }),
       storify({ Training }),
       storify({ TrainingHeader }),
-      storify({ QACard }),
       storify({ TrainingControls }),
       storify({ TrainingTimer }),
     ],
@@ -31,6 +31,10 @@ export const sories = [
   {
     name: 'UComponents',
     components: [storify({ UTable })],
+  },
+  {
+    name: 'Decks',
+    components: [storify({ UCard }), storify({ UCardField })],
   },
   {
     name: 'UForm',
