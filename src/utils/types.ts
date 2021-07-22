@@ -3,7 +3,9 @@ export type str = string
 export type bool = boolean
 
 export type strs = str[]
+export type nums = num[]
 export type Files = File[]
+
 export type strP = Promise<str>
 export type strsP = Promise<strs>
 export type voidP = Promise<void>

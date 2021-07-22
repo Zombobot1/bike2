@@ -1,38 +1,56 @@
-import { CardEstimation, estimationColor, FieldDTO } from '../../study/training/types'
+import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../study/training/types'
 import { UCardField } from './UCardField/UCardField'
 import { useMount } from '../../../utils/hooks-utils'
 import { Stack, styled } from '@material-ui/core'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
+import { CardTemplateDTO } from '../dto'
 
-export interface QACardP {
+export interface UCardP {
   fields: FieldDTO[]
+  template?: CardTemplateDTO
   stageColor: string
   isCurrent: boolean
   isMediaActive?: boolean
-  showHidden: boolean
+  showHidden?: boolean
   estimation?: CardEstimation
 }
 
-export const UCard = ({ fields, stageColor, isCurrent, isMediaActive = true, showHidden, estimation }: QACardP) => {
-  const fieldsToShow = fields.filter((f) => f.status === 'SHOW')
-  const hiddenFields = fields.filter((f) => f.status === 'HIDE')
+export const UCard = ({
+  fields,
+  stageColor,
+  isCurrent,
+  isMediaActive = true,
+  showHidden,
+  estimation,
+  template,
+}: UCardP) => {
+  const canBeEdited = Boolean(template)
+  const isAudioActive = isCurrent && isMediaActive && !canBeEdited
 
+  const { fieldsToShow, hiddenFields } = chooseFields(fields, template)
   const sx = estimation ? { border: `1px solid ${estimationColor(estimation)}` } : {}
+
   useMount(() => fields.forEach(preloadImage))
 
   return (
     <CardContainer sx={sx}>
       <Card spacing={2}>
-        {fieldsToShow.map((f) => (
-          <UCardField {...f} key={f._id} isMediaActive={isCurrent} isCurrent={isCurrent} canBeEdited={false} />
+        {fieldsToShow.map((f, i) => (
+          <UCardField
+            {...f}
+            key={f._id || i}
+            isMediaActive={isAudioActive}
+            isCurrent={isCurrent}
+            canBeEdited={canBeEdited}
+          />
         ))}
         {showHidden && hiddenFields.length !== 0 && <Hr />}
         {showHidden &&
-          hiddenFields.map((f) => (
+          hiddenFields.map((f, i) => (
             <UCardField
               {...f}
-              key={f._id}
-              isMediaActive={isCurrent && isMediaActive}
+              key={f._id || i}
+              isMediaActive={isAudioActive}
               isCurrent={isCurrent}
               canBeEdited={false}
             />
@@ -42,6 +60,25 @@ export const UCard = ({ fields, stageColor, isCurrent, isMediaActive = true, sho
     </CardContainer>
   )
 }
+
+function chooseFields(fields: FieldDTOs, template?: CardTemplateDTO) {
+  if (fields.length) {
+    return {
+      fieldsToShow: fields.filter((f) => f.status === 'SHOW'),
+      hiddenFields: fields.filter((f) => f.status === 'HIDE'),
+    }
+  }
+
+  if (template) {
+    return {
+      fieldsToShow: template.fields,
+      hiddenFields: [],
+    }
+  }
+
+  throw new Error('Cards template was not provided and fields are empty!')
+}
+
 const CardContainer = styled(Stack)(({ theme }) => ({
   height: '100%',
   width: '100%',

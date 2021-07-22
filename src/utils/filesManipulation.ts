@@ -1,13 +1,11 @@
 import { useState } from 'react'
-import { str, OBlob, OBlobP } from './types'
+import { str, OBlob, OBlobP, OFile } from './types'
 
 export function srcfy(blob: Blob): str {
   return URL.createObjectURL(blob)
 }
 
 async function retrieveImageFromClipboard(items: ClipboardItems): OBlobP {
-  if (!items.length) return null
-
   for (let i = 0; i < items.length; i++) {
     try {
       return await items[i].getType('image/png')
@@ -24,15 +22,15 @@ async function retrieveImageFromClipboardAsBlob(data: ClipboardItems): Promise<[
   return [srcfy(image), image]
 }
 
-export function useImageFromClipboard() {
+export function useImageFromClipboard(fileName: str) {
   const [clipBoardImageSrc, setClipBoardImageSrc] = useState('')
-  const [clipBoardImage, setClipBoardImage] = useState<OBlob>(null)
+  const [clipBoardImage, setClipBoardImage] = useState<OFile>(null)
 
   async function retrieveImage(data: ClipboardItems) {
     const [img, file] = await retrieveImageFromClipboardAsBlob(data)
-    if (img) {
+    if (img && file) {
       setClipBoardImageSrc(img)
-      setClipBoardImage(file)
+      setClipBoardImage(new File([file], `${fileName}.png`))
     }
   }
 

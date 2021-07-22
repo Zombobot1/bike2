@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useMediaQuery, useTheme } from '@material-ui/core'
 
 export const useMount = (f: Fn) => useEffect(f, [])
+export const useUnmount = (f: Fn) => useEffect(() => f, [])
 
 export const useEffectedState = <T>(init: T): StateT<T> => {
   const [state, setState] = useState(init)

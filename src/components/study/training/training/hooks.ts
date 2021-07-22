@@ -5,7 +5,7 @@ import { useMount } from '../../../../utils/hooks-utils'
 import { Fn, NumStateT, StateT } from '../../../../utils/types'
 import { useRouter } from '../../../utils/hooks/use-router'
 import { TrainingDTO } from './training'
-import { removeElement } from '../../../../utils/utils'
+import { removeElement, safe } from '../../../../utils/utils'
 import { useUserPosition } from '../../../Shell/navigation/breadcrumb/user-position-provider'
 import { CardData, CardDatas } from './card-carousel'
 import { useTrainingTimer } from '../training-timer/training-timer'
@@ -13,7 +13,7 @@ import { STUDY } from '../../../Shell/navigation/pages'
 
 export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0)
-  const timeLeft = (from: number) => cards.slice(from).reduce((p, e) => p + e.dto.timeToAnswer, 0)
+  const timeLeft = (from: number) => cards.slice(from).reduce((p, e) => p + safe(e.dto).timeToAnswer, 0)
   useEffect(() => setTimeToFinish(timeLeft(currentCardIndex)), [currentCardIndex, cards])
 
   return { timeToFinish }
@@ -26,7 +26,7 @@ export const useCardSettings = (cardsS: StateT<CardDatas>, currentCardIndexS: Nu
   const { setTimeToAnswer } = useTrainingTimer()
 
   const onDeleteCard = async () => {
-    await deleteCard(cards[currentCardIndex].dto._id)
+    await deleteCard(safe(cards[currentCardIndex].dto)._id)
     setCards((cs) => {
       const result = removeElement(cs, currentCardIndex)
       setTimeToAnswer(result[currentCardIndex]?.dto?.timeToAnswer || 0)
@@ -58,7 +58,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return
-    setTimeToAnswer(cards[currentCardIndex].dto.timeToAnswer)
+    setTimeToAnswer(safe(cards[currentCardIndex].dto).timeToAnswer)
   }, [currentCardIndex])
 
   const { timeToFinish } = useTimeToFinish(cards, currentCardIndex)
@@ -70,11 +70,13 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
 
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
 
-    estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex].dto._id, estimation: e }).then((cards) => {
-      setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
-      setIsLoading(false)
-      if (transition === 'TRANSIT' && !hasCards) goToNextCard()
-    })
+    estimateAnswer({ deckId: trainingId, cardId: safe(cards[currentCardIndex].dto)._id, estimation: e }).then(
+      (cards) => {
+        setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
+        setIsLoading(false)
+        if (transition === 'TRANSIT' && !hasCards) goToNextCard()
+      },
+    )
 
     if (transition === 'TRANSIT' && hasCards) goToNextCard()
     else if (transition === 'NO_TRANSITION') return goToNextCard

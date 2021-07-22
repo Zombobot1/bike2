@@ -15,6 +15,7 @@ Here's another way to explain it: The is used to refer to a specific or particul
 const field1: FieldDTO = {
   _id: 'field1',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: question,
   status: 'SHOW',
@@ -22,6 +23,7 @@ const field1: FieldDTO = {
 
 const field2: FieldDTO = {
   _id: 'field2',
+  isPreview: false,
   name: 'PRE field',
   type: 'PRE',
   passiveData: answer,
@@ -30,6 +32,7 @@ const field2: FieldDTO = {
 
 const hospitalEn: FieldDTO = {
   _id: 'hospitalEn',
+  isPreview: false,
   name: 'PRE field',
   type: 'PRE',
   passiveData: 'Hospital',
@@ -39,6 +42,7 @@ const hospitalEn: FieldDTO = {
 const hospitalIpa: FieldDTO = {
   _id: 'hospitalIpa',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'ˈhɒspɪtl',
   status: 'HIDE',
@@ -47,6 +51,7 @@ const hospitalIpa: FieldDTO = {
 const theatreEn: FieldDTO = {
   _id: 'theatreEn',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'Theatre',
   status: 'SHOW',
@@ -55,6 +60,7 @@ const theatreEn: FieldDTO = {
 const theatreIpa: FieldDTO = {
   _id: 'theatreIpa',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'ˈθiətər',
   status: 'HIDE',
@@ -63,6 +69,7 @@ const theatreIpa: FieldDTO = {
 const theatreRu: FieldDTO = {
   _id: 'theatreRu',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'Театр',
   status: 'HIDE',
@@ -71,6 +78,7 @@ const theatreRu: FieldDTO = {
 const hospitalRu: FieldDTO = {
   _id: 'hospitalRu',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'Госпиталь',
   status: 'HIDE',
@@ -79,6 +87,7 @@ const hospitalRu: FieldDTO = {
 export const hospitalEnLong: FieldDTO = {
   _id: 'hospitalEnLong',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'Hospital Hospital Hospital Hospital',
   status: 'SHOW',
@@ -87,6 +96,7 @@ export const hospitalEnLong: FieldDTO = {
 const hospitalIpaLong: FieldDTO = {
   _id: 'hospitalIpaLong',
   type: 'PRE',
+  isPreview: false,
   name: 'PRE field',
   passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
   status: 'HIDE',
@@ -95,6 +105,7 @@ const hospitalIpaLong: FieldDTO = {
 const hospitalImg: FieldDTO = {
   _id: 'hospitalImg',
   name: 'IMG field',
+  isPreview: false,
   type: 'IMG',
   passiveData: hospital,
   status: 'HIDE',
@@ -103,6 +114,7 @@ const hospitalImg: FieldDTO = {
 const hospitalAudio: FieldDTO = {
   _id: 'hospitalAudio',
   name: 'AUDIO field',
+  isPreview: false,
   type: 'AUDIO',
   passiveData: hospitalMp3,
   status: 'HIDE',
@@ -111,6 +123,7 @@ const hospitalAudio: FieldDTO = {
 const hospitalRuLong: FieldDTO = {
   _id: 'hospitalRuLong',
   name: 'PRE field',
+  isPreview: false,
   type: 'PRE',
   passiveData: 'Госпиталь Госпиталь Госпиталь',
   status: 'HIDE',
@@ -118,6 +131,7 @@ const hospitalRuLong: FieldDTO = {
 
 const selectRight: FieldDTO = {
   _id: 'selectRight',
+  isPreview: false,
   name: 'RADIO field',
   type: 'RADIO',
   interactiveData: {
@@ -131,6 +145,7 @@ const selectRight: FieldDTO = {
 
 const passiveText: FieldDTO = {
   _id: 'passiveText',
+  isPreview: false,
   name: 'PRE field',
   type: 'PRE',
   passiveData: 'I need to go to the ... to have an operation.',
@@ -139,6 +154,7 @@ const passiveText: FieldDTO = {
 
 const anotherPassiveText: FieldDTO = {
   _id: 'anotherPassiveText',
+  isPreview: false,
   name: 'PRE field',
   type: 'PRE',
   passiveData: 'Some short text',
@@ -147,6 +163,7 @@ const anotherPassiveText: FieldDTO = {
 
 const typeA: FieldDTO = {
   _id: 'typeA',
+  isPreview: false,
   name: 'INPUT field',
   type: 'INPUT',
   interactiveData: {
@@ -160,6 +177,7 @@ const typeA: FieldDTO = {
 
 const field15: FieldDTO = {
   _id: 'field15',
+  isPreview: false,
   name: 'INPUT field',
   type: 'INPUT',
   interactiveData: {

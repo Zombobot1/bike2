@@ -1,4 +1,4 @@
-import { FetchData } from '../../utils/fetched-data'
+import { FetchData } from '../../utils/FetchedData'
 import { useTrainings } from '../hooks'
 import { TrainingDeck } from './training-deck/training-deck'
 import { styled, Typography } from '@material-ui/core'

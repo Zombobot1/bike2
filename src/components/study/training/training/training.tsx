@@ -8,7 +8,7 @@ import { Box } from '@material-ui/core'
 import { useRouter } from '../../../utils/hooks/use-router'
 import { useTraining } from '../../hooks'
 import { safe } from '../../../../utils/utils'
-import { FetchData } from '../../../utils/fetched-data'
+import { FetchData } from '../../../utils/FetchedData'
 import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info'
 
 export interface TrainingDTO {
@@ -39,13 +39,13 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
       <TrainingHeader timeToFinish={timeToFinish} currentCardIndex={currentCardIndex} cardsLength={cards.length} />
       <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
       <TrainingControls
-        cardType={cards[currentCardIndex]?.dto.type || 'PASSIVE'}
+        cardType={cards[currentCardIndex]?.dto?.type || 'PASSIVE'}
         estimate={estimateCard}
         showHiddenFields={showHiddenFields}
         areFieldsHidden={areFieldsHidden}
         currentCardIndex={currentCardIndex}
         deleteCard={onDeleteCard}
-        cardId={cards[currentCardIndex]?.dto._id || ''}
+        cardId={cards[currentCardIndex]?.dto?._id || ''}
       />
     </Box>
   )

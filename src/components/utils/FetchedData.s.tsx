@@ -1,6 +1,6 @@
 import { useQuery } from 'react-query'
 import { axi } from '../../api/axi'
-import { FetchData } from './fetched-data'
+import { FetchData } from './FetchedData'
 import { _DTO, _FAIL, _SLOW_LOAD } from '../../api/fake-api'
 import { ReactNode } from 'react'
 

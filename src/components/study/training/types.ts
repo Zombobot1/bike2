@@ -1,4 +1,5 @@
 import { COLORS } from '../../../theme'
+import { bool, str } from '../../../utils/types'
 
 export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY'
 const WEIGHTS: { [K in CardEstimation]: number } = {
@@ -31,20 +32,26 @@ export interface Question {
   options: string[]
 }
 
-export interface FieldDTO {
-  _id: string
-  name: string
+export interface FieldInformationDTO {
+  _id?: str
+  name: str
   type: FieldType
+  isPreview: bool
+}
+export type FieldInformationDTOs = FieldInformationDTO[]
+
+export interface FieldDTO extends FieldInformationDTO {
   status: FieldState
   passiveData?: string
   interactiveData?: Question
 }
+export type FieldDTOs = FieldDTO[]
 
 export type CardType = 'PASSIVE' | 'INTERACTIVE'
 
 export interface CardDTO {
   _id: string
-  fields: FieldDTO[]
+  fields: FieldDTOs
   timeToAnswer: number
   stageColor: string
   type: CardType

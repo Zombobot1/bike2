@@ -10,8 +10,9 @@ import { useEventListener } from '../../../utils/hooks/use-event-listener'
 import { useImageFromClipboard } from '../../../../utils/filesManipulation'
 import ImageRoundedIcon from '@material-ui/icons/ImageRounded'
 import { PassiveData } from './types'
+import { useNewCardDataField } from '../../UCardEditor/useNewCardData'
 
-export interface UCardField extends Omit<FieldDTO, 'status'> {
+export interface UCardField extends Omit<FieldDTO, 'status' | 'isPreview'> {
   isMediaActive: boolean
   isCurrent: boolean // if we render all interactive fields it would be impossible to submit one card
   canBeEdited: boolean
@@ -43,8 +44,8 @@ export const UCardField = ({
   if (interactiveData && isCurrent) {
     return (
       <>
-        {type === 'RADIO' && <UChecks _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
-        {type === 'INPUT' && <UInput _id={_id} {...interactiveData} onAnswer={interactiveSubmit} />}
+        {type === 'RADIO' && <UChecks _id={_id || ''} {...interactiveData} onAnswer={interactiveSubmit} />}
+        {type === 'INPUT' && <UInput _id={_id || ''} {...interactiveData} onAnswer={interactiveSubmit} />}
       </>
     )
   }
@@ -68,10 +69,13 @@ function PassiveField({ type, name, canBeEdited, data, isMediaActive }: PassiveF
 
 function UTextField({ data, canBeEdited, name }: PassiveData) {
   const [text, setText] = useState(data)
-  const [newData, setNewData] = useState(data)
+  const [newData, setNewData] = useState(data || '')
   const [isEditing, setIsEditing] = useState(false)
 
+  const { setValue, error } = useNewCardDataField(name)
+
   const finishEditing = () => {
+    if (text !== newData) setValue(newData)
     setText(newData)
     setIsEditing(false)
   }
@@ -92,12 +96,14 @@ function UTextField({ data, canBeEdited, name }: PassiveData) {
       variant="standard"
       placeholder={`Add ${name}`}
       multiline
-      autoFocus
+      autoFocus={Boolean(text)}
       defaultValue={text}
       onChange={(e) => setNewData(e.target.value)}
       onBlur={finishEditing}
       onKeyDown={handleKeyDown}
       fullWidth
+      helperText={error}
+      error={error ? Boolean(error) : undefined}
     />
   )
 }
@@ -118,7 +124,8 @@ const UText = styled(Typography)(({ theme }) => ({
 }))
 
 function UImageField({ data, canBeEdited, name }: PassiveData) {
-  const { clipBoardImageSrc, retrieveImage } = useImageFromClipboard()
+  const { clipBoardImageSrc, clipBoardImage, retrieveImage } = useImageFromClipboard(name)
+  const { setValue } = useNewCardDataField(name)
 
   const [src, setSrc] = useState(data)
   const [isEditing, setIsEditing] = useState(false)
@@ -129,7 +136,10 @@ function UImageField({ data, canBeEdited, name }: PassiveData) {
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key == 'Escape') finishEditing()
     else if (e.ctrlKey && e.key === 'v' && awaitsData) handlePasteImage()
-    else if (e.key === 'Delete' && awaitsData) setSrc('')
+    else if (e.key === 'Delete' && awaitsData) {
+      setSrc('')
+      setValue('')
+    }
   }
 
   const ref = useEventListener('keydown', handleKeyDown, awaitsData)
@@ -139,7 +149,8 @@ function UImageField({ data, canBeEdited, name }: PassiveData) {
 
   useEffect(() => {
     if (clipBoardImageSrc) setSrc(clipBoardImageSrc)
-  }, [clipBoardImageSrc])
+    if (clipBoardImage) setValue(clipBoardImage)
+  }, [clipBoardImageSrc, clipBoardImage])
 
   if (src)
     return (

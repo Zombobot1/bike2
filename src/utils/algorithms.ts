@@ -28,3 +28,10 @@ export const shuffle = <T>(arr: T[]): T[] => {
   }
   return arr
 }
+
+export const zip2 = <T, D>(arr1: T[], arr2: D[]): [T, D][] => {
+  const minLength = Math.min(arr1.length, arr2.length)
+  const result: [T, D][] = []
+  for (let i = 0; i < minLength; i += 1) result.push([arr1[i], arr2[i]])
+  return result
+}

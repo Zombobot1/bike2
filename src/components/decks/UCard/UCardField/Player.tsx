@@ -8,6 +8,7 @@ import { useDropzone } from 'react-dropzone'
 import { Files, OFile, StateT } from '../../../../utils/types'
 import { srcfy } from '../../../../utils/filesManipulation'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
+import { useNewCardDataField } from '../../UCardEditor/useNewCardData'
 
 export interface Player extends PassiveData {
   autoplay?: boolean
@@ -15,9 +16,13 @@ export interface Player extends PassiveData {
 
 export function Player({ data, canBeEdited, name, autoplay = false }: Player) {
   const [src, setSrc] = useState(data)
+  const { setValue } = useNewCardDataField(name)
   const [audioElement, setAudioElement] = useState<HTMLAudioElement>()
   const [isPlaying, setIsPlaying] = useState(false)
-  const fileS = use1Drop((f) => setSrc(srcfy(f)))
+  const fileS = use1Drop((f) => {
+    setSrc(srcfy(f))
+    setValue(f)
+  })
 
   const play = () => {
     setIsPlaying(true)
@@ -58,7 +63,13 @@ export function Player({ data, canBeEdited, name, autoplay = false }: Player) {
           </IconButton>
         )}
         {canBeEdited && (
-          <IconButton color="error" onClick={() => setSrc('')}>
+          <IconButton
+            color="error"
+            onClick={() => {
+              setSrc('')
+              setValue('')
+            }}
+          >
             <DeleteRoundedIcon />
           </IconButton>
         )}
@@ -116,6 +127,7 @@ const DropArea = styled(Stack)(({ theme }) => ({
   width: '100%',
   height: '70px',
   borderRadius: 5,
-  backgroundColor: theme.palette.grey[200],
+  backgroundColor: theme.palette.grey[50],
+  color: theme.palette.grey[500],
   cursor: 'pointer',
 }))
