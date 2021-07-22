@@ -30,7 +30,9 @@ function Template2() {
       <Slides>
         <Rec>1</Rec>
         <Rec color="white">
-          <TextField autoFocus fullWidth />
+          <form onSubmit={(e) => e.preventDefault()}>
+            <TextField variant="standard" autoFocus fullWidth type="password" autoComplete="one-time-code" />
+          </form>
         </Rec>
         <Rec>3</Rec>
       </Slides>

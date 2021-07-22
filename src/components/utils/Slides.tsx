@@ -21,6 +21,8 @@ const Container = styled('div', { label: 'Slides' })({
 
 const SlideWrapper = styled('div', { label: 'SlideWrapper' })({
   position: 'absolute',
+  height: '100%',
+  width: '100%',
 })
 
 const slidesA = atomWithReset<Children>([])

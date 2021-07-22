@@ -2,7 +2,7 @@ import './sorybook.css'
 import { atom, useAtom } from 'jotai'
 import { useToggle } from '../components/utils/hooks/use-toggle'
 import { sslugify } from '../utils/sslugify'
-import { capitalizeFirstLetter, cn } from '../utils/utils'
+import { capitalizeFirstLetter } from '../utils/utils'
 import { ReactComponent as IDown } from './bi-caret-down-fill.svg'
 import { ReactComponent as IRight } from './bi-caret-right-fill.svg'
 import { FC, useEffect } from 'react'
@@ -63,9 +63,11 @@ const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }
   }, [activeNodeId])
 
   if (!nodes) {
-    const cns = cn('leaf', { 'leaf--active': activeNodeId === id })
     return (
-      <li className={cns} onClick={() => history.push(_SORYBOOK + '/' + id)}>
+      <li
+        className={`leaf ${activeNodeId === id ? 'leaf--active' : ''}`}
+        onClick={() => history.push(_SORYBOOK + '/' + id)}
+      >
         {label}
       </li>
     )

@@ -31,7 +31,7 @@ export function UCardEditor({ initialCards = [], onSubmit, template }: UCardEdit
 
   return (
     <Box sx={{ height: '100%', maxWidth: 500, width: '100%', paddingBottom: 1 }}>
-      <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
+      <CardCarousel cards={cards} />
       <Stack direction="row" justifyContent="center">
         {currentCardIndex === 0 && <Button onClick={addNew}>Create</Button>}
         {currentCardIndex > 0 && <Button onClick={prev}>Prev</Button>}

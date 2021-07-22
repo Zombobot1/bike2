@@ -1,9 +1,8 @@
-import { Presentation } from './presentation'
-import { SwiperSlide } from 'swiper/react'
 import { UCard } from '../../../decks/UCard/UCard'
 import { CardDTO, CardEstimation } from '../types'
 import { styled } from '@material-ui/core'
 import { CardTemplateDTO } from '../../../decks/dto'
+import { Slides } from '../../../utils/Slides'
 
 export interface CardData {
   dto?: CardDTO
@@ -16,7 +15,6 @@ export type CardDataP = Promise<CardData>
 
 export interface CardCarouselP {
   cards: CardDatas
-  currentCardIndex: number
 }
 
 const Cards = styled('div')({
@@ -26,23 +24,21 @@ const Cards = styled('div')({
   paddingBottom: 7,
 })
 
-export const CardCarousel = ({ cards, currentCardIndex }: CardCarouselP) => {
+export const CardCarousel = ({ cards }: CardCarouselP) => {
   return (
     <Cards>
-      <Presentation currentSlide={currentCardIndex}>
+      <Slides>
         {cards.map((c, i) => (
-          <SwiperSlide key={c.dto?._id || i}>
-            <UCard
-              fields={c.dto?.fields || []}
-              stageColor={c.dto?.stageColor || 'white'}
-              isCurrent={currentCardIndex === i}
-              showHidden={c.showHidden}
-              estimation={c.estimation}
-              template={c.template}
-            />
-          </SwiperSlide>
+          <UCard
+            key={c.dto?._id || i}
+            fields={c.dto?.fields || []}
+            stageColor={c.dto?.stageColor || 'white'}
+            showHidden={c.showHidden}
+            estimation={c.estimation}
+            template={c.template}
+          />
         ))}
-      </Presentation>
+      </Slides>
     </Cards>
   )
 }

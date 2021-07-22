@@ -297,7 +297,7 @@ const combined: TrainingDTO = {
 const autofocusCheck: TrainingDTO = {
   ...basic,
   _id: 'autofocusCheck',
-  cards: [uCardLong, iCardUInputWithEnter, uCardMinimal],
+  cards: [uCardMinimal, iCardUInputWithEnter, uCardLong],
 }
 
 export const trainings = {

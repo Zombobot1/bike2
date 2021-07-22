@@ -30,7 +30,6 @@ const data1: TemplateP = {
   _id: '1',
   name: 'phrase',
   canBeEdited: true,
-  isCurrent: true,
   isMediaActive: false,
   type: 'PRE',
   passiveData: 'Some data about a hospital',

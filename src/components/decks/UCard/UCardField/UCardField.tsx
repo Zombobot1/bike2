@@ -14,7 +14,6 @@ import { useNewCardDataField } from '../../UCardEditor/useNewCardData'
 
 export interface UCardField extends Omit<FieldDTO, 'status' | 'isPreview'> {
   isMediaActive: boolean
-  isCurrent: boolean // if we render all interactive fields it would be impossible to submit one card
   canBeEdited: boolean
 }
 
@@ -25,7 +24,6 @@ export const UCardField = ({
   interactiveData,
   type,
   isMediaActive,
-  isCurrent,
   canBeEdited,
 }: UCardField) => {
   const { interactiveSubmit } = useInteractiveSubmit()
@@ -41,7 +39,7 @@ export const UCardField = ({
       />
     )
 
-  if (interactiveData && isCurrent) {
+  if (interactiveData) {
     return (
       <>
         {type === 'RADIO' && <UChecks _id={_id || ''} {...interactiveData} onAnswer={interactiveSubmit} />}

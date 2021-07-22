@@ -8,14 +8,12 @@ const QACardT = (args: UCardP) => (
 )
 
 const hiddenA: UCardP = {
-  isCurrent: true,
   stageColor: '#6C38FF',
   showHidden: false,
   fields: uCardLong.fields,
 }
 
 const template1 = {
-  isCurrent: true,
   stageColor: '#6C38FF',
   isMediaActive: false,
   showHidden: true,
@@ -32,7 +30,6 @@ const estimatedA: UCardP = {
 }
 
 const template2 = {
-  isCurrent: true,
   stageColor: '#6C38FF',
   isMediaActive: false,
   showHidden: true,

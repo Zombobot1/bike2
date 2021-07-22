@@ -1,4 +1,4 @@
-import { CardDTOs } from '../types'
+import { CardDTOs, FieldDTO } from '../types'
 import { TrainingHeader } from '../training-header/training-header'
 import { TrainingControls } from '../training-controls/training-controls'
 import { useCards, usePagesPathUpdate } from './hooks'
@@ -10,6 +10,7 @@ import { useTraining } from '../../hooks'
 import { safe } from '../../../../utils/utils'
 import { FetchData } from '../../../utils/FetchedData'
 import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info'
+import { useMount } from '../../../../utils/hooks-utils'
 
 export interface TrainingDTO {
   _id: string
@@ -37,7 +38,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
   return (
     <Box sx={{ height: '100%', maxWidth: 500, width: '100%', paddingBottom: 1 }}>
       <TrainingHeader timeToFinish={timeToFinish} currentCardIndex={currentCardIndex} cardsLength={cards.length} />
-      <CardCarousel cards={cards} currentCardIndex={currentCardIndex} />
+      <CardCarousel cards={cards} />
       <TrainingControls
         cardType={cards[currentCardIndex]?.dto?.type || 'PASSIVE'}
         estimate={estimateCard}
@@ -51,11 +52,20 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
   )
 }
 
+const preloadImage = (field: FieldDTO) => {
+  if (field.type !== 'IMG' || !field.passiveData) return
+  const img = new Image()
+  img.src = field.passiveData
+}
+
 function TrainingWrapper_() {
   const { query } = useRouter()
   const { data } = useTraining(query('id') || '1')
   const dto = safe(data)
   const onLastCard = usePagesPathUpdate(dto)
+
+  useMount(() => dto.cards.forEach((c) => c.fields.forEach(preloadImage)))
+
   return <Training dto={dto} onLastCard={onLastCard} />
 }
 

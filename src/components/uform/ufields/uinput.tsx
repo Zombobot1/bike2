@@ -1,24 +1,13 @@
-import { useState, KeyboardEvent, useRef, useEffect } from 'react'
+import { useState, KeyboardEvent } from 'react'
 import { useUForm } from '../uform'
 import { useMount } from '../../../utils/hooks-utils'
 import { Validity } from '../types'
 import { QuestionWithoutOptions } from './uchecks'
 import { Fn, fn } from '../../../utils/types'
-import { usePresentationTransition } from '../../study/training/training/presentation'
-import { useToggle } from '../../utils/hooks/use-toggle'
 import { InteractiveQuestion } from './interactive-question'
 import { ErrorText, SuccessText } from './feedback'
 import { TextField } from '@material-ui/core'
 import { useValidationColor } from './useValidationColor'
-
-const useFocus = () => {
-  const ref = useRef<HTMLInputElement>(null)
-  const focus = () => {
-    if (ref.current) ref.current.focus()
-  }
-
-  return { ref, focus }
-}
 
 export type TipOnMobile = 'SHOW_TIP' | 'HIDE_TIP'
 
@@ -72,17 +61,6 @@ export const UInputElement = ({
     if (e.key == 'Enter') onEnter()
   }
 
-  // severe interference with swiper js: if focus is set until animation ends swiper might get broken (UB)
-  const { ref, focus } = useFocus()
-  const { isInTransition } = usePresentationTransition()
-  const [tryFocus, toggleTryFocus] = useToggle(false)
-
-  useEffect(() => {
-    if (autoFocus && tryFocus && !isInTransition) focus()
-  }, [isInTransition, tryFocus])
-
-  useMount(() => setTimeout(toggleTryFocus, 100))
-
   return (
     <form onSubmit={(e) => e.preventDefault()}>
       <InteractiveQuestion question={question} status={validity} />
@@ -93,11 +71,13 @@ export const UInputElement = ({
         type={type}
         id={_id}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onFocus={() => setType('text')}
+        onChange={(e) => {
+          setType('text') // anomaly: if it is put onMount or onFocus it breaks slide animation
+          onChange(e.target.value)
+        }}
         disabled={wasSubmitted}
         onKeyPress={handleKeyDown}
-        inputRef={ref}
+        autoFocus={autoFocus}
         autoComplete="one-time-code"
         sx={sx}
       />

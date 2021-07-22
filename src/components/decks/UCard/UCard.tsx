@@ -1,6 +1,5 @@
 import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../study/training/types'
 import { UCardField } from './UCardField/UCardField'
-import { useMount } from '../../../utils/hooks-utils'
 import { Stack, styled } from '@material-ui/core'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { CardTemplateDTO } from '../dto'
@@ -9,51 +8,28 @@ export interface UCardP {
   fields: FieldDTO[]
   template?: CardTemplateDTO
   stageColor: string
-  isCurrent: boolean
   isMediaActive?: boolean
   showHidden?: boolean
   estimation?: CardEstimation
 }
 
-export const UCard = ({
-  fields,
-  stageColor,
-  isCurrent,
-  isMediaActive = true,
-  showHidden,
-  estimation,
-  template,
-}: UCardP) => {
+export const UCard = ({ fields, stageColor, isMediaActive = true, showHidden, estimation, template }: UCardP) => {
   const canBeEdited = Boolean(template)
-  const isAudioActive = isCurrent && isMediaActive && !canBeEdited
+  const isAudioActive = isMediaActive && !canBeEdited
 
   const { fieldsToShow, hiddenFields } = chooseFields(fields, template)
   const sx = estimation ? { border: `1px solid ${estimationColor(estimation)}` } : {}
-
-  useMount(() => fields.forEach(preloadImage))
 
   return (
     <CardContainer sx={sx}>
       <Card spacing={2}>
         {fieldsToShow.map((f, i) => (
-          <UCardField
-            {...f}
-            key={f._id || i}
-            isMediaActive={isAudioActive}
-            isCurrent={isCurrent}
-            canBeEdited={canBeEdited}
-          />
+          <UCardField {...f} key={f._id || i} isMediaActive={isAudioActive} canBeEdited={canBeEdited} />
         ))}
         {showHidden && hiddenFields.length !== 0 && <Hr />}
         {showHidden &&
           hiddenFields.map((f, i) => (
-            <UCardField
-              {...f}
-              key={f._id || i}
-              isMediaActive={isAudioActive}
-              isCurrent={isCurrent}
-              canBeEdited={false}
-            />
+            <UCardField {...f} key={f._id || i} isMediaActive={isAudioActive} canBeEdited={false} />
           ))}
       </Card>
       {!estimation && <Stage sx={{ fill: stageColor }} />}
@@ -113,12 +89,6 @@ const Hr = styled('hr')({
   marginTop: 0,
   opacity: 0.2,
 })
-
-const preloadImage = (field: FieldDTO) => {
-  if (field.type !== 'IMG' || !field.passiveData) return
-  const img = new Image()
-  img.src = field.passiveData
-}
 
 const Stage = styled(StageChevron)({
   position: 'absolute',

@@ -1,9 +1,5 @@
-import { Argument } from 'classnames'
-import classNames from 'classnames'
 import { JSObject } from './types'
 import { styled } from '@material-ui/core'
-
-export const cn = (...classes: Argument[]): string => classNames(...classes)
 
 export interface IsSM {
   isSM?: boolean
@@ -18,19 +14,6 @@ export function sfp(name: string) {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const rstyled = (component: any) => styled(component, sfp('isSM'))
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const pcn = (main: string, ..._classes: any) => {
-  let hasTruthy = false
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const connectWithMain = (e: any) =>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    Object.entries(e).map(([key, value]: [string, any]) => {
-      hasTruthy = hasTruthy || value
-      return { [main + key]: value }
-    })
-  return classNames(..._classes.map(connectWithMain), { [main]: !hasTruthy })
-}
 
 export const rnd = (max: number) => Math.floor(Math.random() * max)
 
