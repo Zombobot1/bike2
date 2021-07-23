@@ -1,9 +1,8 @@
 import { useAtom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
 import { useMount } from '../../../utils/hooks-utils'
-import { str } from '../../../utils/types'
-
-type FileOrStr = File | str // empty str === deleted file
+import { fn, str } from '../../../utils/types'
+import { FileOrStr } from '../UCard/UCardField/types'
 
 export interface FieldData {
   name: str
@@ -49,11 +48,12 @@ export function useNewCardData(previewName: str) {
   }
 }
 
-export function useNewCardDataField(name: str) {
+export function useNewCardDataField(_id: str, name: str) {
   const [newCardData, setNewCardData] = useAtom(newCardDataA)
-  const setValue = (value: FileOrStr) => setNewCardData((fd) => setFieldValue(fd, name, value))
+  const setValue = _id ? fn : (value: FileOrStr) => setNewCardData((fd) => setFieldValue(fd, name, value))
 
   useMount(() => {
+    if (_id) return
     setNewCardData((cd) => [...cd, { name, value: '', error: '' }])
     return () => setNewCardData((cd) => cd.filter((d) => d.name !== name))
   })

@@ -10,7 +10,7 @@ export const useEventListener = <T extends Event | SyntheticEvent, D>(
   const ref: any = useRef(null)
   useEffect(() => {
     const eventListener = (event: T) => handler(event)
-    ref.current.addEventListener(eventName, eventListener)
+    ref?.current?.addEventListener(eventName, eventListener)
     return () => ref?.current?.removeEventListener(eventName, eventListener)
   }, [eventName, ref, dependency])
   return ref

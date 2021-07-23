@@ -12,7 +12,7 @@ interface TemplateP extends UCardField {
 function Template(props: TemplateP) {
   const [info, setInfo] = useState('')
   const { submit } = useNewCardData(props.name)
-  const onSubmit = (data: NewCardData) => setInfo('New value: ' + data.find((d) => d.name === props.name)?.toString())
+  const onSubmit = (data: NewCardData) => setInfo('New value: ' + data.find((d) => d.name === props.name)?.value)
 
   return (
     <Stack sx={{ maxWidth: '470px', height: '100%' }} spacing={2}>
@@ -74,11 +74,18 @@ const data7: TemplateP = {
   showSubmit: true,
 }
 
-export const LetsEditText = () => <Template {...data1} />
+const data8: TemplateP = {
+  ...data1,
+  passiveData: '',
+  showSubmit: true,
+}
+
+export const EditsText = () => <Template {...data1} />
 export const AwaitsTextInput = () => <Template {...data2} />
-export const LetsEditImage = () => <Template {...data3} />
+export const EditsImage = () => <Template {...data3} />
 export const AwaitsImageInput = () => <Template {...data4} />
-export const LetsDeleteImage = () => <Template {...data3} />
-export const LetsDeleteAudio = () => <Template {...data5} />
-export const LetsUploadAudio = () => <Template {...data6} />
+export const DeletesImage = () => <Template {...data3} />
+export const DeletesAudio = () => <Template {...data5} />
+export const UploadsAudio = () => <Template {...data6} />
 export const ForbidsSubmissionIfPreviewIsEmpty = () => <Template {...data7} />
+export const HandlesNewDataDifferentlyIfHasId = () => <Template {...data8} />

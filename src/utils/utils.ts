@@ -1,5 +1,18 @@
-import { JSObject } from './types'
+import { Fn, JSObject } from './types'
 import { styled } from '@material-ui/core'
+
+type E = {
+  preventDefault: Fn
+  stopPropagation: Fn
+}
+
+export function prevented(f: () => void) {
+  return (e: E) => {
+    e.preventDefault()
+    e.stopPropagation()
+    f()
+  }
+}
 
 export interface IsSM {
   isSM?: boolean
