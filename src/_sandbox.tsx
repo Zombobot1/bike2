@@ -1,5 +1,3 @@
-import 'swiper/swiper.scss'
-
 export const Sandbox = () => {
   return (
     <div style={{ position: 'relative', width: '500px', height: '500px', backgroundColor: 'grey' }}>
