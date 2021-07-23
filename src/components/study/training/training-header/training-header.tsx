@@ -21,7 +21,7 @@ const Progress = styled(LinearProgress)(({ theme }) => ({
 const ProgressBar = ({ value }: ProgressBarP) => {
   const isSM = useIsSM()
   const sx = { width: isSM ? 320 : 220, marginRight: 2 }
-  return <Progress value={value} sx={sx} variant="determinate" />
+  return <Progress value={value} sx={value < 100 ? sx : { width: '100%' }} variant="determinate" />
 }
 
 export interface TrainingHeaderP {
@@ -33,6 +33,7 @@ export interface TrainingHeaderP {
 const cardsLeftInfo = (cardsLength: number, currentCardIndex: number, timeToFinish: number) => {
   const cardsLeftNumber = cardsLength - currentCardIndex
   const cardsLeft = `${cardsLeftNumber} card${addS(cardsLeftNumber)}`
+  if (cardsLeftNumber === 0) return ''
   if (cardsLeftNumber < 100 || timeToFinish < 60 * 60) return `${cardsLeft} ~ ${fancyTime(timeToFinish)}`
   return `${cardsLeft} ~ ${fancyTime(timeToFinish, true)}`
 }

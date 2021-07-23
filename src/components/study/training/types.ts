@@ -8,6 +8,7 @@ const WEIGHTS: { [K in CardEstimation]: number } = {
   POOR: 0,
   BAD: -1,
 }
+export const isMistake = (e: CardEstimation) => ['POOR', 'BAD'].includes(e)
 export const cardEstimationToNumber = (a: CardEstimation): number => WEIGHTS[a]
 export const estimationColor = (e: CardEstimation) => {
   switch (e) {

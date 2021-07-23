@@ -58,7 +58,7 @@ function PassiveField(props: PassiveField) {
     <>
       {props.type === 'PRE' && <UTextField {...props} />}
       {props.type === 'IMG' && <UImageField {...props} />}
-      {props.type === 'AUDIO' && <UAudioField {...props} />}
+      {props.type === 'AUDIO' && <UAudioField {...props} autoplay={props.isMediaActive} />}
     </>
   )
 }

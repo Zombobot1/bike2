@@ -5,14 +5,16 @@ import { TrainingControls } from './training-controls'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { useMount } from '../../../../utils/hooks-utils'
 import { Button, Stack, Typography } from '@material-ui/core'
+import { bool, fn, num } from '../../../../utils/types'
 
 interface TrainingControlsTP {
   cardType: CardType
-  areFieldsHidden: boolean
-  timeLeft: number
+  areFieldsHidden: bool
+  timeLeft: num
+  isAtEnd?: bool
 }
 
-const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingControlsTP) => {
+const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft, isAtEnd = false }: TrainingControlsTP) => {
   const [areHidden, setHidden] = useState(areFieldsHidden)
   const [estimation, setEstimation] = useState<CardEstimation | null>(null)
   const [status, setStatus] = useState('')
@@ -59,6 +61,8 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft }: TrainingCont
       {status && <h3>{status}</h3>}
       {estimation && <h3 style={{ color: estimationColor(estimation) }}>{estimation}</h3>}
       <TrainingControls
+        isAtEnd={isAtEnd}
+        onTrainingEnd={fn}
         cardType={cardType}
         showHiddenFields={() => setHidden(false)}
         areFieldsHidden={areHidden}
@@ -89,8 +93,14 @@ const atTimeout: TrainingControlsTP = {
   timeLeft: 1,
 }
 
+const atEnd: TrainingControlsTP = {
+  ...atTimeout,
+  isAtEnd: true,
+}
+
 export const PassiveCardControls = () => <TrainingControlsT {...passiveCardControls} />
 export const InteractiveCardControls = () => <TrainingControlsT {...interactiveCardControls} />
 export const AtTimeout = () => <TrainingControlsT {...atTimeout} />
 export const CanDeleteCard = () => <TrainingControlsT {...passiveCardControls} />
 export const CanPauseOrResumeTimer = () => <TrainingControlsT {...passiveCardControls} />
+export const AtEnd = () => <TrainingControlsT {...atEnd} />

@@ -1,6 +1,6 @@
 import { Box, Button, Stack } from '@material-ui/core'
 import { useEffect, useState } from 'react'
-import { CardCarousel, CardDatas, CardDataP, CardData } from '../../study/training/training/card-carousel'
+import { CardDatas, CardDataP, CardData } from '../../study/training/training/card-carousel'
 import { CardTemplateDTO, getPreviewName } from '../dto'
 import { useNewCardData, NewCardData } from './useNewCardData'
 
@@ -31,7 +31,7 @@ export function UCardEditor({ initialCards = [], onSubmit, template }: UCardEdit
 
   return (
     <Box sx={{ height: '100%', maxWidth: 500, width: '100%', paddingBottom: 1 }}>
-      <CardCarousel cards={cards} />
+      {/* <CardCarousel cards={cards} /> */}
       <Stack direction="row" justifyContent="center">
         {currentCardIndex === 0 && <Button onClick={addNew}>Create</Button>}
         {currentCardIndex > 0 && <Button onClick={prev}>Prev</Button>}

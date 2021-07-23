@@ -1,7 +1,7 @@
-import { CardDTO, CardDTOs, CardEstimation } from '../types'
+import { CardDTO, CardDTOs, CardEstimation, isMistake } from '../types'
 import { useEffect, useState } from 'react'
 import { deleteCard, estimateAnswer } from '../../../../api/api'
-import { useMount } from '../../../../utils/hooks-utils'
+import { useMount, useUnmount } from '../../../../utils/hooks-utils'
 import { Fn, num, StateT } from '../../../../utils/types'
 import { useRouter } from '../../../utils/hooks/use-router'
 import { TrainingDTO } from './training'
@@ -11,6 +11,20 @@ import { CardData, CardDatas } from './card-carousel'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { STUDY } from '../../../Shell/navigation/pages'
 import { useSlides } from '../../../utils/Slides'
+import { atom, useAtom } from 'jotai'
+
+const mistakesCountA = atom(0)
+
+export function useMistakesCounter() {
+  const [mistakesCount, setMistakesCount] = useAtom(mistakesCountA)
+  return {
+    mistakesCount,
+    resetMistakesCount: () => setMistakesCount(0),
+    registerMistake: (e: CardEstimation) => {
+      if (isMistake(e)) setMistakesCount((c) => c + 1)
+    },
+  }
+}
 
 export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
   const [timeToFinish, setTimeToFinish] = useState(0)
@@ -38,12 +52,14 @@ export const useCardSettings = (cardsS: StateT<CardDatas>, currentCardIndex: num
 }
 
 type CardTransition = 'TRANSIT' | 'NO_TRANSITION'
-export type EstimateCard = (v: CardEstimation, ct?: CardTransition) => Fn | undefined
+export type EstimateCard = (e: CardEstimation, ct?: CardTransition) => Fn | undefined
 
 const cardDTOToCardData = (dto: CardDTO): CardData => ({ dto, showHidden: false })
 const cardDTOsToCardDatas = (dtos: CardDTOs) => dtos.map(cardDTOToCardData)
 
-export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard: Fn) => {
+export const useCards = (trainingId: string, initialCards: CardDTOs) => {
+  const { resetMistakesCount, registerMistake } = useMistakesCounter()
+
   const [cards, setCards] = useState<CardDatas>(cardDTOsToCardDatas(initialCards))
   const slides = useSlides()
   const currentCardIndex = slides.currentSlide
@@ -62,29 +78,24 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
   }, [currentCardIndex])
 
   const { timeToFinish } = useTimeToFinish(cards, currentCardIndex)
-  const [isLoading, setIsLoading] = useState(false)
 
   const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'TRANSIT'): Fn | undefined => {
-    setIsLoading(true)
-    const hasCards = currentCardIndex < cards.length - 1
+    const isLastCard = currentCardIndex < cards.length - 1
 
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
+    registerMistake(e)
 
     estimateAnswer({ deckId: trainingId, cardId: safe(cards[currentCardIndex].dto)._id, estimation: e }).then(
       (cards) => {
-        setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
-        setIsLoading(false)
-        if (transition === 'TRANSIT' && !hasCards) goToNextCard()
+        if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
       },
     )
 
-    if (transition === 'TRANSIT' && hasCards) goToNextCard()
+    if (transition === 'TRANSIT') goToNextCard()
     else if (transition === 'NO_TRANSITION') return goToNextCard
   }
 
-  useEffect(() => {
-    if (!isLoading && currentCardIndex >= cards.length) onLastCard()
-  }, [cards, isLoading, currentCardIndex])
+  useUnmount(resetMistakesCount)
 
   return {
     cards,
@@ -94,6 +105,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs, onLastCard:
     currentCardIndex,
     estimateCard,
     timeToFinish,
+    isAtEnd: slides.isLast,
   }
 }
 

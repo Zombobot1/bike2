@@ -1,15 +1,17 @@
-import { ReactElement, useEffect } from 'react'
+import { ReactNode, useEffect } from 'react'
 import Slide from '@material-ui/core/Slide'
 import { useMount } from '../../utils/hooks-utils'
 import { styled } from '@material-ui/core'
 import { useAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
+import flattenChildren from 'react-flatten-children'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Children = ReactElement<any, any>[]
+type Children = ReactNode[] //ReactElement<any, any>[]
 
 export interface Slides {
-  children: Children
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  children: ReactNode
 }
 
 const Container = styled('div', { label: 'Slides' })({
@@ -60,26 +62,33 @@ export function useSlides(initialSlide = 0) {
 }
 
 export function Slides({ children }: Slides) {
+  const flatChildren = flattenChildren(children)
   const [_, setSlides] = useAtom(slidesA)
   const [currentSlide] = useAtom(currentSlideA)
 
   useEffect(() => {
-    setSlides(children)
-  }, [children.length])
+    setSlides(Array.isArray(flatChildren) ? flatChildren : [flatChildren])
+  }, [Array.isArray(flatChildren) ? flatChildren.length : false])
 
   return (
     <Container>
-      {children.map((c, i) => (
-        <Slide
-          key={i}
-          direction={i === currentSlide ? 'left' : 'right'}
-          in={i === currentSlide}
-          mountOnEnter
-          unmountOnExit
-        >
-          <SlideWrapper>{c}</SlideWrapper>
+      {Array.isArray(flatChildren) &&
+        flatChildren.map((c, i) => (
+          <Slide
+            key={i}
+            direction={i === currentSlide ? 'left' : 'right'}
+            in={i === currentSlide}
+            mountOnEnter
+            unmountOnExit
+          >
+            <SlideWrapper>{c}</SlideWrapper>
+          </Slide>
+        ))}
+      {!Array.isArray(flatChildren) && (
+        <Slide direction="left" in={true} mountOnEnter unmountOnExit>
+          <SlideWrapper>{flatChildren}</SlideWrapper>
         </Slide>
-      ))}
+      )}
     </Container>
   )
 }

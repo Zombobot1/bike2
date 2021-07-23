@@ -4,6 +4,14 @@ import { num, nums } from '../../utils/types'
 import { Rec } from './rec'
 import { Slides, useSlides } from './Slides'
 
+function One() {
+  return (
+    <Slides>
+      <Rec>1</Rec>
+    </Slides>
+  )
+}
+
 function Template1() {
   const slides = useSlides()
   return (
@@ -61,6 +69,7 @@ function Template3({ initialRecs, initialRec }: Template3P) {
         {recs.map((r) => (
           <Rec key={r}>{r}</Rec>
         ))}
+        <Rec>I am also a child</Rec>
       </Slides>
       <ButtonGroup variant="outlined">
         <Button onClick={() => setRecs((rs) => [rs[0] - 1, ...rs])}>Insert</Button>
@@ -72,6 +81,7 @@ function Template3({ initialRecs, initialRec }: Template3P) {
   )
 }
 
+export const OneSlide = () => <One />
 export const SlidesOneByOne = () => <Template1 />
 export const SlidesWithAutofocus = () => <Template2 />
 export const HandlesFrontInsertions = () => <Template3 initialRecs={[1]} />

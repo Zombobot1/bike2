@@ -213,6 +213,22 @@ export const uCardMinimal: CardDTO = {
   type: 'PASSIVE',
 }
 
+export const uCardMinimalF1: CardDTO = {
+  _id: 'fast1',
+  fields: [hospitalEn, hospitalIpa, hospitalRu],
+  timeToAnswer: 5,
+  stageColor: 'white',
+  type: 'PASSIVE',
+}
+
+export const uCardMinimalF2: CardDTO = {
+  _id: 'fast2',
+  fields: [hospitalRu, hospitalIpa, hospitalEn],
+  timeToAnswer: 5,
+  stageColor: 'white',
+  type: 'PASSIVE',
+}
+
 export const cardForUpdate: CardDTO = {
   _id: 'update',
   fields: [theatreEn, theatreIpa, theatreRu],
@@ -276,6 +292,12 @@ const simple: TrainingDTO = {
   cards: [uCardLong, uCardMinimal],
 }
 
+const statsCheck: TrainingDTO = {
+  ...basic,
+  _id: 'statsCheck',
+  cards: [uCardMinimalF1, uCardMinimalF2],
+}
+
 const withUpdateFromServer: TrainingDTO = {
   ...basic,
   _id: 'simple',
@@ -306,6 +328,7 @@ export const trainings = {
   interactive,
   combined,
   autofocusCheck,
+  statsCheck,
 }
 
 const mathTrainings: TrainingDTO[] = [

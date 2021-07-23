@@ -11,7 +11,7 @@ const TrainingT = (args: TrainingDTO) => {
   const isMobile = useMedia([SM], [true], false)
 
   return (
-    <MemoryRouter initialEntries={['/app/study/']}>
+    <MemoryRouter initialEntries={['/study/']}>
       <Stack
         justifyContent="center"
         alignItems="center"
@@ -34,3 +34,4 @@ export const WithUpdateFromServer = () => <TrainingT {...trainings.withUpdateFro
 export const Interactive = () => <TrainingT {...trainings.interactive} />
 export const Combined = () => <TrainingT {...trainings.combined} />
 export const AutofocusCheck = () => <TrainingT {...trainings.autofocusCheck} />
+export const CountingStats = () => <TrainingT {...trainings.statsCheck} />

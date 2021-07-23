@@ -25,6 +25,7 @@ export interface TrainingsGroupDTO {
   rootDeckName: string
   trainings: TrainingDTO[]
 }
+export type TrainingsGroupDTOs = TrainingsGroupDTO[]
 
 export interface TrainingP {
   dto: TrainingDTO
@@ -32,13 +33,21 @@ export interface TrainingP {
 }
 
 export const Training = ({ dto, onLastCard }: TrainingP) => {
-  const { cards, onDeleteCard, currentCardIndex, estimateCard, timeToFinish, showHiddenFields, areFieldsHidden } =
-    useCards(dto._id, dto.cards, onLastCard)
+  const {
+    cards,
+    onDeleteCard,
+    currentCardIndex,
+    estimateCard,
+    timeToFinish,
+    showHiddenFields,
+    areFieldsHidden,
+    isAtEnd,
+  } = useCards(dto._id, dto.cards)
 
   return (
     <Box sx={{ height: '100%', maxWidth: 500, width: '100%', paddingBottom: 1 }}>
       <TrainingHeader timeToFinish={timeToFinish} currentCardIndex={currentCardIndex} cardsLength={cards.length} />
-      <CardCarousel cards={cards} />
+      <CardCarousel cards={cards} currentTrainingId={dto._id} />
       <TrainingControls
         cardType={cards[currentCardIndex]?.dto?.type || 'PASSIVE'}
         estimate={estimateCard}
@@ -47,6 +56,8 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
         currentCardIndex={currentCardIndex}
         deleteCard={onDeleteCard}
         cardId={cards[currentCardIndex]?.dto?._id || ''}
+        onTrainingEnd={onLastCard}
+        isAtEnd={isAtEnd}
       />
     </Box>
   )

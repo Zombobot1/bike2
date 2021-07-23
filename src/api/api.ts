@@ -2,6 +2,7 @@ import { axi } from './axi'
 import { CardDTOs, CardDTOsP, UserCardAnswerDTO } from '../components/study/training/types'
 import { idfy, queryfy } from '../utils/utils'
 import { JSObject } from '../utils/types'
+import { TrainingDTO, TrainingsGroupDTOs } from '../components/study/training/training/training'
 
 export const GET_TRAININGS_GROUPS = '/trainings'
 export const GET_TRAINING = '/trainings/:id'
@@ -18,6 +19,13 @@ export const deleteCard = (id: string) => axi.delete(idfy(CARD, id)).then((res) 
 export const patchCard = (id: string, patch: JSObject) => axi.patch(idfy(CARD, id), patch).then((res) => res.data)
 
 export const getTrainings = () => axi.get(GET_TRAININGS_GROUPS).then((res) => res.data)
+export const getNextTraining = async (id: string): Promise<TrainingDTO | undefined> => {
+  const groups = (await axi.get(GET_TRAININGS_GROUPS).then((res) => res.data)) as TrainingsGroupDTOs
+  const trainings = groups.map((g) => g.trainings).flat()
+  if (trainings.length === 0) return
+  if (trainings.length === 1) return trainings[0]
+  return trainings.filter((t) => t._id !== id)[0]
+}
 
 export const getTraining = (id: string) => axi.get(idfy(GET_TRAINING, id)).then((res) => res.data)
 
