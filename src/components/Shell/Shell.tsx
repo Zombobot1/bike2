@@ -31,6 +31,7 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) 
 
 function SWController() {
   const [showReload, setShowReload] = useState(false)
+  const [isWorkerInitialized, setIsWorkerInitialized] = useState(false)
   const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null)
 
   const onSWUpdate = (registration: ServiceWorkerRegistration) => {
@@ -38,17 +39,20 @@ function SWController() {
     setWaitingWorker(registration.waiting)
   }
 
+  const checkForUpdates = () =>
+    navigator.serviceWorker.getRegistrations().then((regs) => regs.forEach((reg) => reg.update().catch(console.error)))
+
   useEffect(() => {
-    serviceWorkerRegistration.register({ onUpdate: onSWUpdate })
+    serviceWorkerRegistration.register({
+      onUpdate: onSWUpdate,
+      onInit: () => setIsWorkerInitialized(true),
+    })
   }, [])
 
   const isVisible = useIsPageVisible()
 
   useEffect(() => {
-    if (isVisible)
-      navigator.serviceWorker
-        .getRegistrations()
-        .then((regs) => regs.forEach((reg) => reg.update().catch(console.error)))
+    if (isVisible && isWorkerInitialized) checkForUpdates()
   }, [isVisible])
 
   const reloadPage = () => {
@@ -58,6 +62,8 @@ function SWController() {
   }
 
   return (
+    // anomaly: be sure that your app uses resources: <img src={import logo from './logo.svg'} style={{ display: 'none' }} />
+    // otherwise this dialog will not appear at all
     <Snackbar open={showReload} onClick={reloadPage} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
       <Alert severity="info">
         <Stack direction="row" alignItems="center">
@@ -114,7 +120,6 @@ export function Shell() {
         <Router>
           <SWController />
           <QueryClientProvider client={queryClient}>
-            {/*<ReactQueryDevtools />*/}
             <Switch>
               <Redirect exact from={_ROOT} to={redirect} />
               {PAGES.map(buildRoutes)}

@@ -8,7 +8,7 @@ import { sleep } from '../utils/utils'
 /* eslint prefer-const: 0 */
 
 let getTrainingsGroups = () => trainingDecks
-let getTraining = () => trainings.combined
+let getTraining = (r: WR) => Object.entries(trainings).filter(([k]) => k === r.params.id)[0][1]
 let getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') === 'get update' ? [cardForUpdate] : [])
 let deleteCard = () => []
 let subscribe = () => ({})

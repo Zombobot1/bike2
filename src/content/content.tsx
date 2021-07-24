@@ -298,6 +298,12 @@ const statsCheck: TrainingDTO = {
   cards: [uCardMinimalF1, uCardMinimalF2],
 }
 
+const small: TrainingDTO = {
+  ...basic,
+  _id: 'small',
+  cards: [uCardMinimalF1],
+}
+
 const withUpdateFromServer: TrainingDTO = {
   ...basic,
   _id: 'simple',
@@ -323,6 +329,7 @@ const autofocusCheck: TrainingDTO = {
 }
 
 export const trainings = {
+  small,
   simple,
   withUpdateFromServer,
   interactive,
@@ -331,222 +338,6 @@ export const trainings = {
   statsCheck,
 }
 
-const mathTrainings: TrainingDTO[] = [
-  trainings.simple,
-  {
-    _id: '1',
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods ',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
+const mathTrainings: TrainingDTO[] = [trainings.small, trainings.simple]
 
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods ',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods ',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#FF5151',
-    deckName: 'Bayesian approach',
-    deckPath: 'Statistical methods ',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-]
-const jsTrainings: TrainingDTO[] = [
-  {
-    _id: '1',
-
-    deckColor: '#FCA95C',
-    deckName: 'Functions',
-    deckPath: 'Basics',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#FCA95C',
-    deckName: 'Functions',
-    deckPath: 'Basics',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#FCA95C',
-    deckName: 'Workers',
-    deckPath: 'Browsers',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#eced2b',
-    deckName: 'Async & Await',
-    deckPath: 'Advanced',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#eced2b',
-    deckName: 'Proxy',
-    deckPath: 'Advanced',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#eced2b',
-    deckName: 'Proxy',
-    deckPath: 'Advanced',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-]
-const englishTrainings: TrainingDTO[] = [
-  {
-    _id: '1',
-
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Collocations',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Collocations',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Collocations',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Collocations',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#735CFC',
-    deckName: 'Exersices 1-10',
-    deckPath: 'Collocations',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-]
-const cppTrainings: TrainingDTO[] = [
-  {
-    _id: '1',
-
-    deckColor: '#FC5C9F',
-    deckName: 'Chapter 1',
-    deckPath: 'C++ programming language',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#FC5C9F',
-    deckName: 'Chapter 1',
-    deckPath: 'C++ programming language',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#FC5C9F',
-    deckName: 'Chapter 1',
-    deckPath: 'C++ programming language',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-]
-const pythonTrainings: TrainingDTO[] = [
-  {
-    _id: '1',
-
-    deckColor: '#2730FD',
-    deckName: 'Pathlib',
-    deckPath: 'Libraries',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#2730FD',
-    deckName: 'Pathlib',
-    deckPath: 'Libraries',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-]
-const cookingTrainings: TrainingDTO[] = [
-  {
-    _id: '1',
-
-    deckColor: '#DC5CFC',
-    deckName: 'Borsh',
-    deckPath: 'Recepies',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-  {
-    _id: '1',
-
-    deckColor: '#DC5CFC',
-    deckName: 'Borsh',
-    deckPath: 'Recepies',
-    trainingConceptsInfo: { toRepeat: 234, toLearn: 234 },
-    cards: [uCardLong, cardWithQandA],
-  },
-]
-
-export const trainingDecks: TrainingsGroupDTO[] = [
-  { rootDeckName: 'Math', trainings: mathTrainings },
-  { rootDeckName: 'Js', trainings: jsTrainings },
-  { rootDeckName: 'English', trainings: englishTrainings },
-  { rootDeckName: 'C++', trainings: cppTrainings },
-  { rootDeckName: 'Python', trainings: pythonTrainings },
-  { rootDeckName: 'Cooking', trainings: cookingTrainings },
-]
+export const trainingDecks: TrainingsGroupDTO[] = [{ rootDeckName: 'Math', trainings: mathTrainings }]

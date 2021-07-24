@@ -16,7 +16,7 @@ type RecP = {
 export const Rec = ({
   height = 100,
   width = 200,
-  color = 'red',
+  color = 'green',
   isHidden = false,
   _id = id(),
   children,

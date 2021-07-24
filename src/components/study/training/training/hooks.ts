@@ -62,6 +62,13 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
 
   const [cards, setCards] = useState<CardDatas>(cardDTOsToCardDatas(initialCards))
   const slides = useSlides()
+
+  useEffect(() => {
+    setCards(cardDTOsToCardDatas(initialCards))
+    resetMistakesCount()
+    slides.first()
+  }, [trainingId])
+
   const currentCardIndex = slides.currentSlide
 
   const { setTimeToAnswer, onDeleteCard } = useCardSettings([cards, setCards], currentCardIndex)
@@ -74,7 +81,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
 
   useEffect(() => {
     if (currentCardIndex >= cards.length) return
-    setTimeToAnswer(safe(cards[currentCardIndex].dto).timeToAnswer)
+    setTimeToAnswer(cards[currentCardIndex]?.dto?.timeToAnswer || 0)
   }, [currentCardIndex])
 
   const { timeToFinish } = useTimeToFinish(cards, currentCardIndex)
@@ -85,7 +92,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
     registerMistake(e)
 
-    estimateAnswer({ deckId: trainingId, cardId: safe(cards[currentCardIndex].dto)._id, estimation: e }).then(
+    estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e }).then(
       (cards) => {
         if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
       },
