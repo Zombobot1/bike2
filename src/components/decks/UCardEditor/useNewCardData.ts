@@ -1,5 +1,4 @@
-import { useAtom } from 'jotai'
-import { atomWithReset } from 'jotai/utils'
+import { useAtom, atom } from 'jotai'
 import { useMount } from '../../../utils/hooks-utils'
 import { fn, str } from '../../../utils/types'
 import { FileOrStr } from '../UCard/UCardField/types'
@@ -19,7 +18,7 @@ function setFieldValue(data: NewCardData, name: str, value: FileOrStr): NewCardD
 function checkError(data: NewCardData, previewName: str): NewCardData {
   const preview = data.find((fd) => fd.name === previewName)
   if (!preview || !preview.value)
-    return data.map((fd) => (fd.name === previewName ? { ...fd, error: 'Please fill preview field' } : fd))
+    return data.map((fd) => (fd.name === previewName ? { ...fd, error: 'Please fill this field' } : fd))
   return []
 }
 
@@ -29,7 +28,7 @@ export function newCardDataToFormData(data: NewCardData): FormData {
   return result
 }
 
-const newCardDataA = atomWithReset<NewCardData>([])
+const newCardDataA = atom<NewCardData>([])
 
 export function useNewCardData(previewName: str) {
   const [newCardData, setNewCardData] = useAtom(newCardDataA)
@@ -43,7 +42,10 @@ export function useNewCardData(previewName: str) {
 
   return {
     submit: (submitHandler: (data: NewCardData) => void) => {
-      if (isValid()) submitHandler(newCardData.filter((d) => d.value))
+      if (isValid()) {
+        submitHandler(newCardData.filter((d) => d.value))
+        setNewCardData([])
+      }
     },
   }
 }
@@ -57,6 +59,6 @@ export function useNewCardDataField(_id: str, name: str) {
     setNewCardData((cd) => [...cd, { name, value: '', error: '' }])
     return () => setNewCardData((cd) => cd.filter((d) => d.name !== name))
   })
-
-  return { setValue, error: newCardData.find((d) => d.name === name)?.error || '' }
+  const value = newCardData.find((d) => d.name === name)
+  return { setValue, error: value?.error || '' }
 }

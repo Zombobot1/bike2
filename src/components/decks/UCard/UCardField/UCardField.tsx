@@ -9,8 +9,8 @@ import { UTextField } from './UTextField'
 import { useNewCardDataField } from '../../UCardEditor/useNewCardData'
 
 export interface UCardField extends Omit<FieldDTO, 'status' | 'isPreview'> {
-  isMediaActive: boolean
-  canBeEdited: boolean
+  isMediaActive?: boolean
+  canBeEdited?: boolean
 }
 
 export const UCardField = ({
@@ -19,8 +19,8 @@ export const UCardField = ({
   passiveData,
   interactiveData,
   type,
-  isMediaActive,
-  canBeEdited,
+  isMediaActive = false,
+  canBeEdited = false,
 }: UCardField) => {
   const { interactiveSubmit } = useInteractiveSubmit()
   const newDataProps = useNewCardDataField(_id, name)
@@ -45,6 +45,7 @@ export const UCardField = ({
       </>
     )
   }
+
   return null
 }
 

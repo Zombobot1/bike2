@@ -2,6 +2,7 @@ import { Box } from '@material-ui/core'
 import { zip2 } from '../../../utils/algorithms'
 import { srcfy } from '../../../utils/filesManipulation'
 import { str } from '../../../utils/types'
+import { uuid } from '../../../utils/utils'
 import { CardDataP } from '../../study/training/training/card-carousel'
 import { FieldDTOs } from '../../study/training/types'
 import { CardTemplateDTO } from '../dto'
@@ -25,12 +26,19 @@ function mockCreate(template: CardTemplateDTO, data: NewCardData): FieldDTOs {
   })
 }
 
-function Template() {
-  const onSubmit = async (data: NewCardData): CardDataP => {
-    return {
-      dto: { _id: '1', fields: mockCreate(cardTemplate, data), stageColor: 'white', timeToAnswer: 0, type: 'PASSIVE' },
-    }
+const onSubmit = async (data: NewCardData): CardDataP => {
+  return {
+    dto: {
+      _id: uuid(),
+      fields: mockCreate(cardTemplate, data),
+      stageColor: 'white',
+      timeToAnswer: 0,
+      type: 'PASSIVE',
+    },
   }
+}
+
+function Template() {
   return (
     <Box sx={{ maxWidth: '470px', height: '100%' }}>
       <UCardEditor template={cardTemplate} onSubmit={onSubmit} />
@@ -38,4 +46,4 @@ function Template() {
   )
 }
 
-export const LetsCreateNewCard = () => <Template />
+export const CreatesNewCard = () => <Template />

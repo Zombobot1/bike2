@@ -33,12 +33,12 @@ export const sories = [
     ],
   },
   {
-    name: 'UComponents',
-    components: [storify({ UTable })],
-  },
-  {
     name: 'Decks',
     components: [storify({ UCardEditor }), storify({ UCard }), storify({ UCardField })],
+  },
+  {
+    name: 'UComponents',
+    components: [storify({ UTable })],
   },
   {
     name: 'UForm',

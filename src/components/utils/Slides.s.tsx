@@ -7,7 +7,7 @@ import { Slides, useSlides } from './Slides'
 function One() {
   return (
     <Slides>
-      <Rec>1</Rec>
+      <Rec key="1">1</Rec>
     </Slides>
   )
 }
@@ -17,9 +17,9 @@ function Template1() {
   return (
     <Stack spacing={2} sx={{ height: '150px', width: '500px' }}>
       <Slides>
-        <Rec>1</Rec>
-        <Rec>2</Rec>
-        <Rec>3</Rec>
+        <Rec key="1">1</Rec>
+        <Rec key="2">2</Rec>
+        <Rec key="3">3</Rec>
       </Slides>
       <ButtonGroup variant="outlined">
         <Button onClick={slides.first}>First</Button>
@@ -36,13 +36,13 @@ function Template2() {
   return (
     <Stack spacing={2} sx={{ height: '150px', width: '500px' }}>
       <Slides>
-        <Rec>1</Rec>
-        <Rec color="white">
+        <Rec key="1">1</Rec>
+        <Rec key="tf" color="white">
           <form onSubmit={(e) => e.preventDefault()}>
             <TextField variant="standard" autoFocus fullWidth type="password" autoComplete="one-time-code" />
           </form>
         </Rec>
-        <Rec>3</Rec>
+        <Rec key="3">3</Rec>
       </Slides>
       <ButtonGroup variant="outlined">
         {!slides.isFirst && <Button onClick={slides.prev}>Prev</Button>}
@@ -55,6 +55,7 @@ interface Template3P {
   initialRecs: nums
   initialRec?: num
 }
+
 function Template3({ initialRecs, initialRec }: Template3P) {
   const slides = useSlides(initialRec)
   const [recs, setRecs] = useState(initialRecs)
@@ -69,7 +70,7 @@ function Template3({ initialRecs, initialRec }: Template3P) {
         {recs.map((r) => (
           <Rec key={r}>{r}</Rec>
         ))}
-        <Rec>I am also a child</Rec>
+        <Rec key="I am also a child">I am also a child</Rec>
       </Slides>
       <ButtonGroup variant="outlined">
         <Button onClick={() => setRecs((rs) => [rs[0] - 1, ...rs])}>Insert</Button>
@@ -81,9 +82,39 @@ function Template3({ initialRecs, initialRec }: Template3P) {
   )
 }
 
+function Template4() {
+  const slides = useSlides()
+  const [recs, setRecs] = useState<nums>([])
+
+  const insert = () => {
+    setRecs((rs) => [rs[0] ? rs[0] - 1 : -1, ...rs])
+  }
+
+  console.log(recs)
+
+  return (
+    <Stack spacing={2} sx={{ height: '150px', width: '500px' }}>
+      <Slides>
+        <Rec key="Front">Front</Rec>
+        {recs.map((r) => (
+          <Rec key={r} color={r % 2 === 0 ? 'red' : 'blue'}>
+            {r}
+          </Rec>
+        ))}
+      </Slides>
+      <ButtonGroup variant="outlined">
+        <Button onClick={insert}>Insert</Button>
+        {!slides.isFirst && <Button onClick={slides.prev}>Prev</Button>}
+        {!slides.isLast && <Button onClick={slides.next}>Next</Button>}
+      </ButtonGroup>
+    </Stack>
+  )
+}
+
 export const OneSlide = () => <One />
 export const SlidesOneByOne = () => <Template1 />
 export const SlidesWithAutofocus = () => <Template2 />
 export const HandlesFrontInsertions = () => <Template3 initialRecs={[1]} />
 export const HandlesFirstElementDeletion = () => <Template3 initialRecs={[1, 2]} />
 export const HandlesMiddleElementDeletion = () => <Template3 initialRecs={[1, 2, 3]} initialRec={1} />
+export const HandlesInsertionAndChange = () => <Template4 />

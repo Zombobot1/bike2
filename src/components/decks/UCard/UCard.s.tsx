@@ -1,16 +1,17 @@
-import { UCard, UCardP } from './UCard'
+import { UCard } from './UCard'
 import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../content/content'
 
-const QACardT = (args: UCardP) => (
+const QACardT = (args: UCard) => (
   <div style={{ width: '500px', height: '715px' }}>
     <UCard {...args} />
   </div>
 )
 
-const hiddenA: UCardP = {
+const hiddenA: UCard = {
   stageColor: '#6C38FF',
   showHidden: false,
   fields: uCardLong.fields,
+  isMediaActive: false,
 }
 
 const template1 = {
@@ -20,11 +21,11 @@ const template1 = {
   fields: uCardLong.fields,
 }
 
-const allFieldsShownA: UCardP = {
+const allFieldsShownA: UCard = {
   ...template1,
 }
 
-const estimatedA: UCardP = {
+const estimatedA: UCard = {
   ...template1,
   estimation: 'GOOD',
 }
@@ -36,21 +37,21 @@ const template2 = {
   fields: uCardMinimal.fields,
 }
 
-const minimalA: UCardP = {
+const minimalA: UCard = {
   ...template2,
   showHidden: false,
 }
 
-const minimalHiddenA: UCardP = {
+const minimalHiddenA: UCard = {
   ...template2,
 }
 
-const longTextA: UCardP = {
+const longTextA: UCard = {
   ...template1,
   fields: cardWithQandA.fields,
 }
 
-const interactiveAndPassiveA: UCardP = {
+const interactiveAndPassiveA: UCard = {
   ...template1,
   fields: cardWithDifferentFields.fields,
 }

@@ -1,7 +1,6 @@
 import { UCard } from '../../../decks/UCard/UCard'
 import { CardDTO, CardEstimation } from '../types'
 import { styled } from '@material-ui/core'
-import { CardTemplateDTO } from '../../../decks/dto'
 import { Slides } from '../../../utils/Slides'
 import { TrainingEnd } from '../TrainingEnd/TrainingEnd'
 import { str } from '../../../../utils/types'
@@ -9,10 +8,9 @@ import { useMistakesCounter } from './hooks'
 import { useTrainingTimer } from '../training-timer/training-timer'
 
 export interface CardData {
-  dto?: CardDTO
+  dto: CardDTO
   showHidden?: boolean
   estimation?: CardEstimation
-  template?: CardTemplateDTO
 }
 export type CardDatas = CardData[]
 export type CardDataP = Promise<CardData>
@@ -22,13 +20,6 @@ export interface CardCarouselP {
   currentTrainingId: str
 }
 
-const Cards = styled('div')({
-  width: '100%',
-  height: '90%',
-  paddingTop: 5,
-  paddingBottom: 7,
-})
-
 export const CardCarousel = ({ cards, currentTrainingId }: CardCarouselP) => {
   const { mistakesCount } = useMistakesCounter()
   const { totalTime } = useTrainingTimer()
@@ -36,14 +27,14 @@ export const CardCarousel = ({ cards, currentTrainingId }: CardCarouselP) => {
   return (
     <Cards>
       <Slides>
-        {cards.map((c, i) => (
+        {cards.map((c) => (
           <UCard
-            key={c.dto?._id || i}
-            fields={c.dto?.fields || []}
-            stageColor={c.dto?.stageColor || 'white'}
-            showHidden={c.showHidden}
+            key={c.dto._id}
+            fields={c.dto.fields}
+            stageColor={c.dto.stageColor}
             estimation={c.estimation}
-            template={c.template}
+            isMediaActive={true}
+            showHidden={c.showHidden || false}
           />
         ))}
         <TrainingEnd
@@ -57,3 +48,10 @@ export const CardCarousel = ({ cards, currentTrainingId }: CardCarouselP) => {
     </Cards>
   )
 }
+
+const Cards = styled('div')({
+  width: '100%',
+  height: '90%',
+  paddingTop: 5,
+  paddingBottom: 7,
+})
