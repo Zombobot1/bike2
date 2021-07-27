@@ -3,17 +3,19 @@ import { useState, KeyboardEvent, useEffect } from 'react'
 import { useEventListener } from '../../../utils/hooks/use-event-listener'
 import { srcfy, useImageFromClipboard } from '../../../../utils/filesManipulation'
 import ImageRoundedIcon from '@material-ui/icons/ImageRounded'
-import { PassiveData } from './types'
+import { fileToStr, PassiveData } from './types'
 import { blue } from '@material-ui/core/colors'
 import { Dropzone1, use1Drop } from '../../../utils/Dropzone'
+import { useEffectedState } from '../../../../utils/hooks-utils'
 
-export function UImageField({ data, canBeEdited, name, setValue }: PassiveData) {
+export function UImageField({ data, canBeEdited, name, setNewValue, newValue }: PassiveData) {
   const { clipBoardImageSrc, clipBoardImage, retrieveImage } = useImageFromClipboard(name)
 
-  const [src, setSrc] = useState(data)
+  const [src, setSrc] = useEffectedState(data || newValue)
+
   const fileS = use1Drop((f) => {
     setSrc(srcfy(f))
-    setValue(f)
+    setNewValue(f)
   })
 
   const [isEditing, setIsEditing] = useState(false)
@@ -26,7 +28,7 @@ export function UImageField({ data, canBeEdited, name, setValue }: PassiveData) 
     else if (e.ctrlKey && e.key === 'v' && awaitsData) handlePasteImage()
     else if (e.key === 'Delete' && awaitsData) {
       setSrc('')
-      setValue('')
+      setNewValue('')
     }
   }
 
@@ -37,14 +39,14 @@ export function UImageField({ data, canBeEdited, name, setValue }: PassiveData) 
 
   useEffect(() => {
     if (clipBoardImageSrc) setSrc(clipBoardImageSrc)
-    if (clipBoardImage) setValue(clipBoardImage)
+    if (clipBoardImage) setNewValue(clipBoardImage)
   }, [clipBoardImageSrc, clipBoardImage])
 
   if (src)
     return (
       <ClickAwayListener onClickAway={finishEditing}>
         <UImage ref={ref} tabIndex={3000} onClick={startEditing}>
-          <img src={src} />
+          <img src={fileToStr(src)} />
           {awaitsData && <Selection />}
         </UImage>
       </ClickAwayListener>

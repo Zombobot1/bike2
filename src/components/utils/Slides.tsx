@@ -53,7 +53,9 @@ export function useSlides(initialSlide = 0) {
   return {
     next: () => setCurrentSlide(Math.min(currentSlide + 1, lastIndex)),
     prev: () => setCurrentSlide(Math.max(currentSlide - 1, 0), 'backward'),
-    first: () => setCurrentSlide(0, 'backward'),
+    first: () => {
+      if (currentSlide !== 0) setCurrentSlide(0, 'backward') // backward breaks flow if first() is called in the beginning
+    },
     last: () => setCurrentSlide(lastIndex),
 
     currentSlide,
@@ -89,6 +91,11 @@ export function Slides({ children, timeout = 200 }: Slides) {
       }))
     }
   }, [Array.isArray(flatChildren) ? flatChildren.length : false])
+
+  useEffect(() => {
+    if (flatChildren.length !== slidesS.slides.length) return
+    setSlidesS((s) => ({ ...s, slides: flatChildren }))
+  }, [JSON.stringify(flatChildren.map((c) => c.props))])
 
   useEffect(() => {
     if (slidesS.insertingAt > -1) {

@@ -25,6 +25,7 @@ export const estimationColor = (e: CardEstimation) => {
 
 export type FieldState = 'HIDE' | 'SHOW'
 export type FieldType = 'PRE' | 'IMG' | 'AUDIO' | 'RADIO' | 'INPUT' | 'CHECKS'
+export const isPassive = (t: FieldType) => ['PRE', 'IMG', 'AUDIO'].includes(t)
 
 export interface Question {
   question: string

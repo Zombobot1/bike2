@@ -50,10 +50,10 @@ export const UInputElement = ({
     validity === 'NONE'
       ? undefined
       : {
-          '& .MuiInput-root:before': { borderBottomColor: color },
+          '& .MuiOutlinedInput-notchedOutline': { borderColor: `${color} !important` },
           '& .MuiInputBase-input.Mui-disabled': {
             color,
-            '-webkit-text-fill-color': 'unset',
+            WebkitTextFillColor: 'unset',
           },
         }
 
@@ -66,7 +66,7 @@ export const UInputElement = ({
       <InteractiveQuestion question={question} status={validity} />
       <TextField
         fullWidth
-        variant="standard"
+        variant="outlined"
         placeholder="Your answer"
         type={type}
         id={_id}
@@ -88,8 +88,10 @@ export const UInputElement = ({
   )
 }
 
-export interface UInputP extends QuestionWithoutOptions {
+export interface UInputP {
   _id: string
+  question?: QuestionWithoutOptions
+  initialAnswer?: string[]
   tipOnMobile?: TipOnMobile
   onAnswer?: Fn
   autoFocus?: boolean
@@ -98,13 +100,12 @@ export interface UInputP extends QuestionWithoutOptions {
 export const UInput = ({
   _id,
   question,
-  correctAnswer,
-  explanation,
-  initialAnswer,
   tipOnMobile = 'HIDE_TIP',
   onAnswer = fn,
   autoFocus = true,
+  initialAnswer,
 }: UInputP) => {
+  const { correctAnswer, explanation, question: question_ } = handleEmptyQuestion(question)
   const { addField, getFieldInfo, removeField, onChange } = useUForm()
   const { value, validationError, wasSubmitted } = getFieldInfo(_id)
 
@@ -119,7 +120,7 @@ export const UInput = ({
       correctAnswer={correctAnswer[0]}
       validationError={validationError}
       value={value[0]}
-      question={question}
+      question={question_}
       onChange={(s) => onChange(_id, [s])}
       explanation={validationError ? validationError : explanation}
       wasSubmitted={wasSubmitted}
@@ -128,4 +129,9 @@ export const UInput = ({
       autoFocus={autoFocus}
     />
   )
+}
+
+function handleEmptyQuestion(q?: QuestionWithoutOptions): QuestionWithoutOptions {
+  if (q) return q
+  return { correctAnswer: [], explanation: '', question: '' }
 }

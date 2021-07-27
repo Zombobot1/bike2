@@ -2,24 +2,25 @@ import { useEffect, useState } from 'react'
 import { IconButton, Stack } from '@material-ui/core'
 import PlayCircleRoundedIcon from '@material-ui/icons/PlayCircleRounded'
 import PauseCircleRoundedIcon from '@material-ui/icons/PauseCircleRounded'
-import { PassiveData } from './types'
+import { fileToStr, PassiveData } from './types'
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
 import { srcfy } from '../../../../utils/filesManipulation'
 import { Dropzone1, use1Drop } from '../../../utils/Dropzone'
 import AudiotrackRoundedIcon from '@material-ui/icons/AudiotrackRounded'
+import { useEffectedState } from '../../../../utils/hooks-utils'
 
 export interface UAudioField extends PassiveData {
   autoplay?: boolean
 }
 
-export function UAudioField({ data, canBeEdited, name, autoplay = false, setValue }: UAudioField) {
-  const [src, setSrc] = useState(data)
+export function UAudioField({ data, canBeEdited, name, autoplay = false, setNewValue, newValue }: UAudioField) {
+  const [src, setSrc] = useEffectedState(data || newValue)
   const [audioElement, setAudioElement] = useState<HTMLAudioElement>()
   const [isPlaying, setIsPlaying] = useState(false)
 
   const fileS = use1Drop((f) => {
     setSrc(srcfy(f))
-    setValue(f)
+    setNewValue(f)
   })
 
   const play = () => {
@@ -38,7 +39,7 @@ export function UAudioField({ data, canBeEdited, name, autoplay = false, setValu
 
   useEffect(() => {
     if (!src) return
-    const audioFile = new Audio(src)
+    const audioFile = new Audio(fileToStr(src))
     setAudioElement(audioFile)
     audioFile.load()
 
@@ -65,7 +66,7 @@ export function UAudioField({ data, canBeEdited, name, autoplay = false, setValu
             color="error"
             onClick={() => {
               setSrc('')
-              setValue('')
+              setNewValue('')
             }}
           >
             <DeleteRoundedIcon />

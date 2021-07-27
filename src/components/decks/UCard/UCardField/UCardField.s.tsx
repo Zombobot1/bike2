@@ -4,6 +4,8 @@ import hospitalMp3 from '../../../../content/hospital.mp3'
 import { UCardField } from './UCardField'
 import { useState } from 'react'
 import { NewCardData, useNewCardData } from '../../UCardEditor/useNewCardData'
+import { Question } from '../../../study/training/types'
+import { str } from '../../../../utils/types'
 
 interface TemplateP extends UCardField {
   showSubmit: boolean
@@ -80,6 +82,29 @@ const data8: TemplateP = {
   showSubmit: true,
 }
 
+interface UQuestion extends Question {
+  _id: str
+}
+
+const q = (_id: str, question: str, correctAnswer: str, explanation: str): UQuestion => ({
+  _id,
+  question,
+  correctAnswer: [correctAnswer],
+  explanation,
+  options: [],
+})
+const basicQ = q('basicQ', 'Type: a', 'a', 'Just type it using keyboard')
+
+const data9: TemplateP = {
+  showSubmit: false,
+  _id: '1',
+  name: 'question',
+  canBeEdited: true,
+  isMediaActive: false,
+  type: 'INPUT',
+  interactiveData: basicQ,
+}
+
 export const EditsText = () => <Template {...data1} />
 export const AwaitsTextInput = () => <Template {...data2} />
 export const EditsImage = () => <Template {...data3} />
@@ -89,3 +114,4 @@ export const DeletesAudio = () => <Template {...data5} />
 export const UploadsAudio = () => <Template {...data6} />
 export const ForbidsSubmissionIfPreviewIsEmpty = () => <Template {...data7} />
 export const HandlesNewDataDifferentlyIfHasId = () => <Template {...data8} />
+export const EditsUInput = () => <Template {...data9} />

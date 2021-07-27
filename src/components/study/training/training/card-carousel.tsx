@@ -26,7 +26,7 @@ export const CardCarousel = ({ cards, currentTrainingId }: CardCarouselP) => {
   const expectedTime = cards.reduce((p, c) => p + (c.dto?.timeToAnswer || 0), 0)
   return (
     <Cards>
-      <Slides>
+      <Slides timeout={500}>
         {cards.map((c) => (
           <UCard
             key={c.dto._id}

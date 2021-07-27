@@ -1,25 +1,17 @@
-import { QuestionP, UChecksElement } from './uchecks'
+import { UChecksElement } from './uchecks'
 import { useState } from 'react'
+import { Question } from '../../study/training/types'
 
-interface TUChecksP extends QuestionP {
+interface TUChecksP {
   _id: string
+  question: Question
   wasSubmitted: boolean
   value: string[]
   validationError: string
   selectMultiple: boolean
 }
 
-const TUChecks = ({
-  _id,
-  question,
-  options,
-  correctAnswer,
-  explanation,
-  value,
-  wasSubmitted,
-  validationError,
-  selectMultiple,
-}: TUChecksP) => {
+const TUChecks = ({ _id, question, value, wasSubmitted, validationError, selectMultiple }: TUChecksP) => {
   const [value_, setValue] = useState(value)
   return (
     <div style={{ width: '50%' }}>
@@ -29,10 +21,7 @@ const TUChecks = ({
         onChange={(_, v) => setValue(v)}
         validationError={validationError}
         wasSubmitted={wasSubmitted}
-        options={options}
         question={question}
-        correctAnswer={correctAnswer}
-        explanation={explanation}
         selectMultiple={selectMultiple}
       />
     </div>
@@ -48,10 +37,12 @@ const selectOneCorrectAnswer = ['Option 1']
 
 const radioData: TUChecksP = {
   _id: 'radioData',
-  question: 'Please select',
-  options: selectOneOptions,
-  correctAnswer: selectOneCorrectAnswer,
-  explanation: 'This is a loooooooooooooooooooooong Cuz',
+  question: {
+    question: 'Please select',
+    options: selectOneOptions,
+    correctAnswer: selectOneCorrectAnswer,
+    explanation: 'This is a loooooooooooooooooooooong Cuz',
+  },
   validationError: '',
   wasSubmitted: false,
   value: [''],
@@ -63,10 +54,12 @@ const selectMultipleCorrectAnswer = ['Right', 'Also right']
 
 const checksData: TUChecksP = {
   _id: 'checksData',
-  question: 'Please select',
-  options: selectMultipleOptions,
-  correctAnswer: selectMultipleCorrectAnswer,
-  explanation: 'This is a loooooooooooooooooooooong Cuz',
+  question: {
+    question: 'Please select',
+    options: selectMultipleOptions,
+    correctAnswer: selectMultipleCorrectAnswer,
+    explanation: 'This is a loooooooooooooooooooooong Cuz',
+  },
   validationError: '',
   wasSubmitted: false,
   value: [''],
@@ -97,9 +90,7 @@ const invalid: TUChecksP = {
 }
 
 const wrongMultiple: TUChecksP = {
-  ...radioData,
-  options: selectMultipleOptions,
-  correctAnswer: selectMultipleCorrectAnswer,
+  ...checksData,
   wasSubmitted: true,
   value: ['Right', 'Also wrong', 'Wrong'],
   selectMultiple: true,

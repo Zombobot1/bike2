@@ -1,15 +1,15 @@
 import { styled, TextField, Typography } from '@material-ui/core'
 import { useState, KeyboardEvent } from 'react'
 import { useEffectedState } from '../../../../utils/hooks-utils'
-import { PassiveData } from './types'
+import { fileToStr, PassiveData } from './types'
 
-export function UTextField({ data, canBeEdited, name, setValue, error }: PassiveData) {
-  const [text, setText] = useEffectedState(data)
+export function UTextField({ data, canBeEdited, name, setNewValue, newValue, error }: PassiveData) {
+  const [text, setText] = useEffectedState(data || fileToStr(newValue))
   const [newData, setNewData] = useState(data || '')
   const [isEditing, setIsEditing] = useState(false)
 
   const finishEditing = () => {
-    if (text !== newData) setValue(newData)
+    if (text !== newData) setNewValue(newData)
     setText(newData)
     setIsEditing(false)
   }

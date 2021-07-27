@@ -84,11 +84,18 @@ const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUF
         {inputs.map((q) => (
           <div key={sslugify(q.question)}>
             {!q.options.length && (
-              <UInput {...q} tipOnMobile="SHOW_TIP" autoFocus={false} onAnswer={() => submit(handleSubmit)} />
+              <UInput
+                _id={q._id}
+                question={q}
+                tipOnMobile="SHOW_TIP"
+                autoFocus={false}
+                onAnswer={() => submit(handleSubmit)}
+              />
             )}
             {q.options.length !== 0 && (
               <UChecks
-                {...q}
+                _id={q._id}
+                question={q}
                 onAnswer={() => submit(handleSubmit)}
                 submitOnSelect={submitOnSelect}
                 selectMultiple={q.correctAnswer.length > 1}

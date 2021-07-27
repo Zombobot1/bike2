@@ -4,6 +4,7 @@ import { useMediaQuery, useTheme } from '@material-ui/core'
 
 export const useMount = (f: Fn) => useEffect(f, [])
 export const useUnmount = (f: Fn) => useEffect(() => f, [])
+export const useLog = <T>(state: T) => useEffect(() => console.info(state), [state])
 
 export const useEffectedState = <T>(init: T): StateT<T> => {
   const [state, setState] = useState(init)

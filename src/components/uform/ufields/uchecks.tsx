@@ -30,7 +30,7 @@ export const USelectInput = ({ selectMultiple, _id, label, validity, onChange, c
       : {
           '& .MuiFormControlLabel-label.Mui-disabled': { color },
           '& .PrivateSwitchBase-root': {
-            color,
+            color: `${color} !important`, // the order of application of css classes for radio and checks is different -> used important to override
             '&.Mui-checked': { color },
           },
         }
@@ -48,11 +48,7 @@ export const USelectInput = ({ selectMultiple, _id, label, validity, onChange, c
   )
 }
 
-export interface QuestionP extends Question {
-  initialAnswer?: string[]
-}
-
-export type QuestionWithoutOptions = Omit<QuestionP, 'options'>
+export type QuestionWithoutOptions = Omit<Question, 'options'>
 
 function optionValidity(option: string, value: string[], correctAnswer: string[]): Validity {
   if (correctAnswer.includes(option)) return 'VALID'
@@ -60,28 +56,29 @@ function optionValidity(option: string, value: string[], correctAnswer: string[]
   return 'NONE'
 }
 
-export interface UChecksElementP extends QuestionP {
+export interface UChecksElementP {
   _id: string
+  question: Question
   value: string[]
   onChange: (radioName: string, value: string[]) => void
   validationError: string
   wasSubmitted: boolean
   selectMultiple?: boolean
+  shuffleOptions?: boolean
 }
 
 export const UChecksElement = ({
   onChange,
   _id,
-  correctAnswer,
-  options,
   question,
-  explanation,
   validationError,
   value,
   wasSubmitted,
   selectMultiple = false,
+  shuffleOptions = false,
 }: UChecksElementP) => {
   const [overallValidity, setOverallValidity] = useState<Validity>('NONE')
+  const [options, setOptions] = useState(question.options) // use state to shuffle only once
 
   function onOptionClick(clickedOption: string) {
     if (value.includes(clickedOption))
@@ -95,18 +92,22 @@ export const UChecksElement = ({
 
   useEffect(() => {
     if (!wasSubmitted) return
-    const invalidOption = options.find((o) => optionValidity(o, value, correctAnswer) === 'INVALID')
+    const invalidOption = question.options.find((o) => optionValidity(o, value, question.correctAnswer) === 'INVALID')
     setOverallValidity(invalidOption ? 'INVALID' : 'VALID')
   }, [wasSubmitted])
 
+  useMount(() => {
+    if (shuffleOptions) setOptions(shuffle(question.options))
+  })
+
   return (
     <div>
-      <InteractiveQuestion question={question} status={overallValidity} />
+      <InteractiveQuestion question={question.question} status={overallValidity} />
       <RadioGroup name={_id}>
         {options.map((o, i) => {
           let validity: Validity = 'NONE'
           if (validationError) validity = 'INVALID'
-          else if (wasSubmitted) validity = optionValidity(o, value, correctAnswer)
+          else if (wasSubmitted) validity = optionValidity(o, value, question.correctAnswer)
           return (
             <USelectInput
               selectMultiple={selectMultiple}
@@ -122,14 +123,19 @@ export const UChecksElement = ({
         })}
       </RadioGroup>
       {validationError && <ErrorText>{validationError}</ErrorText>}
-      {wasSubmitted && _.difference(value, correctAnswer).length !== 0 && <ErrorText>{explanation}</ErrorText>}
-      {wasSubmitted && !_.difference(value, correctAnswer).length && <SuccessText>{explanation}</SuccessText>}
+      {wasSubmitted && _.difference(value, question.correctAnswer).length !== 0 && (
+        <ErrorText>{question.explanation}</ErrorText>
+      )}
+      {wasSubmitted && !_.difference(value, question.correctAnswer).length && (
+        <SuccessText>{question.explanation}</SuccessText>
+      )}
     </div>
   )
 }
 
-export interface UChecksP extends Question {
+export interface UChecksP {
   _id: string
+  question?: Question
   onAnswer?: Fn
   initialAnswer?: string[]
   selectMultiple?: boolean
@@ -140,16 +146,14 @@ export interface UChecksP extends Question {
 export const UChecks = ({
   _id,
   question,
-  correctAnswer,
-  explanation,
-  options,
   initialAnswer,
   selectMultiple = false,
   onAnswer = fn,
   submitOnSelect = true,
   shuffleOptions = false,
 }: UChecksP) => {
-  const [options_, setOptions] = useState(options)
+  const question_ = handleEmptyQuestion(question)
+
   const { addField, getFieldInfo, removeField, onChange } = useUForm()
   const { validationError, value, wasSubmitted } = getFieldInfo(_id)
   const [canSubmit, setCanSubmit] = useState(false)
@@ -166,8 +170,7 @@ export const UChecks = ({
   }, [canSubmit])
 
   useMount(() => {
-    if (shuffleOptions) setOptions(shuffle(options))
-    addField(_id, correctAnswer, initialAnswer)
+    addField(_id, question_.correctAnswer, initialAnswer)
     return () => removeField(_id)
   })
 
@@ -176,13 +179,16 @@ export const UChecks = ({
       _id={_id}
       onChange={onChange}
       value={value}
-      explanation={explanation}
-      correctAnswer={correctAnswer}
-      options={options_}
-      question={question}
+      question={question_}
       validationError={validationError}
       wasSubmitted={wasSubmitted}
       selectMultiple={selectMultiple}
+      shuffleOptions={shuffleOptions}
     />
   )
+}
+
+function handleEmptyQuestion(q?: Question): Question {
+  if (q) return q
+  return { correctAnswer: [], explanation: '', options: [], question: '' }
 }

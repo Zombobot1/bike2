@@ -19,10 +19,10 @@ const cardTemplate: CardTemplateDTO = {
 }
 
 function mockCreate(template: CardTemplateDTO, data: NewCardData): FieldDTOs {
-  return zip2(template.fields, data).map(([info, data], i) => {
-    const _id = `${i}`
+  const templateFields = template.fields.filter((f) => data.find((d) => d.name === f.name))
+  return zip2(templateFields, data).map(([info, data]) => {
     const passiveData: str = data.value instanceof File ? srcfy(data.value) : data.value
-    return { _id, type: info.type, isPreview: info.isPreview, name: info.name, status: 'SHOW', passiveData }
+    return { _id: uuid(), type: info.type, isPreview: info.isPreview, name: info.name, status: 'SHOW', passiveData }
   })
 }
 

@@ -1,6 +1,8 @@
 import { useAtom, atom } from 'jotai'
 import { useMount } from '../../../utils/hooks-utils'
-import { fn, str } from '../../../utils/types'
+import { sslugify } from '../../../utils/sslugify'
+import { Fn, fn, str } from '../../../utils/types'
+import { uuid } from '../../../utils/utils'
 import { FileOrStr } from '../UCard/UCardField/types'
 
 export interface FieldData {
@@ -43,22 +45,50 @@ export function useNewCardData(previewName: str) {
   return {
     submit: (submitHandler: (data: NewCardData) => void) => {
       if (isValid()) {
-        submitHandler(newCardData.filter((d) => d.value))
-        setNewCardData([])
+        const data = renameFiles(
+          newCardData.filter((d) => d.value),
+          previewName,
+        )
+        submitHandler(data)
       }
     },
+    setNewCardData,
+    newCardData,
   }
 }
 
 export function useNewCardDataField(_id: str, name: str) {
   const [newCardData, setNewCardData] = useAtom(newCardDataA)
-  const setValue = _id ? fn : (value: FileOrStr) => setNewCardData((fd) => setFieldValue(fd, name, value))
+  const setNewValue = _id ? fn : (value: FileOrStr) => setNewCardData((fd) => setFieldValue(fd, name, value))
 
   useMount(() => {
     if (_id) return
     setNewCardData((cd) => [...cd, { name, value: '', error: '' }])
     return () => setNewCardData((cd) => cd.filter((d) => d.name !== name))
   })
-  const value = newCardData.find((d) => d.name === name)
-  return { setValue, error: value?.error || '' }
+
+  const newData = newCardData.find((d) => d.name === name)
+  return { setNewValue, newValue: newData?.value || '', error: newData?.error || '' }
+}
+
+function renameFiles(data: NewCardData, previewName: str): NewCardData {
+  const preview = data.find((d) => d.name === previewName)
+  if (!preview || preview.value instanceof File) throw new Error('Preview not found in new data')
+  const name = (ext: str) => `${sslugify(preview.value as str)}-${uuid()}.${ext}`
+
+  return data.map((d) => {
+    if (d instanceof File) {
+      const ext = d.name.split('.').pop()
+      if (!ext) throw new Error('File is missing an extension')
+      return { ...d, value: new File([d], name(ext), { type: d.type }) }
+    }
+    return d
+  })
+}
+
+const submitA = atom({ on: fn })
+
+export function useSubmitNewCardData() {
+  const [submit, setSubmit] = useAtom(submitA)
+  return { submit: submit.on, setSubmit: (on: Fn) => setSubmit({ on }) }
 }
