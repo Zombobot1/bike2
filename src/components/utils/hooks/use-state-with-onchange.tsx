@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { StrStateT } from '../../../utils/types'
+import { StrState } from '../../../utils/types'
 
-export const useSateWithOnChange = (onChange: (current: string, prev: string) => void): StrStateT => {
+export const useSateWithOnChange = (onChange: (current: string, prev: string) => void): StrState => {
   const [value, setValue] = useState('')
   const [prev, setPrev] = useState('')
   if (value !== prev) {

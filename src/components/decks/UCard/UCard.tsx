@@ -1,9 +1,10 @@
 import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../study/training/types'
 import { UCardField } from './UCardField/UCardField'
-import { Stack, styled } from '@material-ui/core'
+import { Collapse, Stack, styled } from '@material-ui/core'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { CardTemplateDTO } from '../dto'
 import { str, bool } from '../../../utils/types'
+import { TransitionGroup } from 'react-transition-group'
 
 export interface UCard {
   fields: FieldDTOs
@@ -44,11 +45,24 @@ export function UCard({ fields, stageColor, isMediaActive = true, showHidden, es
   return (
     <CardContainer sx={sx}>
       <Card spacing={2}>
-        {fieldsToShow.map((f, i) => (
-          <UCardField {...f} key={f._id || i} isMediaActive={isMediaActive} />
-        ))}
-        {showHidden && hiddenFields.length !== 0 && <Hr />}
-        {showHidden && hiddenFields.map((f, i) => <UCardField {...f} key={f._id || i} isMediaActive={isMediaActive} />)}
+        <TransitionGroup component={null}>
+          {fieldsToShow.map((f, i) => (
+            <Collapse key={f._id || i} timeout={0}>
+              <UCardField {...f} isMediaActive={isMediaActive} />
+            </Collapse>
+          ))}
+          {showHidden && hiddenFields.length !== 0 && (
+            <Collapse>
+              <Hr />
+            </Collapse>
+          )}
+          {showHidden &&
+            hiddenFields.map((f, i) => (
+              <Collapse key={f._id || i} timeout={500}>
+                <UCardField {...f} isMediaActive={isMediaActive} />
+              </Collapse>
+            ))}
+        </TransitionGroup>
       </Card>
       {!estimation && <Stage sx={{ fill: stageColor }} />}
     </CardContainer>

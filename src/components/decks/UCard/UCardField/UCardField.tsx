@@ -1,7 +1,5 @@
 import { FieldDTO, FieldType, isPassive } from '../../../study/training/types'
-import { UInput } from '../../../uform/ufields/uinput'
 import { useInteractiveSubmit } from '../../../study/training/hooks'
-import { UChecks } from '../../../uform/ufields/uchecks'
 import { UAudioField } from './UAudioField'
 import { PassiveData } from './types'
 import { UImageField } from './UImageField'
@@ -22,7 +20,7 @@ export const UCardField = ({
   isMediaActive = false,
   canBeEdited = false,
 }: UCardField) => {
-  const { interactiveSubmit } = useInteractiveSubmit()
+  const { interactiveSubmit: _ } = useInteractiveSubmit()
   const newDataProps = useNewCardDataField(_id, name)
 
   if (passiveData || (canBeEdited && isPassive(type)))
@@ -39,10 +37,7 @@ export const UCardField = ({
 
   if (interactiveData || canBeEdited) {
     return (
-      <>
-        {type === 'RADIO' && <UChecks _id={_id} question={interactiveData} onAnswer={interactiveSubmit} />}
-        {type === 'INPUT' && <UInput _id={_id} question={interactiveData} onAnswer={interactiveSubmit} />}
-      </>
+      <>{/* {type === 'RADIO' && <UChecks _id={_id} question={interactiveData} onAnswer={interactiveSubmit} />} */}</>
     )
   }
 

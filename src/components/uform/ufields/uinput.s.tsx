@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { TipOnMobile, UInputElement } from './uinput'
+import { UInputElement } from './uinput'
 
 interface TUInputP {
   _id: string
@@ -10,7 +10,8 @@ interface TUInputP {
   wasSubmitted: boolean
   correctAnswer: string
   validationError: string
-  tipOnMobile: TipOnMobile
+  showTipOnMobile?: boolean
+  multiline: boolean
 }
 
 const TUInput = ({
@@ -22,7 +23,8 @@ const TUInput = ({
   wasSubmitted,
   validationError,
   autoFocus,
-  tipOnMobile,
+  showTipOnMobile,
+  multiline,
 }: TUInputP) => {
   const [value_, setValue] = useState(value)
   return (
@@ -31,13 +33,12 @@ const TUInput = ({
         _id={_id}
         value={value_}
         onChange={setValue}
-        question={question}
+        question={{ question, correctAnswer: [correctAnswer], explanation }}
         wasSubmitted={wasSubmitted}
-        explanation={explanation}
         autoFocus={autoFocus}
         validationError={validationError}
-        correctAnswer={correctAnswer}
-        tipOnMobile={tipOnMobile}
+        showTipOnMobile={showTipOnMobile}
+        multiline={multiline}
       />
     </div>
   )
@@ -45,6 +46,7 @@ const TUInput = ({
 
 const defaultI: TUInputP = {
   _id: 'defaultI',
+  multiline: false,
   question: 'Enter abc',
   value: '',
   autoFocus: false,
@@ -52,7 +54,6 @@ const defaultI: TUInputP = {
   correctAnswer: 'abc',
   explanation: 'abc',
   validationError: '',
-  tipOnMobile: 'SHOW_TIP',
 }
 
 const rightI: TUInputP = {
@@ -73,7 +74,14 @@ const invalidI: TUInputP = {
   wasSubmitted: false,
 }
 
-export const Default = () => <TUInput {...defaultI} />
+const text: TUInputP = {
+  ...defaultI,
+  value: '',
+  multiline: true,
+}
+
+export const ShortText = () => <TUInput {...defaultI} />
+export const Text = () => <TUInput {...text} />
 export const Right = () => <TUInput {...rightI} />
 export const Wrong = () => <TUInput {...wrongI} />
 export const Invalid = () => <TUInput {...invalidI} />

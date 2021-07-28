@@ -1,10 +1,9 @@
-import { UChecks } from './ufields/uchecks'
 import { useEffect, useState } from 'react'
-import { Estimations, useUFormSubmit } from './uform'
+import { Estimations, useUFormSubmit } from './useUForm'
 import { sslugify } from '../../utils/sslugify'
-import { UInput } from './ufields/uinput'
 import { Question } from '../study/training/types'
 import { Alert, Stack, Button, styled, Box, ButtonGroup } from '@material-ui/core'
+import { UForm } from './UForm'
 
 interface UQuestion extends Question {
   _id: string
@@ -65,7 +64,7 @@ type TUFormP = {
   submitOnSelect: boolean
 }
 
-const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUFormP) => {
+const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect: _ }: TUFormP) => {
   const { inputs, add, remove, addAndRemove, nextQuestion } = useQuestions(questions, submitOneByOne)
   const { info, onSubmit } = useSubmissionsInfo()
   const handleSubmit = !submitOneByOne
@@ -83,24 +82,7 @@ const TUForm = ({ questions, isExtensible, submitOneByOne, submitOnSelect }: TUF
         {info && <Alert severity="info">{info}</Alert>}
         {inputs.map((q) => (
           <div key={sslugify(q.question)}>
-            {!q.options.length && (
-              <UInput
-                _id={q._id}
-                question={q}
-                tipOnMobile="SHOW_TIP"
-                autoFocus={false}
-                onAnswer={() => submit(handleSubmit)}
-              />
-            )}
-            {q.options.length !== 0 && (
-              <UChecks
-                _id={q._id}
-                question={q}
-                onAnswer={() => submit(handleSubmit)}
-                submitOnSelect={submitOnSelect}
-                selectMultiple={q.correctAnswer.length > 1}
-              />
-            )}
+            <UForm />
           </div>
         ))}
       </Stack>

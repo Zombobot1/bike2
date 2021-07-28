@@ -2,7 +2,7 @@ import { CardDTO, CardDTOs, CardEstimation, isMistake } from '../types'
 import { useEffect, useState } from 'react'
 import { deleteCard, estimateAnswer } from '../../../../api/api'
 import { useMount, useUnmount } from '../../../../utils/hooks-utils'
-import { Fn, num, StateT } from '../../../../utils/types'
+import { Fn, num, State } from '../../../../utils/types'
 import { useRouter } from '../../../utils/hooks/use-router'
 import { TrainingDTO } from './training'
 import { removeElement, safe } from '../../../../utils/utils'
@@ -34,7 +34,7 @@ export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
   return { timeToFinish }
 }
 
-export const useCardSettings = (cardsS: StateT<CardDatas>, currentCardIndex: num) => {
+export const useCardSettings = (cardsS: State<CardDatas>, currentCardIndex: num) => {
   const [cards, setCards] = cardsS
 
   const { setTimeToAnswer } = useTrainingTimer()

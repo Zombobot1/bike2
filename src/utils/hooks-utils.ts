@@ -1,4 +1,4 @@
-import { Fn, JSObject, StateT } from './types'
+import { Fn, JSObject, State } from './types'
 import { useEffect, useState } from 'react'
 import { useMediaQuery, useTheme } from '@material-ui/core'
 
@@ -6,7 +6,7 @@ export const useMount = (f: Fn) => useEffect(f, [])
 export const useUnmount = (f: Fn) => useEffect(() => f, [])
 export const useLog = <T>(state: T) => useEffect(() => console.info(state), [state])
 
-export const useEffectedState = <T>(init: T): StateT<T> => {
+export const useEffectedState = <T>(init: T): State<T> => {
   const [state, setState] = useState(init)
   useEffect(() => setState(init), [init])
   return [state, setState]

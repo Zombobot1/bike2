@@ -1,4 +1,4 @@
-import { BoolStateT, Fn } from '../../../../utils/types'
+import { BoolState, Fn } from '../../../../utils/types'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { MouseEvent, useState, memo } from 'react'
 import {
@@ -19,7 +19,7 @@ import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
 
 interface AlertDialogP {
-  isOpenS: BoolStateT
+  isOpenS: BoolState
   onAccept: Fn
   onClose: Fn
 }

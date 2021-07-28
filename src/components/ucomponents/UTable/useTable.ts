@@ -1,8 +1,8 @@
 import { useAtom } from 'jotai'
 import { atomWithReset, useResetAtom } from 'jotai/utils'
-import { useMount } from '../../utils/hooks-utils'
-import { getEmptyStrings } from '../../utils/utils'
-import { safeSplit } from '../../utils/algorithms'
+import { useMount } from '../../../utils/hooks-utils'
+import { getEmptyStrings } from '../../../utils/utils'
+import { safeSplit } from '../../../utils/algorithms'
 
 export type TableData = string[][]
 

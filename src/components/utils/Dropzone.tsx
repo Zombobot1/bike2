@@ -1,12 +1,12 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { IconButton, Stack, styled, Typography } from '@material-ui/core'
 import { useDropzone } from 'react-dropzone'
-import { Files, Fn, fn, OFile, StateT, str } from '../../utils/types'
+import { Files, Fn, fn, OFile, State, str } from '../../utils/types'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
 import ContentPasteRoundedIcon from '@material-ui/icons/ContentPasteRounded'
 import { prevented } from '../../utils/utils'
 
-export function use1Drop(onDrop: (f: File) => void): StateT<OFile> {
+export function use1Drop(onDrop: (f: File) => void): State<OFile> {
   const [file, setFile] = useState<OFile>(null)
   useEffect(() => {
     if (file) onDrop(file)
@@ -22,7 +22,7 @@ interface Dropzone_ {
 }
 
 export interface Dropzone1 extends Dropzone_ {
-  fileS: StateT<OFile>
+  fileS: State<OFile>
 }
 
 export function Dropzone1(props: Dropzone1) {
@@ -33,7 +33,7 @@ export function Dropzone1(props: Dropzone1) {
 }
 
 export interface Dropzone extends Dropzone_ {
-  filesS: StateT<Files>
+  filesS: State<Files>
 }
 
 export function Dropzone({ filesS, label = 'files', onPaste, icon }: Dropzone) {

@@ -6,12 +6,12 @@ import TableRow from '@material-ui/core/TableRow'
 
 import { ClickAwayListener, Typography, styled, Button, Box } from '@material-ui/core'
 import { useRows, TableData, useUTable } from './useTable'
-import { useMount } from '../../utils/hooks-utils'
+import { useMount } from '../../../utils/hooks-utils'
 import { range } from 'lodash'
 import AddRoundedIcon from '@material-ui/icons/AddRounded'
 import { UTableCell } from './UTableCell'
 import { useState } from 'react'
-import { Fn } from '../../utils/types'
+import { Fn } from '../../../utils/types'
 
 interface UTable {
   data?: TableData

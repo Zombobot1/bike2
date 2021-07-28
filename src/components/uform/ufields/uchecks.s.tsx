@@ -18,7 +18,7 @@ const TUChecks = ({ _id, question, value, wasSubmitted, validationError, selectM
       <UChecksElement
         _id={_id}
         value={value_}
-        onChange={(_, v) => setValue(v)}
+        onChange={setValue}
         validationError={validationError}
         wasSubmitted={wasSubmitted}
         question={question}

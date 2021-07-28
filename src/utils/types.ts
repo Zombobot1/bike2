@@ -29,9 +29,10 @@ export interface WithId {
   _id: string
 }
 
-export type StateT<T> = [T, React.Dispatch<React.SetStateAction<T>>]
-export type NumStateT = StateT<number>
-export type StrStateT = StateT<string>
-export type BoolStateT = StateT<boolean>
+export type SetState<T> = React.Dispatch<React.SetStateAction<T>>
+export type State<T> = [T, SetState<T>]
+export type NumState = State<number>
+export type StrState = State<string>
+export type BoolState = State<boolean>
 
 export type SX = JSObject
