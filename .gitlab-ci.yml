@@ -5,7 +5,7 @@ stages:
 
 variables:
   ENV_FILE: /home/admin/universe/uni-conf/.env
-  BUILD_DIR: "build"
+  BUILD_DIR: 'dist/apps/front'
 
 check:
   except:
@@ -13,7 +13,7 @@ check:
   tags: [front]
   stage: build
   script:
-    - npm i
+    - npm ci
     - npm run after-commit
 
 build:
@@ -22,10 +22,10 @@ build:
   tags: [front]
   stage: build
   script:
-    - npm i
+    - npm ci
     - npm run after-commit
-    - cp $ENV_FILE .
-    - npm run build
+    - cp $ENV_FILE ./apps/front
+    - nx build front
   artifacts:
     paths:
       - $BUILD_DIR
@@ -46,5 +46,3 @@ notify_error:
   script:
     - sh ci-notify.sh ❌
   when: on_failure
-
-

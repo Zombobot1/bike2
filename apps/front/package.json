@@ -1,0 +1,23 @@
+{
+  "name": "new",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "react-scripts --max_old_space_size=2048 build",
+    "serve": "react-scripts build && serve -s build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src/**/*.{tsx,ts} --fix --max-warnings=0",
+    "compile": "rimraf build && tsc",
+    "check": "npm run lint && npm run compile",
+    "before-commit": "npm run check && git add .",
+    "after-commit": "npm run check",
+    "prepare": "is-ci || husky install"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "msw": {
+    "workerDirectory": "public"
+  }
+}
