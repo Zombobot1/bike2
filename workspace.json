@@ -27,18 +27,31 @@
           "executor": "@nrwl/workspace:run-commands",
           "outputs": [],
           "options": {
-            "command": "eslint src/**/*.tsx src/**/*.ts --fix --max-warnings=0",
+            "command": "\"../../node_modules/.bin/eslint\" src/**/*.tsx src/**/*.ts --fix --max-warnings=0",
             "cwd": "apps/front"
           }
         },
         "compile": {
-          "executor": "./tools/executors/tsc:tsc"
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "command": "\"../../node_modules/.bin/tsc\" -b",
+            "cwd": "apps/front"
+          }
         },
         "test": {
           "executor": "@nrwl/workspace:run-commands",
           "outputs": [],
           "options": {
-            "command": "node ../../node_modules/react-app-rewired/bin/index.js test --watchAll=false",
+            "command": "\"../../node_modules/.bin/cypress\" open-ct",
+            "cwd": "apps/front"
+          }
+        },
+        "test-ci": {
+          "executor": "@nrwl/workspace:run-commands",
+          "outputs": [],
+          "options": {
+            "command": "\"../../node_modules/.bin/cypress\" open-ct --browser chrome --config video=false",
             "cwd": "apps/front"
           }
         }

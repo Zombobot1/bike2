@@ -55,8 +55,6 @@ export const capitalizeOnlyFirstLetter = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()
 export const capitalizeFirstLetter = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1)
 
-export const idfy = (route: string, id: string) => `${route.split(':')[0]}${id}`
-
 export const queryfy = (route: string, args: JSObject) => {
   let result = `${route}?`
   Object.entries(args).forEach(([k, v]) => {
@@ -65,7 +63,7 @@ export const queryfy = (route: string, args: JSObject) => {
   return result
 }
 
-export const safe = <T>(o: T | undefined, error = 'Object is not safe'): T => {
+export const safe = <T>(o?: T, error = 'Object is not safe'): T => {
   if (!o) throw Error(error)
   return o
 }

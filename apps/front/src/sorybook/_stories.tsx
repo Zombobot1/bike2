@@ -9,7 +9,7 @@ import * as UFormHook from '../components/uform/uform.s'
 import * as UChecksElement from '../components/uform/ufields/uchecks.s'
 import * as UInputElement from '../components/uform/ufields/uinput.s'
 import * as UTable from '../components/ucomponents/UTable/UTable.s'
-import * as UText from '../components/ucomponents/UText/UText.s'
+import { UTextS } from '../components/ucomponents/EditableText/EditableText.stories'
 import * as TrainingTimer from '../components/study/training/training-timer/trainingTimer.s'
 import * as TrainingEnd from '../components/study/training/TrainingEnd/TrainingEnd.s'
 import * as Breadcrumb from '../components/Shell/navigation/breadcrumb/breadcrumb.s'
@@ -39,7 +39,7 @@ export const sories = [
   },
   {
     name: 'UComponents',
-    components: [storify({ UTable }), storify({ UText })],
+    components: [storify({ UTable }), storify({ UTextS })],
   },
   {
     name: 'UForm',

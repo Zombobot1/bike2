@@ -26,7 +26,7 @@ export const UCardField = ({
   if (passiveData || (canBeEdited && isPassive(type)))
     return (
       <PassiveField
-        name={1}
+        name={name}
         type={type}
         data={passiveData}
         canBeEdited={canBeEdited}

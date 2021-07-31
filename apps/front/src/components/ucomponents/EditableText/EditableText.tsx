@@ -99,7 +99,7 @@ function EditableText({
   )
 }
 
-const Editable = styled(ContentEditable)({
+const Editable = styled(ContentEditable, { label: 'EditableText' })({
   outline: 'none',
 })
 

@@ -4,7 +4,7 @@ import { getStrBlock, postStrBlock, putStrBlock } from '../../api/api'
 import { useMount } from '../../utils/hooks-utils'
 import { bool, str } from '../../utils/types'
 import { regexAndType, UComponentType } from './types'
-import { UHeading1, UHeading2, UHeading3, UText } from './UText/UText'
+import { UHeading1, UHeading2, UHeading3, UText } from './EditableText/EditableText'
 
 export interface StrBlock {
   _id: str
@@ -55,7 +55,7 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
   )
 }
 
-const Container = styled('div')({
+const Container = styled('div', { label: 'UBlock' })({
   width: '100%',
   minHeight: '1.5rem',
 })
