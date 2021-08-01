@@ -21,7 +21,8 @@ check:
 
 build:
   only:
-    - master
+    refs:
+      - master
     changes:
       - 'apps/front/*'
   tags: [front]
@@ -38,7 +39,8 @@ build:
 
 deploy:
   only:
-    - master
+    refs:
+      - master
     changes:
       - 'apps/front/*'
   tags: [front]
