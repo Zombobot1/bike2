@@ -5,33 +5,28 @@ stages:
 
 variables:
   ENV_FILE: /home/admin/universe/uni-conf/.env
-  BUILD_DIR: 'dist/apps/front'
+  BUILD_DIR: 'build'
 
 check:
   except:
     - master
-  only:
-    changes:
-      - apps/front/**/*
   tags: [front]
   stage: build
   script:
     - npm ci
-    - npm run front-ci
+    - npm run pre-ci
 
 build:
   only:
     refs:
       - master
-    changes:
-      - apps/front/**/*
   tags: [front]
   stage: build
   script:
     - npm ci
-    - npm run front-ci
+    - npm run pre-ci
     - cp $ENV_FILE ./apps/front
-    - nx build front
+    - npm run build
   artifacts:
     paths:
       - $BUILD_DIR
@@ -41,8 +36,6 @@ deploy:
   only:
     refs:
       - master
-    changes:
-      - apps/front/**/*
   tags: [front]
   stage: deploy
   script:

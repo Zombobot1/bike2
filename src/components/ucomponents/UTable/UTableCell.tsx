@@ -1,7 +1,7 @@
 import TableCell from '@material-ui/core/TableCell'
 import { TextField, useTheme, Typography } from '@material-ui/core'
 import { useCell } from './useTable'
-import { useEventListener } from '../../../components/utils/hooks/use-event-listener'
+import { useEventListener } from '../../utils/hooks/use-event-listener'
 import { KeyboardEvent } from 'react'
 
 interface UTableCell {

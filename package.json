@@ -1,10 +1,18 @@
 {
   "name": "uni",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "license": "MIT",
   "scripts": {
-    "pre-commit": "nx affected --target=lint && nx affected --target=compile && nx affected --target=test-ci",
-    "front-ci": "nx run front:lint && nx run front:compile && nx run front:test-ci",
+    "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
+    "build": "react-scripts --max_old_space_size=2048 build",
+    "serve": "react-scripts build && serve -s build",
+    "test": "cypress run-ct",
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src/**/*.{tsx,ts} --fix --max-warnings=0",
+    "compile": "rimraf build && tsc",
+    "check": "npm run lint && npm run compile",
+    "pre-commit": "npm run check && git add .",
+    "pre-ci": "npm run check",
     "prepare": "is-ci || husky install"
   },
   "private": true,
@@ -105,5 +113,17 @@
   },
   "msw": {
     "workerDirectory": "apps/front/public"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

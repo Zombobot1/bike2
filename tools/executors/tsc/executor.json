@@ -1,9 +1,0 @@
-{
-  "executors": {
-    "tsc": {
-      "implementation": "./impl",
-      "schema": "./schema.json",
-      "description": "Runs tsc."
-    }
-  }
-}
