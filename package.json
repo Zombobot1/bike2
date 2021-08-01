@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "pre-commit": "nx affected --target=lint && nx affected --target=compile && nx affected --target=test-ci",
+    "front-ci": "nx run front:lint && nx run front:compile && nx run front:test-ci",
     "prepare": "is-ci || husky install"
   },
   "private": true,

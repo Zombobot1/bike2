@@ -12,7 +12,7 @@ function Template({ data, pasteData }: { data?: TableData; pasteData?: string })
 
 const data1 = [
   [
-    'Dogmeat 3 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 ',
+    'Dogmeat 4 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 Dogmeat 1 ',
     'Псина 1',
   ],
   ['Dogmeat 2', 'Псина 2'],

@@ -17,7 +17,7 @@ check:
   stage: build
   script:
     - npm ci
-    - npm run pre-commit
+    - npm run front-ci
 
 build:
   only:
@@ -29,7 +29,7 @@ build:
   stage: build
   script:
     - npm ci
-    - npm run pre-commit
+    - npm run front-ci
     - cp $ENV_FILE ./apps/front
     - nx build front
   artifacts:
