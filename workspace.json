@@ -51,7 +51,7 @@
           "executor": "@nrwl/workspace:run-commands",
           "outputs": [],
           "options": {
-            "command": "\"../../node_modules/.bin/cypress\" open-ct --browser chrome --config video=false",
+            "command": "\"../../node_modules/.bin/cypress\" run-ct --config video=false",
             "cwd": "apps/front"
           }
         }

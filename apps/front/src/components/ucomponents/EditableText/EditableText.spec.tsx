@@ -20,7 +20,7 @@ describe('Editable text', () => {
     cy.get(text).type(' 1').blur()
 
     cy.wait('@put')
-    cy.get('@put').its('request.body.data').should('eq', 'initial data 2')
+    cy.get('@put').its('request.body.data').should('eq', 'initial data 1')
   })
 
   it('Becomes readonly', () => {
