@@ -12,7 +12,7 @@ check:
     - master
   only:
     changes:
-      - 'apps/front/**/*'
+      - apps/front/**/*
   tags: [front]
   stage: build
   script:
@@ -24,7 +24,7 @@ build:
     refs:
       - master
     changes:
-      - 'apps/front/**/*'
+      - apps/front/**/*
   tags: [front]
   stage: build
   script:
@@ -42,7 +42,7 @@ deploy:
     refs:
       - master
     changes:
-      - 'apps/front/**/*'
+      - apps/front/**/*
   tags: [front]
   stage: deploy
   script:
