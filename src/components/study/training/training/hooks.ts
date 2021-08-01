@@ -1,6 +1,6 @@
 import { CardDTO, CardDTOs, CardEstimation, isMistake } from '../types'
 import { useEffect, useState } from 'react'
-import { deleteCard, estimateAnswer } from '../../../../api/api'
+import { api } from '../../../../api/api'
 import { useMount, useUnmount } from '../../../../utils/hooks-utils'
 import { Fn, num, State } from '../../../../utils/types'
 import { useRouter } from '../../../utils/hooks/use-router'
@@ -40,7 +40,7 @@ export const useCardSettings = (cardsS: State<CardDatas>, currentCardIndex: num)
   const { setTimeToAnswer } = useTrainingTimer()
 
   const onDeleteCard = async () => {
-    await deleteCard(safe(cards[currentCardIndex].dto)._id)
+    await api.deleteCard(safe(cards[currentCardIndex].dto)._id)
     setCards((cs) => {
       const result = removeElement(cs, currentCardIndex)
       setTimeToAnswer(result[currentCardIndex]?.dto?.timeToAnswer || 0)
@@ -92,7 +92,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
     registerMistake(e)
 
-    estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e }).then(
+    api.estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e }).then(
       (cards) => {
         if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
       },

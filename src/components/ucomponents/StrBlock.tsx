@@ -1,6 +1,6 @@
 import { styled } from '@material-ui/core'
 import { useState } from 'react'
-import { getStrBlock, postStrBlock, putStrBlock } from '../../api/api'
+import { api } from '../../api/api'
 import { useMount } from '../../utils/hooks-utils'
 import { bool, str } from '../../utils/types'
 import { regexAndType, UComponentType } from './types'
@@ -20,12 +20,12 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
 
   const setData = (d: str) => {
     setData_(d)
-    putStrBlock(id, { type, data: d }).catch(console.error)
+    api.putStrBlock(id, { type, data: d }).catch(console.error)
   }
 
   const setType = (t: UComponentType) => {
     setType_(t)
-    putStrBlock(id, { type: t, data }).catch(console.error)
+    api.putStrBlock(id, { type: t, data }).catch(console.error)
   }
 
   const props = {
@@ -37,9 +37,9 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
   }
 
   useMount(() => {
-    if (!id) postStrBlock({ type }).then((d) => setId(d._id))
+    if (!id) api.postStrBlock({ type }).then((d) => setId(d._id))
     else if (id)
-      getStrBlock(id).then((d) => {
+      api.getStrBlock(id).then((d) => {
         setData_(d.data)
         setType_(d.type)
       })

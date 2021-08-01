@@ -23,15 +23,6 @@ describe('Editable text', () => {
     cy.get('@put').its('request.body.data').should('eq', 'initial data 1')
   })
 
-  it('Becomes readonly', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getStrBlock(r.url))).as('mount')
-
-    mount(<UTextS.ReadOnlyText />)
-
-    cy.get(text).should('have.attr', 'disabled')
-    cy.get(text).should('have.attr', 'contenteditable', 'false')
-  })
-
   it('Creates itself if id is empty, shows placeholders, changes component', () => {
     cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply(FAPI.postStrBlock())).as('mount')
     cy.intercept('PUT', FAPI.UBLOCK, FAPI.putStrBlock()).as('put')

@@ -4,7 +4,7 @@ import { Switch } from 'react-router-dom'
 import { buildRoutes, Routed } from '../utils/routing'
 import { Breadcrumb } from './navigation/breadcrumb/breadcrumb'
 import { getToken, UNotification } from '../../firebase'
-import { subscribeForNotifications } from '../../api/api'
+import { api } from '../../api/api'
 import { useMount, useMQ } from '../../utils/hooks-utils'
 import { Stack, styled } from '@material-ui/core'
 
@@ -21,7 +21,7 @@ const Main = styled('main')({
 export const App = ({ routes }: Routed) => {
   const [n, sn] = useState<UNotification>({ body: '', title: '' })
   useMount(() => {
-    if (process.env.NODE_ENV !== 'development') getToken(sn).then(subscribeForNotifications).catch(console.error)
+    if (process.env.NODE_ENV !== 'development') getToken(sn).then(api.subscribeForNotifications).catch(console.error)
   })
 
   useEffect(() => {

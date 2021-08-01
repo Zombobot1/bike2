@@ -6,11 +6,11 @@
     "start": "cross-env DISABLE_ESLINT_PLUGIN=true react-scripts start",
     "build": "react-scripts --max_old_space_size=2048 build",
     "serve": "react-scripts build && serve -s build",
-    "test": "cypress run-ct",
+    "test": "cypress open-ct",
+    "test-ci": "cypress run-ct --config video=false",
     "eject": "react-scripts eject",
     "lint": "eslint ./src/**/*.{tsx,ts} --fix --max-warnings=0",
-    "compile": "rimraf build && tsc",
-    "check": "npm run lint && npm run compile",
+    "check": "npm run lint && tsc && npm run test-ci",
     "pre-commit": "npm run check && git add .",
     "pre-ci": "npm run check",
     "prepare": "is-ci || husky install"
@@ -88,13 +88,9 @@
     "is-ci": "^2.0.0",
     "msw": "^0.27.2",
     "prettier": "^2.3.1",
-    "react-app-rewired": "^2.1.8",
     "react-scripts": "^4.0.3",
     "rimraf": "^2.7.1",
-    "ts-node": "~9.1.1",
-    "typescript": "~4.3.5",
-    "web-vitals": "^0.2.4",
-    "webpack-dev-server": "^3.11.2"
+    "typescript": "~4.3.5"
   },
   "msw": {
     "workerDirectory": "public"

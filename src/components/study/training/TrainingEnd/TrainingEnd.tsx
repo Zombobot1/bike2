@@ -1,6 +1,6 @@
 import { Stack, styled, Typography, useTheme } from '@material-ui/core'
 import { useState } from 'react'
-import { getNextTraining } from '../../../../api/api'
+import { api } from '../../../../api/api'
 import { fancyTime, percentage } from '../../../../utils/formatting'
 import { useMount } from '../../../../utils/hooks-utils'
 import { num, str } from '../../../../utils/types'
@@ -30,7 +30,7 @@ export function TrainingEnd({ expectedTime, mistakesCount, spentTime, currentTra
       : `+${percentage(1 - expectedTime / spentTime)}`
 
   useMount(() => {
-    getNextTraining(currentTrainingId).then(setNextTraining)
+    api.getNextTraining(currentTrainingId).then(setNextTraining)
   })
 
   return (
