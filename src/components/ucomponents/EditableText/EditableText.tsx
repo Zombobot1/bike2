@@ -3,12 +3,11 @@ import ContentEditable from 'react-contenteditable'
 import { DependencyList, useCallback, useEffect, useRef, useState } from 'react'
 import { useEffectedState, useMount } from '../../../utils/hooks-utils'
 import { styled, useTheme } from '@material-ui/core'
+import { StrBlockComponent } from '../types'
 
-export interface UText {
+export interface UText extends StrBlockComponent {
   tryToChangeFieldType: (d: str) => void
   autoFocus: bool
-  data: str
-  setData: (d: str) => void
   readonly?: bool
   placeholder?: str
   alwaysShowPlaceholder?: bool

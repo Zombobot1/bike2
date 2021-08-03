@@ -11,6 +11,7 @@
     "eject": "react-scripts eject",
     "lint": "eslint ./src/**/*.{tsx,ts} --fix --max-warnings=0",
     "check": "npm run lint && tsc && npm run test-ci",
+    "commit-dangerously": "git add . && git commit --no-verify -m",
     "pre-commit": "npm run check && git add .",
     "pre-ci": "npm run check",
     "prepare": "is-ci || husky install"
@@ -86,6 +87,7 @@
     "eslint-plugin-unused-imports": "^1.1.1",
     "husky": "^7.0.1",
     "is-ci": "^2.0.0",
+    "jest": "^26.6.0",
     "msw": "^0.27.2",
     "prettier": "^2.3.1",
     "react-scripts": "^4.0.3",
