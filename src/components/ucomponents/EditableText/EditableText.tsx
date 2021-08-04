@@ -8,7 +8,6 @@ import { StrBlockComponent } from '../types'
 export interface UText extends StrBlockComponent {
   tryToChangeFieldType: (d: str) => void
   autoFocus: bool
-  readonly?: bool
   placeholder?: str
   alwaysShowPlaceholder?: bool
 }

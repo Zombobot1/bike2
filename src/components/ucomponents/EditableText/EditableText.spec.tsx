@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { UTextS } from './EditableText.stories'
-import { startServer } from '../../../api/fake-api'
+import { startServer } from '../../../api/fapi'
 import { api } from '../../../api/api'
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom/extend-expect'

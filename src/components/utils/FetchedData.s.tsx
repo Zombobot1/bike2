@@ -1,7 +1,7 @@
 import { useQuery } from 'react-query'
 import { axi } from '../../api/axi'
 import { FetchData } from './FetchedData'
-import { _DTO, _FAIL, _SLOW_LOAD } from '../../api/fake-api'
+import { _DTO, _FAIL, _SLOW_LOAD } from '../../api/fapi'
 import { ReactNode } from 'react'
 
 type DTO = { data: string }

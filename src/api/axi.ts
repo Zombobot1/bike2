@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { JSObject, JSObjectStr, str } from '../utils/types'
 
 export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : 'https://bike.maxvas.ru'
@@ -5,7 +6,7 @@ export const BASE_URL = process.env.NODE_ENV === 'development' ? 'http://localho
 type Method = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 export function axi<T = JSObject>(url: str, body?: JSObject | Method, method?: Method): Promise<T> {
   if (!method) {
-    if (body && body instanceof String) method = body as Method
+    if (_.isString(body)) method = body as Method
     else if (!body) method = 'GET'
     else method = 'POST'
   }

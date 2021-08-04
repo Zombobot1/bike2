@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 
-import { startWorker } from './api/fake-api'
+import { startWorker } from './api/fapi'
 
 import { Shell } from './components/Shell/Shell'
 

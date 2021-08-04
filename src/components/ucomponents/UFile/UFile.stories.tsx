@@ -10,16 +10,23 @@ function T(props: StrBlock) {
 }
 
 const data1: StrBlock = {
-  _id: 'file data1',
+  _id: 'file-data1',
   type: 'FILE',
 }
 
 const data2: StrBlock = {
-  _id: 'file data2',
+  _id: 'file-data2',
   type: 'FILE',
 }
 
+const data3: StrBlock = {
+  ...data2,
+  readonly: true,
+}
+
 export const UFileS = {
-  UploadsFile: () => <T {...data1} />,
   ShowsFile: () => <T {...data2} />,
+  DeletesFile: () => <T {...data2} />,
+  ReadOnly: () => <T {...data3} />,
+  UploadsFile: () => <T {...data1} />,
 }

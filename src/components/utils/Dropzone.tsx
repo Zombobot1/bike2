@@ -4,7 +4,7 @@ import { useDropzone } from 'react-dropzone'
 import { bool, Files, Fn, fn, OFile, State, str } from '../../utils/types'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
 import ContentPasteRoundedIcon from '@material-ui/icons/ContentPasteRounded'
-import { prevented } from '../../utils/utils'
+import { prevented, uuid } from '../../utils/utils'
 
 export function use1Drop(onDrop: (f: File) => void): State<OFile> {
   const [file, setFile] = useState<OFile>(null)
@@ -41,17 +41,21 @@ export function Dropzone({ filesS, label = 'files', onPaste, icon, isUploading }
   const [_, setFiles] = filesS
   const onDrop = useCallback((fs: Files) => setFiles(fs), [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-
+  const id = uuid()
   return (
     <DropArea {...getRootProps()} alignItems="center" justifyContent="center" direction="row" spacing={1}>
-      <input {...getInputProps()} />
+      <input id={id} {...getInputProps()} />
       {isDragActive && <Typography>Drop the files here ...</Typography>}
       {!isDragActive && (
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
           {isUploading && <Typography>Uploading...</Typography>}
           {!isUploading && !icon && <UploadFileRoundedIcon />}
           {!isUploading && icon}
-          {!isUploading && <Typography>Drop {label} here, or click to select</Typography>}
+          {!isUploading && (
+            <Typography component="label" htmlFor={id}>
+              Drop {label} here, or click to select
+            </Typography>
+          )}
           {!isUploading && Boolean(onPaste) && (
             <>
               <Vr />

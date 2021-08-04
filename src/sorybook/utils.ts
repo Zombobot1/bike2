@@ -9,5 +9,8 @@ export function storify(obj: RawComponent): ComponentWithStories {
     const r = name.slice(1).replace(/[A-Z]/g, (letter) => ` ${letter.toLowerCase()}`)
     return name.charAt(0) + r
   }
-  return { name, stories: Object.entries(stories).map(([k, s]) => ({ name: storyName(k), story: s })) }
+  return {
+    name: name.slice(0, name.length - 1),
+    stories: Object.entries(stories).map(([k, s]) => ({ name: storyName(k), story: s })),
+  }
 }

@@ -5,6 +5,7 @@ import { useMount } from '../../utils/hooks-utils'
 import { bool, str } from '../../utils/types'
 import { regexAndType, UComponentType } from './types'
 import { UHeading1, UHeading2, UHeading3, UText } from './EditableText/EditableText'
+import { UFile } from './UFile/UFile'
 
 export interface StrBlock {
   _id: str
@@ -60,6 +61,7 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
       {type === 'HEADING1' && <UHeading1 {...props} />}
       {type === 'HEADING2' && <UHeading2 {...props} />}
       {type === 'HEADING3' && <UHeading3 {...props} />}
+      {type === 'FILE' && <UFile {...props} />}
     </Container>
   )
 }
