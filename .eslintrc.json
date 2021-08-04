@@ -1,4 +1,9 @@
 {
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
   "root": true,
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -8,10 +13,7 @@
       "jsx": true // Allows for the parsing of JSX
     }
   },
-  "plugins": [
-    "@typescript-eslint",
-    "unused-imports"
-  ],
+  "plugins": ["@typescript-eslint", "unused-imports"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",
@@ -30,10 +32,15 @@
     "@typescript-eslint/no-empty-function": 0,
     "no-unused-vars": "off",
     "unused-imports/no-unused-imports": "warn",
-    "@typescript-eslint/no-unused-vars": ["warn", {
-      "vars": "all", "varsIgnorePattern": "^_",
-      "args": "after-used", "argsIgnorePattern": "^_"
-    }],
+    "@typescript-eslint/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
     "unused-imports/no-unused-vars": [
       "warn",
       { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
@@ -44,8 +51,8 @@
     "react": {
       "createclassName": "createReactclassName", // Regex for Component Factory to use,
       // default to "createReactclassName"
-      "pragma": "React",  // Pragma to use, default to "React"
-      "fragment": "Fragment",  // Fragment to use (may be a property of <pragma>), default to "Fragment"
+      "pragma": "React", // Pragma to use, default to "React"
+      "fragment": "Fragment", // Fragment to use (may be a property of <pragma>), default to "Fragment"
       "version": "detect", // React version. "detect" automatically picks the version you have installed.
       // You can also use `16.0`, `16.3`, etc, if you want to override the detected value.
       // default to latest and warns if missing
@@ -55,13 +62,13 @@
     "propWrapperFunctions": [
       // The names of any function used to wrap propTypes, e.g. `forbidExtraProps`. If this isn't set, any propTypes wrapped in a function will be skipped.
       "forbidExtraProps",
-      {"property": "freeze", "object": "Object"},
-      {"property": "myFavoriteWrapper"}
+      { "property": "freeze", "object": "Object" },
+      { "property": "myFavoriteWrapper" }
     ],
     "linkComponents": [
       // Components used as alternatives to <a> for linking, eg. <Link to={ url } />
       "Hyperlink",
-      {"name": "Link", "linkAttribute": "to"}
+      { "name": "Link", "linkAttribute": "to" }
     ]
   }
 }

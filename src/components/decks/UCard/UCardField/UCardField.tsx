@@ -5,6 +5,9 @@ import { PassiveData } from './types'
 import { UImageField } from './UImageField'
 import { UTextField } from './UTextField'
 import { useNewCardDataField } from '../../UCardEditor/useNewCardData'
+import { UChecks } from '../../../uform/ufields/uchecks'
+import { UInput } from '../../../uform/ufields/uinput'
+import { useUFormField } from '../../../uform/useUForm'
 
 export interface UCardField extends Omit<FieldDTO, 'status' | 'isPreview'> {
   isMediaActive?: boolean
@@ -22,6 +25,7 @@ export const UCardField = ({
 }: UCardField) => {
   const { interactiveSubmit: _ } = useInteractiveSubmit()
   const newDataProps = useNewCardDataField(_id, name)
+  const { interactiveSubmit } = useInteractiveSubmit()
 
   if (passiveData || (canBeEdited && isPassive(type)))
     return (
@@ -35,8 +39,15 @@ export const UCardField = ({
       />
     )
 
-  if (interactiveData || canBeEdited) {
-    return null
+  const props = useUFormField(_id, interactiveData)
+
+  if (interactiveData) {
+    return (
+      <>
+        {type === 'RADIO' && <UChecks _id={_id} {...props} onAnswer={interactiveSubmit} />}
+        {type === 'INPUT' && <UInput _id={_id} {...props} onAnswer={interactiveSubmit} />}
+      </>
+    )
   }
 
   return null

@@ -4,7 +4,7 @@ import { BASE_URL } from './axi'
 import { CARDS, ESTIMATE_ANSWER, TRAININGS, SUBSCRIBE, UBLOCKS } from './api'
 import { w, WR } from '../utils/msw-utils'
 import { sleep, uuid } from '../utils/utils'
-import { blocksS } from '../components/ucomponents/EditableText/stubs'
+import { blocksS } from '../components/ucomponents/stubs'
 import { str } from '../utils/types'
 
 const urlId = (url: str) => url.split('/').slice(-1)[0]

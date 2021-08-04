@@ -1,4 +1,3 @@
-import { useMount } from '../../../utils/hooks-utils'
 import { useEffect, useState } from 'react'
 import { UChecksFieldData, Validity } from '../types'
 import { Question } from '../../study/training/types'
@@ -104,9 +103,10 @@ export const UChecksElement = ({
     setOverallValidity(invalidOption ? 'INVALID' : 'VALID')
   }, [wasSubmitted])
 
-  useMount(() => {
+  useEffect(() => {
     if (shuffleOptions) setOptions(shuffle(question.options))
-  })
+    else setOptions(question.options)
+  }, [question.options])
 
   return (
     <div>

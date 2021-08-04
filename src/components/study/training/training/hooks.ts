@@ -92,11 +92,11 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
     registerMistake(e)
 
-    api.estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e }).then(
-      (cards) => {
+    api
+      .estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e })
+      .then((cards) => {
         if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
-      },
-    )
+      })
 
     if (transition === 'TRANSIT') goToNextCard()
     else if (transition === 'NO_TRANSITION') return goToNextCard

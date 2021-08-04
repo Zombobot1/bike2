@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 import { IconButton, Stack, styled, Typography } from '@material-ui/core'
 import { useDropzone } from 'react-dropzone'
-import { Files, Fn, fn, OFile, State, str } from '../../utils/types'
+import { bool, Files, Fn, fn, OFile, State, str } from '../../utils/types'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
 import ContentPasteRoundedIcon from '@material-ui/icons/ContentPasteRounded'
 import { prevented } from '../../utils/utils'
@@ -19,6 +19,7 @@ interface Dropzone_ {
   icon?: ReactNode
   label?: str
   onPaste?: Fn
+  isUploading?: bool
 }
 
 export interface Dropzone1 extends Dropzone_ {
@@ -29,14 +30,14 @@ export function Dropzone1(props: Dropzone1) {
   const [_, setFile] = props.fileS
   const filesS = useState<Files>([])
   useEffect(() => setFile(filesS[0][0]), [JSON.stringify(filesS[0])])
-  return <Dropzone filesS={filesS} {...props} />
+  return <Dropzone filesS={filesS} {...props} label={props.label || 'file'} />
 }
 
 export interface Dropzone extends Dropzone_ {
   filesS: State<Files>
 }
 
-export function Dropzone({ filesS, label = 'files', onPaste, icon }: Dropzone) {
+export function Dropzone({ filesS, label = 'files', onPaste, icon, isUploading }: Dropzone) {
   const [_, setFiles] = filesS
   const onDrop = useCallback((fs: Files) => setFiles(fs), [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
@@ -47,10 +48,11 @@ export function Dropzone({ filesS, label = 'files', onPaste, icon }: Dropzone) {
       {isDragActive && <Typography>Drop the files here ...</Typography>}
       {!isDragActive && (
         <Stack direction="row" justifyContent="center" alignItems="center" spacing={1}>
-          {!icon && <UploadFileRoundedIcon />}
-          {icon}
-          <Typography>Drop {label} here, or click to select</Typography>
-          {Boolean(onPaste) && (
+          {isUploading && <Typography>Uploading...</Typography>}
+          {!isUploading && !icon && <UploadFileRoundedIcon />}
+          {!isUploading && icon}
+          {!isUploading && <Typography>Drop {label} here, or click to select</Typography>}
+          {!isUploading && Boolean(onPaste) && (
             <>
               <Vr />
               <IconButton onClick={prevented(onPaste || fn)}>

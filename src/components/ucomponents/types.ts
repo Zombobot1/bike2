@@ -1,13 +1,16 @@
 import { str } from '../../utils/types'
 
 type EditableText = 'TEXT' | 'HEADING1' | 'HEADING2' | 'HEADING3'
-export type UComponentType = EditableText | 'PROJECTION'
+type File = 'FILE' | 'IMAGE' | 'AUDIO'
 
-export type StrBlockPostResponseDTO = { _id: str }
+export type UComponentType = EditableText | File | 'PROJECTION'
+
+export type StrBlockPostRDTO = { _id: str }
 export type StrBlockPostDTO = { type: UComponentType }
 export type StrBlockPutDTO = { type: UComponentType; data: str }
 export type StrBlockGetDTO = StrBlockPutDTO
 
+export type FileUploadRDTO = { src: str }
 export interface StrBlockComponent {
   data: str
   setData: (d: str) => void

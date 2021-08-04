@@ -338,6 +338,6 @@ export const trainings = {
   statsCheck,
 }
 
-const mathTrainings: TrainingDTO[] = [trainings.small, trainings.simple]
+const mathTrainings: TrainingDTO[] = [trainings.small, trainings.combined]
 
 export const trainingDecks: TrainingsGroupDTO[] = [{ rootDeckName: 'Math', trainings: mathTrainings }]
