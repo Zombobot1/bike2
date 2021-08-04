@@ -7,7 +7,7 @@ import { ReactNode } from 'react'
 type DTO = { data: string }
 
 const useDTO = (endpoint = _DTO) =>
-  useQuery<DTO, Error, DTO>([endpoint], () => axi.get(endpoint).then((res) => res.data), {
+  useQuery<DTO, Error, DTO>([endpoint], () => axi(endpoint), {
     refetchOnWindowFocus: false,
     cacheTime: 1, // https://github.com/tannerlinsley/react-query/issues/2367
   })

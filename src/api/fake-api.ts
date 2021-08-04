@@ -1,9 +1,10 @@
 import { rest, setupWorker } from 'msw'
+import { setupServer } from 'msw/node'
 import { cardForUpdate, trainingDecks, trainings } from '../content/content'
 import { BASE_URL } from './axi'
 import { CARDS, ESTIMATE_ANSWER, TRAININGS, SUBSCRIBE, UBLOCKS } from './api'
 import { w, WR } from '../utils/msw-utils'
-import { sleep, uuid } from '../utils/utils'
+import { sleep } from '../utils/utils'
 import { blocksS } from '../components/ucomponents/stubs'
 import { str } from '../utils/types'
 
@@ -27,8 +28,8 @@ export const FAPI = {
   getTrainingsGroups: () => trainingDecks,
   getTraining: (url: str) => Object.entries(trainings).filter(([k]) => k === urlId(url))[0][1],
   getStrBlock: (url: str) => blocksS.get(urlId(url)) || { type: 'TEXT', data: '' },
-  postStrBlock: () => ({ _id: uuid() }),
-  putStrBlock: () => ({}),
+  postStrBlock: () => ({ _id: 'id' }),
+  patchStrBlock: () => ({}),
   getTrainingUpdateOnAnswer: (url: str) => (urlId(url) === 'get update' ? [cardForUpdate] : []),
   deleteCard: () => [],
   subscribe: () => ({}),
@@ -49,7 +50,7 @@ const handlers = [
   rest.post(FAPI.FCM_TOKEN, w(FAPI.subscribe)),
 
   rest.post(FAPI.UBLOCKS, w(FAPI.postStrBlock)),
-  rest.put(FAPI.UBLOCK, w(FAPI.putStrBlock)),
+  rest.patch(FAPI.UBLOCK, w(FAPI.patchStrBlock)),
   rest.get(
     FAPI.UBLOCK,
     w((r: WR) => FAPI.getStrBlock(r.url.toString())),
@@ -65,7 +66,12 @@ const handlers = [
   }),
 ]
 
-export const startWorker = async () => {
+export const startWorker = () => {
   const worker = setupWorker(...handlers)
-  await worker.start()
+  return worker.start()
+}
+
+export const startServer = () => {
+  const worker = setupServer(...handlers)
+  return worker.listen()
 }

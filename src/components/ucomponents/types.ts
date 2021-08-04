@@ -7,8 +7,8 @@ export type UComponentType = EditableText | File | 'PROJECTION'
 
 export type StrBlockPostRDTO = { _id: str }
 export type StrBlockPostDTO = { type: UComponentType }
-export type StrBlockPutDTO = { type: UComponentType; data: str }
-export type StrBlockGetDTO = StrBlockPutDTO
+export type StrBlockPatchDTO = { type?: UComponentType; data?: str }
+export type StrBlockGetDTO = { type: UComponentType; data: str }
 
 export type FileUploadRDTO = { src: str }
 export interface StrBlockComponent {

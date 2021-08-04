@@ -13,7 +13,7 @@
       "jsx": true // Allows for the parsing of JSX
     }
   },
-  "plugins": ["@typescript-eslint", "unused-imports"],
+  "plugins": ["@typescript-eslint", "unused-imports", "testing-library"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/eslint-recommended",

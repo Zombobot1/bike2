@@ -1,43 +1,52 @@
 import * as React from 'react'
-import { mount } from '@cypress/react'
 import { UTextS } from './EditableText.stories'
-import { FAPI } from '../../../api/fake-api'
-
-const content = ($els: JQuery<HTMLElement>) =>
-  $els[0].ownerDocument.defaultView?.getComputedStyle($els[0], 'before').getPropertyValue('content')
-
-const text = 'div[class*="EditableText"]'
-const heading1 = 'h2[class*="EditableText"]'
+import { startServer } from '../../../api/fake-api'
+import { api } from '../../../api/api'
+import { render, screen, waitFor } from '@testing-library/react'
+import '@testing-library/jest-dom/extend-expect'
+import userEvent from '@testing-library/user-event'
+import { configure } from '@testing-library/react'
+import { getElementError } from '../../../utils/testUtils'
 
 describe('Editable text', () => {
-  it('Gets data from server, edits it, sends it back', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getStrBlock(r.url))).as('mount')
-    cy.intercept('PUT', FAPI.UBLOCK, FAPI.putStrBlock()).as('put')
+  it('Gets data from server, edits it, sends it back', async () => {
+    const spy = jest.spyOn(api, 'patchStrBlock')
+    render(<UTextS.EditsText />)
 
-    mount(<UTextS.EditsText />)
-    cy.wait('@mount')
+    const input = await waitFor(() => screen.getByText('initial data'))
+    userEvent.type(input, ' 1')
+    input.blur()
 
-    cy.get(text).type(' 1').blur()
-
-    cy.wait('@put')
-    cy.get('@put').its('request.body.data').should('eq', 'initial data 1')
+    await waitFor(() => expect(spy).toHaveBeenCalledWith('data1', { data: 'initial data 1' }))
+    spy.mockRestore()
   })
 
-  it('Creates itself if id is empty, shows placeholders, changes component', () => {
-    cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply(FAPI.postStrBlock())).as('mount')
-    cy.intercept('PUT', FAPI.UBLOCK, FAPI.putStrBlock()).as('put')
+  it('Creates itself if id is empty, changes component', async () => {
+    const spy = jest.spyOn(api, 'postStrBlock')
+    render(<UTextS.CreatesItself />)
+    await waitFor(() => expect(spy).toHaveBeenCalledWith({ type: 'TEXT' }))
+    spy.mockRestore()
+  })
 
-    mount(<UTextS.ChangesComponents />)
-    cy.wait('@mount')
+  it('Changes component', async () => {
+    const spy = jest.spyOn(api, 'patchStrBlock')
 
-    cy.get(text).then(($els) => expect(content($els)).to.eq('none'))
-    cy.get(text).focus()
-    cy.get(text).then(($els) => expect(content($els)).to.contain('"Type'))
+    render(<UTextS.ChangesComponents />)
 
-    cy.get(text).type('/heading1 ')
-    cy.get(heading1).then(($els) => expect(content($els)).to.eq('"Heading 1"'))
+    const input = await waitFor(() => screen.getByRole('textbox'))
+    userEvent.type(input, '/heading1 ')
 
-    cy.wait('@put')
-    cy.get('@put').its('request.body.type').should('eq', 'HEADING1')
+    await waitFor(() => expect(spy).toHaveBeenCalledWith('data4', { type: 'HEADING1' }))
+    spy.mockRestore()
+  })
+
+  it('Is disabled when is readonly', async () => {
+    render(<UTextS.ReadOnlyText />)
+
+    const input = screen.getByRole('textbox')
+    expect(input).toHaveAttribute('disabled')
   })
 })
+
+configure({ getElementError })
+beforeAll(startServer)

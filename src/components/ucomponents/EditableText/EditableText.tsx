@@ -17,7 +17,7 @@ export function UText(props: UText) {
   return (
     <EditableText
       {...props}
-      component="div"
+      component="pre"
       placeholder={props.placeholder || "Type '/' for commands"}
       alwaysShowPlaceholder={props.alwaysShowPlaceholder || false}
     />
@@ -84,21 +84,32 @@ function EditableText({
       : undefined
 
   return (
-    <Editable
-      innerRef={ref}
-      html={text}
-      tagName={component}
-      onBlur={onBlur}
-      onChange={onChange}
-      onFocus={onFocus}
-      placeholder={placeholder}
-      sx={sx}
-      disabled={readonly}
-    />
+    <EditableTextWrapper>
+      <Editable
+        innerRef={ref}
+        html={text}
+        tagName={component}
+        onBlur={onBlur}
+        onChange={onChange}
+        onFocus={onFocus}
+        placeholder={placeholder}
+        sx={sx}
+        disabled={readonly}
+        role="textbox"
+      />
+    </EditableTextWrapper>
   )
 }
 
-const Editable = styled(ContentEditable, { label: 'EditableText' })({
+const EditableTextWrapper = styled('div', { label: 'EditableText' })(({ theme }) => ({
+  outline: 'none',
+  '& pre': {
+    fontSize: theme.typography.fontSize,
+    fontFamily: theme.typography.fontFamily,
+  },
+}))
+
+const Editable = styled(ContentEditable)({
   outline: 'none',
 })
 

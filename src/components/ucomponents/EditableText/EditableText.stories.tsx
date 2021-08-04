@@ -26,11 +26,15 @@ const data3: StrBlock = {
   _id: '',
   type: 'HEADING1',
 }
+const data4: StrBlock = {
+  _id: 'data4',
+}
 
 export const UTextS = {
   EditsText: () => <Template {...data1} />,
   ReadOnlyText: () => <Template {...readonly} />,
-  ChangesComponents: () => <Template {...data2} />,
+  CreatesItself: () => <Template {...data2} />,
+  ChangesComponents: () => <Template {...data4} />,
   DisplaysPlaceholderWhenFocused: () => <Template {...data2} />,
   DisplaysPlaceholderWhenUnfocused: () => <Template {...data3} />,
 }

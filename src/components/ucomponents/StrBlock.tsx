@@ -20,12 +20,12 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
 
   const setData = (d: str) => {
     setData_(d)
-    api.putStrBlock(id, { type, data: d }).catch(console.error)
+    api.patchStrBlock(id, { data: d }).catch(console.error)
   }
 
   const setType = (t: UComponentType) => {
     setType_(t)
-    api.putStrBlock(id, { type: t, data }).catch(console.error)
+    api.patchStrBlock(id, { type: t }).catch(console.error)
   }
 
   const props = {
@@ -37,12 +37,21 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
   }
 
   useMount(() => {
-    if (!id) api.postStrBlock({ type }).then((d) => setId(d._id))
+    let cancelled = false
+    if (!id)
+      api.postStrBlock({ type }).then((d) => {
+        if (cancelled) return
+        setId(d._id)
+      })
     else if (id)
       api.getStrBlock(id).then((d) => {
+        if (cancelled) return
         setData_(d.data)
         setType_(d.type)
       })
+    return () => {
+      cancelled = true
+    }
   })
 
   return (
@@ -63,9 +72,9 @@ const Container = styled('div', { label: 'UBlock' })({
 const tryToChangeFieldType =
   (setAutoFocus: (v: bool) => void, setType: (v: UComponentType) => void, setData: (v: str) => void) =>
   (newData: str) => {
-    if (!newData.includes('&nbsp;')) return
+    if (!newData.includes(' ')) return
 
-    const firstElement = newData.split('&nbsp;')
+    const firstElement = newData.split(' ')
     const newType = regexAndType.get(firstElement[0])
     if (!newType) return
 

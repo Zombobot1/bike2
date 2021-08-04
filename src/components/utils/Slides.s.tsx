@@ -90,8 +90,6 @@ function Template4() {
     setRecs((rs) => [rs[0] ? rs[0] - 1 : -1, ...rs])
   }
 
-  console.log(recs)
-
   return (
     <Stack spacing={2} sx={{ height: '150px', width: '500px' }}>
       <Slides>
