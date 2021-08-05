@@ -20,8 +20,8 @@ export type JSObject = { [key: string]: any }
 export type JSObjectStr = { [key: string]: string }
 
 export type Fn = () => void
+export type SetStr = (s: str) => void
 export const fn: Fn = () => {}
-export const fnStr = (v: string): string => v
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Instantiable = { new (...args: any[]): any }

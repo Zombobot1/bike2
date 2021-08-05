@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { str, OBlob, OBlobP, OFile } from './types'
+import { str, OBlobP, OFile } from './types'
 
 export function srcfy(blob: Blob): str {
   return URL.createObjectURL(blob)
@@ -16,22 +16,20 @@ async function retrieveImageFromClipboard(items: ClipboardItems): OBlobP {
   return null
 }
 
-async function retrieveImageFromClipboardAsBlob(data: ClipboardItems): Promise<[str, OBlob]> {
-  const image = await retrieveImageFromClipboard(data)
-  if (!image) return ['', null]
-  return [srcfy(image), image]
+export function readImageFromKeyboard(onRead: (f: File) => void) {
+  async function retrieveImage(data: ClipboardItems) {
+    const imageBlob = await retrieveImageFromClipboard(data)
+    if (imageBlob) onRead(new File([imageBlob], `img.png`))
+  }
+  return () => navigator.clipboard.read().then(retrieveImage).catch(console.error)
 }
 
-export function useImageFromClipboard(fileName: str) {
-  const [clipBoardImageSrc, setClipBoardImageSrc] = useState('')
-  const [clipBoardImage, setClipBoardImage] = useState<OFile>(null)
+export function useImageFromClipboard(_fileName: str) {
+  const [clipBoardImageSrc] = useState('')
+  const [clipBoardImage] = useState<OFile>(null)
 
   async function retrieveImage(data: ClipboardItems) {
-    const [img, file] = await retrieveImageFromClipboardAsBlob(data)
-    if (img && file) {
-      setClipBoardImageSrc(img)
-      setClipBoardImage(new File([file], `${fileName}.png`))
-    }
+    await retrieveImageFromClipboard(data)
   }
 
   return { clipBoardImageSrc, clipBoardImage, retrieveImage }

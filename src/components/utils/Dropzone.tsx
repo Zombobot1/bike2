@@ -5,6 +5,7 @@ import { bool, Files, Fn, fn, OFile, State, str } from '../../utils/types'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
 import ContentPasteRoundedIcon from '@material-ui/icons/ContentPasteRounded'
 import { prevented, uuid } from '../../utils/utils'
+import { readImageFromKeyboard } from '../../utils/filesManipulation'
 
 export function use1Drop(onDrop: (f: File) => void): State<OFile> {
   const [file, setFile] = useState<OFile>(null)
@@ -15,10 +16,16 @@ export function use1Drop(onDrop: (f: File) => void): State<OFile> {
   return [file, setFile]
 }
 
+export function use1ImageDrop(onDrop: (f: File) => void) {
+  const fileS = use1Drop(onDrop)
+  const readFromKeyboard = readImageFromKeyboard(onDrop)
+  return { fileS, readFromKeyboard }
+}
+
 interface Dropzone_ {
   icon?: ReactNode
   label?: str
-  onPaste?: Fn
+  readFromKeyboard?: Fn
   isUploading?: bool
 }
 
@@ -37,7 +44,7 @@ export interface Dropzone extends Dropzone_ {
   filesS: State<Files>
 }
 
-export function Dropzone({ filesS, label = 'files', onPaste, icon, isUploading }: Dropzone) {
+export function Dropzone({ filesS, label = 'files', readFromKeyboard, icon, isUploading }: Dropzone) {
   const [_, setFiles] = filesS
   const onDrop = useCallback((fs: Files) => setFiles(fs), [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
@@ -56,10 +63,10 @@ export function Dropzone({ filesS, label = 'files', onPaste, icon, isUploading }
               Drop {label} here, or click to select
             </Typography>
           )}
-          {!isUploading && Boolean(onPaste) && (
+          {!isUploading && Boolean(readFromKeyboard) && (
             <>
               <Vr />
-              <IconButton onClick={prevented(onPaste || fn)}>
+              <IconButton onClick={prevented(readFromKeyboard || fn)}>
                 <ContentPasteRoundedIcon />
               </IconButton>
             </>

@@ -52,7 +52,7 @@ export function UImageField({ data, canBeEdited, name, setNewValue, newValue }: 
       </ClickAwayListener>
     )
 
-  return <Dropzone1 fileS={fileS} label={name} icon={<ImageRoundedIcon />} onPaste={handlePasteImage} />
+  return <Dropzone1 fileS={fileS} label={name} icon={<ImageRoundedIcon />} readFromKeyboard={handlePasteImage} />
 }
 
 const Selection = styled('div')({

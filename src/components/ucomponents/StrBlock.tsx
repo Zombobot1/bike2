@@ -7,6 +7,7 @@ import { regexAndType, UComponentType } from './types'
 import { UHeading1, UHeading2, UHeading3, UText } from './EditableText/EditableText'
 import { UFile } from './UFile/UFile'
 import { UAudioFile } from './UFile/UAudioFile/UAudioFile'
+import { UImageFile } from './UFile/UImageFile/UImageFile'
 
 export interface StrBlock {
   _id: str
@@ -67,6 +68,7 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
       {type === 'HEADING3' && <UHeading3 {...props} />}
       {type === 'FILE' && <UFile {...props} />}
       {type === 'AUDIO' && <UAudioFile {...props} />}
+      {type === 'IMAGE' && <UImageFile {...props} />}
     </Container>
   )
 }
