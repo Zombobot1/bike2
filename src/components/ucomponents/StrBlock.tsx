@@ -6,6 +6,7 @@ import { bool, str } from '../../utils/types'
 import { regexAndType, UComponentType } from './types'
 import { UHeading1, UHeading2, UHeading3, UText } from './EditableText/EditableText'
 import { UFile } from './UFile/UFile'
+import { UAudioFile } from './UFile/UAudioFile/UAudioFile'
 
 export interface StrBlock {
   _id: str
@@ -39,17 +40,20 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
 
   useMount(() => {
     let cancelled = false
-    if (!id)
+
+    if (!id) {
       api.postStrBlock({ type }).then((d) => {
         if (cancelled) return
         setId(d._id)
       })
-    else if (id)
+    } else {
       api.getStrBlock(id).then((d) => {
         if (cancelled) return
         setData_(d.data)
         setType_(d.type)
       })
+    }
+
     return () => {
       cancelled = true
     }
@@ -62,6 +66,7 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
       {type === 'HEADING2' && <UHeading2 {...props} />}
       {type === 'HEADING3' && <UHeading3 {...props} />}
       {type === 'FILE' && <UFile {...props} />}
+      {type === 'AUDIO' && <UAudioFile {...props} />}
     </Container>
   )
 }

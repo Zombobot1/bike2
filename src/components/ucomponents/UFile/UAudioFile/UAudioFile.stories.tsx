@@ -1,5 +1,5 @@
 import { Box } from '@material-ui/core'
-import { StrBlock } from '../StrBlock'
+import { StrBlock } from '../../StrBlock'
 
 function T(props: StrBlock) {
   return (
@@ -10,23 +10,23 @@ function T(props: StrBlock) {
 }
 
 const data1: StrBlock = {
-  _id: 'file1',
-  type: 'FILE',
+  _id: 'audio1',
+  type: 'AUDIO',
 }
 
 const data2: StrBlock = {
-  _id: 'file2',
-  type: 'FILE',
+  _id: 'audio2',
+  type: 'AUDIO',
 }
 
 const data3: StrBlock = {
-  ...data2,
+  ...data1,
   readonly: true,
 }
 
-export const UFileS = {
-  ShowsFile: () => <T {...data2} />,
-  DeletesFile: () => <T {...data2} />,
+export const UAudioFileS = {
+  ShowsAudio: () => <T {...data1} />,
+  DeletesAudio: () => <T {...data1} />,
   ReadOnly: () => <T {...data3} />,
-  UploadsFile: () => <T {...data1} />,
+  UploadsAudio: () => <T {...data2} />,
 }

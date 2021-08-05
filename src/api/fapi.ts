@@ -5,7 +5,7 @@ import { BASE_URL } from './axi'
 import { CARDS, ESTIMATE_ANSWER, TRAININGS, SUBSCRIBE, UBLOCKS, FILES } from './api'
 import { w, WR } from '../utils/msw-utils'
 import { sleep } from '../utils/utils'
-import { blocksS } from '../components/ucomponents/stubs'
+import { blocksFileUploadS, blocksS } from '../components/ucomponents/stubs'
 import { str } from '../utils/types'
 
 const urlId = (url: str) => url.split('/').slice(-1)[0]
@@ -35,7 +35,7 @@ const getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') =
 const getStrBlock = (r: WR) => blocksS.get(urlId(r.url.toString())) || { type: 'TEXT', data: '' }
 const postStrBlock = () => ({ _id: 'id' })
 const patchStrBlock = e
-const uploadFile = () => ({ data: 'http://uni.com/static/complex--name--uuid.pdf' })
+const uploadFile = (r: WR) => ({ data: blocksFileUploadS(r.body) })
 const deleteFile = e
 const deleteCard = e
 const subscribe = e

@@ -6,7 +6,7 @@ type E = {
   stopPropagation: Fn
 }
 
-export function prevented(f: () => void) {
+export function prevented(f: Fn) {
   return (e: E) => {
     e.preventDefault()
     e.stopPropagation()
