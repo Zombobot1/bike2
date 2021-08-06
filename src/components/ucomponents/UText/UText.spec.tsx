@@ -1,5 +1,4 @@
-import * as React from 'react'
-import { UTextS } from './EditableText.stories'
+import { UTextS } from './UText.stories'
 import { startServer } from '../../../api/fapi'
 import { api } from '../../../api/api'
 import { render, screen, waitFor } from '@testing-library/react'
@@ -13,7 +12,7 @@ describe('Editable text', () => {
     const spy = jest.spyOn(api, 'patchStrBlock')
     render(<UTextS.EditsText />)
 
-    const input = await waitFor(() => screen.getByText('initial data'))
+    const input = await waitFor(() => screen.getByText('initial data')) // not by role because we wait response from server
     userEvent.type(input, ' 1')
     input.blur()
 

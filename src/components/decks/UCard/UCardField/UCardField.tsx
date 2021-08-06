@@ -5,9 +5,10 @@ import { PassiveData } from './types'
 import { UImageField } from './UImageField'
 import { UTextField } from './UTextField'
 import { useNewCardDataField } from '../../UCardEditor/useNewCardData'
-import { UChecks } from '../../../uform/ufields/uchecks'
-import { UInput } from '../../../uform/ufields/uinput'
-import { useUFormField } from '../../../uform/useUForm'
+import { UChecks } from '../../../uform/UFormBlock/UChecks/UChecks'
+import { UInput } from '../../../uform/UFormBlock/UInput/UInput'
+import { useUFormBlock } from '../../../uform/useUForm'
+import { safe } from '../../../../utils/utils'
 
 export interface UCardField extends Omit<FieldDTO, 'status' | 'isPreview'> {
   isMediaActive?: boolean
@@ -39,7 +40,7 @@ export const UCardField = ({
       />
     )
 
-  const props = useUFormField(_id, interactiveData)
+  const props = useUFormBlock(_id, JSON.stringify(safe(interactiveData)))
 
   if (interactiveData) {
     return (

@@ -1,7 +1,8 @@
 import { atom, useAtom } from 'jotai'
 import { CardEstimation, Question } from '../study/training/types'
-import { useCallback } from 'react'
-import { useMount } from '../../utils/hooks-utils'
+import { useCallback, useEffect, useState } from 'react'
+import { SetStr, str, strs } from '../../utils/types'
+import { UFormComponent } from '../ucomponents/types'
 
 export interface UFieldInfo {
   answer: string[]
@@ -33,6 +34,11 @@ const QUESTION = {
   question: '',
   explanation: '',
   options: [],
+}
+
+function getQuestion(t: UFormComponent): Question {
+  const checks: UFormComponent[] = ['CHECKS', 'RADIO']
+  return checks.includes(t) ? { ...QUESTION, options: ['Option 1', 'Option 2'] } : QUESTION
 }
 
 const INFO = {
@@ -67,18 +73,13 @@ const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationE
 
 const fieldsAtom = atom<UFields>([])
 
-export const useUFormField = (_id: string, question: Question = QUESTION, initialAnswer = ['']) => {
+export const useUFormBlock = (_id: str, data: str) => {
+  const [question] = useState(() => parse(data, QUESTION)) // parse once
+  useField(_id, question)
+
   const [fields, setFields] = useAtom(fieldsAtom)
 
-  const addField = () => {
-    setFields((old) => [...old, { ...FIELD, _id: _id, question: question, answer: initialAnswer }])
-  }
-
-  const removeField = () => {
-    setFields((old) => old.filter((f) => f._id !== _id))
-  }
-
-  const onAnswerChange = (value: string[]) => {
+  const onAnswerChange = (value: strs) => {
     setFields((old) =>
       old.map((f) => (f._id === _id ? { ...f, answer: value, validationError: f.validator(value) } : f)),
     )
@@ -86,14 +87,29 @@ export const useUFormField = (_id: string, question: Question = QUESTION, initia
 
   const info: UFieldInfo = fields.find((f) => f._id === _id) || INFO
 
-  useMount(() => {
-    addField()
-    return () => removeField()
-  })
-
   return {
     ...info,
     onAnswerChange,
+  }
+}
+
+export const useUFormBlockEditor = (_id: str, type: UFormComponent, data: str, setData: SetStr) => {
+  const [initialQuestion] = useState(() => parse(data, getQuestion(type))) // parse once
+  const setQuestion = (q: Question) => setData(JSON.stringify(q))
+
+  useField(_id, initialQuestion)
+  const [fields, setFields] = useAtom(fieldsAtom)
+
+  const onQuestionChange = (question: Question) => {
+    setFields((old) => old.map((f) => (f._id === _id ? { ...f, question } : f)))
+    setQuestion(question)
+  }
+
+  const question: Question = fields.find((f) => f._id === _id)?.question || initialQuestion
+
+  return {
+    question,
+    onQuestionChange,
   }
 }
 
@@ -112,4 +128,34 @@ export const useUFormSubmit = () => {
   const submit = useCallback(_submit, [fields])
 
   return { submit }
+}
+
+function useField(_id: str, question: Question) {
+  const [_, setFields] = useAtom(fieldsAtom)
+
+  const addField = () => {
+    setFields((old) => [...old, { ...FIELD, _id: _id, question }])
+  }
+
+  const removeField = () => {
+    setFields((old) => old.filter((f) => f._id !== _id))
+  }
+
+  useEffect(() => {
+    if (!_id) return
+    addField()
+    return () => removeField()
+  }, [_id])
+}
+
+function parse<T>(data: str, default_: T): T {
+  if (!data) return default_
+
+  try {
+    return JSON.parse(data) as T
+  } catch (error) {
+    console.error(error)
+  }
+
+  return default_
 }

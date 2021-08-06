@@ -1,9 +1,14 @@
 import { bool, str } from '../../utils/types'
 
-type EditableText = 'TEXT' | 'HEADING1' | 'HEADING2' | 'HEADING3'
-type File = 'FILE' | 'IMAGE' | 'AUDIO'
+export type UTextComponent = 'TEXT' | 'HEADING1' | 'HEADING2' | 'HEADING3'
+export type UFileComponent = 'FILE' | 'IMAGE' | 'AUDIO'
+export type UFormComponent = 'RADIO' | 'INPUT' | 'CHECKS' | 'TEXTAREA'
+export type UComponentType = UTextComponent | UFileComponent | UFormComponent | 'PROJECTION'
 
-export type UComponentType = EditableText | File | 'PROJECTION'
+export function isUFormComponent(t: UComponentType): bool {
+  const types: UComponentType[] = ['RADIO', 'INPUT', 'CHECKS', 'TEXTAREA']
+  return types.includes(t)
+}
 
 export type StrBlockPostRDTO = { _id: str }
 export type StrBlockPostDTO = { type: UComponentType }

@@ -3,19 +3,21 @@ import { useState } from 'react'
 import { api } from '../../api/api'
 import { useMount } from '../../utils/hooks-utils'
 import { bool, str } from '../../utils/types'
-import { regexAndType, UComponentType } from './types'
-import { UHeading1, UHeading2, UHeading3, UText } from './EditableText/EditableText'
+import { isUFormComponent, regexAndType, UComponentType, UFormComponent } from './types'
+import { UHeading1, UHeading2, UHeading3, UParagraph } from './UText/UText'
 import { UFile } from './UFile/UFile'
 import { UAudioFile } from './UFile/UAudioFile/UAudioFile'
 import { UImageFile } from './UFile/UImageFile/UImageFile'
+import { UFormBlock } from '../uform/UFormBlock/UFormBlock'
 
-export interface StrBlock {
+export interface UBlock {
   _id: str
   type?: UComponentType
   readonly?: bool
+  isEditing?: bool
 }
 
-export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock) {
+export function UBlock({ _id, type: initialType, readonly = false, isEditing = false }: UBlock) {
   const [data, setData_] = useState('')
   const [type, setType_] = useState<UComponentType>(initialType || 'TEXT')
   const [autoFocus, setAutoFocus] = useState(false)
@@ -31,12 +33,12 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
     api.patchStrBlock(id, { type: t }).catch(console.error)
   }
 
-  const props = {
-    data,
-    setData,
+  const commonProps = { data, setData, readonly }
+
+  const utextProps = {
+    ...commonProps,
     tryToChangeFieldType: tryToChangeFieldType(setAutoFocus, setType, setData_),
     autoFocus,
-    readonly,
   }
 
   useMount(() => {
@@ -62,13 +64,16 @@ export function StrBlock({ _id, type: initialType, readonly = false }: StrBlock)
 
   return (
     <Container>
-      {type === 'TEXT' && <UText {...props} />}
-      {type === 'HEADING1' && <UHeading1 {...props} />}
-      {type === 'HEADING2' && <UHeading2 {...props} />}
-      {type === 'HEADING3' && <UHeading3 {...props} />}
-      {type === 'FILE' && <UFile {...props} />}
-      {type === 'AUDIO' && <UAudioFile {...props} />}
-      {type === 'IMAGE' && <UImageFile {...props} />}
+      {type === 'TEXT' && <UParagraph {...utextProps} />}
+      {type === 'HEADING1' && <UHeading1 {...utextProps} />}
+      {type === 'HEADING2' && <UHeading2 {...utextProps} />}
+      {type === 'HEADING3' && <UHeading3 {...utextProps} />}
+      {type === 'FILE' && <UFile {...commonProps} />}
+      {type === 'AUDIO' && <UAudioFile {...commonProps} />}
+      {type === 'IMAGE' && <UImageFile {...commonProps} />}
+      {isUFormComponent(type) && (
+        <UFormBlock _id={_id} type={type as UFormComponent} isEditing={isEditing} {...commonProps} />
+      )}
     </Container>
   )
 }

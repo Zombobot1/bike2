@@ -1,8 +1,8 @@
-import { UChecksElement } from './uchecks'
+import { UChecks } from './UChecks'
 import { useState } from 'react'
-import { Question } from '../../study/training/types'
+import { Question } from '../../../study/training/types'
 
-interface TUChecksP {
+interface T {
   _id: string
   question: Question
   wasSubmitted: boolean
@@ -11,14 +11,14 @@ interface TUChecksP {
   selectMultiple: boolean
 }
 
-const TUChecks = ({ _id, question, value, wasSubmitted, validationError, selectMultiple }: TUChecksP) => {
+const T = ({ _id, question, value, wasSubmitted, validationError, selectMultiple }: T) => {
   const [value_, setValue] = useState(value)
   return (
     <div style={{ width: '50%' }}>
-      <UChecksElement
+      <UChecks
         _id={_id}
-        value={value_}
-        onChange={setValue}
+        answer={value_}
+        onAnswerChange={setValue}
         validationError={validationError}
         wasSubmitted={wasSubmitted}
         question={question}
@@ -35,7 +35,7 @@ const selectOneOptions = [
 ]
 const selectOneCorrectAnswer = ['Option 1']
 
-const radioData: TUChecksP = {
+const radioData: T = {
   _id: 'radioData',
   question: {
     question: 'Please select',
@@ -52,7 +52,7 @@ const radioData: TUChecksP = {
 const selectMultipleOptions = ['Right', 'Also right', 'Wrong', 'Option', 'Also wrong']
 const selectMultipleCorrectAnswer = ['Right', 'Also right']
 
-const checksData: TUChecksP = {
+const checksData: T = {
   _id: 'checksData',
   question: {
     question: 'Please select',
@@ -66,39 +66,41 @@ const checksData: TUChecksP = {
   selectMultiple: true,
 }
 
-const selectOne: TUChecksP = {
+const selectOne: T = {
   ...radioData,
 }
 
-const selectMany: TUChecksP = {
+const selectMany: T = {
   ...checksData,
 }
 
-const right: TUChecksP = {
+const right: T = {
   ...radioData,
   wasSubmitted: true,
   value: ['Option 1'],
 }
-const wrong: TUChecksP = {
+const wrong: T = {
   ...radioData,
   wasSubmitted: true,
   value: ['Option 2'],
 }
-const invalid: TUChecksP = {
+const invalid: T = {
   ...radioData,
   validationError: 'Required field',
 }
 
-const wrongMultiple: TUChecksP = {
+const wrongMultiple: T = {
   ...checksData,
   wasSubmitted: true,
   value: ['Right', 'Also wrong', 'Wrong'],
   selectMultiple: true,
 }
 
-export const SelectOne = () => <TUChecks {...selectOne} />
-export const SelectMany = () => <TUChecks {...selectMany} />
-export const Right = () => <TUChecks {...right} />
-export const Wrong = () => <TUChecks {...wrong} />
-export const WrongMultiple = () => <TUChecks {...wrongMultiple} />
-export const Invalid = () => <TUChecks {...invalid} />
+export const UChecksS = {
+  SelectOne: () => <T {...selectOne} />,
+  SelectMany: () => <T {...selectMany} />,
+  SelectOneRight: () => <T {...right} />,
+  SelectOneWrong: () => <T {...wrong} />,
+  SelectManyWrong: () => <T {...wrongMultiple} />,
+  Invalid: () => <T {...invalid} />,
+}

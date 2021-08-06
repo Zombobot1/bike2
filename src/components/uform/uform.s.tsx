@@ -7,7 +7,6 @@ import { UForm } from './UForm'
 
 interface UQuestion extends Question {
   _id: string
-  initialAnswer?: string[]
 }
 type UQuestions = UQuestion[]
 
@@ -106,22 +105,15 @@ const Panel = styled(Stack)({
   marginTop: 20,
 })
 
-const q = (
-  _id: string,
-  question: string,
-  correctAnswer: string,
-  explanation: string,
-  initialAnswer?: string[],
-): UQuestion => ({
+const q = (_id: string, question: string, correctAnswer: string, explanation: string): UQuestion => ({
   _id,
   question,
   correctAnswer: [correctAnswer],
   explanation,
   options: [],
-  initialAnswer,
 })
-const basicQ = q('basicQ', 'Type: a', 'a', 'Just type it using keyboard', ['a'])
-const basicQ2 = q('basicQ2', 'Type: b', 'b', 'Just type it using keyboard', ['a'])
+const basicQ = q('basicQ', 'Type: a', 'a', 'Just type it using keyboard')
+const basicQ2 = q('basicQ2', 'Type: b', 'b', 'Just type it using keyboard')
 const sillyQ = q('sillyQ', 'Question 1', 'right', 'Cuz')
 const select: UQuestion = {
   _id: 'select',
@@ -150,13 +142,6 @@ const selectMultiple: UQuestion = {
   options: ['Right', 'Wrong', 'Also right', 'Option'],
   correctAnswer: ['Right', 'Also right'],
   explanation: 'This answer is correct because: Cuz',
-  initialAnswer: ['Wrong', 'Also right'],
-}
-
-const selectWithInitialAnswer: UQuestion = {
-  ...select,
-  _id: 'selectWithInitialAnswer',
-  initialAnswer: ['Correct option'],
 }
 
 const default_: TUFormP = {
@@ -207,7 +192,7 @@ const autoSubmitForUInputAndSelectOne: TUFormP = {
 
 const composite: TUFormP = {
   ...default_,
-  questions: [basicQ, selectWithInitialAnswer, selectMultiple],
+  questions: [basicQ, selectMultiple],
   submitOnSelect: false,
 }
 

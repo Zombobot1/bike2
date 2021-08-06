@@ -1,25 +1,25 @@
 import { Box } from '@material-ui/core'
-import { StrBlock } from '../../StrBlock'
+import { UBlock } from '../../UBlock'
 
-function T(props: StrBlock) {
+function T(props: UBlock) {
   return (
     <Box sx={{ width: 500 }}>
-      <StrBlock {...props} />
+      <UBlock {...props} />
     </Box>
   )
 }
 
-const data1: StrBlock = {
+const data1: UBlock = {
   _id: 'audio1',
   type: 'AUDIO',
 }
 
-const data2: StrBlock = {
+const data2: UBlock = {
   _id: 'audio2',
   type: 'AUDIO',
 }
 
-const data3: StrBlock = {
+const data3: UBlock = {
   ...data1,
   readonly: true,
 }

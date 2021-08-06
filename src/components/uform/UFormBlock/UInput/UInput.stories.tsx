@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { UInputElement } from './uinput'
+import { UInput } from './UInput'
 
-interface TUInputP {
+interface T {
   _id: string
   question: string
   explanation: string
@@ -14,7 +14,7 @@ interface TUInputP {
   multiline: boolean
 }
 
-const TUInput = ({
+const T = ({
   _id,
   question,
   correctAnswer,
@@ -25,15 +25,15 @@ const TUInput = ({
   autoFocus,
   showTipOnMobile,
   multiline,
-}: TUInputP) => {
-  const [value_, setValue] = useState(value)
+}: T) => {
+  const [value_, setValue] = useState([value])
   return (
     <div style={{ width: '50%' }}>
-      <UInputElement
+      <UInput
         _id={_id}
-        value={value_}
-        onChange={setValue}
-        question={{ question, correctAnswer: [correctAnswer], explanation }}
+        answer={value_}
+        onAnswerChange={setValue}
+        question={{ question, correctAnswer: [correctAnswer], explanation, options: [] }}
         wasSubmitted={wasSubmitted}
         autoFocus={autoFocus}
         validationError={validationError}
@@ -44,7 +44,7 @@ const TUInput = ({
   )
 }
 
-const defaultI: TUInputP = {
+const defaultI: T = {
   _id: 'defaultI',
   multiline: false,
   question: 'Enter abc',
@@ -56,32 +56,34 @@ const defaultI: TUInputP = {
   validationError: '',
 }
 
-const rightI: TUInputP = {
+const rightI: T = {
   ...defaultI,
   value: 'abc',
   wasSubmitted: true,
 }
 
-const wrongI: TUInputP = {
+const wrongI: T = {
   ...defaultI,
   value: 'ab',
   wasSubmitted: true,
 }
 
-const invalidI: TUInputP = {
+const invalidI: T = {
   ...defaultI,
   validationError: 'Required field',
   wasSubmitted: false,
 }
 
-const text: TUInputP = {
+const text: T = {
   ...defaultI,
   value: '',
   multiline: true,
 }
 
-export const ShortText = () => <TUInput {...defaultI} />
-export const Text = () => <TUInput {...text} />
-export const Right = () => <TUInput {...rightI} />
-export const Wrong = () => <TUInput {...wrongI} />
-export const Invalid = () => <TUInput {...invalidI} />
+export const UInputS = {
+  ShortText: () => <T {...defaultI} />,
+  Text: () => <T {...text} />,
+  Right: () => <T {...rightI} />,
+  Wrong: () => <T {...wrongI} />,
+  Invalid: () => <T {...invalidI} />,
+}

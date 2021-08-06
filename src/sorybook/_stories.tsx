@@ -6,10 +6,11 @@ import * as Training from '../components/study/training/training/training.s'
 import * as TrainingHeader from '../components/study/training/training-header/training-header.s'
 import * as TrainingControls from '../components/study/training/training-controls/training-controls.s'
 import * as UFormHook from '../components/uform/uform.s'
-import * as UChecksElement from '../components/uform/ufields/uchecks.s'
-import * as UInputElement from '../components/uform/ufields/uinput.s'
+import { UChecksS } from '../components/uform/UFormBlock/UChecks/UChecks.stories'
+import { UInputS } from '../components/uform/UFormBlock/UInput/UInput.stories'
+import { UFormBlockS } from '../components/uform/UFormBlock/UFormBlock.stories'
 import * as UTable from '../components/ucomponents/UTable/UTable.s'
-import { UTextS } from '../components/ucomponents/EditableText/EditableText.stories'
+import { UTextS } from '../components/ucomponents/UText/UText.stories'
 import { UFileS } from '../components/ucomponents/UFile/UFile.stories'
 import { UAudioFileS } from '../components/ucomponents/UFile/UAudioFile/UAudioFile.stories'
 import { UImageFileS } from '../components/ucomponents/UFile/UImageFile/UImageFile.stories'
@@ -52,7 +53,7 @@ export const sories = [
   },
   {
     name: 'UForm',
-    components: [storify({ UFormHook }), storify({ UChecksElement }), storify({ UInputElement })],
+    components: [storify({ UFormHook }), storify({ UFormBlockS }), storify({ UChecksS }), storify({ UInputS })],
   },
   {
     name: 'Utils',

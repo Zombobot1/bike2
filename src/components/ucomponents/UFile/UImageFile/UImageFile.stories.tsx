@@ -1,20 +1,20 @@
 import { Box } from '@material-ui/core'
-import { StrBlock } from '../../StrBlock'
+import { UBlock } from '../../UBlock'
 
-function T(props: StrBlock) {
+function T(props: UBlock) {
   return (
     <Box sx={{ width: 500 }}>
-      <StrBlock {...props} />
+      <UBlock {...props} />
     </Box>
   )
 }
 
-const data1: StrBlock = {
+const data1: UBlock = {
   _id: 'image1',
   type: 'IMAGE',
 }
 
-const data2: StrBlock = {
+const data2: UBlock = {
   _id: 'image2',
   type: 'IMAGE',
 }

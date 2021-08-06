@@ -1,32 +1,32 @@
 import { Box } from '@material-ui/core'
-import { StrBlock } from '../StrBlock'
+import { UBlock } from '../UBlock'
 
-function Template(props: StrBlock) {
+function Template(props: UBlock) {
   return (
     <Box sx={{ width: 500, backgroundColor: 'pink' }}>
-      <StrBlock {...props} />
+      <UBlock {...props} />
     </Box>
   )
 }
 
-const data1: StrBlock = {
+const data1: UBlock = {
   _id: 'data1',
 }
 
-const readonly: StrBlock = {
+const readonly: UBlock = {
   ...data1,
   readonly: true,
 }
 
-const data2: StrBlock = {
+const data2: UBlock = {
   _id: '',
 }
 
-const data3: StrBlock = {
+const data3: UBlock = {
   _id: '',
   type: 'HEADING1',
 }
-const data4: StrBlock = {
+const data4: UBlock = {
   _id: 'data4',
 }
 

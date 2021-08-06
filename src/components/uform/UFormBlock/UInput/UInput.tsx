@@ -1,12 +1,12 @@
 import { useState, KeyboardEvent } from 'react'
-import { QuestionWithoutOptions, UInputFieldData, Validity } from '../types'
-import { Fn, fn } from '../../../utils/types'
-import { InteractiveQuestion } from './interactive-question'
-import { ErrorText, SuccessText } from './feedback'
+import { UFormFieldData, Validity } from '../../types'
+import { fn } from '../../../../utils/types'
+import { InteractiveQuestion } from '../interactive-question'
+import { ErrorText, SuccessText } from '../feedback'
 import { TextField } from '@material-ui/core'
-import { useValidationColor } from './useValidationColor'
+import { useValidationColor } from '../useValidationColor'
 
-export interface UInput extends UInputFieldData {
+export interface UInput extends UFormFieldData {
   showTipOnMobile?: boolean
   autoFocus?: boolean
   multiline?: boolean
@@ -20,57 +20,16 @@ export const UInput = ({
   validationError,
   question,
   wasSubmitted,
-  showTipOnMobile,
+  showTipOnMobile = true,
   autoFocus = true,
   multiline,
 }: UInput) => {
-  return (
-    <UInputElement
-      _id={_id}
-      validationError={validationError}
-      value={answer[0]}
-      question={question}
-      onChange={(s) => onAnswerChange([s])}
-      wasSubmitted={wasSubmitted}
-      showTipOnMobile={showTipOnMobile}
-      onEnter={onAnswer}
-      autoFocus={autoFocus}
-      multiline={multiline}
-    />
-  )
-}
-
-export interface UInputElementP {
-  _id: string
-  value: string
-  question: QuestionWithoutOptions
-  onChange: (v: string) => void
-  validationError: string
-  wasSubmitted: boolean
-  onEnter?: Fn
-  showTipOnMobile?: boolean
-  autoFocus?: boolean
-  multiline?: boolean
-}
-
-export const UInputElement = ({
-  _id,
-  value,
-  question,
-  onChange,
-  wasSubmitted,
-  showTipOnMobile = false,
-  onEnter = fn,
-  autoFocus = true,
-  validationError,
-  multiline = false,
-}: UInputElementP) => {
   const [type, setType] = useState(showTipOnMobile ? 'text' : 'password')
 
   let validity: Validity = 'NONE'
   if (validationError) validity = 'INVALID'
-  else if (wasSubmitted && value !== question.correctAnswer[0]) validity = 'INVALID'
-  else if (wasSubmitted && value === question.correctAnswer[0]) validity = 'VALID'
+  else if (wasSubmitted && answer[0] !== question.correctAnswer[0]) validity = 'INVALID'
+  else if (wasSubmitted && answer[0] === question.correctAnswer[0]) validity = 'VALID'
 
   const color = useValidationColor(validity)
   const sx =
@@ -85,7 +44,7 @@ export const UInputElement = ({
         }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') onEnter()
+    if (e.key === 'Enter') onAnswer()
   }
 
   const explanation = validationError ? validationError : question.explanation
@@ -99,10 +58,10 @@ export const UInputElement = ({
         placeholder="Your answer"
         type={type}
         id={_id}
-        value={value}
+        value={answer[0]}
         onChange={(e) => {
           setType('text') // anomaly: if it is put onMount or onFocus it breaks slide animation
-          onChange(e.target.value)
+          onAnswerChange([e.target.value])
         }}
         disabled={wasSubmitted}
         onKeyPress={handleKeyDown}

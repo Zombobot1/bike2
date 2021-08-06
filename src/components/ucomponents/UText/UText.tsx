@@ -5,14 +5,14 @@ import { useEffectedState, useMount } from '../../../utils/hooks-utils'
 import { styled, useTheme } from '@material-ui/core'
 import { StrBlockComponent } from '../types'
 
-export interface UText extends StrBlockComponent {
+export interface UParagraph extends StrBlockComponent {
   tryToChangeFieldType: (d: str) => void
   autoFocus: bool
   placeholder?: str
   alwaysShowPlaceholder?: bool
 }
 
-export function UText(props: UText) {
+export function UParagraph(props: UParagraph) {
   return (
     <EditableText
       {...props}
@@ -23,19 +23,19 @@ export function UText(props: UText) {
   )
 }
 
-export function UHeading1(props: UText) {
+export function UHeading1(props: UParagraph) {
   return <EditableText {...props} component="h2" placeholder="Heading 1" />
 }
 
-export function UHeading2(props: UText) {
+export function UHeading2(props: UParagraph) {
   return <EditableText {...props} component="h3" placeholder="Heading 2" />
 }
 
-export function UHeading3(props: UText) {
+export function UHeading3(props: UParagraph) {
   return <EditableText {...props} component="h4" placeholder="Heading 3" />
 }
 
-interface EditableText_ extends UText {
+interface EditableText_ extends UParagraph {
   component: str
 }
 
