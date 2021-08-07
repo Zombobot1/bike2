@@ -3,6 +3,7 @@ import { CardEstimation, Question } from '../study/training/types'
 import { useCallback, useEffect, useState } from 'react'
 import { SetStr, str, strs } from '../../utils/types'
 import { UFormComponent } from '../ucomponents/types'
+import { cast } from '../../utils/utils'
 
 export interface UFieldInfo {
   answer: string[]
@@ -74,7 +75,7 @@ const _isValid = (fields: UFields): boolean => !fields.find((f) => f.validationE
 const fieldsAtom = atom<UFields>([])
 
 export const useUFormBlock = (_id: str, data: str) => {
-  const [question] = useState(() => parse(data, QUESTION)) // parse once
+  const [question] = useState(() => cast(data, QUESTION)) // parse once
   useField(_id, question)
 
   const [fields, setFields] = useAtom(fieldsAtom)
@@ -94,7 +95,7 @@ export const useUFormBlock = (_id: str, data: str) => {
 }
 
 export const useUFormBlockEditor = (_id: str, type: UFormComponent, data: str, setData: SetStr) => {
-  const [initialQuestion] = useState(() => parse(data, getQuestion(type))) // parse once
+  const [initialQuestion] = useState(() => cast(data, getQuestion(type))) // parse once
   const setQuestion = (q: Question) => setData(JSON.stringify(q))
 
   useField(_id, initialQuestion)
@@ -146,16 +147,4 @@ function useField(_id: str, question: Question) {
     addField()
     return () => removeField()
   }, [_id])
-}
-
-function parse<T>(data: str, default_: T): T {
-  if (!data) return default_
-
-  try {
-    return JSON.parse(data) as T
-  } catch (error) {
-    console.error(error)
-  }
-
-  return default_
 }

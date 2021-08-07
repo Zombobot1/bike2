@@ -3,11 +3,18 @@ import { bool, str } from '../../utils/types'
 export type UTextComponent = 'TEXT' | 'HEADING1' | 'HEADING2' | 'HEADING3'
 export type UFileComponent = 'FILE' | 'IMAGE' | 'AUDIO'
 export type UFormComponent = 'RADIO' | 'INPUT' | 'CHECKS' | 'TEXTAREA'
-export type UComponentType = UTextComponent | UFileComponent | UFormComponent | 'PROJECTION'
+export type UProjectionComponent = 'PAGE' | 'FORM' | 'PROJECTION'
+export type UComponentType = UTextComponent | UFileComponent | UFormComponent | UProjectionComponent
 
 export function isUFormComponent(t: UComponentType): bool {
   const types: UComponentType[] = ['RADIO', 'INPUT', 'CHECKS', 'TEXTAREA']
   return types.includes(t)
+}
+
+export interface UBlockB {
+  _id: str
+  readonly?: bool
+  isEditing?: bool
 }
 
 export type StrBlockPostRDTO = { _id: str }
@@ -21,6 +28,10 @@ export interface StrBlockComponent {
   setData: (d: str) => void
   readonly?: bool
 }
+
+export type NewBlockFocus = 'FOCUS' | 'NO_FOCUS'
+export type AddNewBlock = (under: str, focus: NewBlockFocus) => void
+export type AddNewBlockUText = (focus: NewBlockFocus) => void
 
 export const regexAndType = new Map<str, UComponentType>([
   ['/text', 'TEXT'],

@@ -22,6 +22,7 @@ export function qS(correctAnswer: strs, explanation: str, options: strs, questio
 
 export const blocksS = new Map<str, StrBlockGetDTO>([
   ['data1', { type: 'TEXT', data: 'initial data' }],
+  ['data2', { type: 'TEXT', data: 'd' }],
   ['data4', { type: 'TEXT', data: '' }],
   ['file1', { type: 'FILE', data: '' }],
   ['file2', { type: 'FILE', data: 'http://uni.com/static/complex--name--uuid.pdf' }],
@@ -33,6 +34,8 @@ export const blocksS = new Map<str, StrBlockGetDTO>([
   ['textarea1', { type: 'TEXTAREA', data: JSON.stringify(eq) }],
   ['checks1', { type: 'CHECKS', data: JSON.stringify(eq) }],
   ['radio1', { type: 'RADIO', data: JSON.stringify(eq) }],
+  ['page1', { type: 'PAGE', data: '' }],
+  ['page2', { type: 'PAGE', data: JSON.stringify(['data2']) }],
 ])
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

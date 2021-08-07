@@ -1,36 +1,77 @@
 import { styled } from '@material-ui/core'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { api } from '../../api/api'
 import { useMount } from '../../utils/hooks-utils'
-import { bool, str } from '../../utils/types'
-import { isUFormComponent, regexAndType, UComponentType, UFormComponent } from './types'
+import { bool, SetStr, str } from '../../utils/types'
+import {
+  AddNewBlock,
+  isUFormComponent,
+  NewBlockFocus,
+  regexAndType,
+  UBlockB,
+  UComponentType,
+  UFormComponent,
+} from './types'
 import { UHeading1, UHeading2, UHeading3, UParagraph } from './UText/UText'
 import { UFile } from './UFile/UFile'
 import { UAudioFile } from './UFile/UAudioFile/UAudioFile'
 import { UImageFile } from './UFile/UImageFile/UImageFile'
 import { UFormBlock } from '../uform/UFormBlock/UFormBlock'
 
-export interface UBlock {
-  _id: str
+export interface UBlock extends UBlockB {
+  tmpId?: str
+  autoFocus?: bool
+  addNewBlock?: AddNewBlock
+  deleteBlock?: SetStr
+  replaceTmpIdByReal?: SetStr
   type?: UComponentType
-  readonly?: bool
-  isEditing?: bool
+  isFactory?: bool
 }
 
-export function UBlock({ _id, type: initialType, readonly = false, isEditing = false }: UBlock) {
+export function UBlock({
+  _id,
+  tmpId,
+  type: initialType,
+  addNewBlock,
+  replaceTmpIdByReal,
+  readonly = false,
+  isEditing = false,
+  autoFocus: initialAutoFocus = false,
+  isFactory = false,
+  deleteBlock,
+}: UBlock) {
   const [data, setData_] = useState('')
   const [type, setType_] = useState<UComponentType>(initialType || 'TEXT')
-  const [autoFocus, setAutoFocus] = useState(false)
+  const [autoFocus, setAutoFocus] = useState(initialAutoFocus)
   const [id, setId] = useState(_id)
+  const [needNewBlock, setNeedNewBlock] = useState<NewBlockFocus | null>(null)
+
+  useEffect(() => {
+    if (!needNewBlock) return
+
+    if (addNewBlock) addNewBlock(tmpId || '', needNewBlock)
+
+    let cancelled = false
+
+    api.postStrBlock({ type }).then((d) => {
+      if (cancelled) return
+      setId(d._id)
+      if (replaceTmpIdByReal) replaceTmpIdByReal(d._id)
+    })
+
+    return () => {
+      cancelled = true
+    }
+  }, [needNewBlock])
 
   const setData = (d: str) => {
     setData_(d)
-    api.patchStrBlock(id, { data: d }).catch(console.error)
+    if (id) api.patchStrBlock(id, { data: d })
   }
 
   const setType = (t: UComponentType) => {
     setType_(t)
-    api.patchStrBlock(id, { type: t }).catch(console.error)
+    if (id) api.patchStrBlock(id, { type: t })
   }
 
   const commonProps = { data, setData, readonly }
@@ -39,13 +80,24 @@ export function UBlock({ _id, type: initialType, readonly = false, isEditing = f
     ...commonProps,
     tryToChangeFieldType: tryToChangeFieldType(setAutoFocus, setType, setData_),
     autoFocus,
+    addNewBlock: addNewBlock ? () => addNewBlock(tmpId || id, 'FOCUS') : undefined,
+    produceNewBlock: isFactory ? setNeedNewBlock : undefined,
+    deleteBlock: deleteBlock
+      ? () => {
+          deleteBlock(tmpId || id)
+          api.deleteStrBlock(id)
+        }
+      : undefined,
   }
 
   useMount(() => {
+    if (isFactory) return
+
     let cancelled = false
 
     if (!id) {
       api.postStrBlock({ type }).then((d) => {
+        if (replaceTmpIdByReal) replaceTmpIdByReal(d._id) // to detect removed blocks
         if (cancelled) return
         setId(d._id)
       })

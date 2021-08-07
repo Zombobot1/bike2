@@ -14,6 +14,7 @@ import { UTextS } from '../components/ucomponents/UText/UText.stories'
 import { UFileS } from '../components/ucomponents/UFile/UFile.stories'
 import { UAudioFileS } from '../components/ucomponents/UFile/UAudioFile/UAudioFile.stories'
 import { UImageFileS } from '../components/ucomponents/UFile/UImageFile/UImageFile.stories'
+import { UPageS } from '../components/ucomponents/UPage/UPage.stories'
 import * as TrainingTimer from '../components/study/training/training-timer/trainingTimer.s'
 import * as TrainingEnd from '../components/study/training/TrainingEnd/TrainingEnd.s'
 import * as Breadcrumb from '../components/Shell/navigation/breadcrumb/breadcrumb.s'
@@ -49,6 +50,7 @@ export const sories = [
       storify({ UFileS }),
       storify({ UAudioFileS }),
       storify({ UImageFileS }),
+      storify({ UPageS }),
     ],
   },
   {

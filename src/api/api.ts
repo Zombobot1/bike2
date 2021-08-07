@@ -23,6 +23,7 @@ export const api = {
 
   deleteCard: (id: str) => axi(CARDS + id, 'DELETE'),
 
+  deleteStrBlock: (id: str) => axi(UBLOCKS + id, 'DELETE'),
   postStrBlock: (data: StrBlockPostDTO) => axi<StrBlockPostRDTO>(UBLOCKS, data),
   patchStrBlock: (id: str, data: StrBlockPatchDTO) => axi(UBLOCKS + id, data, 'PATCH'),
   getStrBlock: (id: str) => axi<StrBlockGetDTO>(UBLOCKS + id),

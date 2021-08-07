@@ -35,6 +35,4 @@ export type NumState = State<number>
 export type StrState = State<string>
 export type BoolState = State<boolean>
 
-export type SX = JSObject
-
 export type Subset<T, U extends T> = Extract<T, U>

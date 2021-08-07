@@ -1,4 +1,4 @@
 {
-  "cSpell.words": ["DTOs", "Datas", "RDTO", "Swiper", "Unmount", "axif", "fapi", "ublock", "ublocks", "utext"],
+  "cSpell.words": ["DTOs", "Datas", "RDTO", "Swiper", "Unmount", "axif", "fapi", "strs", "ublock", "ublocks", "utext"],
   "jestrunner.jestCommand": "npm run test --"
 }

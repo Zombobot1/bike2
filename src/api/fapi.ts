@@ -35,6 +35,7 @@ const getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') =
 const getStrBlock = (r: WR) => blocksS.get(urlId(r.url.toString())) || { type: 'TEXT', data: '' }
 const postStrBlock = () => ({ _id: 'id' })
 const patchStrBlock = e
+const deleteStrBlock = e
 const uploadFile = (r: WR) => ({ data: blocksFileUploadS(r.body) })
 const deleteFile = e
 const deleteCard = e
@@ -49,6 +50,7 @@ const handlers = [
   rest.post(UBLOCKS_F, w(postStrBlock)),
   rest.patch(UBLOCK_F, w(patchStrBlock)),
   rest.get(UBLOCK_F, w(getStrBlock)),
+  rest.delete(UBLOCK_F, w(deleteStrBlock)),
 
   rest.post(FILES_F, w(uploadFile)),
   rest.delete(FILE_F, w(deleteFile)),

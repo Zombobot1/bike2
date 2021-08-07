@@ -1,4 +1,4 @@
-import { Fn, JSObject } from './types'
+import { Fn, JSObject, str } from './types'
 import { styled } from '@material-ui/core'
 
 type E = {
@@ -12,6 +12,18 @@ export function prevented(f: Fn) {
     e.stopPropagation()
     f()
   }
+}
+
+export function cast<T>(data: str, default_: T): T {
+  if (!data) return default_
+
+  try {
+    return JSON.parse(data) as T
+  } catch (error) {
+    console.error(error)
+  }
+
+  return default_
 }
 
 export function uuid() {
