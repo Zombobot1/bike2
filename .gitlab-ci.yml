@@ -4,8 +4,7 @@ stages:
   - notify
 
 variables:
-  ENV_FILE: /home/admin/universe/uni-conf/.env
-  BUILD_DIR: 'build'
+  BUILD_DIR: 'dist'
 
 check:
   except:
@@ -25,22 +24,21 @@ build:
   script:
     - npm ci
     - npm run check
-    - cp $ENV_FILE .
     - npm run build
   artifacts:
     paths:
       - $BUILD_DIR
     expire_in: 20 minutes
 
-deploy:
-  only:
-    refs:
-      - master
-  tags: [front]
-  stage: deploy
-  script:
-    - netlify deploy --dir=$BUILD_DIR --prod
-    - sh ci-notify.sh ✅
+# deploy:
+#   only:
+#     refs:
+#       - master
+#   tags: [front]
+#   stage: deploy
+#   script:
+#     - netlify deploy --dir=$BUILD_DIR --prod
+#     - sh ci-notify.sh ✅
 
 notify_error:
   stage: notify

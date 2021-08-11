@@ -1,5 +1,4 @@
 import { Sandbox } from '../../../_sandbox'
-import { _SORYBOOK, SoryBook } from '../../../sorybook/sorybook'
 import { App } from '../app'
 import { TrainingWrapper } from '../../study/training/training/training'
 import { Trainings } from '../../study/trainings/trainings'
@@ -13,7 +12,6 @@ export const STUDYID = STUDY + '/:id'
 
 export const PAGES = [
   { path: _SANDBOX, component: Sandbox },
-  { path: _SORYBOOK, component: SoryBook },
   {
     path: APP,
     component: App,

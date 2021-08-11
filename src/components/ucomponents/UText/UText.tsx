@@ -1,7 +1,7 @@
 import { bool, fn, Fn, JSObject, SetStr, str } from '../../../utils/types'
 import ContentEditable from 'react-contenteditable'
 import { DependencyList, useCallback, useEffect, useRef, useState, KeyboardEvent } from 'react'
-import { useEffectedState, useMount } from '../../../utils/hooks-utils'
+import { useEffectedState } from '../../../utils/hooks-utils'
 import { styled, useTheme } from '@material-ui/core'
 import { AddNewBlockUText, UBlockComponent } from '../types'
 

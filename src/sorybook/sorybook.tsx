@@ -7,7 +7,7 @@ import { ReactComponent as IDown } from './bi-caret-down-fill.svg'
 import { ReactComponent as IRight } from './bi-caret-right-fill.svg'
 import { FC, useEffect } from 'react'
 import { useRouter } from '../components/utils/hooks/use-router'
-import { sories } from './_stories'
+// import { sories } from './_stories'
 import { useMedia } from '../components/utils/hooks/use-media'
 import { SM } from '../theme'
 import { ReactComponent as Burger } from './burger.svg'
@@ -224,7 +224,7 @@ export const SoryBook = () => {
 
   return (
     <div className="sorybook">
-      <Nav {...useCasesToTree('🤪 Sorybook', sories)} />
+      <Nav {...useCasesToTree('🤪 Sorybook', [])} />
       <Pane />
     </div>
   )
