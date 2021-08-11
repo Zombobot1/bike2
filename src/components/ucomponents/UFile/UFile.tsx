@@ -2,13 +2,12 @@ import { Stack, styled, Typography, IconButton } from '@material-ui/core'
 import { str } from '../../../utils/types'
 import { prevented } from '../../../utils/utils'
 import { Dropzone1 } from '../../utils/Dropzone'
-import { StrBlockComponent } from '../types'
+import { UBlockComponent } from '../types'
 import AttachFileRoundedIcon from '@material-ui/icons/AttachFileRounded'
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
 import { useUFile } from './useUFile'
 
-// export interface UFile extends StrBlockComponent {}
-export function UFile({ data, setData, readonly }: StrBlockComponent) {
+export function UFile({ data, setData, readonly }: UBlockComponent) {
   const { fileS, isUploading, deleteFile } = useUFile(data, setData)
   if (!data) return <Dropzone1 fileS={fileS} isUploading={isUploading} />
 

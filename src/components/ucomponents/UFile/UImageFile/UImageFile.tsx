@@ -1,11 +1,11 @@
 import { useEffectedState } from '../../../../utils/hooks-utils'
 import ImageRoundedIcon from '@material-ui/icons/ImageRounded'
 import { srcfy } from '../../../../utils/filesManipulation'
-import { StrBlockComponent } from '../../types'
+import { UBlockComponent } from '../../types'
 import { Dropzone1 } from '../../../utils/Dropzone'
 import { useUImageFile } from '../useUFile'
 
-export function UImageFile({ data, setData }: StrBlockComponent) {
+export function UImageFile({ data, setData }: UBlockComponent) {
   const [src, setSrc] = useEffectedState(data)
   const props = useUImageFile(data, setData, (f) => setSrc(srcfy(f)))
 

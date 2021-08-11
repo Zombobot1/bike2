@@ -1,13 +1,13 @@
 import { Checkbox, FormControlLabel, Radio, Stack, styled, TextField, Typography } from '@material-ui/core'
 import { bool, Fn, SetStr, str, strs } from '../../../utils/types'
-import { StrBlockComponent, UFormComponent } from '../../ucomponents/types'
+import { UBlockComponent, UFormComponent } from '../../ucomponents/types'
 import { UChecks } from './UChecks/UChecks'
 import { UInput } from './UInput/UInput'
 import { useUFormBlock, useUFormBlockEditor } from '../useUForm'
 import { Question } from '../../study/training/types'
 import { useState, KeyboardEvent, useRef } from 'react'
 
-export interface UFormFieldBase extends StrBlockComponent {
+export interface UFormFieldBase extends UBlockComponent {
   _id: str
   type: UFormComponent
 }

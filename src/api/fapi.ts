@@ -32,10 +32,10 @@ const getTrainingsGroups = () => trainingDecks
 const getTraining = (r: WR) => Object.entries(trainings).filter(([k]) => k === urlId(r.url.toString()))[0][1]
 const getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') === 'get update' ? [cardForUpdate] : [])
 
-const getStrBlock = (r: WR) => blocksS.get(urlId(r.url.toString())) || { type: 'TEXT', data: '' }
-const postStrBlock = () => ({ _id: 'id' })
-const patchStrBlock = e
-const deleteStrBlock = e
+const getUBlock = (r: WR) => blocksS.get(urlId(r.url.toString())) || { type: 'TEXT', data: '' }
+const postUBlock = () => ({ _id: 'id' })
+const patchUBlock = e
+const deleteUBlock = e
 const uploadFile = (r: WR) => ({ data: blocksFileUploadS(r.body) })
 const deleteFile = e
 const deleteCard = e
@@ -47,10 +47,10 @@ const handlers = [
   rest.get(TRAINING_F, w(getTraining)),
   rest.delete(CARD_F, w(deleteCard)),
 
-  rest.post(UBLOCKS_F, w(postStrBlock)),
-  rest.patch(UBLOCK_F, w(patchStrBlock)),
-  rest.get(UBLOCK_F, w(getStrBlock)),
-  rest.delete(UBLOCK_F, w(deleteStrBlock)),
+  rest.post(UBLOCKS_F, w(postUBlock)),
+  rest.patch(UBLOCK_F, w(patchUBlock)),
+  rest.get(UBLOCK_F, w(getUBlock)),
+  rest.delete(UBLOCK_F, w(deleteUBlock)),
 
   rest.post(FILES_F, w(uploadFile)),
   rest.delete(FILE_F, w(deleteFile)),

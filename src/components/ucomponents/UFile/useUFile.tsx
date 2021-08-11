@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { api } from '../../../api/api'
 import { sslugify } from '../../../utils/sslugify'
 import { bool, SetStr, str } from '../../../utils/types'
-import { uuid } from '../../../utils/utils'
+import { uuid } from '../../../utils/uuid'
 import { use1Drop, use1ImageDrop } from '../../utils/Dropzone'
 import { fileNameWithId } from './UFile'
 

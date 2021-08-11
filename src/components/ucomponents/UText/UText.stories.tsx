@@ -1,4 +1,5 @@
 import { Box } from '@material-ui/core'
+import { fn, setStr } from '../../../utils/types'
 import { UBlock } from '../UBlock'
 
 function Template(props: UBlock) {
@@ -9,7 +10,14 @@ function Template(props: UBlock) {
   )
 }
 
+const t: UBlock = {
+  _id: '',
+  addNewBlock: fn,
+  deleteBlock: setStr,
+}
+
 const data1: UBlock = {
+  ...t,
   _id: 'data1',
 }
 
@@ -19,14 +27,17 @@ const readonly: UBlock = {
 }
 
 const data2: UBlock = {
+  ...t,
   _id: '',
 }
 
 const data3: UBlock = {
+  ...t,
   _id: '',
   type: 'HEADING1',
 }
 const data4: UBlock = {
+  ...t,
   _id: 'data4',
 }
 

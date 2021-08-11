@@ -4,8 +4,9 @@ import { useDropzone } from 'react-dropzone'
 import { bool, Files, Fn, fn, OFile, State, str } from '../../utils/types'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
 import ContentPasteRoundedIcon from '@material-ui/icons/ContentPasteRounded'
-import { prevented, uuid } from '../../utils/utils'
+import { prevented } from '../../utils/utils'
 import { readImageFromKeyboard } from '../../utils/filesManipulation'
+import { uuid } from '../../utils/uuid'
 
 export function use1Drop(onDrop: (f: File) => void): State<OFile> {
   const [file, setFile] = useState<OFile>(null)

@@ -2,7 +2,7 @@ import { useAtom, atom } from 'jotai'
 import { useMount } from '../../../utils/hooks-utils'
 import { sslugify } from '../../../utils/sslugify'
 import { Fn, fn, str } from '../../../utils/types'
-import { uuid } from '../../../utils/utils'
+import { uuid } from '../../../utils/uuid'
 import { FileOrStr } from '../UCard/UCardField/types'
 
 export interface FieldData {

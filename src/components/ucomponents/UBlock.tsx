@@ -1,8 +1,8 @@
 import { styled } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/api'
-import { useMount } from '../../utils/hooks-utils'
-import { bool, SetStr, str } from '../../utils/types'
+import { useEffectedState, useMount } from '../../utils/hooks-utils'
+import { bool, Fn, SetStr, str } from '../../utils/types'
 import {
   AddNewBlock,
   isUFormComponent,
@@ -19,59 +19,44 @@ import { UImageFile } from './UFile/UImageFile/UImageFile'
 import { UFormBlock } from '../uform/UFormBlock/UFormBlock'
 
 export interface UBlock extends UBlockB {
-  tmpId?: str
+  addNewBlock: AddNewBlock
+  deleteBlock: SetStr
   autoFocus?: bool
-  addNewBlock?: AddNewBlock
-  deleteBlock?: SetStr
-  replaceTmpIdByReal?: SetStr
+  data?: str
   type?: UComponentType
   isFactory?: bool
+  onFactoryBackspace?: Fn
 }
 
 export function UBlock({
   _id,
-  tmpId,
   type: initialType,
+  data: initialData,
   addNewBlock,
-  replaceTmpIdByReal,
   readonly = false,
   isEditing = false,
   autoFocus: initialAutoFocus = false,
   isFactory = false,
   deleteBlock,
+  onFactoryBackspace,
 }: UBlock) {
-  const [data, setData_] = useState('')
+  const [data, setData_] = useState(initialData || '')
   const [type, setType_] = useState<UComponentType>(initialType || 'TEXT')
-  const [autoFocus, setAutoFocus] = useState(initialAutoFocus)
-  const [id, setId] = useState(_id)
+  const [autoFocus, setAutoFocus] = useEffectedState(initialAutoFocus)
   const [needNewBlock, setNeedNewBlock] = useState<NewBlockFocus | null>(null)
 
   useEffect(() => {
-    if (!needNewBlock) return
-
-    if (addNewBlock) addNewBlock(tmpId || '', needNewBlock)
-
-    let cancelled = false
-
-    api.postStrBlock({ type }).then((d) => {
-      if (cancelled) return
-      setId(d._id)
-      if (replaceTmpIdByReal) replaceTmpIdByReal(d._id)
-    })
-
-    return () => {
-      cancelled = true
-    }
+    if (needNewBlock && addNewBlock) addNewBlock(_id, needNewBlock)
   }, [needNewBlock])
 
   const setData = (d: str) => {
     setData_(d)
-    if (id) api.patchStrBlock(id, { data: d })
+    api.patchUBlock(_id, { data: d })
   }
 
   const setType = (t: UComponentType) => {
     setType_(t)
-    if (id) api.patchStrBlock(id, { type: t })
+    api.patchUBlock(_id, { type: t })
   }
 
   const commonProps = { data, setData, readonly }
@@ -80,34 +65,27 @@ export function UBlock({
     ...commonProps,
     tryToChangeFieldType: tryToChangeFieldType(setAutoFocus, setType, setData_),
     autoFocus,
-    addNewBlock: addNewBlock ? () => addNewBlock(tmpId || id, 'FOCUS') : undefined,
+    addNewBlock: (focus?: NewBlockFocus, data?: str) => addNewBlock(_id, focus, data),
     produceNewBlock: isFactory ? setNeedNewBlock : undefined,
-    deleteBlock: deleteBlock
-      ? () => {
-          deleteBlock(tmpId || id)
-          api.deleteStrBlock(id)
-        }
-      : undefined,
+    deleteBlock: () => {
+      deleteBlock(_id)
+      api.deleteUBlock(_id)
+    },
+    isFactory,
+    onFactoryBackspace,
   }
 
   useMount(() => {
     if (isFactory) return
+    if (initialData) return
 
     let cancelled = false
 
-    if (!id) {
-      api.postStrBlock({ type }).then((d) => {
-        if (replaceTmpIdByReal) replaceTmpIdByReal(d._id) // to detect removed blocks
-        if (cancelled) return
-        setId(d._id)
-      })
-    } else {
-      api.getStrBlock(id).then((d) => {
-        if (cancelled) return
-        setData_(d.data)
-        setType_(d.type)
-      })
-    }
+    api.getUBlock(_id).then((d) => {
+      if (cancelled) return
+      setData_(d.data)
+      setType_(d.type)
+    })
 
     return () => {
       cancelled = true

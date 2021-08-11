@@ -3,15 +3,16 @@ import ContentEditable from 'react-contenteditable'
 import { DependencyList, useCallback, useEffect, useRef, useState, KeyboardEvent } from 'react'
 import { useEffectedState, useMount } from '../../../utils/hooks-utils'
 import { styled, useTheme } from '@material-ui/core'
-import { AddNewBlockUText, StrBlockComponent } from '../types'
+import { AddNewBlockUText, UBlockComponent } from '../types'
 
-export interface UParagraph extends StrBlockComponent {
+export interface UParagraph extends UBlockComponent {
   tryToChangeFieldType: SetStr
   autoFocus: bool
+  addNewBlock: AddNewBlockUText
   placeholder?: str
-  addNewBlock?: AddNewBlockUText
   deleteBlock?: Fn
-  produceNewBlock?: AddNewBlockUText
+  isFactory?: bool
+  onFactoryBackspace?: Fn
 }
 
 export function UParagraph(props: UParagraph) {
@@ -52,27 +53,22 @@ function UText({
   alwaysShowPlaceholder = true,
   readonly,
   addNewBlock,
-  produceNewBlock,
   deleteBlock = fn,
+  isFactory = false,
+  onFactoryBackspace = fn,
 }: UText_) {
   const [text, setText] = useEffectedState(data)
   const [inFocus, setInFocus] = useState(false)
-  const [isNewBlockProduced, setIsNewBlockProduced] = useState(false)
-
   const ref = useRef<HTMLElement>(null)
 
-  useMount(() => {
+  useEffect(() => {
     if (autoFocus) ref.current?.focus()
-  })
+  }, [autoFocus])
 
   useEffect(() => {
     if (!text) return
+    if (isFactory) addNewBlock('FOCUS', text)
     tryToChangeFieldType(text)
-
-    if (produceNewBlock && !isNewBlockProduced) {
-      setIsNewBlockProduced(true)
-      produceNewBlock('NO_FOCUS')
-    }
   }, [text])
 
   const onFocus = useRefCallback(() => setInFocus(true))
@@ -86,15 +82,15 @@ function UText({
     (e: KeyboardEvent<HTMLInputElement>) => {
       if (!e.shiftKey && e.key === 'Enter') {
         e.preventDefault()
-        if (!addNewBlock) return
-        if (produceNewBlock) produceNewBlock('FOCUS')
+        if (isFactory) addNewBlock('NO_FOCUS')
         else addNewBlock('FOCUS')
-      } else if (e.key === 'Backspace' && !text && !produceNewBlock) {
+      } else if (e.key === 'Backspace' && !text) {
         e.preventDefault()
-        deleteBlock()
+        if (isFactory) onFactoryBackspace()
+        else deleteBlock()
       }
     },
-    [text, produceNewBlock, deleteBlock],
+    [text, deleteBlock, onFactoryBackspace],
   )
 
   const theme = useTheme()
@@ -110,7 +106,7 @@ function UText({
           },
         }
       : undefined
-  sx = produceNewBlock ? { ...sx, minHeight: '12rem' } : sx
+  sx = isFactory ? { ...sx, minHeight: '12rem' } : sx
   return (
     <UTextWrapper>
       <Editable

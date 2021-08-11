@@ -17,21 +17,20 @@ export interface UBlockB {
   isEditing?: bool
 }
 
-export type StrBlockPostRDTO = { _id: str }
-export type StrBlockPostDTO = { type: UComponentType }
-export type StrBlockPatchDTO = { type?: UComponentType; data?: str }
-export type StrBlockGetDTO = { type: UComponentType; data: str }
+export type UBlockPostDTO = { _id: str }
+export type UBlockPatchDTO = { type?: UComponentType; data?: str }
+export type UBlockGetDTO = { type: UComponentType; data: str }
 
 export type FileUploadRDTO = { data: str }
-export interface StrBlockComponent {
+export interface UBlockComponent {
   data: str
   setData: (d: str) => void
   readonly?: bool
 }
 
 export type NewBlockFocus = 'FOCUS' | 'NO_FOCUS'
-export type AddNewBlock = (under: str, focus: NewBlockFocus) => void
-export type AddNewBlockUText = (focus: NewBlockFocus) => void
+export type AddNewBlock = (under?: str, focus?: NewBlockFocus, data?: str) => void
+export type AddNewBlockUText = (focus?: NewBlockFocus, data?: str) => void
 
 export const regexAndType = new Map<str, UComponentType>([
   ['/text', 'TEXT'],

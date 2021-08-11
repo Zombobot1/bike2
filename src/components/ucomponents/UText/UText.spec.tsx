@@ -9,7 +9,7 @@ import { getElementError } from '../../../utils/testUtils'
 
 describe('Editable text', () => {
   it('Gets data from server, edits it, sends it back', async () => {
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
     render(<UTextS.EditsText />)
 
     const input = await waitFor(() => screen.getByText('initial data')) // not by role because we wait response from server
@@ -21,14 +21,14 @@ describe('Editable text', () => {
   })
 
   it('Creates itself if id is empty, changes component', async () => {
-    const spy = jest.spyOn(api, 'postStrBlock')
+    const spy = jest.spyOn(api, 'postUBlock')
     render(<UTextS.CreatesItself />)
     await waitFor(() => expect(spy).toHaveBeenCalledWith({ type: 'TEXT' }))
     spy.mockRestore()
   })
 
   it('Changes component', async () => {
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     render(<UTextS.ChangesComponents />)
 

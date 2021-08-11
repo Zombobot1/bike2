@@ -1,4 +1,5 @@
 import { Box } from '@material-ui/core'
+import { fn, setStr } from '../../../utils/types'
 import { UBlock } from '../../ucomponents/UBlock'
 
 function Template(props: UBlock) {
@@ -9,28 +10,35 @@ function Template(props: UBlock) {
   )
 }
 
-const input1: UBlock = {
-  _id: 'input1',
+const t: UBlock = {
+  _id: '',
   type: 'INPUT',
+  addNewBlock: fn,
+  deleteBlock: setStr,
   isEditing: true,
+}
+
+const input1: UBlock = {
+  ...t,
+  _id: 'input1',
 }
 
 const text1: UBlock = {
+  ...t,
   _id: 'textarea1',
   type: 'TEXTAREA',
-  isEditing: true,
 }
 
 const checks1: UBlock = {
+  ...t,
   _id: 'checks1',
   type: 'CHECKS',
-  isEditing: true,
 }
 
 const radio1: UBlock = {
+  ...t,
   _id: 'radio1',
   type: 'RADIO',
-  isEditing: true,
 }
 
 export const UFormBlockS = {

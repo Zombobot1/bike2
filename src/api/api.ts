@@ -3,13 +3,7 @@ import { CardDTOs, CardDTOsP, UserCardAnswerDTO } from '../components/study/trai
 import { queryfy } from '../utils/utils'
 import { str } from '../utils/types'
 import { TrainingDTO, TrainingsGroupDTOs } from '../components/study/training/training/training'
-import {
-  StrBlockPostDTO,
-  StrBlockPatchDTO,
-  StrBlockGetDTO,
-  StrBlockPostRDTO,
-  FileUploadRDTO,
-} from '../components/ucomponents/types'
+import { UBlockPostDTO, UBlockPatchDTO, UBlockGetDTO, FileUploadRDTO } from '../components/ucomponents/types'
 
 export const FILES = '/files/'
 export const TRAININGS = '/trainings/'
@@ -23,10 +17,10 @@ export const api = {
 
   deleteCard: (id: str) => axi(CARDS + id, 'DELETE'),
 
-  deleteStrBlock: (id: str) => axi(UBLOCKS + id, 'DELETE'),
-  postStrBlock: (data: StrBlockPostDTO) => axi<StrBlockPostRDTO>(UBLOCKS, data),
-  patchStrBlock: (id: str, data: StrBlockPatchDTO) => axi(UBLOCKS + id, data, 'PATCH'),
-  getStrBlock: (id: str) => axi<StrBlockGetDTO>(UBLOCKS + id),
+  deleteUBlock: (id: str) => axi(UBLOCKS + id, 'DELETE'),
+  postUBlock: (data: UBlockPostDTO) => axi(UBLOCKS, data),
+  patchUBlock: (id: str, data: UBlockPatchDTO) => axi(UBLOCKS + id, data, 'PATCH'),
+  getUBlock: (id: str) => axi<UBlockGetDTO>(UBLOCKS + id),
 
   uploadFile: (file: File) => axif<FileUploadRDTO>(FILES, file),
   deleteFile: (id: str) => axi(FILES + id, 'DELETE'),

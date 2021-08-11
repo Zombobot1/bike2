@@ -1,5 +1,5 @@
 import { str, strs } from '../../utils/types'
-import { StrBlockGetDTO } from './types'
+import { UBlockGetDTO } from './types'
 import hospitalMp3 from '../../content/hospital.mp3'
 import hospitalPng from '../../content/hospital.png'
 import { Question } from '../study/training/types'
@@ -20,7 +20,7 @@ export function qS(correctAnswer: strs, explanation: str, options: strs, questio
   })
 }
 
-export const blocksS = new Map<str, StrBlockGetDTO>([
+export const blocksS = new Map<str, UBlockGetDTO>([
   ['data1', { type: 'TEXT', data: 'initial data' }],
   ['data2', { type: 'TEXT', data: 'd' }],
   ['data4', { type: 'TEXT', data: '' }],

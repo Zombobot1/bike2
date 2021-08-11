@@ -1,4 +1,5 @@
 import { Box } from '@material-ui/core'
+import { fn, setStr } from '../../../../utils/types'
 import { UBlock } from '../../UBlock'
 
 function T(props: UBlock) {
@@ -9,14 +10,21 @@ function T(props: UBlock) {
   )
 }
 
-const data1: UBlock = {
-  _id: 'audio1',
+const t: UBlock = {
+  _id: '',
   type: 'AUDIO',
+  addNewBlock: fn,
+  deleteBlock: setStr,
+}
+
+const data1: UBlock = {
+  ...t,
+  _id: 'audio1',
 }
 
 const data2: UBlock = {
+  ...t,
   _id: 'audio2',
-  type: 'AUDIO',
 }
 
 const data3: UBlock = {

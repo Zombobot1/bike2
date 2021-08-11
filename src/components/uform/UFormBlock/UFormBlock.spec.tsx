@@ -20,7 +20,7 @@ describe('UFormBlock', () => {
     userEvent.type(answer, 'answer')
     answer.blur()
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     const explanation = screen.getByRole('textbox', { name: 'explanation' })
     userEvent.type(explanation, 'explanation')
@@ -35,7 +35,7 @@ describe('UFormBlock', () => {
   it('Edits text area', async () => {
     render(<UFormBlockS.TextAreaEditing />)
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     const explanation = screen.getByRole('textbox', { name: 'explanation' })
     userEvent.type(explanation, 'explanation')
@@ -54,7 +54,7 @@ describe('UFormBlock', () => {
 
     expect(screen.queryByText('Select correct answer')).toBeVisible()
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     const optionTicks = screen.getAllByRole('radio', { name: 'option tick' })
     userEvent.click(optionTicks[1])
@@ -75,7 +75,7 @@ describe('UFormBlock', () => {
     const optionTicks = screen.getAllByRole('radio', { name: 'option tick' })
     userEvent.click(optionTicks[1])
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     const options = screen.getAllByRole('textbox', { name: 'option' })
     userEvent.type(options[1], 'changed')
@@ -92,7 +92,7 @@ describe('UFormBlock', () => {
   it('Creates new options', async () => {
     render(<UFormBlockS.ChecksEditing />)
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     let options = screen.getAllByRole('textbox', { name: 'option' })
     expect(options.length).toEqual(2)
@@ -114,7 +114,7 @@ describe('UFormBlock', () => {
   it('Deletes options', async () => {
     render(<UFormBlockS.ChecksEditing />)
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
+    const spy = jest.spyOn(api, 'patchUBlock')
 
     let options = screen.getAllByRole('textbox', { name: 'option' })
     expect(options.length).toEqual(2)

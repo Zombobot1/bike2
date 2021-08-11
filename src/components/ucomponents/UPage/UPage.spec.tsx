@@ -8,42 +8,54 @@ import { configure } from '@testing-library/react'
 import { getElementError } from '../../../utils/testUtils'
 
 describe('UPage', () => {
-  it('Adds new block using factory', async () => {
-    const spy = jest.spyOn(api, 'patchStrBlock')
+  it('Factory preserves focus when adding empty blocks', async () => {
     render(<UPageS.CreatesBlocks />)
 
-    const input = await waitFor(() => screen.getByRole('textbox'))
-    userEvent.type(input, '/')
+    let input = screen.getByRole('textbox')
+    userEvent.type(input, '{enter}')
 
-    await waitFor(() => expect(spy).toHaveBeenCalledWith('page1', { data: JSON.stringify(['id']) }))
+    input = screen.getAllByRole('textbox')[1]
+
+    expect(input).toHaveFocus()
     expect(screen.getAllByRole('textbox').length).toEqual(2)
-    spy.mockRestore()
   })
+  // it('Adds new block using factory', async () => {
+  //   const spy = jest.spyOn(api, 'patchUBlock')
+  //   render(<UPageS.CreatesBlocks />)
 
-  it('Adds new block using another block', async () => {
-    render(<UPageS.CreatesBlocks />)
+  //   const input = screen.getByRole('textbox')
+  //   userEvent.type(input, '/')
+  //   expect(input).toHaveFocus()
+  //   expect(screen.getAllByRole('textbox').length).toEqual(2)
+  //   // await waitFor(() => expect(spy).toHaveBeenCalledWith('page1', { data: JSON.stringify(['id']) }))
+  //   // expect(screen.getAllByRole('textbox').length).toEqual(2)
+  //   spy.mockRestore()
+  // })
 
-    const input = await waitFor(() => screen.getByRole('textbox'))
-    userEvent.type(input, '/{enter}')
+  // it('Adds new block using another block', async () => {
+  //   render(<UPageS.CreatesBlocks />)
 
-    const spy = jest.spyOn(api, 'patchStrBlock')
-    await waitFor(() => expect(spy).toHaveBeenCalledWith('page1', { data: JSON.stringify(['id', 'id']) }))
-    expect(screen.getAllByRole('textbox').length).toEqual(3)
-    spy.mockRestore()
-  })
+  //   const input = await waitFor(() => screen.getByRole('textbox'))
+  //   userEvent.type(input, '/{enter}')
 
-  it('Deletes blocks', async () => {
-    render(<UPageS.DeletesBlocks />)
+  //   const spy = jest.spyOn(api, 'patchUBlock')
+  //   await waitFor(() => expect(spy).toHaveBeenCalledWith('page1', { data: JSON.stringify(['id', 'id']) }))
+  //   expect(screen.getAllByRole('textbox').length).toEqual(3)
+  //   spy.mockRestore()
+  // })
 
-    const input = await waitFor(() => screen.getByText('d'))
-    userEvent.type(input, '{backspace}')
-    const spy = jest.spyOn(api, 'patchStrBlock')
-    userEvent.type(input, '{backspace}')
+  // it('Deletes blocks', async () => {
+  //   render(<UPageS.DeletesBlocks />)
 
-    await waitFor(() => expect(spy).toHaveBeenCalledWith('page2', { data: JSON.stringify([]) }))
-    expect(screen.getAllByRole('textbox').length).toEqual(1)
-    spy.mockRestore()
-  })
+  //   const input = await waitFor(() => screen.getByText('d'))
+  //   userEvent.type(input, '{backspace}')
+  //   const spy = jest.spyOn(api, 'patchUBlock')
+  //   userEvent.type(input, '{backspace}')
+
+  //   await waitFor(() => expect(spy).toHaveBeenCalledWith('page2', { data: JSON.stringify([]) }))
+  //   expect(screen.getAllByRole('textbox').length).toEqual(1)
+  //   spy.mockRestore()
+  // })
 })
 
 configure({ getElementError })
