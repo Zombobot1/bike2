@@ -74,7 +74,7 @@ export function useNewCardDataField(_id: str, name: str) {
 function renameFiles(data: NewCardData, previewName: str): NewCardData {
   const preview = data.find((d) => d.name === previewName)
   if (!preview || preview.value instanceof File) throw new Error('Preview not found in new data')
-  const name = (ext: str) => `${sslugify(preview.value as str)}-${uuid()}.${ext}`
+  const name = (ext: str) => `${sslugify(preview.value as str)}-${uuid.v4()}.${ext}`
 
   return data.map((d) => {
     if (d instanceof File) {

@@ -17,7 +17,7 @@ export interface UBlockB {
   isEditing?: bool
 }
 
-export type UBlockPostDTO = { _id: str }
+export type UBlockPostDTO = { _id: str; data?: str }
 export type UBlockPatchDTO = { type?: UComponentType; data?: str }
 export type UBlockGetDTO = { type: UComponentType; data: str }
 

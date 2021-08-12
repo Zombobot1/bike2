@@ -1,52 +1,41 @@
-import { StrictMode } from 'react'
+import { ReactNode, StrictMode } from 'react'
 import { QueryClientProvider } from 'react-query'
-import { _ROOT, PAGES } from './navigation/pages'
 import { ThemeProvider } from '@material-ui/core'
 import { theme } from '../../theme'
-import { buildRoutes } from '../utils/routing'
-import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+import { Global, css } from '@emotion/react'
+import { QueryClient } from 'react-query'
+import { registerServiceWorker } from '../../serviceWorkerRegistration'
+import { useEffect, useState, forwardRef } from 'react'
+import { Fn } from '../../utils/types'
+import { api } from '../../api/api'
+import { useNotifications } from './useNotifications'
 import { Snackbar } from '@material-ui/core'
 import MuiAlert, { AlertProps } from '@material-ui/core/Alert'
 import { useIsPageVisible, useMount } from '../../utils/hooks-utils'
-import { Global, css } from '@emotion/react'
-import { useEffect, useState, forwardRef } from 'react'
-import { QueryClient } from 'react-query'
-import { STUDY } from './navigation/pages'
-import { _SORYBOOK } from '../../sorybook/sorybook'
-import { registerServiceWorker } from '../../serviceWorkerRegistration'
-import { Fn } from '../../utils/types'
-import { useNotifications } from './useNotifications'
-import { api } from '../../api/api'
+import { APP, PAGES, STUDY, _SANDBOX } from './navigation/pages'
+import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
+import { buildRoutes } from '../utils/routing'
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 0,
-      suspense: true,
-    },
-  },
-})
+export interface OuterShell {
+  children: ReactNode
+}
 
-const redirect = process.env.NODE_ENV === 'development' ? _SORYBOOK : STUDY
-
-export function Shell() {
-  useNotifications(api.subscribeForNotifications)
-
+export function OuterShell({ children }: OuterShell) {
   return (
     <StrictMode>
       <ThemeProvider theme={theme}>
         <GlobalCss />
-        <Router>
-          <SWController />
-          <QueryClientProvider client={queryClient}>
-            <Switch>
-              <Redirect exact from={_ROOT} to={redirect} />
-              {PAGES.map(buildRoutes)}
-            </Switch>
-          </QueryClientProvider>
-        </Router>
+        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </ThemeProvider>
     </StrictMode>
+  )
+}
+
+export function Shell() {
+  return (
+    <OuterShell>
+      <InnerShell />
+    </OuterShell>
   )
 }
 
@@ -69,6 +58,32 @@ function GlobalCss() {
         }
       `}
     />
+  )
+}
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 0,
+      suspense: true,
+    },
+  },
+})
+
+const redirect = process.env.NODE_ENV === 'development' ? _SANDBOX : STUDY
+
+function InnerShell() {
+  useNotifications(api.subscribeForNotifications)
+  return (
+    <>
+      <SWController />
+      <Router>
+        <Switch>
+          <Redirect exact from={APP} to={redirect} />
+          {PAGES.map(buildRoutes)}
+        </Switch>
+      </Router>
+    </>
   )
 }
 

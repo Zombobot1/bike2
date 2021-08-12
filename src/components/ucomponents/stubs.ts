@@ -35,7 +35,7 @@ export const blocksS = new Map<str, UBlockGetDTO>([
   ['checks1', { type: 'CHECKS', data: JSON.stringify(eq) }],
   ['radio1', { type: 'RADIO', data: JSON.stringify(eq) }],
   ['page1', { type: 'PAGE', data: '' }],
-  ['page2', { type: 'PAGE', data: JSON.stringify(['data2']) }],
+  ['page2', { type: 'PAGE', data: JSON.stringify(['data4', 'data2']) }],
 ])
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

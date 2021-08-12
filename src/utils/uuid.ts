@@ -1,8 +1,15 @@
 import { v4 } from 'uuid'
-import { str } from './types'
 
-export const uuid = (): str => v4()
-export function* uuidS() {
+export const uuid = {
+  v4: () => v4(),
+}
+
+function* _uuidS() {
   let i = 0
   while (true) yield String(i++)
+}
+
+export function uuidS() {
+  const g = _uuidS()
+  return () => g.next().value
 }

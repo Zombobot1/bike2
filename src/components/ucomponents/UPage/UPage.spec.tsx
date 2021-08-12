@@ -1,54 +1,77 @@
-export const a = 1
-// describe('UPage', () => {
-//   it('Factory preserves focus when adding empty blocks', async () => {
-//     render(<UPageS.CreatesBlocks />)
+import { mount } from '@cypress/react'
+import { FAPI } from '../../../api/fapi'
+import * as UPageS from './UPage.stories'
+import { uuid, uuidS } from '../../../utils/uuid'
 
-//     let input = screen.getByRole('textbox')
-//     userEvent.type(input, '{enter}')
+const utext = 'pre[class*="ContentEditable"]'
 
-//     input = screen.getAllByRole('textbox')[1]
+describe('UPage', () => {
+  it('Factory preserves focus when adding empty blocks | create ublock api', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply({ i: '' })).as('post')
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
+    cy.stub(uuid, 'v4').callsFake(uuidS())
 
-//     expect(input).toHaveFocus()
-//     expect(screen.getAllByRole('textbox').length).toEqual(2)
-//   })
-//   // it('Adds new block using factory', async () => {
-//   //   const spy = jest.spyOn(api, 'patchUBlock')
-//   //   render(<UPageS.CreatesBlocks />)
+    mount(<UPageS.CreatesBlocks />)
 
-//   //   const input = screen.getByRole('textbox')
-//   //   userEvent.type(input, '/')
-//   //   expect(input).toHaveFocus()
-//   //   expect(screen.getAllByRole('textbox').length).toEqual(2)
-//   //   // await waitFor(() => expect(spy).toHaveBeenCalledWith('page1', { data: JSON.stringify(['id']) }))
-//   //   // expect(screen.getAllByRole('textbox').length).toEqual(2)
-//   //   spy.mockRestore()
-//   // })
+    cy.get(utext).type('{enter}')
 
-//   // it('Adds new block using another block', async () => {
-//   //   render(<UPageS.CreatesBlocks />)
+    cy.get(utext).last().should('have.focus')
 
-//   //   const input = await waitFor(() => screen.getByRole('textbox'))
-//   //   userEvent.type(input, '/{enter}')
+    cy.wait('@post')
+    cy.get('@post').its('request.body._id').should('eq', '0')
 
-//   //   const spy = jest.spyOn(api, 'patchUBlock')
-//   //   await waitFor(() => expect(spy).toHaveBeenCalledWith('page1', { data: JSON.stringify(['id', 'id']) }))
-//   //   expect(screen.getAllByRole('textbox').length).toEqual(3)
-//   //   spy.mockRestore()
-//   // })
+    cy.wait('@patch')
+    cy.get('@patch').its('request.body.data').should('eq', '["0"]')
+  })
 
-//   // it('Deletes blocks', async () => {
-//   //   render(<UPageS.DeletesBlocks />)
+  it('Factory loses focus when adding not empty blocks | post ublock api | block adds new block', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply({ i: '' })).as('post')
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
+    cy.stub(uuid, 'v4').callsFake(uuidS())
 
-//   //   const input = await waitFor(() => screen.getByText('d'))
-//   //   userEvent.type(input, '{backspace}')
-//   //   const spy = jest.spyOn(api, 'patchUBlock')
-//   //   userEvent.type(input, '{backspace}')
+    mount(<UPageS.CreatesBlocks />)
 
-//   //   await waitFor(() => expect(spy).toHaveBeenCalledWith('page2', { data: JSON.stringify([]) }))
-//   //   expect(screen.getAllByRole('textbox').length).toEqual(1)
-//   //   spy.mockRestore()
-//   // })
-// })
+    cy.get(utext).type('/')
 
-// configure({ getElementError })
-// beforeAll(startServer)
+    cy.get(utext).first().should('have.focus').contains('/')
+
+    cy.wait('@post').its('request.body.data').should('eq', '/')
+
+    cy.get(utext).first().type('{enter}')
+    cy.get(utext).eq(1).should('have.focus')
+  })
+
+  it('Factory loses focus on backspace | focus moves on block deletion | delete api', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url))).as('get')
+    cy.intercept('DELETE', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('delete')
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
+    cy.stub(uuid, 'v4').callsFake(uuidS())
+
+    mount(<UPageS.DeletesBlocks />)
+    cy.contains('d')
+
+    cy.get(utext).eq(2).type('{Backspace}')
+
+    cy.get(utext).eq(1).should('have.focus').type('{Backspace}{Backspace}')
+    cy.get(utext).first().should('have.focus')
+
+    cy.wait('@delete').its('request.url').should('contain', 'data2')
+    cy.wait('@patch').its('request.body.data').should('eq', '["data4"]')
+  })
+
+  it('Factory loses focus on adding not empty block and block is pushed back', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url))).as('get')
+    cy.intercept('POST', FAPI.UBLOCK, (r) => r.reply({ i: '' }))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
+    cy.stub(uuid, 'v4').callsFake(uuidS())
+
+    mount(<UPageS.DeletesBlocks />)
+    cy.contains('d')
+
+    cy.get(utext).eq(2).type('/')
+
+    cy.get(utext).eq(2).should('have.focus').contains('/')
+  })
+})

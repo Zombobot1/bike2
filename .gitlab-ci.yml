@@ -30,15 +30,15 @@ build:
       - $BUILD_DIR
     expire_in: 20 minutes
 
-# deploy:
-#   only:
-#     refs:
-#       - master
-#   tags: [front]
-#   stage: deploy
-#   script:
-#     - netlify deploy --dir=$BUILD_DIR --prod
-#     - sh ci-notify.sh ✅
+deploy:
+  only:
+    refs:
+      - master
+  tags: [front]
+  stage: deploy
+  script:
+    - netlify deploy --dir=$BUILD_DIR --prod
+    - sh ci-notify.sh ✅
 
 notify_error:
   stage: notify

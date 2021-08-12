@@ -1,5 +1,4 @@
 import { rest, setupWorker } from 'msw'
-import { setupServer } from 'msw/node'
 import { cardForUpdate, trainingDecks, trainings } from '../content/content'
 import { BASE_URL } from './axi'
 import { CARDS, ESTIMATE_ANSWER, TRAININGS, SUBSCRIBE, UBLOCKS, FILES } from './api'
@@ -18,44 +17,48 @@ const dto = () => ({ data: 'some data in dto' })
 
 const e = () => ({})
 
-const TRAININGS_F = `${BASE_URL}${TRAININGS}`
-const ESTIMATE_ANSWER_F = `${BASE_URL}${ESTIMATE_ANSWER}`
-const TRAINING_F = `${BASE_URL}${TRAININGS}*`
-const CARD_F = `${BASE_URL}${CARDS}*`
-const FCM_TOKEN_F = `${BASE_URL}${SUBSCRIBE}`
-const UBLOCKS_F = `${BASE_URL}${UBLOCKS}`
-const UBLOCK_F = `${BASE_URL}${UBLOCKS}*`
-const FILES_F = `${BASE_URL}${FILES}`
-const FILE_F = `${BASE_URL}${FILES}*`
+export const FAPI = {
+  TRAININGS: `${BASE_URL}${TRAININGS}`,
+  ESTIMATE_ANSWER: `${BASE_URL}${ESTIMATE_ANSWER}`,
+  TRAINING: `${BASE_URL}${TRAININGS}*`,
+  CARD: `${BASE_URL}${CARDS}*`,
+  FCM_TOKEN: `${BASE_URL}${SUBSCRIBE}`,
+  UBLOCKS: `${BASE_URL}${UBLOCKS}`,
+  UBLOCK: `${BASE_URL}${UBLOCKS}*`,
+  FILES: `${BASE_URL}${FILES}`,
+  FILE: `${BASE_URL}${FILES}*`,
 
-const getTrainingsGroups = () => trainingDecks
-const getTraining = (r: WR) => Object.entries(trainings).filter(([k]) => k === urlId(r.url.toString()))[0][1]
-const getTrainingUpdateOnAnswer = (r: WR) => (r.url.searchParams.get('cardId') === 'get update' ? [cardForUpdate] : [])
-
-const getUBlock = (r: WR) => blocksS.get(urlId(r.url.toString())) || { type: 'TEXT', data: '' }
-const postUBlock = () => ({ _id: 'id' })
-const patchUBlock = e
-const deleteUBlock = e
-const uploadFile = (r: WR) => ({ data: blocksFileUploadS(r.body) })
-const deleteFile = e
-const deleteCard = e
-const subscribe = e
+  getTrainingsGroups: () => trainingDecks,
+  getTraining: (r: WR) => Object.entries(trainings).filter(([k]) => k === urlId(r.url.toString()))[0][1],
+  getTrainingUpdateOnAnswer: (r: WR) => (r.url.searchParams.get('cardId') === 'get update' ? [cardForUpdate] : []),
+  getUBlock: (url: str) => blocksS.get(urlId(url)) || { type: 'TEXT', data: '' },
+  postUBlock: e,
+  patchUBlock: e,
+  deleteUBlock: e,
+  uploadFile: (r: WR) => ({ data: blocksFileUploadS(r.body) }),
+  deleteFile: e,
+  deleteCard: e,
+  subscribe: e,
+}
 
 const handlers = [
-  rest.get(TRAININGS_F, w(getTrainingsGroups)),
-  rest.get(ESTIMATE_ANSWER_F, w(getTrainingUpdateOnAnswer)),
-  rest.get(TRAINING_F, w(getTraining)),
-  rest.delete(CARD_F, w(deleteCard)),
+  rest.get(FAPI.TRAININGS, w(FAPI.getTrainingsGroups)),
+  rest.get(FAPI.ESTIMATE_ANSWER, w(FAPI.getTrainingUpdateOnAnswer)),
+  rest.get(FAPI.TRAINING, w(FAPI.getTraining)),
+  rest.delete(FAPI.CARD, w(FAPI.deleteCard)),
 
-  rest.post(UBLOCKS_F, w(postUBlock)),
-  rest.patch(UBLOCK_F, w(patchUBlock)),
-  rest.get(UBLOCK_F, w(getUBlock)),
-  rest.delete(UBLOCK_F, w(deleteUBlock)),
+  rest.post(FAPI.UBLOCKS, w(FAPI.postUBlock)),
+  rest.patch(FAPI.UBLOCK, w(FAPI.patchUBlock)),
+  rest.get(
+    FAPI.UBLOCK,
+    w((r) => FAPI.getUBlock(r.url.toString())),
+  ),
+  rest.delete(FAPI.UBLOCK, w(FAPI.deleteUBlock)),
 
-  rest.post(FILES_F, w(uploadFile)),
-  rest.delete(FILE_F, w(deleteFile)),
+  rest.post(FAPI.FILES, w(FAPI.uploadFile)),
+  rest.delete(FAPI.FILE, w(FAPI.deleteFile)),
 
-  rest.post(FCM_TOKEN_F, w(subscribe)),
+  rest.post(FAPI.FCM_TOKEN, w(FAPI.subscribe)),
 
   rest.get(`${BASE_URL}${_DTO}`, w(dto)),
   rest.get(`${BASE_URL}${_SLOW_LOAD}`, async (_, res, ctx) => {
@@ -69,10 +72,5 @@ const handlers = [
 
 export const startWorker = () => {
   const worker = setupWorker(...handlers)
-  return worker.start()
-}
-
-export const startServer = () => {
-  const worker = setupServer(...handlers)
-  return worker.listen()
+  return worker.start({ onUnhandledRequest: 'bypass' })
 }

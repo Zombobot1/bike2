@@ -12,6 +12,7 @@ module.exports = {
   webpackFinal: (config) => {
     const r = {
       ...config,
+      devtool: 'cheap-module-source-map',
       module: {
         ...config.module,
         rules: custom.module.rules,

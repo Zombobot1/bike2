@@ -1,3 +1,5 @@
+import { OuterShell } from '../src/components/Shell/Shell'
+
 export const parameters = {
   actions: { argTypesRegex: '^on[A-Z].*' },
   controls: {

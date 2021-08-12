@@ -106,5 +106,6 @@ module.exports = {
   devServer: {
     contentBase: './dist',
     hot: true,
+    historyApiFallback: true, // for router
   },
 }

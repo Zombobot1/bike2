@@ -24,7 +24,7 @@ const upload = (setData: SetStr, setIsUploading: (d: bool) => void, handleFile?:
   if (handleFile) handleFile(f)
 
   const ext = f.name.split('.').pop() || ''
-  const file = new File([f], `${sslugify(f.name.replace(ext, ''))}-${uuid()}.${ext}`, { type: f.type })
+  const file = new File([f], `${sslugify(f.name.replace(ext, ''))}-${uuid.v4()}.${ext}`, { type: f.type })
 
   api.uploadFile(file).then(({ data }) => {
     setData(data)

@@ -49,7 +49,7 @@ export function Dropzone({ filesS, label = 'files', readFromKeyboard, icon, isUp
   const [_, setFiles] = filesS
   const onDrop = useCallback((fs: Files) => setFiles(fs), [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
-  const id = uuid()
+  const id = uuid.v4()
   return (
     <DropArea {...getRootProps()} alignItems="center" justifyContent="center" direction="row" spacing={1}>
       <input id={id} {...getInputProps()} />

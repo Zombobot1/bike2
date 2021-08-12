@@ -59,7 +59,7 @@ function UText({
 }: UText_) {
   const [text, setText] = useEffectedState(data)
   const [inFocus, setInFocus] = useState(false)
-  const ref = useRef<HTMLElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (autoFocus) ref.current?.focus()
@@ -134,7 +134,7 @@ const UTextWrapper = styled('div', { label: 'UText' })(({ theme }) => ({
   },
 }))
 
-const Editable = styled(ContentEditable)({
+const Editable = styled(ContentEditable, { label: 'ContentEditable' })({
   outline: 'none',
 })
 

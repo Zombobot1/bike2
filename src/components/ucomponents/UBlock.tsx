@@ -77,7 +77,7 @@ export function UBlock({
 
   useMount(() => {
     if (isFactory) return
-    if (initialData) return
+    if (initialData !== undefined) return
 
     let cancelled = false
 

@@ -22,14 +22,14 @@ function mockCreate(template: CardTemplateDTO, data: NewCardData): FieldDTOs {
   const templateFields = template.fields.filter((f) => data.find((d) => d.name === f.name))
   return zip2(templateFields, data).map(([info, data]) => {
     const passiveData: str = data.value instanceof File ? srcfy(data.value) : data.value
-    return { _id: uuid(), type: info.type, isPreview: info.isPreview, name: info.name, status: 'SHOW', passiveData }
+    return { _id: uuid.v4(), type: info.type, isPreview: info.isPreview, name: info.name, status: 'SHOW', passiveData }
   })
 }
 
 const onSubmit = async (data: NewCardData): CardDataP => {
   return {
     dto: {
-      _id: uuid(),
+      _id: uuid.v4(),
       fields: mockCreate(cardTemplate, data),
       stageColor: 'white',
       timeToAnswer: 0,

@@ -1,31 +1,11 @@
-import { useRouter } from '../../../utils/hooks/use-router'
 import { Link as RouterLink } from 'react-router-dom'
 import { safeSplit } from '../../../../utils/algorithms'
-import { useUserPosition } from './user-position-provider'
-import { toAppPage } from '../pages'
-import { Link, LinkProps, Breadcrumbs, Typography, useTheme, IconButton, Stack } from '@material-ui/core'
+import { Link, LinkProps, Stack, useTheme, IconButton, Breadcrumbs, Typography } from '@material-ui/core'
 import { useIsSM } from '../../../../utils/hooks-utils'
+import { useRouter } from '../../../utils/hooks/use-router'
+import { useUserPosition } from './user-position-provider'
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded'
-
-export interface LinkName {
-  name: string
-}
-
-interface LinkRouter extends LinkProps {
-  to: string
-  replace?: boolean
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const LinkRouter = (props: LinkRouter) => <Link {...props} component={RouterLink as any} />
-
-const pageName = (path: string) => {
-  const parts = safeSplit(path, '/')
-  if (parts[0] === '_') return 'Sandbox'
-  if (parts.length < 1) return ''
-  const root = parts[0]
-  return root[0].toUpperCase() + root.slice(1)
-}
+import { toAppPage } from '../pages'
 
 export const Breadcrumb = () => {
   const isSM = useIsSM()
@@ -59,4 +39,24 @@ export const Breadcrumb = () => {
       </Breadcrumbs>
     </Stack>
   )
+}
+
+export interface LinkName {
+  name: string
+}
+
+interface LinkRouter extends LinkProps {
+  to: string
+  replace?: boolean
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const LinkRouter = (props: LinkRouter) => <Link {...props} component={RouterLink as any} />
+
+const pageName = (path: string) => {
+  const parts = safeSplit(path, '/')
+  if (parts[0] === '_') return 'Sandbox'
+  if (parts.length < 1) return ''
+  const root = parts[0]
+  return root[0].toUpperCase() + root.slice(1)
 }

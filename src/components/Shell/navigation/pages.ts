@@ -1,9 +1,8 @@
 import { Sandbox } from '../../../_sandbox'
-import { App } from '../app'
+import { App } from '../App'
 import { TrainingWrapper } from '../../study/training/training/training'
 import { Trainings } from '../../study/trainings/trainings'
 
-export const _ROOT = '/'
 export const _SANDBOX = '/_'
 
 export const APP = '/'
