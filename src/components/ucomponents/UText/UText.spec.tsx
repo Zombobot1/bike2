@@ -1,48 +1,44 @@
-export const a = 1
+import { FAPI } from '../../../api/fapi'
+import { story } from '../../../utils/testUtils'
+import * as UTextS from './UText.stories'
 
-// describe('Editable text', () => {
-//   it('Gets data from server, edits it, sends it back', async () => {
-//     const spy = jest.spyOn(api, 'patchUBlock');
-//     render(<UTextS.EditsText />);
+const utext = 'pre[class*="ContentEditable"]'
+const heading1 = 'h2[class*="ContentEditable"]'
 
-//     const input = await waitFor(() => screen.getByText('initial data')); // not by role because we wait response from server
-//     userEvent.type(input, ' 1');
-//     input.blur();
+const content = ($els: JQuery<HTMLElement>) =>
+  $els[0].ownerDocument.defaultView?.getComputedStyle($els[0], 'before').getPropertyValue('content')
 
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('data1', { data: 'initial data 1' })
-//     );
-//     spy.mockRestore();
-//   });
+describe('Editable text', () => {
+  it('Gets data from server, edits it, sends it back', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
 
-//   it('Creates itself if id is empty, changes component', async () => {
-//     const spy = jest.spyOn(api, 'postUBlock');
-//     render(<UTextS.CreatesItself />);
-//     await waitFor(() => expect(spy).toHaveBeenCalledWith({ type: 'TEXT' }));
-//     spy.mockRestore();
-//   });
+    story(UTextS.EditsText)
+    cy.contains('initial data')
 
-//   it('Changes component', async () => {
-//     const spy = jest.spyOn(api, 'patchUBlock');
+    cy.get(utext).type(' 1').blur()
+    cy.wait('@patch').its('request.body.data').should('eq', 'initial data 1')
+  })
 
-//     render(<UTextS.ChangesComponents />);
+  it('Displays placeholders | Changes component', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
 
-//     const input = await waitFor(() => screen.getByRole('textbox'));
-//     userEvent.type(input, '/heading1 ');
+    story(UTextS.ChangesComponents)
 
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('data4', { type: 'HEADING1' })
-//     );
-//     spy.mockRestore();
-//   });
+    cy.get(utext).then(($els) => expect(content($els)).to.eq('none'))
+    cy.get(utext).focus()
+    cy.get(utext).then(($els) => expect(content($els)).to.contain('"Type'))
 
-//   it('Is disabled when is readonly', async () => {
-//     render(<UTextS.ReadOnlyText />);
+    cy.get(utext).type('/heading1 ')
+    cy.get(heading1).then(($els) => expect(content($els)).to.eq('"Heading 1"'))
 
-//     const input = screen.getByRole('textbox');
-//     expect(input).toHaveAttribute('disabled');
-//   });
-// });
+    cy.wait('@patch').its('request.body.type').should('eq', 'HEADING1')
+  })
 
-// configure({ getElementError });
-// beforeAll(startServer);
+  it('Is disabled when is readonly', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    story(UTextS.ReadOnlyText)
+    cy.get(utext).should('have.attr', 'disabled')
+  })
+})

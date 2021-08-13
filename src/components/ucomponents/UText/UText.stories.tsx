@@ -2,7 +2,7 @@ import { Box } from '@material-ui/core'
 import { fn, setStr } from '../../../utils/types'
 import { UBlock } from '../UBlock'
 
-function Template(props: UBlock) {
+function T(props: UBlock) {
   return (
     <Box sx={{ width: 500, backgroundColor: 'pink' }}>
       <UBlock {...props} />
@@ -36,16 +36,19 @@ const data3: UBlock = {
   _id: '',
   type: 'HEADING1',
 }
+
 const data4: UBlock = {
   ...t,
   _id: 'data4',
 }
 
-export const UTextS = {
-  EditsText: () => <Template {...data1} />,
-  ReadOnlyText: () => <Template {...readonly} />,
-  CreatesItself: () => <Template {...data2} />,
-  ChangesComponents: () => <Template {...data4} />,
-  DisplaysPlaceholderWhenFocused: () => <Template {...data2} />,
-  DisplaysPlaceholderWhenUnfocused: () => <Template {...data3} />,
+export const EditsText = () => <T {...data1} />
+export const ReadOnlyText = () => <T {...readonly} />
+export const ChangesComponents = () => <T {...data4} />
+export const DisplaysPlaceholderWhenFocused = () => <T {...data2} />
+export const DisplaysPlaceholderWhenUnfocused = () => <T {...data3} />
+
+export default {
+  title: 'UComponents/UText',
+  component: UBlock,
 }

@@ -37,7 +37,7 @@ function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
         defaultValue={question.question}
         onBlur={(e) => onQuestionChange({ ...question, question: e.target.value })}
         multiline
-        inputProps={{ 'aria-label': 'question' }}
+        inputProps={{ 'aria-label': 'question', 'data-cy': 'question' }}
       />
       {type === 'CHECKS' && <Options selectMultiple={true} {...props} />}
       {type === 'RADIO' && <Options selectMultiple={false} {...props} />}
@@ -47,7 +47,7 @@ function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
           placeholder="Set correct answer"
           defaultValue={question.correctAnswer[0]}
           onBlur={(e) => onQuestionChange({ ...question, correctAnswer: [e.target.value] })}
-          inputProps={{ 'aria-label': 'correct answer' }}
+          inputProps={{ 'aria-label': 'correct answer', 'data-cy': 'correct answer' }}
         />
       )}
       {type === 'TEXTAREA' && (
@@ -59,7 +59,7 @@ function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
           onBlur={(e) => onQuestionChange({ ...question, explanation: e.target.value })}
           multiline
           rows={2}
-          inputProps={{ 'aria-label': 'explanation' }}
+          inputProps={{ 'aria-label': 'explanation', 'data-cy': 'explanation' }}
         />
       )}
       {type !== 'TEXTAREA' && (
@@ -70,7 +70,7 @@ function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
           defaultValue={question.explanation}
           onBlur={(e) => onQuestionChange({ ...question, explanation: e.target.value })}
           multiline
-          inputProps={{ 'aria-label': 'explanation' }}
+          inputProps={{ 'aria-label': 'explanation', 'data-cy': 'explanation' }}
         />
       )}
     </Stack>
@@ -191,7 +191,7 @@ function Option({
         autoFocus={autoFocus}
         inputRef={ref}
         onKeyDown={onKeyDown}
-        inputProps={{ 'aria-label': 'option' }}
+        inputProps={{ 'aria-label': 'option', 'data-cy': 'option' }}
       />
     </Stack>
   )
@@ -210,7 +210,7 @@ function EmptyOption({ selectMultiple, addNew }: EmptyOption_) {
         variant="standard"
         placeholder="Add option"
         onChange={(e) => addNew(e.target.value)}
-        inputProps={{ 'aria-label': 'new option' }}
+        inputProps={{ 'aria-label': 'new option', 'data-cy': 'new option' }}
       />
     </Stack>
   )

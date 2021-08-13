@@ -8,7 +8,7 @@ export const COLORS = {
   info: '#0948b3',
   success: '#05a677',
   warning: '#f5b759',
-  danger: '#fa5252',
+  error: '#fa5252',
   bg: '#F5F8FB',
   light: '#eaedf2',
 }
@@ -25,22 +25,22 @@ export const theme = createTheme({
   },
   palette: {
     primary: {
-      main: '#1C2540',
+      main: COLORS.primary,
     },
     secondary: {
-      main: '#fca95c',
+      main: COLORS.secondary,
     },
     info: {
-      main: '#0948b3',
+      main: COLORS.info,
     },
     warning: {
-      main: '#f5b759',
+      main: COLORS.warning,
     },
     success: {
-      main: '#05a677',
+      main: COLORS.success,
     },
     error: {
-      main: '#fa5252',
+      main: COLORS.error,
     },
   },
 })

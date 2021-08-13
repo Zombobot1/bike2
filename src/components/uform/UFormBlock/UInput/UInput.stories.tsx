@@ -80,10 +80,13 @@ const text: T = {
   multiline: true,
 }
 
-export const UInputS = {
-  ShortText: () => <T {...defaultI} />,
-  Text: () => <T {...text} />,
-  Right: () => <T {...rightI} />,
-  Wrong: () => <T {...wrongI} />,
-  Invalid: () => <T {...invalidI} />,
+export const ShortText = () => <T {...defaultI} />
+export const Text = () => <T {...text} />
+export const Right = () => <T {...rightI} />
+export const Wrong = () => <T {...wrongI} />
+export const Invalid = () => <T {...invalidI} />
+
+export default {
+  title: 'UForm/UInput',
+  component: UInput,
 }

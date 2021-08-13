@@ -1,5 +1,5 @@
 import { bool, fn, Fn, JSObject, SetStr, str } from '../../../utils/types'
-import ContentEditable from 'react-contenteditable'
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
 import { DependencyList, useCallback, useEffect, useRef, useState, KeyboardEvent } from 'react'
 import { useEffectedState } from '../../../utils/hooks-utils'
 import { styled, useTheme } from '@material-ui/core'
@@ -110,7 +110,7 @@ function UText({
   return (
     <UTextWrapper>
       <Editable
-        innerRef={ref}
+        notemotionref={ref}
         html={text}
         tagName={component}
         onBlur={onBlur}
@@ -134,7 +134,24 @@ const UTextWrapper = styled('div', { label: 'UText' })(({ theme }) => ({
   },
 }))
 
-const Editable = styled(ContentEditable, { label: 'ContentEditable' })({
+interface UContentEditable_ {
+  notemotionref: React.RefObject<HTMLDivElement>
+  html: str
+  tagName: str
+  placeholder?: str
+  disabled?: bool
+  role: str
+  onBlur: React.FocusEventHandler<HTMLDivElement>
+  onChange: (e: ContentEditableEvent) => void
+  onFocus: React.FocusEventHandler<HTMLDivElement>
+  onKeyDown: React.KeyboardEventHandler<HTMLDivElement>
+}
+
+function UContentEditable(props: UContentEditable_) {
+  return <ContentEditable innerRef={props.notemotionref} {...props} /> // cannot use innerRef with emotion - it breaks storybook
+}
+
+const Editable = styled(UContentEditable, { label: 'ContentEditable ' })({
   outline: 'none',
 })
 

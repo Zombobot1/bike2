@@ -2,9 +2,9 @@ import { Box } from '@material-ui/core'
 import { fn, setStr } from '../../../utils/types'
 import { UBlock } from '../../ucomponents/UBlock'
 
-function Template(props: UBlock) {
+function T(props: UBlock) {
   return (
-    <Box sx={{ width: 500 }}>
+    <Box sx={{ width: 500, marginLeft: '1rem' }}>
       <UBlock {...props} />
     </Box>
   )
@@ -41,9 +41,12 @@ const radio1: UBlock = {
   type: 'RADIO',
 }
 
-export const UFormBlockS = {
-  InputEditing: () => <Template {...input1} />,
-  TextAreaEditing: () => <Template {...text1} />,
-  RadioEditing: () => <Template {...radio1} />,
-  ChecksEditing: () => <Template {...checks1} />,
+export const InputEditing = () => <T {...input1} />
+export const TextAreaEditing = () => <T {...text1} />
+export const RadioEditing = () => <T {...radio1} />
+export const ChecksEditing = () => <T {...checks1} />
+
+export default {
+  title: 'UForm/UFormBlock',
+  component: UBlock,
 }

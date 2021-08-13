@@ -1,7 +1,7 @@
-import { mount } from '@cypress/react'
 import { FAPI } from '../../../api/fapi'
 import * as UPageS from './UPage.stories'
 import { uuid, uuidS } from '../../../utils/uuid'
+import { story } from '../../../utils/testUtils'
 
 const utext = 'pre[class*="ContentEditable"]'
 
@@ -12,17 +12,14 @@ describe('UPage', () => {
     cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
     cy.stub(uuid, 'v4').callsFake(uuidS())
 
-    mount(<UPageS.CreatesBlocks />)
+    story(UPageS.CreatesBlocks)
 
     cy.get(utext).type('{enter}')
 
     cy.get(utext).last().should('have.focus')
 
-    cy.wait('@post')
-    cy.get('@post').its('request.body._id').should('eq', '0')
-
-    cy.wait('@patch')
-    cy.get('@patch').its('request.body.data').should('eq', '["0"]')
+    cy.wait('@post').its('request.body._id').should('eq', '0')
+    cy.wait('@patch').its('request.body.data').should('eq', '["0"]')
   })
 
   it('Factory loses focus when adding not empty blocks | post ublock api | block adds new block', () => {
@@ -31,7 +28,7 @@ describe('UPage', () => {
     cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
     cy.stub(uuid, 'v4').callsFake(uuidS())
 
-    mount(<UPageS.CreatesBlocks />)
+    story(UPageS.CreatesBlocks)
 
     cy.get(utext).type('/')
 
@@ -49,7 +46,7 @@ describe('UPage', () => {
     cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
     cy.stub(uuid, 'v4').callsFake(uuidS())
 
-    mount(<UPageS.DeletesBlocks />)
+    story(UPageS.DeletesBlocks)
     cy.contains('d')
 
     cy.get(utext).eq(2).type('{Backspace}')
@@ -67,11 +64,21 @@ describe('UPage', () => {
     cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
     cy.stub(uuid, 'v4').callsFake(uuidS())
 
-    mount(<UPageS.DeletesBlocks />)
+    story(UPageS.DeletesBlocks)
     cy.contains('d')
 
     cy.get(utext).eq(2).type('/')
 
     cy.get(utext).eq(2).should('have.focus').contains('/')
+  })
+
+  it('Readonly', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url))).as('get')
+
+    story(UPageS.Readonly)
+    cy.contains('d')
+
+    cy.get(utext).eq(0).should('have.attr', 'disabled')
+    cy.get(utext).eq(1).should('have.attr', 'disabled')
   })
 })

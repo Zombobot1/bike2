@@ -1,8 +1,7 @@
 import { ReactNode, StrictMode } from 'react'
 import { QueryClientProvider } from 'react-query'
-import { ThemeProvider } from '@material-ui/core'
+import { CssBaseline, ThemeProvider } from '@material-ui/core'
 import { theme } from '../../theme'
-import { Global, css } from '@emotion/react'
 import { QueryClient } from 'react-query'
 import { registerServiceWorker } from '../../serviceWorkerRegistration'
 import { useEffect, useState, forwardRef } from 'react'
@@ -24,7 +23,7 @@ export function OuterShell({ children }: OuterShell) {
   return (
     <StrictMode>
       <ThemeProvider theme={theme}>
-        <GlobalCss />
+        <CssBaseline />
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </ThemeProvider>
     </StrictMode>
@@ -36,28 +35,6 @@ export function Shell() {
     <OuterShell>
       <InnerShell />
     </OuterShell>
-  )
-}
-
-function GlobalCss() {
-  return (
-    <Global
-      styles={css`
-        body,
-        html {
-          margin: 0;
-          padding: 0;
-        }
-
-        pre {
-          margin: 0;
-        }
-
-        * {
-          box-sizing: border-box;
-        }
-      `}
-    />
   )
 }
 

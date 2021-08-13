@@ -13,7 +13,7 @@ export const cardEstimationToNumber = (a: CardEstimation): number => WEIGHTS[a]
 export const estimationColor = (e: CardEstimation) => {
   switch (e) {
     case 'BAD':
-      return COLORS.danger
+      return COLORS.error
     case 'GOOD':
       return COLORS.success
     case 'POOR':

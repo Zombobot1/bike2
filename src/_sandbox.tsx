@@ -1,4 +1,5 @@
-import * as UPageS from './components/ucomponents/UPage/UPage.stories'
+import * as UFormBlockS from './components/uform/UFormBlock/UInput/UInput.stories'
 export const Sandbox = () => {
-  return <UPageS.CreatesBlocks />
+  return <UFormBlockS.Text />
+  // return <Typography>Text</Typography>
 }

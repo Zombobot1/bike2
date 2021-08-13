@@ -1,130 +1,77 @@
-export const a = 1
+import { FAPI } from '../../../api/fapi'
+import { got, story } from '../../../utils/testUtils'
+import { qS } from '../../ucomponents/stubs'
+import * as UFormBlockS from './UFormBlock.stories'
 
-// describe('UFormBlock', () => {
-//   it('Edits input', async () => {
-//     render(<UFormBlockS.InputEditing />)
+describe('UFormBlock', () => {
+  it('Edits input', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
 
-//     const question = screen.getByRole('textbox', { name: 'question' })
-//     userEvent.type(question, 'question')
-//     question.blur()
+    story(UFormBlockS.InputEditing)
 
-//     const answer = screen.getByRole('textbox', { name: 'correct answer' })
-//     userEvent.type(answer, 'answer')
-//     answer.blur()
+    got('question').type('question')
+    got('correct answer').type('answer')
+    got('explanation').type('explanation').blur()
 
-//     const spy = jest.spyOn(api, 'patchUBlock')
+    cy.wait('@patch')
+      .wait('@patch')
+      .wait('@patch')
+      .its('request.body.data')
+      .should('eq', qS(['answer'], 'explanation', [], 'question'))
+  })
 
-//     const explanation = screen.getByRole('textbox', { name: 'explanation' })
-//     userEvent.type(explanation, 'explanation')
-//     explanation.blur()
+  it('Edits text area', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
 
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('input1', { data: qS(['answer'], 'explanation', [], 'question') }),
-//     )
-//     spy.mockRestore()
-//   })
+    story(UFormBlockS.TextAreaEditing)
 
-//   it('Edits text area', async () => {
-//     render(<UFormBlockS.TextAreaEditing />)
+    got('explanation').type('explanation').blur()
 
-//     const spy = jest.spyOn(api, 'patchUBlock')
+    cy.wait('@patch').its('request.body.data').should('eq', qS([], 'explanation', [], ''))
+  })
 
-//     const explanation = screen.getByRole('textbox', { name: 'explanation' })
-//     userEvent.type(explanation, 'explanation')
-//     explanation.blur()
+  it('Edits radio | Change in option leads to change in answer', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
 
-//     await waitFor(() => expect(spy).toHaveBeenCalledWith('textarea1', { data: qS([], 'explanation', [], '') }))
-//     spy.mockRestore()
-//   })
+    story(UFormBlockS.RadioEditing)
+    cy.contains('Select correct answer')
 
-//   it('Edits radio', async () => {
-//     render(<UFormBlockS.RadioEditing />)
+    got('option').eq(1).type(' changed').blur() // anomaly: blur is necessary
+    got('option tick', 'AL').eq(1).click({ force: true }) // MUI sets opacity to 0
 
-//     const options = screen.getAllByRole('textbox', { name: 'option' })
-//     userEvent.type(options[1], 'changed')
-//     options[1].blur()
+    cy.contains('Select correct answer').should('not.exist')
 
-//     expect(screen.queryByText('Select correct answer')).toBeVisible()
+    cy.wait('@patch')
+      .wait('@patch')
+      .its('request.body.data')
+      .should('eq', qS(['Option 2 changed'], '', ['Option 1', 'Option 2 changed'], ''))
 
-//     const spy = jest.spyOn(api, 'patchUBlock')
+    got('option').eq(1).type(' !').blur()
 
-//     const optionTicks = screen.getAllByRole('radio', { name: 'option tick' })
-//     userEvent.click(optionTicks[1])
+    cy.wait('@patch')
+      .its('request.body.data')
+      .should('eq', qS(['Option 2 changed !'], '', ['Option 1', 'Option 2 changed !'], ''))
+  })
 
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('radio1', {
-//         data: qS(['Option 2changed'], '', ['Option 1', 'Option 2changed'], ''),
-//       }),
-//     )
+  it('Creates | Deletes options', () => {
+    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
+    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
 
-//     expect(screen.queryByText('Select correct answer')).not.toBeInTheDocument()
-//     spy.mockRestore()
-//   })
+    story(UFormBlockS.ChecksEditing)
 
-//   it('Change in option leads to change in answer', async () => {
-//     render(<UFormBlockS.RadioEditing />)
+    got('new option').type('O')
 
-//     const optionTicks = screen.getAllByRole('radio', { name: 'option tick' })
-//     userEvent.click(optionTicks[1])
+    cy.wait('@patch')
+      .its('request.body.data')
+      .should('eq', qS([], '', ['Option 1', 'Option 2', 'O'], ''))
 
-//     const spy = jest.spyOn(api, 'patchUBlock')
+    got('option').eq(2).type('{Backspace}{Backspace}')
 
-//     const options = screen.getAllByRole('textbox', { name: 'option' })
-//     userEvent.type(options[1], 'changed')
-//     options[1].blur()
-
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('radio1', {
-//         data: qS(['Option 2changed'], '', ['Option 1', 'Option 2changed'], ''),
-//       }),
-//     )
-//     spy.mockRestore()
-//   })
-
-//   it('Creates new options', async () => {
-//     render(<UFormBlockS.ChecksEditing />)
-
-//     const spy = jest.spyOn(api, 'patchUBlock')
-
-//     let options = screen.getAllByRole('textbox', { name: 'option' })
-//     expect(options.length).toEqual(2)
-
-//     const newOption = screen.getByRole('textbox', { name: 'new option' })
-//     userEvent.type(newOption, 'O')
-
-//     options = screen.getAllByRole('textbox', { name: 'option' })
-//     expect(options.length).toEqual(3)
-
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('checks1', {
-//         data: qS([], '', ['Option 1', 'Option 2', 'O'], ''),
-//       }),
-//     )
-//     spy.mockRestore()
-//   })
-
-//   it('Deletes options', async () => {
-//     render(<UFormBlockS.ChecksEditing />)
-
-//     const spy = jest.spyOn(api, 'patchUBlock')
-
-//     let options = screen.getAllByRole('textbox', { name: 'option' })
-//     expect(options.length).toEqual(2)
-
-//     userEvent.clear(options[1])
-//     options[1].blur()
-
-//     options = screen.getAllByRole('textbox', { name: 'option' })
-//     expect(options.length).toEqual(1)
-
-//     await waitFor(() =>
-//       expect(spy).toHaveBeenCalledWith('checks1', {
-//         data: qS([], '', ['Option 1'], ''),
-//       }),
-//     )
-//     spy.mockRestore()
-//   })
-// })
-
-// configure({ getElementError })
-// beforeAll(startServer)
+    cy.wait('@patch')
+      .its('request.body.data')
+      .should('eq', qS([], '', ['Option 1', 'Option 2'], ''))
+  })
+})

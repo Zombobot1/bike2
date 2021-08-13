@@ -83,6 +83,7 @@ export function UPage({ _id, isEditing, readonly }: UBlockB) {
         addNewBlock={addNewBlock}
         deleteBlock={setStr}
         isFactory={true}
+        readonly={readonly}
         autoFocus={Boolean(lastActiveBlock._id) && lastActiveBlock.focus === 'NO_FOCUS'}
         onFactoryBackspace={() => setLastActiveBlock({ _id: ids.ids.slice(-1)[0] || '', focus: 'FOCUS' })}
       />

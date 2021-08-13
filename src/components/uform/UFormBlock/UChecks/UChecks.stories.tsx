@@ -96,11 +96,14 @@ const wrongMultiple: T = {
   selectMultiple: true,
 }
 
-export const UChecksS = {
-  SelectOne: () => <T {...selectOne} />,
-  SelectMany: () => <T {...selectMany} />,
-  SelectOneRight: () => <T {...right} />,
-  SelectOneWrong: () => <T {...wrong} />,
-  SelectManyWrong: () => <T {...wrongMultiple} />,
-  Invalid: () => <T {...invalid} />,
+export const SelectOne = () => <T {...selectOne} />
+export const SelectMany = () => <T {...selectMany} />
+export const SelectOneRight = () => <T {...right} />
+export const SelectOneWrong = () => <T {...wrong} />
+export const SelectManyWrong = () => <T {...wrongMultiple} />
+export const Invalid = () => <T {...invalid} />
+
+export default {
+  title: 'UForm/UChecks',
+  component: UChecks,
 }
