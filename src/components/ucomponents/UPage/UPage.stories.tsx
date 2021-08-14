@@ -4,7 +4,7 @@ import { UPage } from './UPage'
 
 function T(props: UBlockB) {
   return (
-    <Box sx={{ width: 500, backgroundColor: 'pink' }}>
+    <Box sx={{ width: 500, backgroundColor: '#cff1e6' }}>
       <UPage {...props} />
     </Box>
   )

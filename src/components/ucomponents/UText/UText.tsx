@@ -148,7 +148,7 @@ interface UContentEditable_ {
 }
 
 function UContentEditable(props: UContentEditable_) {
-  return <ContentEditable innerRef={props.notemotionref} {...props} /> // cannot use innerRef with emotion - it breaks storybook
+  return <ContentEditable innerRef={props.notemotionref} {...props} data-cy="utext" /> // cannot use innerRef with emotion - it breaks storybook
 }
 
 const Editable = styled(UContentEditable, { label: 'ContentEditable ' })({

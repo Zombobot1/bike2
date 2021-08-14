@@ -1,84 +1,63 @@
-import { FAPI } from '../../../api/fapi'
 import * as UPageS from './UPage.stories'
-import { uuid, uuidS } from '../../../utils/uuid'
-import { story } from '../../../utils/testUtils'
+import { fakedId, got, intercept, sent, sentTo, show } from '../../../utils/testUtils'
 
-const utext = 'pre[class*="ContentEditable"]'
+const utext = () => got('utext')
 
 describe('UPage', () => {
+  beforeEach(intercept)
   it('Factory preserves focus when adding empty blocks | create ublock api', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-    cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply({ i: '' })).as('post')
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-    cy.stub(uuid, 'v4').callsFake(uuidS())
+    fakedId()
 
-    story(UPageS.CreatesBlocks)
+    show(UPageS.CreatesBlocks)
 
-    cy.get(utext).type('{enter}')
+    utext().type('{enter}')
 
-    cy.get(utext).last().should('have.focus')
+    utext().last().should('have.focus')
 
-    cy.wait('@post').its('request.body._id').should('eq', '0')
-    cy.wait('@patch').its('request.body.data').should('eq', '["0"]')
+    sent('@postUBlock', '0', '_id')
+    sent('@patchUBlock', '["0"]')
   })
 
   it('Factory loses focus when adding not empty blocks | post ublock api | block adds new block', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-    cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply({ i: '' })).as('post')
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-    cy.stub(uuid, 'v4').callsFake(uuidS())
+    show(UPageS.CreatesBlocks)
 
-    story(UPageS.CreatesBlocks)
+    utext().type('/')
 
-    cy.get(utext).type('/')
+    utext().first().should('have.focus').contains('/')
 
-    cy.get(utext).first().should('have.focus').contains('/')
+    sent('@postUBlock', '/')
 
-    cy.wait('@post').its('request.body.data').should('eq', '/')
-
-    cy.get(utext).first().type('{enter}')
-    cy.get(utext).eq(1).should('have.focus')
+    utext().first().type('{enter}')
+    utext().eq(1).should('have.focus')
   })
 
   it('Factory loses focus on backspace | focus moves on block deletion | delete api', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url))).as('get')
-    cy.intercept('DELETE', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('delete')
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-    cy.stub(uuid, 'v4').callsFake(uuidS())
-
-    story(UPageS.DeletesBlocks)
+    show(UPageS.DeletesBlocks)
     cy.contains('d')
 
-    cy.get(utext).eq(2).type('{Backspace}')
+    utext().eq(2).type('{Backspace}')
 
-    cy.get(utext).eq(1).should('have.focus').type('{Backspace}{Backspace}')
-    cy.get(utext).first().should('have.focus')
+    utext().eq(1).should('have.focus').type('{Backspace}{Backspace}')
+    utext().first().should('have.focus')
 
-    cy.wait('@delete').its('request.url').should('contain', 'data2')
-    cy.wait('@patch').its('request.body.data').should('eq', '["data4"]')
+    sentTo('@deleteUBlock', 'data2')
+    sent('@patchUBlock', '["data4"]')
   })
 
   it('Factory loses focus on adding not empty block and block is pushed back', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url))).as('get')
-    cy.intercept('POST', FAPI.UBLOCK, (r) => r.reply({ i: '' }))
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-    cy.stub(uuid, 'v4').callsFake(uuidS())
-
-    story(UPageS.DeletesBlocks)
+    show(UPageS.DeletesBlocks)
     cy.contains('d')
 
-    cy.get(utext).eq(2).type('/')
+    utext().eq(2).type('/')
 
-    cy.get(utext).eq(2).should('have.focus').contains('/')
+    utext().eq(2).should('have.focus').contains('/')
   })
 
   it('Readonly', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url))).as('get')
-
-    story(UPageS.Readonly)
+    show(UPageS.Readonly)
     cy.contains('d')
 
-    cy.get(utext).eq(0).should('have.attr', 'disabled')
-    cy.get(utext).eq(1).should('have.attr', 'disabled')
+    utext().eq(0).should('have.attr', 'disabled')
+    utext().eq(1).should('have.attr', 'disabled')
   })
 })

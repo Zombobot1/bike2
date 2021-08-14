@@ -1,42 +1,28 @@
-import { FAPI } from '../../../api/fapi'
-import { got, story } from '../../../utils/testUtils'
+import { got, intercept, sent, show } from '../../../utils/testUtils'
 import { qS } from '../../ucomponents/stubs'
 import * as UFormBlockS from './UFormBlock.stories'
 
 describe('UFormBlock', () => {
+  beforeEach(intercept)
   it('Edits input', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-
-    story(UFormBlockS.InputEditing)
+    show(UFormBlockS.InputEditing)
 
     got('question').type('question')
     got('correct answer').type('answer')
     got('explanation').type('explanation').blur()
 
-    cy.wait('@patch')
-      .wait('@patch')
-      .wait('@patch')
-      .its('request.body.data')
-      .should('eq', qS(['answer'], 'explanation', [], 'question'))
+    cy.wait('@patchUBlock').wait('@patchUBlock')
+    sent('@patchUBlock', qS(['answer'], 'explanation', [], 'question'))
   })
 
   it('Edits text area', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-
-    story(UFormBlockS.TextAreaEditing)
-
+    show(UFormBlockS.TextAreaEditing)
     got('explanation').type('explanation').blur()
-
-    cy.wait('@patch').its('request.body.data').should('eq', qS([], 'explanation', [], ''))
+    sent('@patchUBlock', qS([], 'explanation', [], ''))
   })
 
   it('Edits radio | Change in option leads to change in answer', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-
-    story(UFormBlockS.RadioEditing)
+    show(UFormBlockS.RadioEditing)
     cy.contains('Select correct answer')
 
     got('option').eq(1).type(' changed').blur() // anomaly: blur is necessary
@@ -44,34 +30,20 @@ describe('UFormBlock', () => {
 
     cy.contains('Select correct answer').should('not.exist')
 
-    cy.wait('@patch')
-      .wait('@patch')
-      .its('request.body.data')
-      .should('eq', qS(['Option 2 changed'], '', ['Option 1', 'Option 2 changed'], ''))
+    cy.wait('@patchUBlock')
+    sent('@patchUBlock', qS(['Option 2 changed'], '', ['Option 1', 'Option 2 changed'], ''))
 
     got('option').eq(1).type(' !').blur()
-
-    cy.wait('@patch')
-      .its('request.body.data')
-      .should('eq', qS(['Option 2 changed !'], '', ['Option 1', 'Option 2 changed !'], ''))
+    sent('@patchUBlock', qS(['Option 2 changed !'], '', ['Option 1', 'Option 2 changed !'], ''))
   })
 
   it('Creates | Deletes options', () => {
-    cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-    cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patch')
-
-    story(UFormBlockS.ChecksEditing)
+    show(UFormBlockS.ChecksEditing)
 
     got('new option').type('O')
-
-    cy.wait('@patch')
-      .its('request.body.data')
-      .should('eq', qS([], '', ['Option 1', 'Option 2', 'O'], ''))
+    sent('@patchUBlock', qS([], '', ['Option 1', 'Option 2', 'O'], ''))
 
     got('option').eq(2).type('{Backspace}{Backspace}')
-
-    cy.wait('@patch')
-      .its('request.body.data')
-      .should('eq', qS([], '', ['Option 1', 'Option 2'], ''))
+    sent('@patchUBlock', qS([], '', ['Option 1', 'Option 2'], ''))
   })
 })
