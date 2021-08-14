@@ -1,6 +1,5 @@
 import './sorybook.css'
 import { atom, useAtom } from 'jotai'
-import { useToggle } from '../components/utils/hooks/use-toggle'
 import { sslugify } from '../utils/sslugify'
 import { capitalizeFirstLetter } from '../utils/utils'
 import { ReactComponent as IDown } from './bi-caret-down-fill.svg'
@@ -12,6 +11,7 @@ import { useMedia } from '../components/utils/hooks/use-media'
 import { SM } from '../theme'
 import { ReactComponent as Burger } from './burger.svg'
 import { safeSplit } from '../utils/algorithms'
+import { useEffectedState, useMount } from '../utils/hooks-utils'
 
 export const _SORYBOOK = '/_stories'
 
@@ -55,7 +55,8 @@ const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }
   const { history, location } = useRouter()
 
   const _isOpen = containsId(location.pathname, id)
-  const [isOpen, toggleOpen] = useToggle(_isOpen)
+  const [isOpen, setIsOpen] = useEffectedState(_isOpen)
+  const toggleOpen = () => setIsOpen((o) => !o)
 
   const { activeNodeId, setActiveStory } = useActiveStory()
   useEffect(() => {
@@ -110,11 +111,11 @@ interface Sory {
   name: string
   story: FC
 }
-type Stories = Sory[]
+export type Sories = Sory[]
 
 interface Component {
   name: string
-  stories: Stories
+  stories: Sories
 }
 export type ComponentWithStories = Component
 type Components = Component[]
@@ -123,9 +124,9 @@ interface UseCase {
   name: string
   components: Components
 }
-type UseCases = UseCase[]
+export type UseCases = UseCase[]
 
-function storiesToNodes(stories: Stories): TreePs {
+function storiesToNodes(stories: Sories): TreePs {
   return stories.map((s) => ({ label: s.name, story: s.story }))
 }
 
@@ -208,10 +209,13 @@ function Pane() {
     </div>
   )
 }
+export interface SoryBook {
+  sories: UseCases
+}
 
-export const SoryBook = () => {
+export const SoryBook = ({ sories }: SoryBook) => {
   const { activeNodeId, setActiveNodeId } = useActiveStory()
-  const { location } = useRouter()
+  const { location, history } = useRouter()
   const activeId = location.pathname.replace(_SORYBOOK + '/', '')
 
   useEffect(() => {
@@ -222,9 +226,17 @@ export const SoryBook = () => {
     if (!activeNodeId && activeId) setActiveNodeId(activeId)
   }, [activeNodeId])
 
+  useMount(() => {
+    if (activeId !== '/_') return
+    const firstStoryId = `${sslugify(sories[0].name)}--${sslugify(sories[0].components[0].name)}--${sslugify(
+      sories[0].components[0].stories[0].name,
+    )}`
+    history.push(_SORYBOOK + '/' + firstStoryId)
+  })
+
   return (
     <div className="sorybook">
-      <Nav {...useCasesToTree('🤪 Sorybook', [])} />
+      <Nav {...useCasesToTree('🤪 Sorybook', sories)} />
       <Pane />
     </div>
   )
