@@ -1,20 +1,39 @@
 import { FC } from 'react'
-import { JSObject } from '../utils/types'
-import { ComponentWithStories, Sories, UseCases } from './sorybook'
+import { JSObjects, str } from '../utils/types'
+import { ComponentWithStories, UseCases } from './sorybook'
 
 type Storieble = { [p: string]: FC }
 
-export function storify(obj: JSObject): ComponentWithStories {
-  const [name, rawStories] = Object.entries(obj)[0]
+function _storify(componentName: str, obj: Storieble): ComponentWithStories {
   function storyName(name: string) {
-    const r = name.slice(1).replace(/[A-Z]/g, (letter) => ` ${letter.toLowerCase()}`)
-    return name.charAt(0) + r
+    return name.charAt(0) + name.slice(1).replace(/[A-Z]/g, (letter) => ` ${letter.toLowerCase()}`)
   }
-
-  const stories = Object.fromEntries(Object.entries(rawStories).filter(([k]) => k !== 'default')) as Storieble
 
   return {
-    name: name.slice(0, name.length - 1),
-    stories: Object.entries(stories).map(([k, s]) => ({ name: storyName(k), story: s })) as Sories,
+    name: componentName,
+    stories: Object.entries(obj).map(([k, s]) => ({ name: storyName(k), story: s })),
   }
+}
+
+type ComponentsWithStories = ComponentWithStories[]
+type WithTitle = { title: str }
+export function storify(storiesWithDefaults: JSObjects): UseCases {
+  const useCaseAndComponents = new Map<str, ComponentsWithStories>()
+
+  storiesWithDefaults.map((sWd) => {
+    const entires = Object.entries(sWd)
+    const info = entires.find(([k]) => k === 'default')
+    if (!info) throw new Error('Story file does not contain default export')
+
+    const title = info[1] as WithTitle
+    const [useCaseName, componentName] = title.title.split('/')
+
+    const stories = Object.fromEntries(entires.filter(([k]) => k !== 'default')) as Storieble
+    const components = _storify(componentName, stories)
+
+    if (!useCaseAndComponents.has(useCaseName)) useCaseAndComponents.set(useCaseName, [])
+    useCaseAndComponents.get(useCaseName)?.push(components)
+  })
+
+  return Array.from(useCaseAndComponents.entries()).map(([name, components]) => ({ name, components }))
 }

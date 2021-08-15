@@ -4,6 +4,7 @@ import { TrainingWrapper } from '../../study/training/training/training'
 import { Trainings } from '../../study/trainings/trainings'
 
 export const _SANDBOX = '/_*'
+export const _TO_SANDBOX = '/_'
 
 export const APP = '/'
 export const STUDY = APP + 'study'

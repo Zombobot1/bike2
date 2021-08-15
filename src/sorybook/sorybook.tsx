@@ -4,14 +4,14 @@ import { sslugify } from '../utils/sslugify'
 import { capitalizeFirstLetter } from '../utils/utils'
 import { ReactComponent as IDown } from './bi-caret-down-fill.svg'
 import { ReactComponent as IRight } from './bi-caret-right-fill.svg'
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useRouter } from '../components/utils/hooks/use-router'
 // import { sories } from './_stories'
 import { useMedia } from '../components/utils/hooks/use-media'
 import { SM } from '../theme'
 import { ReactComponent as Burger } from './burger.svg'
 import { safeSplit } from '../utils/algorithms'
-import { useEffectedState, useMount } from '../utils/hooks-utils'
+import { useMount } from '../utils/hooks-utils'
 
 export const _SORYBOOK = '/_stories'
 
@@ -55,7 +55,10 @@ const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }
   const { history, location } = useRouter()
 
   const _isOpen = containsId(location.pathname, id)
-  const [isOpen, setIsOpen] = useEffectedState(_isOpen)
+  const [isOpen, setIsOpen] = useState(_isOpen)
+  useEffect(() => {
+    if (_isOpen) setIsOpen(true) // open on first render, do not close on component change
+  }, [_isOpen])
   const toggleOpen = () => setIsOpen((o) => !o)
 
   const { activeNodeId, setActiveStory } = useActiveStory()

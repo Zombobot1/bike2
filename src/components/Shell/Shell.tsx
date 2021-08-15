@@ -11,7 +11,7 @@ import { useNotifications } from './useNotifications'
 import { Snackbar } from '@material-ui/core'
 import MuiAlert, { AlertProps } from '@material-ui/core/Alert'
 import { useIsPageVisible, useMount } from '../../utils/hooks-utils'
-import { APP, PAGES, STUDY, _SANDBOX } from './navigation/pages'
+import { APP, PAGES, STUDY, _TO_SANDBOX } from './navigation/pages'
 import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
 import { buildRoutes } from '../utils/routing'
 
@@ -47,7 +47,7 @@ const queryClient = new QueryClient({
   },
 })
 
-const redirect = process.env.NODE_ENV === 'development' ? _SANDBOX : STUDY
+const redirect = process.env.NODE_ENV === 'development' ? _TO_SANDBOX : STUDY
 
 function InnerShell() {
   useNotifications(api.subscribeForNotifications)

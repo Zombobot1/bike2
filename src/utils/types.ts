@@ -17,6 +17,7 @@ export type OBlobP = Promise<OBlob>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type JSObject = { [key: string]: any }
+export type JSObjects = JSObject[]
 export type JSObjectStr = { [key: string]: string }
 
 export type Fn = () => void
