@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, Radio, Stack, styled, TextField, Typography } from '@material-ui/core'
 import { bool, Fn, SetStr, str, strs } from '../../../utils/types'
-import { UBlockComponent, UFormComponent } from '../../ucomponents/types'
+import { UBlockComponent, UFormBlockComponent } from '../../ucomponents/types'
 import { UChecks } from './UChecks/UChecks'
 import { UInput } from './UInput/UInput'
 import { useUFormBlock, useUFormBlockEditor } from '../useUForm'
@@ -9,7 +9,7 @@ import { useState, KeyboardEvent, useRef } from 'react'
 
 export interface UFormFieldBase extends UBlockComponent {
   _id: str
-  type: UFormComponent
+  type: UFormBlockComponent
 }
 
 export interface UFormBlock extends UFormFieldBase {
@@ -227,9 +227,9 @@ const OptionLabel = styled(TextField)({
 function UFormBlock_({ _id, type, data, onAnswer, shuffleOptions, autoFocus, showTipOnMobile }: UFormBlock) {
   const props = useUFormBlock(_id, data)
 
-  const commonProps = { _id, ...props }
-  const checksProps = { ...commonProps, shuffleOptions, onAnswer }
-  const inputProps = { ...commonProps, autoFocus, showTipOnMobile, onAnswer }
+  const commonProps = { _id, ...props, onAnswer }
+  const checksProps = { ...commonProps, shuffleOptions }
+  const inputProps = { ...commonProps, autoFocus, showTipOnMobile }
 
   return (
     <>

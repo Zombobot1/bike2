@@ -2,18 +2,19 @@ import { Stack } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { api } from '../../../api/api'
 import { useMount } from '../../../utils/hooks-utils'
-import { setStr, str, strs } from '../../../utils/types'
+import { bool, setStr, str, strs } from '../../../utils/types'
 import { cast } from '../../../utils/utils'
 import { uuid } from '../../../utils/uuid'
 import { AddNewBlock, NewBlockFocus, UBlockB } from '../types'
 import { UBlock } from '../UBlock'
 
-class Ids {
-  ids: strs = []
-  needsUpdate = false
+export interface UPage extends UBlockB {
+  oneBlockOnly?: bool
+  factoryPlaceholder?: str
 }
 
-export function UPage({ _id, isEditing, readonly }: UBlockB) {
+export function UPage({ _id, isEditing, readonly, oneBlockOnly = false, factoryPlaceholder }: UPage) {
+  const [isReady, setIsReady] = useState(false)
   const [ids, setIds] = useState(new Ids())
   const [lastActiveBlock, setLastActiveBlock] = useState(new Block())
 
@@ -23,6 +24,7 @@ export function UPage({ _id, isEditing, readonly }: UBlockB) {
     api.getUBlock(_id).then((d) => {
       if (cancelled) return
       setIds({ ids: cast<strs>(d.data, []), needsUpdate: false })
+      setIsReady(true)
     })
 
     return () => {
@@ -61,6 +63,7 @@ export function UPage({ _id, isEditing, readonly }: UBlockB) {
     })
   }
 
+  if (!isReady) return null
   return (
     <Stack>
       {ids.ids.map((_id) => {
@@ -77,16 +80,19 @@ export function UPage({ _id, isEditing, readonly }: UBlockB) {
           />
         )
       })}
-      <UBlock
-        key={`factory-${lastActiveBlock._id}`}
-        _id=""
-        addNewBlock={addNewBlock}
-        deleteBlock={setStr}
-        isFactory={true}
-        readonly={readonly}
-        autoFocus={Boolean(lastActiveBlock._id) && lastActiveBlock.focus === 'NO_FOCUS'}
-        onFactoryBackspace={() => setLastActiveBlock({ _id: ids.ids.slice(-1)[0] || '', focus: 'FOCUS' })}
-      />
+      {(!ids.ids.length || !oneBlockOnly) && (
+        <UBlock
+          key={`factory-${lastActiveBlock._id}`}
+          _id=""
+          addNewBlock={addNewBlock}
+          deleteBlock={setStr}
+          isFactory={true}
+          readonly={readonly}
+          autoFocus={Boolean(lastActiveBlock._id) && lastActiveBlock.focus === 'NO_FOCUS'}
+          onFactoryBackspace={() => setLastActiveBlock({ _id: ids.ids.slice(-1)[0] || '', focus: 'FOCUS' })}
+          placeholder={factoryPlaceholder || undefined}
+        />
+      )}
     </Stack>
   )
 }
@@ -97,4 +103,9 @@ class Block {
   _id = ''
   focus: NewBlockFocus = 'NO_FOCUS'
   data?: str
+}
+
+class Ids {
+  ids: strs = []
+  needsUpdate = false
 }

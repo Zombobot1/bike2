@@ -2,9 +2,10 @@ import { bool, str } from '../../utils/types'
 
 export type UTextComponent = 'TEXT' | 'HEADING1' | 'HEADING2' | 'HEADING3'
 export type UFileComponent = 'FILE' | 'IMAGE' | 'AUDIO'
-export type UFormComponent = 'RADIO' | 'INPUT' | 'CHECKS' | 'TEXTAREA'
-export type UProjectionComponent = 'PAGE' | 'FORM' | 'PROJECTION'
-export type UComponentType = UTextComponent | UFileComponent | UFormComponent | UProjectionComponent
+export type UFormBlockComponent = 'RADIO' | 'INPUT' | 'CHECKS' | 'TEXTAREA'
+export type UFormComponent = 'TEST' | 'EXERCISE' | 'QUESTION'
+export type UProjectionComponent = 'PAGE' | UFormComponent | 'PROJECTION'
+export type UComponentType = UTextComponent | UFileComponent | UFormBlockComponent | UProjectionComponent
 
 export function isUFormComponent(t: UComponentType): bool {
   const types: UComponentType[] = ['RADIO', 'INPUT', 'CHECKS', 'TEXTAREA']
@@ -37,4 +38,8 @@ export const regexAndType = new Map<str, UComponentType>([
   ['/heading1', 'HEADING1'],
   ['/heading2', 'HEADING2'],
   ['/heading3', 'HEADING3'],
+  ['/input', 'INPUT'],
+  ['/checks', 'CHECKS'],
+  ['/radio', 'RADIO'],
+  ['/textarea', 'TEXTAREA'],
 ])

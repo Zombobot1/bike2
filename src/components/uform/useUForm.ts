@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai'
 import { CardEstimation, Question } from '../study/training/types'
 import { useCallback, useEffect, useState } from 'react'
 import { SetStr, str, strs } from '../../utils/types'
-import { UFormComponent } from '../ucomponents/types'
+import { UFormBlockComponent } from '../ucomponents/types'
 import { cast } from '../../utils/utils'
 
 export interface UFieldInfo {
@@ -28,7 +28,7 @@ export type Estimations = Estimation[]
 
 type OnSubmit = (estimations: Estimations) => void
 
-const _required = (value: string[]): string => (value[0] ? '' : 'This is a required field!')
+const _required = (value: string[]): string => (value[0] ? '' : 'Answer, please!')
 
 const QUESTION = {
   correctAnswer: [],
@@ -37,14 +37,14 @@ const QUESTION = {
   options: [],
 }
 
-function getQuestion(t: UFormComponent): Question {
-  const checks: UFormComponent[] = ['CHECKS', 'RADIO']
+function getQuestion(t: UFormBlockComponent): Question {
+  const checks: UFormBlockComponent[] = ['CHECKS', 'RADIO']
   return checks.includes(t) ? { ...QUESTION, options: ['Option 1', 'Option 2'] } : QUESTION
 }
 
 const INFO = {
   question: QUESTION,
-  answer: [''],
+  answer: [],
   validationError: '',
   wasSubmitted: false,
 }
@@ -94,7 +94,7 @@ export const useUFormBlock = (_id: str, data: str) => {
   }
 }
 
-export const useUFormBlockEditor = (_id: str, type: UFormComponent, data: str, setData: SetStr) => {
+export const useUFormBlockEditor = (_id: str, type: UFormBlockComponent, data: str, setData: SetStr) => {
   const [initialQuestion] = useState(() => cast(data, getQuestion(type))) // parse once
   const setQuestion = (q: Question) => setData(JSON.stringify(q))
 

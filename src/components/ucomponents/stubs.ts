@@ -20,6 +20,13 @@ export function qS(correctAnswer: strs, explanation: str, options: strs, questio
   })
 }
 
+const checks = qS(
+  ['Right clicked', 'Right'],
+  'Explanation',
+  ['Right clicked', 'Right', 'Wrong', 'Wrong clicked'],
+  'Select right:',
+)
+
 export const blocksS = new Map<str, UBlockGetDTO>([
   ['data1', { type: 'TEXT', data: 'initial data' }],
   ['data2', { type: 'TEXT', data: 'd' }],
@@ -33,10 +40,13 @@ export const blocksS = new Map<str, UBlockGetDTO>([
   ['input1', { type: 'INPUT', data: JSON.stringify(eq) }],
   ['textarea1', { type: 'TEXTAREA', data: JSON.stringify(eq) }],
   ['checks1', { type: 'CHECKS', data: JSON.stringify(eq) }],
+  ['checks2', { type: 'CHECKS', data: checks }],
   ['radio1', { type: 'RADIO', data: JSON.stringify(eq) }],
   ['page1', { type: 'PAGE', data: '' }],
   ['page2', { type: 'PAGE', data: JSON.stringify(['data4', 'data2']) }],
   ['page3', { type: 'PAGE', data: JSON.stringify(['data2']) }],
+  ['emptyQ', { type: 'QUESTION', data: '' }],
+  ['withoutAnswer', { type: 'QUESTION', data: JSON.stringify(['checks2']) }],
 ])
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

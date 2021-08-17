@@ -1,10 +1,5 @@
-import { got, intercept, sent, show } from '../../../utils/testUtils'
+import { intercept, sent, show, expectCSSPlaceholder, utext } from '../../../utils/testUtils'
 import * as UTextS from './UText.stories'
-
-const utext = () => got('utext')
-
-const content = ($els: JQuery<HTMLElement>) =>
-  $els[0].ownerDocument.defaultView?.getComputedStyle($els[0], 'before').getPropertyValue('content')
 
 describe('Editable text', () => {
   beforeEach(intercept)
@@ -19,12 +14,12 @@ describe('Editable text', () => {
   it('Displays placeholders | Changes component', () => {
     show(UTextS.ChangesComponents)
 
-    utext().then(($els) => expect(content($els)).to.eq('none'))
+    utext().then(expectCSSPlaceholder('none'))
     utext().focus()
-    utext().then(($els) => expect(content($els)).to.contain('"Type'))
+    utext().then(expectCSSPlaceholder('"Type \'/\' for commands"'))
 
     utext().type('/heading1 ')
-    utext().then(($els) => expect(content($els)).to.eq('"Heading 1"'))
+    utext().then(expectCSSPlaceholder('"Heading 1"'))
 
     sent('@patchUBlock', 'HEADING1', 'type')
   })

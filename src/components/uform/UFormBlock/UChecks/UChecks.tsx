@@ -116,7 +116,13 @@ function UChecksOption({ selectMultiple, _id, label, validity, onChange, checked
   return (
     <FormControlLabel
       value={label}
-      control={selectMultiple ? <Checkbox /> : <Radio />}
+      control={
+        selectMultiple ? (
+          <Checkbox inputProps={{ 'aria-label': 'option tick' }} />
+        ) : (
+          <Radio inputProps={{ 'aria-label': 'option tick' }} />
+        )
+      }
       label={label}
       sx={sx}
       checked={checked}

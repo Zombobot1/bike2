@@ -10,7 +10,7 @@ import {
   regexAndType,
   UBlockB,
   UComponentType,
-  UFormComponent,
+  UFormBlockComponent,
 } from './types'
 import { UHeading1, UHeading2, UHeading3, UParagraph } from './UText/UText'
 import { UFile } from './UFile/UFile'
@@ -26,6 +26,7 @@ export interface UBlock extends UBlockB {
   type?: UComponentType
   isFactory?: bool
   onFactoryBackspace?: Fn
+  placeholder?: str
 }
 
 export function UBlock({
@@ -39,6 +40,7 @@ export function UBlock({
   isFactory = false,
   deleteBlock,
   onFactoryBackspace,
+  placeholder,
 }: UBlock) {
   const [data, setData_] = useState(initialData || '')
   const [type, setType_] = useState<UComponentType>(initialType || 'TEXT')
@@ -73,6 +75,7 @@ export function UBlock({
     },
     isFactory,
     onFactoryBackspace,
+    placeholder,
   }
 
   useMount(() => {
@@ -102,7 +105,7 @@ export function UBlock({
       {type === 'AUDIO' && <UAudioFile {...commonProps} />}
       {type === 'IMAGE' && <UImageFile {...commonProps} />}
       {isUFormComponent(type) && (
-        <UFormBlock _id={_id} type={type as UFormComponent} isEditing={isEditing} {...commonProps} />
+        <UFormBlock _id={_id} type={type as UFormBlockComponent} isEditing={isEditing} {...commonProps} />
       )}
     </Container>
   )

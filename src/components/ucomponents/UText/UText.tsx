@@ -106,7 +106,7 @@ function UText({
           },
         }
       : undefined
-  sx = isFactory ? { ...sx, minHeight: '12rem' } : sx
+  sx = isFactory && !alwaysShowPlaceholder ? { ...sx, minHeight: '12rem' } : sx
   return (
     <UTextWrapper>
       <Editable
