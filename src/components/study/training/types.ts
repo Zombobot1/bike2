@@ -1,5 +1,6 @@
 import { COLORS } from '../../../theme'
-import { bool, str } from '../../../utils/types'
+import { num, str, strs } from '../../../utils/types'
+import { UComponentType } from '../../ucomponents/types'
 
 export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY'
 const WEIGHTS: { [K in CardEstimation]: number } = {
@@ -23,44 +24,33 @@ export const estimationColor = (e: CardEstimation) => {
   }
 }
 
-export type FieldState = 'HIDE' | 'SHOW'
-export type FieldType = 'PRE' | 'IMG' | 'AUDIO' | 'RADIO' | 'INPUT' | 'CHECKS'
-export const isPassive = (t: FieldType) => ['PRE', 'IMG', 'AUDIO'].includes(t)
-
 export interface Question {
-  question: string
-  correctAnswer: string[]
-  explanation: string
-  options: string[]
+  question: str
+  correctAnswer: strs
+  explanation: str
+  options: strs
 }
 
-export interface FieldInformationDTO {
-  _id?: str
-  name: str
-  type: FieldType
-  isPreview: bool
+export interface FieldDTO {
+  _id: str
+  data: str
+  type: UComponentType
 }
-export type FieldInformationDTOs = FieldInformationDTO[]
 
-export interface FieldDTO extends FieldInformationDTO {
-  status: FieldState
-  passiveData?: string
-  interactiveData?: Question
-}
 export type FieldDTOs = FieldDTO[]
 
-export type CardType = 'PASSIVE' | 'INTERACTIVE'
-
 export interface CardDTO {
-  _id: string
+  _id: str
   fields: FieldDTOs
-  timeToAnswer: number
-  stageColor: string
-  type: CardType
+  hiddenFields?: FieldDTOs
+  stageColor: str
+  timeToAnswer: num
 }
 
 export type CardDTOs = CardDTO[]
 export type CardDTOsP = Promise<CardDTOs>
+
+export type CardType = 'PASSIVE' | 'INTERACTIVE'
 
 export interface UserCardAnswerDTO {
   deckId: string

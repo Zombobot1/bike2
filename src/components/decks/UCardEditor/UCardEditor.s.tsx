@@ -11,18 +11,18 @@ import { NewCardData } from './useNewCardData'
 
 const cardTemplate: CardTemplateDTO = {
   fields: [
-    { name: 'phrase', type: 'PRE', isPreview: true },
-    { name: 'meaning', type: 'PRE', isPreview: false },
-    { name: 'image', type: 'IMG', isPreview: false },
-    { name: 'audio', type: 'AUDIO', isPreview: false },
+    { name: 'phrase', type: 'TEXT' },
+    { name: 'meaning', type: 'TEXT' },
+    { name: 'image', type: 'IMAGE' },
+    { name: 'audio', type: 'AUDIO' },
   ],
 }
 
 function mockCreate(template: CardTemplateDTO, data: NewCardData): FieldDTOs {
   const templateFields = template.fields.filter((f) => data.find((d) => d.name === f.name))
-  return zip2(templateFields, data).map(([info, data]) => {
-    const passiveData: str = data.value instanceof File ? srcfy(data.value) : data.value
-    return { _id: uuid.v4(), type: info.type, isPreview: info.isPreview, name: info.name, status: 'SHOW', passiveData }
+  return zip2(templateFields, data).map(([info, rawData]) => {
+    const data: str = rawData.value instanceof File ? srcfy(rawData.value) : rawData.value
+    return { _id: uuid.v4(), type: info.type, data }
   })
 }
 
@@ -33,7 +33,6 @@ const onSubmit = async (data: NewCardData): CardDataP => {
       fields: mockCreate(cardTemplate, data),
       stageColor: 'white',
       timeToAnswer: 0,
-      type: 'PASSIVE',
     },
   }
 }

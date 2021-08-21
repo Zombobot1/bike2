@@ -35,6 +35,7 @@ export const CardCarousel = ({ cards, currentTrainingId }: CardCarouselP) => {
             estimation={c.estimation}
             isMediaActive={true}
             showHidden={c.showHidden || false}
+            readonly={true}
           />
         ))}
         <TrainingEnd

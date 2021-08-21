@@ -15,7 +15,6 @@ export function isUFormComponent(t: UComponentType): bool {
 export interface UBlockB {
   _id: str
   readonly?: bool
-  isEditing?: bool
 }
 
 export type UBlockPostDTO = { _id: str; data?: str }

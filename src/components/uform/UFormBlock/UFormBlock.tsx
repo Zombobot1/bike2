@@ -13,7 +13,6 @@ export interface UFormFieldBase extends UBlockComponent {
 }
 
 export interface UFormBlock extends UFormFieldBase {
-  isEditing: bool
   onAnswer?: Fn
   shuffleOptions?: bool
   autoFocus?: bool
@@ -21,7 +20,8 @@ export interface UFormBlock extends UFormFieldBase {
 }
 
 export function UFormBlock(props: UFormBlock) {
-  if ((props.data && !props.isEditing) || props.readonly) return <UFormBlock_ {...props} />
+  if (!props.data && props.readonly) return null
+  if (props.readonly) return <UFormBlock_ {...props} />
   return <UFormBlockEditor {...props} />
 }
 

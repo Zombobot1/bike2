@@ -13,7 +13,7 @@ export interface UPage extends UBlockB {
   factoryPlaceholder?: str
 }
 
-export function UPage({ _id, isEditing, readonly, oneBlockOnly = false, factoryPlaceholder }: UPage) {
+export function UPage({ _id, readonly, oneBlockOnly = false, factoryPlaceholder }: UPage) {
   const [isReady, setIsReady] = useState(false)
   const [ids, setIds] = useState(new Ids())
   const [lastActiveBlock, setLastActiveBlock] = useState(new Block())
@@ -71,7 +71,6 @@ export function UPage({ _id, isEditing, readonly, oneBlockOnly = false, factoryP
           <UBlock
             key={_id}
             _id={_id}
-            isEditing={isEditing}
             readonly={readonly}
             autoFocus={_id === lastActiveBlock._id && lastActiveBlock.focus === 'FOCUS'}
             data={_id === lastActiveBlock._id ? lastActiveBlock.data || '' : undefined}

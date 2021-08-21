@@ -1,6 +1,6 @@
 import { CardDTO, FieldDTO } from '../components/study/training/types'
-import hospital from './hospital.png'
-import hospitalMp3 from './hospital.mp3'
+import fluffyJpg from './fluffy.jpg'
+import fluffyMp3 from './fluffy.mp3'
 import { TrainingDTO } from '../components/study/training/training/training'
 import { TrainingsGroupDTO } from '../components/study/training/training/training'
 
@@ -14,227 +14,173 @@ Here's another way to explain it: The is used to refer to a specific or particul
 
 const field1: FieldDTO = {
   _id: 'field1',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: question,
-  status: 'SHOW',
+  type: 'TEXT',
+  data: question,
 }
 
 const field2: FieldDTO = {
   _id: 'field2',
-  isPreview: false,
-  name: 'PRE field',
-  type: 'PRE',
-  passiveData: answer,
-  status: 'HIDE',
+  type: 'TEXT',
+  data: answer,
 }
 
-const hospitalEn: FieldDTO = {
-  _id: 'hospitalEn',
-  isPreview: false,
-  name: 'PRE field',
-  type: 'PRE',
-  passiveData: 'Hospital',
-  status: 'SHOW',
+const fluffyEn: FieldDTO = {
+  _id: 'fluffyEn',
+  type: 'TEXT',
+  data: 'Kitten',
 }
 
-const hospitalIpa: FieldDTO = {
-  _id: 'hospitalIpa',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'ˈhɒspɪtl',
-  status: 'HIDE',
+const fluffyIpa: FieldDTO = {
+  _id: 'fluffyIpa',
+  type: 'TEXT',
+  data: 'ˈkɪtn',
 }
 
 const theatreEn: FieldDTO = {
   _id: 'theatreEn',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'Theatre',
-  status: 'SHOW',
+  type: 'TEXT',
+  data: 'Theatre',
 }
 
 const theatreIpa: FieldDTO = {
   _id: 'theatreIpa',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'ˈθiətər',
-  status: 'HIDE',
+  type: 'TEXT',
+  data: 'ˈθiətər',
 }
 
 const theatreRu: FieldDTO = {
   _id: 'theatreRu',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'Театр',
-  status: 'HIDE',
+  type: 'TEXT',
+  data: 'Театр',
 }
 
-const hospitalRu: FieldDTO = {
-  _id: 'hospitalRu',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'Госпиталь',
-  status: 'HIDE',
+const fluffyRu: FieldDTO = {
+  _id: 'fluffyRu',
+  type: 'TEXT',
+  data: 'Котёнок',
 }
 
-export const hospitalEnLong: FieldDTO = {
-  _id: 'hospitalEnLong',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'Hospital Hospital Hospital Hospital',
-  status: 'SHOW',
+export const fluffyEnLong: FieldDTO = {
+  _id: 'fluffyEnLong',
+  type: 'TEXT',
+  data: 'Looks like you got yourself a little, sleek, gray kitten',
 }
 
-const hospitalIpaLong: FieldDTO = {
-  _id: 'hospitalIpaLong',
-  type: 'PRE',
-  isPreview: false,
-  name: 'PRE field',
-  passiveData: 'ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl ˈhɒspɪtl',
-  status: 'HIDE',
+const fluffyIpaLong: FieldDTO = {
+  _id: 'fluffyIpaLong',
+  type: 'TEXT',
+  data: 'lʊks laɪk juː gɒt jɔːˈsɛlf ə ˈlɪtl, sliːk, greɪ ˈkɪtn',
 }
 
-const hospitalImg: FieldDTO = {
-  _id: 'hospitalImg',
-  name: 'IMG field',
-  isPreview: false,
-  type: 'IMG',
-  passiveData: hospital,
-  status: 'HIDE',
+const fluffyImg: FieldDTO = {
+  _id: 'fluffyImg',
+  type: 'IMAGE',
+  data: fluffyJpg,
 }
 
-const hospitalAudio: FieldDTO = {
-  _id: 'hospitalAudio',
-  name: 'AUDIO field',
-  isPreview: false,
+const fluffyAudio: FieldDTO = {
+  _id: 'fluffyAudio',
   type: 'AUDIO',
-  passiveData: hospitalMp3,
-  status: 'HIDE',
+  data: fluffyMp3,
 }
 
-const hospitalRuLong: FieldDTO = {
-  _id: 'hospitalRuLong',
-  name: 'PRE field',
-  isPreview: false,
-  type: 'PRE',
-  passiveData: 'Госпиталь Госпиталь Госпиталь',
-  status: 'HIDE',
+const fluffyRuLong: FieldDTO = {
+  _id: 'fluffyRuLong',
+  type: 'TEXT',
+  data: 'Выглядит ты завела себе веселого, серого котенка.',
 }
 
 const selectRight: FieldDTO = {
   _id: 'selectRight',
-  isPreview: false,
-  name: 'RADIO field',
   type: 'RADIO',
-  interactiveData: {
+  data: JSON.stringify({
     question: 'Please select one:',
     options: ['Correct', 'Wrong'],
     correctAnswer: ['Correct'],
     explanation: 'Cuz',
-  },
-  status: 'SHOW',
+  }),
 }
 
 const passiveText: FieldDTO = {
   _id: 'passiveText',
-  isPreview: false,
-  name: 'PRE field',
-  type: 'PRE',
-  passiveData: 'I need to go to the ... to have an operation.',
-  status: 'SHOW',
+  type: 'TEXT',
+  data: 'I need to go to the ... to have an operation.',
 }
 
 const anotherPassiveText: FieldDTO = {
   _id: 'anotherPassiveText',
-  isPreview: false,
-  name: 'PRE field',
-  type: 'PRE',
-  passiveData: 'Some short text',
-  status: 'SHOW',
+  type: 'TEXT',
+  data: 'Some short text',
 }
 
 const typeA: FieldDTO = {
   _id: 'typeA',
-  isPreview: false,
-  name: 'INPUT field',
   type: 'INPUT',
-  interactiveData: {
+  data: JSON.stringify({
     question: 'Please type a and use enter to submit:',
     options: [],
     correctAnswer: ['a'],
     explanation: 'a',
-  },
-  status: 'SHOW',
+  }),
 }
 
 const field15: FieldDTO = {
   _id: 'field15',
-  isPreview: false,
-  name: 'INPUT field',
   type: 'INPUT',
-  interactiveData: {
+  data: JSON.stringify({
     question: 'Please type a and DO NOT use enter to submit:',
     options: [],
     correctAnswer: ['b'],
     explanation: 'b',
-  },
-  status: 'SHOW',
+  }),
 }
 
 export const uCardLong: CardDTO = {
   _id: '5',
-  fields: [hospitalImg, hospitalEnLong, hospitalRuLong, hospitalIpaLong, hospitalAudio],
+  fields: [fluffyEnLong],
+  hiddenFields: [fluffyImg, fluffyIpaLong, fluffyRuLong, fluffyAudio],
   timeToAnswer: 3000,
   stageColor: 'red',
-  type: 'PASSIVE',
-}
-
-export const uCardLongWithUpdate: CardDTO = {
-  _id: 'get update',
-  fields: [hospitalImg, hospitalEnLong, hospitalRuLong, hospitalIpaLong, hospitalAudio],
-  timeToAnswer: 3000,
-  stageColor: 'red',
-  type: 'PASSIVE',
 }
 
 export const uCardMinimal: CardDTO = {
   _id: '4',
-  fields: [hospitalEn, hospitalIpa, hospitalRu],
+  fields: [fluffyEn],
+  hiddenFields: [fluffyIpa, fluffyRu],
   timeToAnswer: 3000,
   stageColor: 'red',
-  type: 'PASSIVE',
 }
 
 export const uCardMinimalF1: CardDTO = {
   _id: 'fast1',
-  fields: [hospitalEn, hospitalIpa, hospitalRu],
+  fields: [fluffyEn],
+  hiddenFields: [fluffyIpa, fluffyRu],
   timeToAnswer: 5,
   stageColor: 'white',
-  type: 'PASSIVE',
 }
 
 export const uCardMinimalF2: CardDTO = {
   _id: 'fast2',
-  fields: [hospitalRu, hospitalIpa, hospitalEn],
+  fields: [fluffyEn],
+  hiddenFields: [fluffyIpa, fluffyRu],
   timeToAnswer: 5,
   stageColor: 'white',
-  type: 'PASSIVE',
 }
 
 export const cardForUpdate: CardDTO = {
   _id: 'update',
-  fields: [theatreEn, theatreIpa, theatreRu],
+  fields: [theatreEn],
+  hiddenFields: [theatreIpa, theatreRu],
   timeToAnswer: 3000,
   stageColor: 'red',
-  type: 'PASSIVE',
+}
+
+export const uCardLongWithUpdate: CardDTO = {
+  _id: 'get-update',
+  fields: [fluffyEnLong],
+  hiddenFields: [fluffyImg, fluffyIpaLong, fluffyRuLong, fluffyAudio],
+  timeToAnswer: 3000,
+  stageColor: 'red',
 }
 
 export const iCard1: CardDTO = {
@@ -242,7 +188,6 @@ export const iCard1: CardDTO = {
   fields: [selectRight],
   timeToAnswer: 3000,
   stageColor: 'red',
-  type: 'INTERACTIVE',
 }
 
 export const iCardUInputWithEnter: CardDTO = {
@@ -250,7 +195,6 @@ export const iCardUInputWithEnter: CardDTO = {
   fields: [typeA],
   timeToAnswer: 3000,
   stageColor: 'red',
-  type: 'INTERACTIVE',
 }
 
 export const iCardUInputWithoutEnter: CardDTO = {
@@ -258,7 +202,6 @@ export const iCardUInputWithoutEnter: CardDTO = {
   fields: [field15],
   timeToAnswer: 3000,
   stageColor: 'red',
-  type: 'INTERACTIVE',
 }
 
 export const cardWithDifferentFields: CardDTO = {
@@ -266,7 +209,6 @@ export const cardWithDifferentFields: CardDTO = {
   fields: [passiveText, selectRight, typeA, anotherPassiveText],
   timeToAnswer: 3000,
   stageColor: 'blue',
-  type: 'PASSIVE',
 }
 
 export const cardWithQandA: CardDTO = {
@@ -274,7 +216,6 @@ export const cardWithQandA: CardDTO = {
   fields: [field1, field2],
   timeToAnswer: 3000,
   stageColor: 'blue',
-  type: 'PASSIVE',
 }
 
 const basic: TrainingDTO = {
@@ -307,7 +248,7 @@ const small: TrainingDTO = {
 const withUpdateFromServer: TrainingDTO = {
   ...basic,
   _id: 'simple',
-  cards: [uCardLongWithUpdate, uCardMinimal],
+  cards: [cardForUpdate, uCardMinimal],
 }
 
 const interactive: TrainingDTO = {

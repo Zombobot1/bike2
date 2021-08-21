@@ -3,7 +3,8 @@ import { useMount } from '../../../utils/hooks-utils'
 import { sslugify } from '../../../utils/sslugify'
 import { Fn, fn, str } from '../../../utils/types'
 import { uuid } from '../../../utils/uuid'
-import { FileOrStr } from '../UCard/UCardField/types'
+
+type FileOrStr = File | str
 
 export interface FieldData {
   name: str

@@ -2,7 +2,7 @@ import { styled } from '@material-ui/core'
 import { useEffect, useState } from 'react'
 import { api } from '../../api/api'
 import { useEffectedState, useMount } from '../../utils/hooks-utils'
-import { bool, Fn, SetStr, str } from '../../utils/types'
+import { bool, fn, Fn, SetStr, str } from '../../utils/types'
 import {
   AddNewBlock,
   isUFormComponent,
@@ -19,28 +19,34 @@ import { UImageFile } from './UFile/UImageFile/UImageFile'
 import { UFormBlock } from '../uform/UFormBlock/UFormBlock'
 
 export interface UBlock extends UBlockB {
-  addNewBlock: AddNewBlock
-  deleteBlock: SetStr
+  addNewBlock?: AddNewBlock
+  deleteBlock?: SetStr
   autoFocus?: bool
   data?: str
   type?: UComponentType
   isFactory?: bool
   onFactoryBackspace?: Fn
   placeholder?: str
+
+  autoplay?: bool
+  isCardField?: bool
+  onAnswer?: Fn
 }
 
 export function UBlock({
   _id,
   type: initialType,
   data: initialData,
-  addNewBlock,
+  addNewBlock = fn,
   readonly = false,
-  isEditing = false,
   autoFocus: initialAutoFocus = false,
   isFactory = false,
-  deleteBlock,
+  deleteBlock = fn,
   onFactoryBackspace,
   placeholder,
+  autoplay: _,
+  onAnswer,
+  isCardField,
 }: UBlock) {
   const [data, setData_] = useState(initialData || '')
   const [type, setType_] = useState<UComponentType>(initialType || 'TEXT')
@@ -76,6 +82,7 @@ export function UBlock({
     isFactory,
     onFactoryBackspace,
     placeholder,
+    isCardField,
   }
 
   useMount(() => {
@@ -105,7 +112,7 @@ export function UBlock({
       {type === 'AUDIO' && <UAudioFile {...commonProps} />}
       {type === 'IMAGE' && <UImageFile {...commonProps} />}
       {isUFormComponent(type) && (
-        <UFormBlock _id={_id} type={type as UFormBlockComponent} isEditing={isEditing} {...commonProps} />
+        <UFormBlock {...commonProps} _id={_id} type={type as UFormBlockComponent} onAnswer={onAnswer} />
       )}
     </Container>
   )

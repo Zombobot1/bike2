@@ -15,7 +15,6 @@ const t: UBlock = {
   type: 'INPUT',
   addNewBlock: fn,
   deleteBlock: setStr,
-  isEditing: true,
 }
 
 const input1: UBlock = {

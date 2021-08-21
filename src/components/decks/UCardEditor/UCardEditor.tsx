@@ -3,7 +3,6 @@ import { FC, useState } from 'react'
 import { CardDatas, CardDataP, CardData } from '../../study/training/training/card-carousel'
 import { Slides, useSlides } from '../../utils/Slides'
 import { CardTemplateDTO } from '../dto'
-import { EditingUCard } from '../UCard/UCard'
 import { UCardFactory } from './UCardFactory'
 import { NewCardData, useSubmitNewCardData } from './useNewCardData'
 
@@ -15,7 +14,7 @@ interface UCardEditor {
 }
 
 export function UCardEditor({ initialCards = [], onSubmit, template, Factory = UCardFactory }: UCardEditor) {
-  const [cards, setCards] = useState(initialCards)
+  const [_cards, setCards] = useState(initialCards)
   const slides = useSlides(initialCards.length ? 1 : 0)
   const { submit } = useSubmitNewCardData()
 
@@ -26,9 +25,6 @@ export function UCardEditor({ initialCards = [], onSubmit, template, Factory = U
       <Cards>
         <Slides timeout={500}>
           <Factory key="cards factory" addCreatedCard={addCreatedCard} onSubmit={onSubmit} template={template} />
-          {cards.map((c) => (
-            <EditingUCard key={c.dto._id} fields={c.dto.fields} stageColor={c.dto.stageColor} template={template} />
-          ))}
         </Slides>
       </Cards>
       <Stack direction="row" justifyContent="center">

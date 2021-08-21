@@ -28,7 +28,7 @@ const emptyQ: UBlockB = {
 
 const withoutAnswer: UBlockB = {
   _id: 'withoutAnswer',
-  isEditing: false,
+  readonly: true,
 }
 
 export const SubmittingAnswer = () => <T {...withoutAnswer} /> // check validation error disappearance and feedback and readOnlyAfterSubmit

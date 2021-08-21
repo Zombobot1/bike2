@@ -1,5 +1,4 @@
 import { Box } from '@material-ui/core'
-import { fn, setStr } from '../../../../utils/types'
 import { UBlock } from '../../UBlock'
 
 function T(props: UBlock) {
@@ -13,8 +12,6 @@ function T(props: UBlock) {
 const t: UBlock = {
   _id: '',
   type: 'IMAGE',
-  addNewBlock: fn,
-  deleteBlock: setStr,
 }
 
 const data1: UBlock = {
@@ -27,7 +24,10 @@ const data2: UBlock = {
   _id: 'image2',
 }
 
-export const UImageFileS = {
-  ShowsImage: () => <T {...data1} />,
-  UploadsImage: () => <T {...data2} />,
+export const ShowsImage = () => T(data1)
+export const UploadsImage = () => T(data2)
+
+export default {
+  title: 'UComponents/UImageFile',
+  component: UBlock,
 }

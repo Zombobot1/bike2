@@ -13,6 +13,7 @@ export interface UParagraph extends UBlockComponent {
   deleteBlock?: Fn
   isFactory?: bool
   onFactoryBackspace?: Fn
+  isCardField?: bool
 }
 
 export function UParagraph(props: UParagraph) {
@@ -54,8 +55,9 @@ function UText({
   readonly,
   addNewBlock,
   deleteBlock = fn,
-  isFactory = false,
+  isFactory,
   onFactoryBackspace = fn,
+  isCardField,
 }: UText_) {
   const [text, setText] = useEffectedState(data)
   const [inFocus, setInFocus] = useState(false)
@@ -95,44 +97,61 @@ function UText({
 
   const theme = useTheme()
 
-  let sx: JSObject | undefined =
-    inFocus || alwaysShowPlaceholder
-      ? {
-          '&:empty:before': {
-            content: 'attr(placeholder)',
-            fontSize: '1.5rem',
-            color: theme.palette.text.secondary,
-            cursor: 'text',
-          },
-        }
-      : undefined
-  sx = isFactory && !alwaysShowPlaceholder ? { ...sx, minHeight: '12rem' } : sx
-  return (
-    <UTextWrapper>
-      <Editable
-        notemotionref={ref}
-        html={text}
-        tagName={component}
-        onBlur={onBlur}
-        onChange={onChange}
-        onFocus={onFocus}
-        placeholder={placeholder}
-        sx={sx}
-        disabled={readonly}
-        role="textbox"
-        onKeyDown={onKeyDown}
-      />
-    </UTextWrapper>
-  )
-}
-
-const UTextWrapper = styled('div', { label: 'UText' })(({ theme }) => ({
-  outline: 'none',
-  '& pre': {
+  let sx: JSObject = {
+    margin: 0,
     fontSize: '1.5rem',
     fontFamily: theme.typography.fontFamily,
-  },
-}))
+    textAlign: text.length < 90 ? 'center' : 'left',
+  }
+
+  if (inFocus || alwaysShowPlaceholder) {
+    sx = {
+      ...sx,
+      '&:empty:before': {
+        content: 'attr(placeholder)',
+        fontSize: '1.5rem',
+        color: theme.palette.text.secondary,
+        cursor: 'text',
+      },
+    }
+  }
+
+  if (isCardField) {
+    sx = {
+      ...sx,
+      fontSize: '1.65rem',
+      overflowY: 'hidden',
+      overflowX: 'hidden',
+      wordWrap: 'break-word',
+      whiteSpace: 'pre-wrap',
+      marginBottom: 0,
+      lineHeight: 1.12,
+      flex: '0 0 auto',
+
+      [`${theme.breakpoints.up('sm')}`]: {
+        fontSize: '2rem',
+      },
+    }
+  }
+
+  sx = isFactory && !alwaysShowPlaceholder ? { ...sx, minHeight: '12rem' } : sx
+
+  return (
+    <Editable
+      notemotionref={ref}
+      html={text}
+      tagName={component}
+      onBlur={onBlur}
+      onChange={onChange}
+      onFocus={onFocus}
+      placeholder={placeholder}
+      sx={sx}
+      disabled={readonly}
+      role="textbox"
+      onKeyDown={onKeyDown}
+    />
+  )
+}
 
 interface UContentEditable_ {
   notemotionref: React.RefObject<HTMLDivElement>
@@ -148,7 +167,7 @@ interface UContentEditable_ {
 }
 
 function UContentEditable(props: UContentEditable_) {
-  return <ContentEditable innerRef={props.notemotionref} {...props} data-cy="utext" /> // cannot use innerRef with emotion - it breaks storybook
+  return <ContentEditable innerRef={props.notemotionref} {...props} data-cy="utext" /> // cannot use innerRef with emotion - it breaks storybook (it uses emotion 10, whereas I use 11)
 }
 
 const Editable = styled(UContentEditable, { label: 'ContentEditable ' })({

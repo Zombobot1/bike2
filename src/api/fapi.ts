@@ -30,7 +30,7 @@ export const FAPI = {
 
   getTrainingsGroups: () => trainingDecks,
   getTraining: (r: WR) => Object.entries(trainings).filter(([k]) => k === urlId(r.url.toString()))[0][1],
-  getTrainingUpdateOnAnswer: (r: WR) => (r.url.searchParams.get('cardId') === 'get update' ? [cardForUpdate] : []),
+  getTrainingUpdateOnAnswer: (r: WR) => (r.url.searchParams.get('cardId') === 'get-update' ? [cardForUpdate] : []),
   getUBlock: (url: str) => blocksS.get(urlId(url)) || { type: 'TEXT', data: '' },
   postUBlock: e,
   patchUBlock: e,

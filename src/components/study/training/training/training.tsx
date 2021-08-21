@@ -1,4 +1,4 @@
-import { CardDTOs, FieldDTO } from '../types'
+import { CardDTO, CardDTOs, CardType, FieldDTO } from '../types'
 import { TrainingHeader } from '../training-header/training-header'
 import { TrainingControls } from '../training-controls/training-controls'
 import { useCards, usePagesPathUpdate } from './hooks'
@@ -49,7 +49,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
       <TrainingHeader timeToFinish={timeToFinish} currentCardIndex={currentCardIndex} cardsLength={cards.length} />
       <CardCarousel cards={cards} currentTrainingId={dto._id} />
       <TrainingControls
-        cardType={cards[currentCardIndex]?.dto?.type || 'PASSIVE'}
+        cardType={cardType(cards[currentCardIndex]?.dto)}
         estimate={estimateCard}
         showHiddenFields={showHiddenFields}
         areFieldsHidden={areFieldsHidden}
@@ -63,10 +63,18 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
   )
 }
 
-const preloadImage = (field: FieldDTO) => {
-  if (field.type !== 'IMG' || !field.passiveData) return
+function cardType(dto?: CardDTO): CardType {
+  if (!dto) return 'PASSIVE'
+  if (dto.hiddenFields?.length) return 'PASSIVE'
+  if (dto.fields.find((f) => f.type === 'TEXTAREA')) return 'PASSIVE'
+
+  return 'INTERACTIVE'
+}
+
+function preloadImage(field: FieldDTO) {
+  if (field.type !== 'IMAGE' || !field.data) return
   const img = new Image()
-  img.src = field.passiveData
+  img.src = field.data
 }
 
 function TrainingWrapper_() {
