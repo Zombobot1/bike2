@@ -22,6 +22,8 @@ export type JSObjectStr = { [key: string]: string }
 
 export type Fn = () => void
 export type SetStr = (s: str) => void
+export type SetBool = (s: bool) => void
+
 export const fn: Fn = () => {}
 export const setStr: SetStr = (_: str) => {}
 

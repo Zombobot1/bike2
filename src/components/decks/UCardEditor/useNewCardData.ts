@@ -1,5 +1,5 @@
 import { useAtom, atom } from 'jotai'
-import { useMount } from '../../../utils/hooks-utils'
+import { useMount } from '../../utils/hooks/hooks'
 import { sslugify } from '../../../utils/sslugify'
 import { Fn, fn, str } from '../../../utils/types'
 import { uuid } from '../../../utils/uuid'

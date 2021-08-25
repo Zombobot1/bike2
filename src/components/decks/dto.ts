@@ -1,5 +1,5 @@
 import { str } from '../../utils/types'
-import { UComponentType } from '../ucomponents/types'
+import { UComponentType } from '../editing/types'
 
 type FieldInformationDTO = {
   name: str

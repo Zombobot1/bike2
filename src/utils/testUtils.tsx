@@ -1,7 +1,7 @@
 import { mount } from '@cypress/react'
 import React from 'react'
 import { FAPI } from '../api/fapi'
-import { OuterShell } from '../components/Shell/Shell'
+import { OuterShell } from '../components/utils/Shell/Shell'
 import { str } from './types'
 import { uuid, uuidS } from './uuid'
 

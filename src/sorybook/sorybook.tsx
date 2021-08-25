@@ -1,246 +1,368 @@
-import './sorybook.css'
-import { atom, useAtom } from 'jotai'
-import { sslugify } from '../utils/sslugify'
-import { capitalizeFirstLetter } from '../utils/utils'
-import { ReactComponent as IDown } from './bi-caret-down-fill.svg'
-import { ReactComponent as IRight } from './bi-caret-right-fill.svg'
-import { FC, useEffect, useState } from 'react'
-import { useRouter } from '../components/utils/hooks/use-router'
-// import { sories } from './_stories'
-import { useMedia } from '../components/utils/hooks/use-media'
-import { SM } from '../theme'
-import { ReactComponent as Burger } from './burger.svg'
-import { safeSplit } from '../utils/algorithms'
-import { useMount } from '../utils/hooks-utils'
+import { combine } from '../utils/utils'
+import { FC, useEffect, useRef, useState } from 'react'
+import { useRouter } from '../components/utils/hooks/useRouter'
+import { ThemeType, useUTheme } from '../theme'
+import { useIsSM, useMount, useToggle } from '../components/utils/hooks/hooks'
+import { bool, Fn, JSObjects, str, strs } from '../utils/types'
+import { TreeItem, TreeView } from '@material-ui/lab'
+import ArrowDropDownRoundedIcon from '@material-ui/icons/ArrowDropDownRounded'
+import ArrowRightRoundedIcon from '@material-ui/icons/ArrowRightRounded'
+import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded'
+import {
+  alpha,
+  Box,
+  ClickAwayListener,
+  Grow,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Paper,
+  Popper,
+  Stack,
+  styled,
+  SwipeableDrawer,
+  Typography,
+} from '@material-ui/core'
+import useCaseSVG from './useCase.svg'
+import componentSVG from './component.svg'
+import storySVG from './story.svg'
+import { ReactComponent as LogoSVG } from './logo.svg'
+import ModeNightRoundedIcon from '@material-ui/icons/ModeNightRounded'
+import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded'
+import AutoFixHighRoundedIcon from '@material-ui/icons/AutoFixHighRounded'
+import FullscreenRoundedIcon from '@material-ui/icons/FullscreenRounded'
+import { storify } from './utils'
 
 export const _SORYBOOK = '/_stories'
+const SORY: FC = () => null
 
-const activeNodeIdAtom = atom('')
-const activeStoryAtom = atom<{ story: FC }>({ story: () => null })
-
-const useActiveStory = () => {
-  const [activeNodeId, setActiveNodeId] = useAtom(activeNodeIdAtom)
-  const [activeStory, setActiveStory] = useAtom(activeStoryAtom)
-  return {
-    activeNodeId,
-    setActiveNodeId,
-    ActiveStory: activeStory.story,
-    setActiveStory: (s: FC) => setActiveStory({ story: s }),
-  }
+export interface SoryTree {
+  id: str
+  name: str
+  children?: SoryTree[]
 }
+export type SoryTrees = SoryTree[]
 
-interface TreeP {
-  id?: string
-  label: string
-  nodes?: TreeP[]
-  nodeClassName?: string
-  nodeLabelClassName?: string
-  story?: FC
-}
-type TreePs = TreeP[]
+function SoryTree({ id, name, children }: SoryTree) {
+  const { history } = useRouter()
+  const depth = id.split('--').length
+  let sx = useCaseSX
+  if (depth === 2) sx = componentSX
+  else if (depth === 3) sx = storySX
 
-function containsId(path: string, id?: string) {
-  if (!id) return false
-
-  const _id = id?.split('--')
-  const _path = path.replace('/_stories/', '').split('--')
-  let result = true
-  _id.forEach((p, i) => {
-    if (p !== _path[i]) result = false
-  })
-  return result
-}
-
-const TreeNode = ({ label, nodes, id, nodeClassName, nodeLabelClassName, story }: TreeP) => {
-  const { history, location } = useRouter()
-
-  const _isOpen = containsId(location.pathname, id)
-  const [isOpen, setIsOpen] = useState(_isOpen)
-  useEffect(() => {
-    if (_isOpen) setIsOpen(true) // open on first render, do not close on component change
-  }, [_isOpen])
-  const toggleOpen = () => setIsOpen((o) => !o)
-
-  const { activeNodeId, setActiveStory } = useActiveStory()
-  useEffect(() => {
-    if (activeNodeId === id && story) setActiveStory(story)
-  }, [activeNodeId])
-
-  if (!nodes) {
-    return (
-      <li
-        className={`leaf ${activeNodeId === id ? 'leaf--active' : ''}`}
-        onClick={() => history.push(_SORYBOOK + '/' + id)}
-      >
-        {label}
-      </li>
-    )
-  }
-
+  if (!children) return <TreeItem sx={sx} nodeId={id} label={name} onClick={() => history.push(_SORYBOOK + '/' + id)} />
   return (
-    <div className={'tree-node ' + (nodeClassName ?? '')}>
-      <li className={'node ' + (nodeLabelClassName ?? '')} onClick={toggleOpen}>
-        {isOpen && <IDown />}
-        {!isOpen && <IRight />}
-        {label}
-      </li>
-      <ul className="collapse" style={{ display: isOpen ? 'block' : 'none' }}>
-        {nodes.map((l) => (
-          <TreeNode key={l.label} {...l} id={`${id}--${sslugify(l.label)}`} />
-        ))}
-      </ul>
-    </div>
-  )
-}
-
-const Tree = (tree: TreeP) => {
-  return (
-    <ul className="sorybook__tree">
-      <h4>{tree.label}</h4>
-      {tree.nodes?.map((n) => (
-        <TreeNode
-          key={n.label}
-          {...n}
-          nodeClassName="use-case"
-          nodeLabelClassName="use-case__label"
-          id={`${sslugify(n.label)}`}
-        />
+    <TreeItem sx={sx} nodeId={id} label={name}>
+      {children.map((c) => (
+        <SoryTree key={c.id} {...c} />
       ))}
-    </ul>
+    </TreeItem>
   )
 }
 
-interface Sory {
-  name: string
-  story: FC
-}
-export type Sories = Sory[]
-
-interface Component {
-  name: string
-  stories: Sories
-}
-export type ComponentWithStories = Component
-type Components = Component[]
-
-interface UseCase {
-  name: string
-  components: Components
-}
-export type UseCases = UseCase[]
-
-function storiesToNodes(stories: Sories): TreePs {
-  return stories.map((s) => ({ label: s.name, story: s.story }))
-}
-
-function componentsToNodes(components: Components): TreePs {
-  return components.map((c) => ({ label: c.name, nodes: storiesToNodes(c.stories) }))
-}
-
-function useCasesToTree(rootLabel: string, useCases: UseCases): TreeP {
+function svgSX(width: str, icon: str) {
   return {
-    label: rootLabel,
-    nodes: useCases.map((uc) => ({ label: uc.name, nodes: componentsToNodes(uc.components) })),
+    '& > .MuiTreeItem-content': {
+      '.MuiTreeItem-label:before': {
+        content: `url(${icon})`,
+        display: 'inline-block',
+        marginRight: '6px',
+        width,
+        height: width,
+      },
+    },
   }
 }
-const offcanvasA = atom(false)
 
-function useOffCanvas() {
-  const [isOpen, setIsOpen] = useAtom(offcanvasA)
-  const open = () => setIsOpen(true)
-  const close = () => setIsOpen(false)
+const useCaseSX = svgSX('12px', useCaseSVG)
+const componentSX = svgSX('10px', componentSVG)
+const storySX = svgSX('7px', storySVG)
 
-  return { isOpen, open, close }
+interface Menu_ {
+  themeType: ThemeType
+  toggleTheme: Fn
+  toggleFullscreen: Fn
+  toggleHighlight: Fn
 }
 
-const BreadCrumb = () => {
-  const { open } = useOffCanvas()
+function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight }: Menu_) {
+  const [open, setOpen] = useState(false)
+  const anchorRef = useRef<HTMLButtonElement>(null)
 
-  const { activeNodeId } = useActiveStory()
-  const story = safeSplit(activeNodeId, '--').slice(-1)[0]
+  const handleToggle = () => {
+    setOpen((prevOpen) => !prevOpen)
+  }
 
-  return (
-    <div className="sorybook__breadcrumb">
-      <button className="btn shadow-none" onClick={open}>
-        <Burger />
-      </button>
-      <h5>{story ? capitalizeFirstLetter(story) : ''}</h5>
-      <div style={{ width: '45px', height: '45px' }} />
-    </div>
-  )
-}
+  const handleClose = () => {
+    setOpen(false)
+  }
 
-function NavMobile(tree: TreeP) {
-  const { isOpen, close } = useOffCanvas()
-
-  return (
-    <>
-      <div className="offcanvas" style={isOpen ? { width: '230px' } : { width: '0' }}>
-        <div className="sorybook__nav">
-          <Tree {...tree} />
-        </div>
-      </div>
-      <div className="backdrop" style={isOpen ? { width: '100vw' } : { width: '0' }} onClick={close} />
-    </>
-  )
-}
-
-function Nav(tree: TreeP) {
-  const isMobile = useMedia([SM], [true], false)
-
-  if (!isMobile) {
-    return (
-      <div className="sorybook__nav">
-        <Tree {...tree} />
-      </div>
-    )
+  function handleListKeyDown(event: React.KeyboardEvent) {
+    if (event.key === 'Escape') {
+      setOpen(false)
+    }
   }
 
   return (
     <>
-      <BreadCrumb />
-      <NavMobile {...tree} />
+      <IconButton ref={anchorRef} onClick={handleToggle}>
+        <MoreHorizRoundedIcon />
+      </IconButton>
+      <Popper open={open} anchorEl={anchorRef.current} role={undefined} placement="bottom-start" transition>
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom',
+            }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList
+                  autoFocusItem={open}
+                  id="composition-menu"
+                  aria-labelledby="composition-button"
+                  onKeyDown={handleListKeyDown}
+                >
+                  <MenuItem onClick={combine(toggleTheme, handleClose)}>
+                    <ListItemIcon>
+                      {themeType === 'LIGHT' ? (
+                        <ModeNightRoundedIcon fontSize="small" />
+                      ) : (
+                        <WbSunnyRoundedIcon fontSize="small" />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText>Set {themeType === 'LIGHT' ? 'Dark theme' : 'Light theme'}</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      CA+T
+                    </Shortcut>
+                  </MenuItem>
+                  <MenuItem onClick={combine(toggleHighlight, handleClose)}>
+                    <ListItemIcon>
+                      <AutoFixHighRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Highlight</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      CA+H
+                    </Shortcut>
+                  </MenuItem>
+                  <MenuItem onClick={combine(toggleFullscreen, handleClose)}>
+                    <ListItemIcon>
+                      <FullscreenRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Fullscreen story</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      CA+F
+                    </Shortcut>
+                  </MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </>
   )
 }
 
-function Pane() {
-  const { ActiveStory } = useActiveStory()
-  return (
-    <div className="sorybook__pane">
-      <ActiveStory />
-    </div>
-  )
-}
-export interface SoryBook {
-  sories: UseCases
+const Shortcut = styled(Typography)({
+  marginLeft: '0.75rem',
+})
+
+interface Nav_ {
+  trees: SoryTrees
+  toggleHighlight: Fn
 }
 
-export const SoryBook = ({ sories }: SoryBook) => {
-  const { activeNodeId, setActiveNodeId } = useActiveStory()
+function Nav({ trees, toggleHighlight }: Nav_) {
+  const [isFullscreen, toggleFullscreen] = useToggle(false)
+  const { location } = useRouter()
+  const pathIds = location.pathname.replace('/_stories/', '').split('--')
+  const ids = pathIds[0]
+    ? [`${pathIds[0]}`, `${pathIds[0]}--${pathIds[1]}`, `${pathIds[0]}--${pathIds[1]}--${pathIds[2]}`]
+    : []
+
+  const [expanded, setExpanded] = useState<strs>([])
+  const [selected, setSelected] = useState<strs>([])
+
+  useEffect(() => {
+    if (!ids.length) return
+    setExpanded((old) => [...old, ...ids])
+    setSelected([ids[2]])
+  }, [JSON.stringify(ids)])
+
+  const { toggleTheme, themeType } = useUTheme()
+
+  function handleKeyDown(event: KeyboardEvent) {
+    if (!event.ctrlKey || !event.altKey) return
+    if (event.key === 't') toggleTheme()
+    else if (event.key === 'f') toggleFullscreen()
+    else if (event.key === 'h') toggleHighlight()
+  }
+
+  useMount(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  })
+
+  if (isFullscreen) return null
+
+  return (
+    <NavBox>
+      <Heading alignItems="center" justifyContent="center" direction="row" spacing={1}>
+        <Logo />
+        <SoryText>Sorybook</SoryText>
+        <Menu
+          themeType={themeType}
+          toggleTheme={toggleTheme}
+          toggleFullscreen={toggleFullscreen}
+          toggleHighlight={toggleHighlight}
+        />
+      </Heading>
+      <Tree
+        aria-label="controlled"
+        defaultCollapseIcon={<Down />}
+        defaultExpandIcon={<Right />}
+        expanded={expanded}
+        selected={selected}
+        onNodeToggle={(_, nodeIds) => setExpanded(nodeIds)}
+      >
+        {trees.map((t) => (
+          <SoryTree key={t.id} {...t} />
+        ))}
+      </Tree>
+    </NavBox>
+  )
+}
+
+const Tree = styled(TreeView)({
+  '.MuiTreeItem-label': {
+    fontSize: '0.9rem !important',
+    paddingTop: '0.2rem',
+    paddingBottom: '0.2rem',
+  },
+  '.MuiTreeItem-iconContainer': {
+    width: '0 !important',
+  },
+})
+
+const NavBox = styled(Box)(({ theme }) => ({
+  minWidth: '15rem',
+  maxWidth: '15rem',
+  paddingLeft: '0.25rem',
+  borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+}))
+
+const Down = styled(ArrowDropDownRoundedIcon)(({ theme }) => ({
+  color: alpha(theme.palette.primary.main, 0.5),
+  marginRight: '0.2rem',
+  marginBottom: '0.12rem',
+}))
+
+const Right = styled(ArrowRightRoundedIcon)(({ theme }) => ({
+  color: alpha(theme.palette.primary.main, 0.5),
+  marginRight: '0.2rem',
+  marginBottom: '0.12rem',
+}))
+
+const SoryText = styled(Typography)({
+  fontWeight: 'bold',
+  fontSize: '1.5rem',
+})
+
+const Logo = styled(LogoSVG)(({ theme }) => ({
+  width: '2rem',
+  height: '2rem',
+  '.s': {
+    fill: theme.palette.secondary.main,
+  },
+  '.bg': {
+    fill: theme.palette.primary.main,
+  },
+}))
+
+const Heading = styled(Stack)({
+  padding: '1rem',
+})
+
+function NavBar(props: Nav_) {
+  const isDesktop = useIsSM()
+  const [isOpen, setIsOpen] = useState(false)
+  if (isDesktop) return <Nav {...props} />
+
+  const toggleDrawer = (open: bool) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return
+    }
+
+    setIsOpen(open)
+  }
+
+  return (
+    <SwipeableDrawer anchor="right" open={isOpen} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
+      <Nav {...props} />
+    </SwipeableDrawer>
+  )
+}
+
+interface Pane_ {
+  Sory: FC
+  highlight: bool
+}
+
+function Pane({ Sory, highlight }: Pane_) {
+  return (
+    <ComponentWrapper alignItems="center" justifyContent="center">
+      {highlight && (
+        <Box sx={{ backgroundColor: 'lightgreen' }}>
+          <Sory />
+        </Box>
+      )}
+      {!highlight && <Sory />}
+    </ComponentWrapper>
+  )
+}
+
+const ComponentWrapper = styled(Stack)({
+  width: '100%',
+  height: '100%',
+})
+
+export type IdAndSory = Map<str, FC>
+
+export interface SoryBook_ {
+  trees: SoryTrees
+  sories: IdAndSory
+}
+
+function SoryBook_({ trees, sories }: SoryBook_) {
+  const [isHighlighted, toggleHighlight] = useToggle(false)
   const { location, history } = useRouter()
   const activeId = location.pathname.replace(_SORYBOOK + '/', '')
 
-  useEffect(() => {
-    setActiveNodeId(activeId)
-  }, [location])
-
-  useEffect(() => {
-    if (!activeNodeId && activeId) setActiveNodeId(activeId)
-  }, [activeNodeId])
-
   useMount(() => {
     if (activeId !== '/_') return
-    const firstStoryId = `${sslugify(sories[0].name)}--${sslugify(sories[0].components[0].name)}--${sslugify(
-      sories[0].components[0].stories[0].name,
-    )}`
+    const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
     history.push(_SORYBOOK + '/' + firstStoryId)
   })
 
   return (
-    <div className="sorybook">
-      <Nav {...useCasesToTree('🤪 Sorybook', sories)} />
-      <Pane />
-    </div>
+    <Stack sx={{ height: '100%' }} direction="row">
+      <NavBar trees={trees} toggleHighlight={toggleHighlight} />
+      <Pane Sory={sories.get(activeId) || SORY} highlight={isHighlighted} />
+    </Stack>
   )
+}
+
+interface SoryBook {
+  sories: JSObjects
+}
+export function SoryBook({ sories }: SoryBook) {
+  return <SoryBook_ {...storify(sories)} />
 }

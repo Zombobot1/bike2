@@ -1,9 +1,9 @@
 import { axi, axif } from './axi'
-import { CardDTOs, CardDTOsP, UserCardAnswerDTO } from '../components/study/training/types'
+import { CardDTOs, CardDTOsP, UserCardAnswerDTO } from '../components/studying/training/types'
 import { queryfy } from '../utils/utils'
 import { str } from '../utils/types'
-import { TrainingDTO, TrainingsGroupDTOs } from '../components/study/training/training/training'
-import { UBlockPostDTO, UBlockPatchDTO, UBlockGetDTO, FileUploadRDTO } from '../components/ucomponents/types'
+import { TrainingDTO, TrainingsGroupDTOs } from '../components/studying/training/training/training'
+import { UBlockPostDTO, UBlockPatchDTO, UBlockGetDTO, FileUploadRDTO } from '../components/editing/types'
 
 export const FILES = '/files/'
 export const TRAININGS = '/trainings/'

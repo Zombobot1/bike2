@@ -1,8 +1,8 @@
-import { CardDTO, FieldDTO } from '../components/study/training/types'
+import { CardDTO, FieldDTO } from '../components/studying/training/types'
 import fluffyJpg from './fluffy.jpg'
 import fluffyMp3 from './fluffy.mp3'
-import { TrainingDTO } from '../components/study/training/training/training'
-import { TrainingsGroupDTO } from '../components/study/training/training/training'
+import { TrainingDTO } from '../components/studying/training/training/training'
+import { TrainingsGroupDTO } from '../components/studying/training/training/training'
 
 const question = `When do we use the definite article?`
 

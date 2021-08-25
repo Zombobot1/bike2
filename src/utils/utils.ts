@@ -14,6 +14,12 @@ export function prevented(f: Fn) {
   }
 }
 
+export const prevent = (e: E) => e.preventDefault()
+export const combine = (f1: Fn, f2: Fn) => () => {
+  f1()
+  f2
+}
+
 export function cast<T>(data: str, default_: T): T {
   if (!data) return default_
 

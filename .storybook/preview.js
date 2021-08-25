@@ -18,6 +18,9 @@ if (typeof global.process === 'undefined') {
   const { startWorker } = require('../src/api/fapi')
   startWorker()
 }
+
+// Why EmotionThemeProvider?
+// https://github.com/storybookjs/storybook/issues/13145
 // https://github.com/mui-org/material-ui/issues/27238#issuecomment-878844052
 export const decorators = [
   (Story) => (

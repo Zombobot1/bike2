@@ -1,10 +1,10 @@
-import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../study/training/types'
+import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../studying/training/types'
 import { Collapse, Stack, styled } from '@material-ui/core'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { str, bool } from '../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'
-import { useInteractiveSubmit } from '../../study/training/hooks'
-import { UBlock } from '../../ucomponents/UBlock'
+import { useInteractiveSubmit } from '../../studying/training/hooks'
+import { UBlock } from '../../editing/UBlock'
 
 export interface UCard {
   readonly: bool
