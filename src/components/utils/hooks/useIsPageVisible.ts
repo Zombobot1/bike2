@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
+const isDocumentHidden = (): boolean => !document['hidden']
+
 export function useIsPageVisible() {
-  const isDocumentHidden = (): boolean => !document['hidden']
   const [isVisible, setIsVisible] = useState(isDocumentHidden())
   const onVisibilityChange = () => setIsVisible(isDocumentHidden())
 

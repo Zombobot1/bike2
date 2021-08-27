@@ -1,8 +1,16 @@
 import { useQuery } from 'react-query'
-import { TrainingDTO } from './training/training/training'
+import { TrainingDTO, TrainingsGroupDTOs } from './training/training/training'
 import { api } from '../../api/api'
+import { useState } from 'react'
+import { useMount } from '../utils/hooks/hooks'
 
-export const useTrainings = () => useQuery('trainings', api.getTrainings)
+export function useTrainings() {
+  const [data, setData] = useState<TrainingsGroupDTOs>([])
+  useMount(() => {
+    api.getTrainings().then(setData)
+  })
+  return { data }
+}
 
 export const useTraining = (id: string) =>
   useQuery<TrainingDTO, Error, TrainingDTO>(['trainings', id], () => api.getTraining(id), {

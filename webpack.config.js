@@ -13,11 +13,6 @@ let mode = process.env.NODE_ENV === 'production' ? 'production' : 'development'
 let target = 'web' // https://github.com/webpack/webpack-dev-server/issues/2758
 const entry = ['./src/index.tsx']
 
-if (mode === 'production') {
-  const fs = require('fs')
-  fs.writeFileSync(__dirname + '/src/_sandbox.tsx', 'export const Sandbox = () => null')
-}
-
 const plugins = [
   new CleanWebpackPlugin({ cleanAfterEveryBuildPatterns: ['*.LICENSE.txt'] }),
   new HtmlWebpackPlugin({ template: './src/index.html' }),

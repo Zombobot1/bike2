@@ -1,7 +1,7 @@
 import { combine } from '../utils/utils'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useRouter } from '../components/utils/hooks/useRouter'
-import { ThemeType, useUTheme } from '../theme'
+import { ThemeType, useUTheme } from '../components/utils/Shell/theming/theme'
 import { useIsSM, useMount, useToggle } from '../components/utils/hooks/hooks'
 import { bool, Fn, JSObjects, str, strs } from '../utils/types'
 import { TreeItem, TreeView } from '@material-ui/lab'
@@ -347,7 +347,7 @@ function SoryBook_({ trees, sories }: SoryBook_) {
   const activeId = location.pathname.replace(_SORYBOOK + '/', '')
 
   useMount(() => {
-    if (activeId !== '/_') return
+    if (activeId !== '/') return
     const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
     history.push(_SORYBOOK + '/' + firstStoryId)
   })

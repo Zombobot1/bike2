@@ -1,6 +1,6 @@
 import { ReactNode, StrictMode } from 'react'
 import { CssBaseline, styled, ThemeProvider } from '@material-ui/core'
-import { useUTheme } from '../../../theme'
+import { useUTheme } from './theming/theme'
 import { registerServiceWorker } from '../../../serviceWorkerRegistration'
 import { useEffect, useState, forwardRef } from 'react'
 import { Fn } from '../../../utils/types'
@@ -10,12 +10,11 @@ import { Snackbar } from '@material-ui/core'
 import MuiAlert, { AlertProps } from '@material-ui/core/Alert'
 import { useMount } from '../hooks/hooks'
 import { useIsPageVisible } from '../hooks/useIsPageVisible'
-import { APP, PAGES, STUDY, _TO_SANDBOX } from './navigation/pages'
-import { BrowserRouter as Router, Redirect, Switch } from 'react-router-dom'
-import { buildRoutes } from './routing'
-import { AuthProvider, DatabaseProvider, FirebaseAppProvider, useFirebaseApp } from 'reactfire'
-import { getDatabase, connectDatabaseEmulator } from 'firebase/database'
-import { connectAuthEmulator, getAuth } from 'firebase/auth'
+import { BrowserRouter as Router } from 'react-router-dom'
+import { AuthProvider, FirebaseAppProvider, FirestoreProvider, useFirebaseApp } from 'reactfire'
+import { getAuth } from 'firebase/auth'
+import { getFirestore } from 'firebase/firestore'
+import { App } from './App/App'
 
 export interface OuterShell {
   children: ReactNode
@@ -26,72 +25,54 @@ export function OuterShell({ children }: OuterShell) {
 
   return (
     <StrictMode>
-      <OuterShell_>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-            <FB>{children}</FB>
-          </FirebaseAppProvider>
-        </ThemeProvider>
-      </OuterShell_>
+      <Router>
+        <OuterShell_>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+              <FB>{children}</FB>
+            </FirebaseAppProvider>
+          </ThemeProvider>
+        </OuterShell_>
+      </Router>
     </StrictMode>
   )
 }
 
 const OuterShell_ = styled('div')({
-  width: '100vw',
+  width: '100vw', // only here vw & vh are used
   height: '100vh',
 })
 
 export function Shell() {
+  useNotifications(api.subscribeForNotifications)
   return (
     <OuterShell>
-      <InnerShell />
+      <SWController />
+      <App />
     </OuterShell>
   )
 }
 
 function FB({ children }: OuterShell) {
   const app = useFirebaseApp()
-  const database = getDatabase(app)
   const auth = getAuth(app)
-
-  if (process.env.NODE_ENV !== 'production') {
-    connectDatabaseEmulator(database, 'localhost', 8080)
-    connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
-  }
+  const fs = getFirestore(app)
 
   return (
     <AuthProvider sdk={auth}>
-      <DatabaseProvider sdk={database}>{children}</DatabaseProvider>
+      <FirestoreProvider sdk={fs}>{children}</FirestoreProvider>
     </AuthProvider>
   )
 }
 
-const firebaseConfig = {
+export const firebaseConfig = {
   apiKey: 'AIzaSyBilmhjT-Ri3iiwV5wSw6Hsl4B3dJZzy9U',
   authDomain: 'universe-55cec.firebaseapp.com',
   projectId: 'universe-55cec',
   storageBucket: 'universe-55cec.appspot.com',
   messagingSenderId: '809588642322',
   appId: '1:809588642322:web:1f5f4811b7ae877237becb',
-}
-
-const redirect = process.env.NODE_ENV === 'development' ? _TO_SANDBOX : STUDY
-
-function InnerShell() {
-  useNotifications(api.subscribeForNotifications)
-  return (
-    <>
-      <SWController />
-      <Router>
-        <Switch>
-          <Redirect exact from={APP} to={redirect} />
-          {PAGES.map(buildRoutes)}
-        </Switch>
-      </Router>
-    </>
-  )
 }
 
 const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) {

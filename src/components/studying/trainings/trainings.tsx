@@ -1,6 +1,3 @@
-import { FetchData } from '../../utils/FetchedData/FetchedData'
-import { useTrainings } from '../hooks'
-import { TrainingDeck } from './training-deck/training-deck'
 import { styled, Typography } from '@material-ui/core'
 
 import Masonry from 'react-masonry-css'
@@ -17,7 +14,7 @@ const TrainingsMasonry = styled(Masonry)({
 })
 
 const Trainings_ = () => {
-  const { data } = useTrainings()
+  // const { data } = useTrainings()
 
   const isSM = useIsSM()
   const columns = isSM ? 4 : 1
@@ -29,9 +26,9 @@ const Trainings_ = () => {
       columnClassName="my-masonry-grid_column"
       sx={{ width: isSM ? 4 * 320 + 20 * 3 : 'auto' }}
     >
-      {data?.map((e, j) => (
+      {/* {data?.map((e, j) => (
         <TrainingDeck {...e} key={j} />
-      ))}
+      ))} */}
     </TrainingsMasonry>
   )
 }
@@ -42,9 +39,7 @@ export function Trainings() {
       <Typography fontSize="large" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
         Regular trainings
       </Typography>
-      <FetchData>
-        <Trainings_ />
-      </FetchData>
+      <Trainings_ />
     </div>
   )
 }

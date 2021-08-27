@@ -1,0 +1,5 @@
+export const APP = '/'
+export const FINISH_REGISTRATION = APP + 'finish-registration/'
+export const STUDY = APP + 'study/'
+export const STUDY_ID = STUDY + ':id/'
+export const ANY = '*'

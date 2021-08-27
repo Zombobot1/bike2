@@ -39,6 +39,6 @@ const data1: NavBar = {
 export const FoldsAndUnfolds = () => T(data1)
 
 export default {
-  title: 'Utilities/NavBar',
+  title: 'Utils/NavBar',
   component: NavBar,
 }

@@ -2,14 +2,16 @@ import { mount } from '@cypress/react'
 import React from 'react'
 import { FAPI } from '../api/fapi'
 import { OuterShell } from '../components/utils/Shell/Shell'
+import { _seed } from '../_seeding'
 import { str } from './types'
 import { uuid, uuidS } from './uuid'
 
 // sometimes it is not possible to assign data-* attribute (e.g. Checkbox)
 export const got = (selector: str, type: 'CY' | 'AL' = 'CY') =>
   cy.get(`[${type === 'CY' ? 'data-cy' : 'aria-label'}="${selector}"]`)
-
 export const utext = () => got('utext')
+
+export const saw = (text: str) => cy.contains(text)
 
 export const sent = (alias: str, target: unknown, field = 'data') =>
   cy.wait(alias).its(`request.body.${field}`).should('eq', target)
@@ -25,6 +27,16 @@ export const show = (Component: React.FC) =>
     </OuterShell>,
   )
 
+export async function prepare() {
+  console.time('preparing')
+  await _seed()
+  // await _signIn()
+  console.timeEnd('preparing')
+}
+
+/**
+ * @deprecated Use bar() instead
+ */
 export function intercept() {
   cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
   cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply({ i: '' })).as('postUBlock')

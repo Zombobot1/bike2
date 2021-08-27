@@ -9,9 +9,9 @@ import { removeElement, safe } from '../../../../utils/utils'
 import { useUserPosition } from '../../../utils/Shell/navigation/breadcrumb/user-position-provider'
 import { CardData, CardDatas } from './card-carousel'
 import { useTrainingTimer } from '../training-timer/training-timer'
-import { STUDY } from '../../../utils/Shell/navigation/pages'
 import { useSlides } from '../../../utils/Slides/Slides'
 import { atom, useAtom } from 'jotai'
+import { STUDY } from '../../../utils/Shell/App/pages'
 
 const mistakesCountA = atom(0)
 

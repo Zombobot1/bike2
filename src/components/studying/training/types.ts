@@ -1,4 +1,4 @@
-import { COLORS } from '../../../theme'
+import { COLORS } from '../../utils/Shell/theming/theme'
 import { num, str, strs } from '../../../utils/types'
 import { UComponentType } from '../../editing/types'
 

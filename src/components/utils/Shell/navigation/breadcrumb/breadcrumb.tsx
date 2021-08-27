@@ -5,7 +5,7 @@ import { useIsSM } from '../../../hooks/hooks'
 import { useRouter } from '../../../hooks/useRouter'
 import { useUserPosition } from './user-position-provider'
 import MenuRoundedIcon from '@material-ui/icons/MenuRounded'
-import { toAppPage } from '../pages'
+import { STUDY } from '../../App/pages'
 
 export const Breadcrumb = () => {
   const isSM = useIsSM()
@@ -31,7 +31,7 @@ export const Breadcrumb = () => {
       <Breadcrumbs aria-label="breadcrumb">
         {!hasPath && <Typography>{appPage}</Typography>}
         {hasPath && (
-          <LinkRouter underline="hover" color="inherit" to={toAppPage(appPage)}>
+          <LinkRouter underline="hover" color="inherit" to={STUDY}>
             {appPage}
           </LinkRouter>
         )}

@@ -8,7 +8,7 @@ import { Box } from '@material-ui/core'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { useTraining } from '../../hooks'
 import { safe } from '../../../../utils/utils'
-import { FetchData } from '../../../utils/FetchedData/FetchedData'
+import { Fetch } from '../../../utils/Fetch/Fetch'
 import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info'
 import { useMount } from '../../../utils/hooks/hooks'
 
@@ -89,7 +89,7 @@ function TrainingWrapper_() {
 }
 
 export const TrainingWrapper = () => (
-  <FetchData>
+  <Fetch>
     <TrainingWrapper_ />
-  </FetchData>
+  </Fetch>
 )

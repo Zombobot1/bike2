@@ -1,6 +1,6 @@
 import { Breadcrumb } from './breadcrumb'
 import { Box, Button } from '@material-ui/core'
-import { COLORS } from '../../../../../theme'
+import { COLORS } from '../../theming/theme'
 import { MemoryRouter, useHistory } from 'react-router-dom'
 import { useUserPosition } from './user-position-provider'
 import { useMount } from '../../../hooks/hooks'

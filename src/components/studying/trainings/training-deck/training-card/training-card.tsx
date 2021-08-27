@@ -2,9 +2,9 @@ import { SmallDeckCard } from './types'
 import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
 import { useRouter } from '../../../../utils/hooks/useRouter'
 import { TrainingDTO } from '../../../training/training/training'
-import { STUDY } from '../../../../utils/Shell/navigation/pages'
 import { styled, Typography } from '@material-ui/core'
 import { chop } from '../../../utils'
+import { STUDY } from '../../../../utils/Shell/App/pages'
 
 export interface DeckCard extends SmallDeckCard {
   deckPath: string

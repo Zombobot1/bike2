@@ -12,7 +12,7 @@ import {
 import GoogleIcon from '@material-ui/icons/Google'
 
 import { useState } from 'react'
-import { ThemeBtn } from '../../../../theme'
+import { ThemeBtn } from '../theming/ThemeBtn'
 import { prevent } from '../../../../utils/utils'
 import { useMount } from '../../hooks/hooks'
 import { useRouter } from '../../hooks/useRouter'
@@ -20,32 +20,22 @@ import { ReactComponent as RightBlobsSVG } from './rightBlob.svg'
 import { ReactComponent as LeftBlobsSVG } from './leftBlob.svg'
 import { ReactComponent as WaveSVG } from './wave.svg'
 import { ReactComponent as LogoSVG } from './logo.svg'
-import {
-  getAuth,
-  signInWithPopup,
-  GoogleAuthProvider,
-  sendSignInLinkToEmail,
-  isSignInWithEmailLink,
-  signInWithEmailLink,
-} from 'firebase/auth'
-
-const UNI_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/' : 'https://unni.ml/'
-const FINISH_REGISTRATION_URL = UNI_URL + 'finish-registration/'
+import { getAuth, signInWithPopup, GoogleAuthProvider, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
+import { sendEmailLink } from './sendEmailLink'
 
 export function FinishRegistration() {
   const [error, setError] = useState('')
-  const { history } = useRouter()
+  const { history, location } = useRouter()
 
   useMount(() => {
-    if (!isSignInWithEmailLink(getAuth(), window.location.href)) return
-
+    if (!isSignInWithEmailLink(getAuth(), location.pathname + location.search)) return
     const email = localStorage.getItem('emailForSignIn')
     if (!email) {
       setError('Your email was lost :(')
       return
     }
 
-    signInWithEmailLink(getAuth(), email, window.location.href)
+    signInWithEmailLink(getAuth(), email, location.pathname + location.search)
       .then(() => {
         localStorage.removeItem('emailForSignIn')
         history.push('/') // to APP (avoiding circular dependency)
@@ -69,27 +59,16 @@ function LoginForm() {
 
   function onGoogleSignIn() {
     const provider = new GoogleAuthProvider()
-    signInWithPopup(getAuth(), provider)
-      .then((result) => {
-        const user = result.user
-        console.log(user)
-      })
-      .catch((error) => setError(error.message))
+    signInWithPopup(getAuth(), provider).catch((error) => setError(error.message))
   }
 
   function onEmailSignIn() {
-    sendSignInLinkToEmail(getAuth(), email, {
-      url: FINISH_REGISTRATION_URL,
-      handleCodeInApp: true,
-    })
-      .then(() => {
-        localStorage.setItem('emailForSignIn', email)
-        setIsLinkSent(true)
-      })
+    sendEmailLink(email)
+      .then(() => setIsLinkSent(true))
       .catch((error) => setError(error.message))
   }
 
-  // add apple auth it should be enough for all cases because every person has android or ios
+  // add apple auth, it should be enough for all cases because every person has android or ios
 
   return (
     <FormWrapper justifyContent="center" alignItems="center">
@@ -109,9 +88,10 @@ function LoginForm() {
               onChange={(e) => setEmail(e.target.value)}
               label="Email"
               autoComplete="email"
+              data-cy="email"
             />
           </FormControl>
-          <BoldBtn onClick={onEmailSignIn} size="large" fullWidth>
+          <BoldBtn onClick={onEmailSignIn} size="large" fullWidth data-cy="sign-in-with-email">
             Continue with email
           </BoldBtn>
           {error && <BoldText color="error">{error}</BoldText>}
