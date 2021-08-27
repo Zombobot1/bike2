@@ -2,7 +2,6 @@ import { mount } from '@cypress/react'
 import React from 'react'
 import { FAPI } from '../api/fapi'
 import { OuterShell } from '../components/utils/Shell/Shell'
-import { _seed } from '../_seeding'
 import { str } from './types'
 import { uuid, uuidS } from './uuid'
 
@@ -17,6 +16,7 @@ export const sent = (alias: str, target: unknown, field = 'data') =>
   cy.wait(alias).its(`request.body.${field}`).should('eq', target)
 
 export const sentTo = (alias: str, target: str) => cy.wait(alias).its(`request.url`).should('contain', target)
+export const doNotFret = () => cy.on('uncaught:exception', () => false)
 
 export const fakedId = () => cy.stub(uuid, 'v4').callsFake(uuidS())
 
@@ -26,13 +26,6 @@ export const show = (Component: React.FC) =>
       <Component />
     </OuterShell>,
   )
-
-export async function prepare() {
-  console.time('preparing')
-  await _seed()
-  // await _signIn()
-  console.timeEnd('preparing')
-}
 
 /**
  * @deprecated Use bar() instead

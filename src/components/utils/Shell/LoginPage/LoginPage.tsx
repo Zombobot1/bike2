@@ -64,6 +64,7 @@ function LoginForm() {
 
   function onEmailSignIn() {
     sendEmailLink(email)
+      .then(() => localStorage.setItem('emailForSignIn', email))
       .then(() => setIsLinkSent(true))
       .catch((error) => setError(error.message))
   }

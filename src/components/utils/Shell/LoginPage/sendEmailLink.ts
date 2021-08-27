@@ -10,5 +10,5 @@ export function sendEmailLink(email: str) {
   return sendSignInLinkToEmail(getAuth(), email, {
     url: FINISH_REGISTRATION_URL,
     handleCodeInApp: true,
-  }).then(() => localStorage.setItem('emailForSignIn', email))
+  })
 }

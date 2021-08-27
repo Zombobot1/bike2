@@ -1,24 +1,51 @@
 import { connectAuthEmulator, getAuth, signInWithEmailLink, signOut } from 'firebase/auth'
 import { FINISH_REGISTRATION } from './components/utils/Shell/App/pages'
 import { sendEmailLink } from './components/utils/Shell/LoginPage/sendEmailLink'
-import { strP } from './utils/types'
-// import * as firebase from '@firebase/testing'
+import { str, strP } from './utils/types'
 import { WS } from './components/utils/Shell/navigation/NavBar/NavBar'
 import { getApps, initializeApp } from '@firebase/app'
-import { connectFirestoreEmulator, getFirestore } from 'firebase/firestore'
-import { firebaseConfig } from './components/utils/Shell/Shell'
-// import axios from 'axios'
+import {
+  collection,
+  connectFirestoreEmulator,
+  deleteDoc,
+  doc,
+  Firestore,
+  getDocs,
+  getFirestore,
+  initializeFirestore,
+  setDoc,
+} from 'firebase/firestore'
+
+export const firebaseConfig = {
+  apiKey: 'AIzaSyBilmhjT-Ri3iiwV5wSw6Hsl4B3dJZzy9U',
+  authDomain: 'universe-55cec.firebaseapp.com',
+  projectId: 'universe-55cec',
+  storageBucket: 'universe-55cec.appspot.com',
+  messagingSenderId: '809588642322',
+  appId: '1:809588642322:web:1f5f4811b7ae877237becb',
+}
+import axios from 'axios'
 
 const PROJECT_ID = 'universe-55cec'
-// const API_KEY = 'AIzaSyBilmhjT-Ri3iiwV5wSw6Hsl4B3dJZzy9U'
 
-// const admin = firebase.initializeAdminApp({ projectId: PROJECT_ID }).firestore()
+type Promises = Promise<unknown>[]
 
-export async function _seed() {
-  // const userId = await auth()
-  // await firebase.clearFirestoreData({ projectId: PROJECT_ID })
-  // const jobs = [admin.collection('ws').doc(userId).set(ws()), admin.collection('_t').doc('1').set({ d: 'test' })]
-  // return Promise.allSettled(jobs)
+async function deleteCollection(db: Firestore, name: str, jobs: Promises) {
+  const docs = await getDocs(collection(db, name))
+  docs.forEach((d) => jobs.push(deleteDoc(doc(db, name, d.id))))
+}
+
+export async function cleanUp() {
+  const jobs: Promises = []
+  await deleteCollection(getFirestore(), '_t', jobs)
+  return Promise.all(jobs)
+}
+
+const create = (col: str, id: str) => doc(getFirestore(), col, id)
+
+async function insertMockData() {
+  const jobs = [setDoc(create('_t', '1'), { d: 'test' })]
+  return Promise.all(jobs)
 }
 
 export function ws(): WS {
@@ -60,8 +87,8 @@ export function ws(): WS {
 const getCode = `http://localhost:9099/emulator/v1/projects/${PROJECT_ID}/oobCodes`
 
 export async function _getOOBLink(): strP {
-  const r = await fetch(getCode)
-  const d = await r.json()
+  const r = await axios.get(getCode)
+  const d = await r.data
   return `?${d.oobCodes[0].oobLink.split('?')[1].split('&continueUrl')[0]}`
 }
 
@@ -78,9 +105,41 @@ export async function _initFB() {
   if (getApps().length) return
 
   const app = initializeApp(firebaseConfig)
-  const fs = getFirestore(app)
+  const fs = initializeFirestore(app, { experimentalForceLongPolling: true }) // Polling for cypress
   const auth = getAuth(app)
   connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
   connectFirestoreEmulator(fs, 'localhost', 8080)
   await _signIn()
+}
+
+export async function _seed() {
+  await _initFB()
+  await cleanUp()
+  await insertMockData()
+}
+
+export function wrapPromise(promise: Promise<unknown>) {
+  let status = 'pending'
+  let result: unknown
+  const suspender = promise.then(
+    (r) => {
+      status = 'success'
+      result = r
+    },
+    (e) => {
+      status = 'error'
+      result = e
+    },
+  )
+  return {
+    read() {
+      if (status === 'pending') {
+        throw suspender
+      } else if (status === 'error') {
+        throw result
+      } else if (status === 'success') {
+        return result
+      }
+    },
+  }
 }

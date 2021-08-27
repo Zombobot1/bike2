@@ -4,7 +4,7 @@
 // import { _DTO, _FAIL, _SLOW_LOAD } from '../../api/fapi'
 // import { ReactNode } from 'react'
 
-import { doc } from 'firebase/firestore'
+import { doc } from '@firebase/firestore'
 import { ReactNode } from 'react'
 import { useFirestore, useFirestoreDocData } from 'reactfire'
 import { str } from '../../../utils/types'
@@ -15,7 +15,7 @@ function useDoc<T>(collection: str, id: str): T {
   const ref = doc(firestore, collection, id)
 
   const { data } = useFirestoreDocData(ref)
-  if (Object.keys(data).length === 1) throw new Error('Document not found') // how to check doc existence?
+  if (!data) throw new Error('Document not found')
 
   return data as T
 }
