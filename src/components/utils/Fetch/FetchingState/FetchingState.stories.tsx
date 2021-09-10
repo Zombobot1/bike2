@@ -12,5 +12,4 @@ export const ShowsMessageOnFail = () => T(data1)
 
 export default {
   title: 'Utils/FetchingState',
-  component: FetchingState,
 }

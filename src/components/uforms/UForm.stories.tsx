@@ -23,11 +23,11 @@ const Panel = styled(Stack)({
 })
 
 const emptyQ: UBlockB = {
-  _id: 'emptyQ',
+  id: 'emptyQ',
 }
 
 const withoutAnswer: UBlockB = {
-  _id: 'withoutAnswer',
+  id: 'withoutAnswer',
   readonly: true,
 }
 
@@ -38,5 +38,4 @@ export const EmptyQuestion = () => <T {...emptyQ} /> // check no factory is show
 
 export default {
   title: 'UForms/UForm',
-  component: UForm,
 }

@@ -105,11 +105,11 @@ export const TrainingControls = ({
 
 const EstimationBtn = rstyled(Button)<ButtonProps & IsSM>(({ isSM }) => ({
   width: isSM ? 85 : 65,
-  fontWeight: 'bold',
+  fontWeight: 600,
 }))
 
 const Btn = styled(Button)({
-  fontWeight: 'bold',
+  fontWeight: 600,
 })
 
 interface SelfEstimateBtnP {

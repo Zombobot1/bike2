@@ -105,5 +105,4 @@ export const Invalid = () => <T {...invalid} />
 
 export default {
   title: 'UForms/UChecks',
-  component: UChecks,
 }

@@ -13,13 +13,13 @@ export function isUFormComponent(t: UComponentType): bool {
 }
 
 export interface UBlockB {
-  _id: str
+  id: str
   readonly?: bool
 }
 
 export type UBlockPostDTO = { _id: str; data?: str }
 export type UBlockPatchDTO = { type?: UComponentType; data?: str }
-export type UBlockGetDTO = { type: UComponentType; data: str }
+export type UBlockDTO = { type: UComponentType; data: str }
 
 export type FileUploadRDTO = { data: str }
 export interface UBlockComponent {

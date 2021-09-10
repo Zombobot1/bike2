@@ -85,7 +85,7 @@ export function UTable({ data }: UTable) {
 const Header = styled(Typography)(({ theme }) => ({
   paddingBottom: '0.2em',
   fontSize: '1.5em',
-  fontWeight: 'bold',
+  fontWeight: 600,
   borderBottom: `1px solid ${theme.palette.grey[200]}`,
   '.MuiButton-root': {
     transition: '0.2s ease-in-out',

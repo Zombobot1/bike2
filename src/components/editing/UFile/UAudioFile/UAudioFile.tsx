@@ -1,36 +1,22 @@
-import { useEffectedState } from '../../../utils/hooks/hooks'
+import { useReactive, useReactiveObject } from '../../../utils/hooks/hooks'
 import AudiotrackRoundedIcon from '@material-ui/icons/AudiotrackRounded'
 import { srcfy } from '../../../../utils/filesManipulation'
 import { UBlockComponent } from '../../types'
 import { Dropzone1 } from '../../../utils/Dropzone'
-import { Stack, styled } from '@material-ui/core'
+import { IconButton, Stack, styled } from '@material-ui/core'
 import { useUFile } from '../useUFile'
+import { apm } from '../../../application/theming/theme'
+import { UAudio } from '../../../utils/UAudio/UAudio'
+import { cast } from '../../../../utils/utils'
 
-export function UAudioFile({ data, setData }: UBlockComponent) {
-  const [src, setSrc] = useEffectedState(data)
-  const { fileS, deleteFile: _ } = useUFile(data, setData, (f) => setSrc(srcfy(f)))
-
-  if (!src) return <Dropzone1 fileS={fileS} label="audio" icon={<AudiotrackRoundedIcon />} />
-
-  return (
-    <AudioContainer alignItems="center" justifyContent="center" direction="row">
-      <audio src={src} controls />
-      {/* {!readonly && (
-        <Delete aria-label="delete" onClick={deleteFile}>
-          <DeleteRoundedIcon />
-        </Delete>
-      )} */}
-    </AudioContainer>
-  )
+export class UAudioFileDTO {
+  src = ''
 }
 
-const AudioContainer = styled(Stack, { label: 'UAudioFile' })({
-  '&:hover .MuiIconButton-root': {
-    opacity: 1,
-  },
-})
+export function UAudioFile({ data, setData, readonly }: UBlockComponent) {
+  const [fileData] = useReactiveObject(cast(data, new UAudioFileDTO()))
+  const { fileS, deleteFile } = useUFile((src) => setData(JSON.stringify({ src })))
 
-// const Delete = styled(IconButton)({
-//   opacity: 0,
-//   transition: 'opacity 0.2s ease-in-out',
-// })
+  if (!fileData.src) return <Dropzone1 fileS={fileS} label="audio" icon={<AudiotrackRoundedIcon />} />
+  return <UAudio src={fileData.src} onDelete={deleteFile} readonly={readonly} />
+}

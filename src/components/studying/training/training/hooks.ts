@@ -1,17 +1,15 @@
 import { CardDTO, CardDTOs, CardEstimation, isMistake } from '../types'
 import { useEffect, useState } from 'react'
-import { api } from '../../../../api/api'
-import { useMount, useUnmount } from '../../../utils/hooks/hooks'
+import { useUnmount } from '../../../utils/hooks/hooks'
 import { Fn, num, State } from '../../../../utils/types'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { TrainingDTO } from './training'
 import { removeElement, safe } from '../../../../utils/utils'
-import { useUserPosition } from '../../../utils/Shell/navigation/breadcrumb/user-position-provider'
 import { CardData, CardDatas } from './card-carousel'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { useSlides } from '../../../utils/Slides/Slides'
 import { atom, useAtom } from 'jotai'
-import { STUDY } from '../../../utils/Shell/App/pages'
+import { STUDY } from '../../../application/App/pages'
 
 const mistakesCountA = atom(0)
 
@@ -35,12 +33,12 @@ export const useTimeToFinish = (cards: CardDatas, currentCardIndex: number) => {
 }
 
 export const useCardSettings = (cardsS: State<CardDatas>, currentCardIndex: num) => {
-  const [cards, setCards] = cardsS
+  const [_cards, setCards] = cardsS
 
   const { setTimeToAnswer } = useTrainingTimer()
 
   const onDeleteCard = async () => {
-    await api.deleteCard(safe(cards[currentCardIndex].dto)._id)
+    // await api.deleteCard(safe(cards[currentCardIndex].dto)._id)
     setCards((cs) => {
       const result = removeElement(cs, currentCardIndex)
       setTimeToAnswer(result[currentCardIndex]?.dto?.timeToAnswer || 0)
@@ -87,16 +85,16 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
   const { timeToFinish } = useTimeToFinish(cards, currentCardIndex)
 
   const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'TRANSIT'): Fn | undefined => {
-    const isLastCard = currentCardIndex < cards.length - 1
+    // const isLastCard = currentCardIndex < cards.length - 1
 
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
     registerMistake(e)
 
-    api
-      .estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e })
-      .then((cards) => {
-        if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
-      })
+    // api
+    //   .estimateAnswer({ deckId: trainingId, cardId: cards[currentCardIndex]?.dto?._id || '', estimation: e })
+    //   .then((cards) => {
+    //     if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
+    //   })
 
     if (transition === 'TRANSIT') goToNextCard()
     else if (transition === 'NO_TRANSITION') return goToNextCard
@@ -117,16 +115,9 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
 }
 
 type OnLastCard = Fn
-export const usePagesPathUpdate = ({ _id, deckName }: TrainingDTO): OnLastCard => {
+export const usePagesPathUpdate = ({ _id }: TrainingDTO): OnLastCard => {
   const { history } = useRouter()
-  const { setPath, clearPath } = useUserPosition()
-
-  useMount(() => {
-    setPath([{ name: deckName }])
-  })
-
   return () => {
     history.push(STUDY)
-    clearPath()
   }
 }

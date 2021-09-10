@@ -1,110 +1,147 @@
-import { Stack } from '@material-ui/core'
-import { useEffect, useState } from 'react'
-import { api } from '../../../api/api'
-import { useMount } from '../../utils/hooks/hooks'
-import { bool, setStr, str, strs } from '../../../utils/types'
-import { cast } from '../../../utils/utils'
-import { uuid } from '../../../utils/uuid'
-import { AddNewBlock, NewBlockFocus, UBlockB } from '../types'
-import { UBlock } from '../UBlock'
+import { Box, Button, Stack, styled, Typography } from '@material-ui/core'
+import randomColor from 'randomcolor'
+import { useRef, useState, KeyboardEvent } from 'react'
+import ContentEditable from 'react-contenteditable'
+import { bool, str, strs } from '../../../utils/types'
+import { useReactive } from '../../utils/hooks/hooks'
+import { setData } from '../../utils/hooks/useData'
+import { useRefCallback } from '../../utils/hooks/useRefCallback'
+import { useRouter } from '../../utils/hooks/useRouter'
+import { useShowAppBar } from '../../application/navigation/Crumbs/AppBar'
+import { apm } from '../../application/theming/theme'
+import { UBlockB, UComponentType } from '../types'
+import { UBlocksSet, useUBlocks } from './UBlocksSet/UBlocksSet'
+import { ReactComponent as WaveSVG } from './wave.svg'
 
-export interface UPage extends UBlockB {
-  oneBlockOnly?: bool
-  factoryPlaceholder?: str
+const PageWrapper = styled(Stack, { label: 'UPage' })({
+  width: '100%',
+  height: '100%',
+  overflowX: 'hidden',
+  overflowY: 'auto',
+})
+
+const Page = styled('div')(({ theme }) => ({
+  width: '85%',
+  borderRadius: '2rem',
+  backgroundColor: apm(theme),
+
+  [`${theme.breakpoints.up('sm')}`]: {
+    width: '70%',
+  },
+}))
+
+const ColorPicker = styled(Button)(({ theme }) => ({
+  position: 'absolute',
+  right: '1.5rem',
+  top: '5rem',
+  display: 'none !important',
+  opacity: 0,
+  transition: 'opacity 0.3s ease-in-out',
+
+  input: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    opacity: 0,
+    cursor: 'pointer',
+  },
+
+  [`${theme.breakpoints.up('sm')}`]: {
+    display: 'inline-flex  !important',
+  },
+}))
+
+const ColoredBox = styled('div')(({ theme }) => ({
+  position: 'relative',
+  width: '100%',
+  // height: '20%',
+
+  ':hover .MuiButton-root': {
+    opacity: 1,
+  },
+}))
+
+export interface UPageDataDTO {
+  color: str
+  name: str
+  ids: strs
 }
 
-export function UPage({ _id, readonly, oneBlockOnly = false, factoryPlaceholder }: UPage) {
-  const [isReady, setIsReady] = useState(false)
-  const [ids, setIds] = useState(new Ids())
-  const [lastActiveBlock, setLastActiveBlock] = useState(new Block())
+export interface UPageDTO {
+  data: UPageDataDTO
+  isDeleted?: bool
+  readonly?: bool
+}
 
-  useMount(() => {
-    let cancelled = false
+export function UPage() {
+  // const c = randomColor({ luminosity: 'bright' })
+  const { location } = useRouter()
+  const id = location.pathname.replace('/', '')
+  const { idsS, ublock, setUBlockData } = useUBlocks<UPageDTO, UPageDataDTO>(id)
 
-    api.getUBlock(_id).then((d) => {
-      if (cancelled) return
-      setIds({ ids: cast<strs>(d.data, []), needsUpdate: false })
-      setIsReady(true)
-    })
+  const [color, setColor] = useReactive(ublock.data.color)
+  const [name, setName] = useReactive(ublock.data.name)
+  const ref = useRef<HTMLDivElement>(null)
+  const { showAppBar, hideAppBar } = useShowAppBar()
 
-    return () => {
-      cancelled = true
-    }
-  })
+  const onChange = useRefCallback((e) => setName(e.target.value))
+  const onBlur = useRefCallback(() => {
+    setUBlockData({ ...ublock.data, name })
+  }, [name])
 
-  const addNewBlock: AddNewBlock = (underId = '', focus = 'FOCUS', data = '') => {
-    const _id = uuid.v4()
-    api.postUBlock({ _id, data })
-    setLastActiveBlock({ data, focus, _id })
-    setIds((old) => {
-      const blockAbove = old.ids.indexOf(underId) + 1
-      if (blockAbove === 0) return { ids: [...old.ids, _id], needsUpdate: true }
-      // sendData(_id, ids) sends twice
-      return {
-        ids: [...old.ids.slice(0, blockAbove), _id, ...old.ids.slice(blockAbove, old.ids.length)],
-        needsUpdate: true,
+  const onKeyDown = useRefCallback(
+    (e: KeyboardEvent<HTMLInputElement>) => {
+      if (!e.shiftKey && e.key === 'Enter') {
+        e.preventDefault()
+        ref.current?.blur()
       }
-    })
-  }
+    },
+    [ref],
+  )
 
-  useEffect(() => {
-    if (ids.needsUpdate) {
-      setIds((old) => ({ ...old, needsUpdate: false }))
-      sendData(_id, ids.ids)
-    }
-  }, [ids.needsUpdate])
-
-  const deleteBlock = (id: str) => {
-    setIds((old) => {
-      const blockBefore = old.ids.indexOf(id) - 1
-      const la: Block = { _id: old.ids[blockBefore] || '', focus: 'FOCUS' }
-      setLastActiveBlock(la)
-      return { ids: old.ids.filter((_id) => _id !== id), needsUpdate: true }
-    })
-  }
-
-  if (!isReady) return null
   return (
-    <Stack>
-      {ids.ids.map((_id) => {
-        return (
-          <UBlock
-            key={_id}
-            _id={_id}
-            readonly={readonly}
-            autoFocus={_id === lastActiveBlock._id && lastActiveBlock.focus === 'FOCUS'}
-            data={_id === lastActiveBlock._id ? lastActiveBlock.data || '' : undefined}
-            addNewBlock={addNewBlock}
-            deleteBlock={deleteBlock}
+    <PageWrapper alignItems="center">
+      <ColoredBox sx={{ path: { fill: color } }} onMouseEnter={showAppBar} onMouseLeave={hideAppBar}>
+        <WaveSVG />
+        <ColorPicker variant="contained" size="small">
+          <input
+            type="color"
+            value={color}
+            onChange={(e) => setColor(e.target.value)}
+            onBlur={(e) => setUBlockData({ ...ublock.data, color: e.target.value })}
           />
-        )
-      })}
-      {(!ids.ids.length || !oneBlockOnly) && (
-        <UBlock
-          key={`factory-${lastActiveBlock._id}`}
-          _id=""
-          addNewBlock={addNewBlock}
-          deleteBlock={setStr}
-          isFactory={true}
-          readonly={readonly}
-          autoFocus={Boolean(lastActiveBlock._id) && lastActiveBlock.focus === 'NO_FOCUS'}
-          onFactoryBackspace={() => setLastActiveBlock({ _id: ids.ids.slice(-1)[0] || '', focus: 'FOCUS' })}
-          placeholder={factoryPlaceholder || undefined}
+          Set color
+        </ColorPicker>
+      </ColoredBox>
+      <Page>
+        <Editable
+          innerRef={ref}
+          html={name}
+          tagName="h1"
+          onBlur={onBlur}
+          onChange={onChange}
+          role="textbox"
+          onKeyDown={onKeyDown}
+          data-cy="page-name"
         />
-      )}
-    </Stack>
+        <UBlocksSet idsS={idsS} readonly={false} />
+      </Page>
+    </PageWrapper>
   )
 }
 
-const sendData = (_id: str, ids: strs) => api.patchUBlock(_id, { data: JSON.stringify(ids) })
+const Editable = styled(ContentEditable, { label: 'ContentEditable ' })(({ theme }) => ({
+  outline: 'none',
+  margin: 0,
+  marginBottom: '1rem',
+  fontSize: '1.75rem',
+  fontFamily: theme.typography.fontFamily,
+  overflowWrap: 'break-word',
+  whiteSpace: 'pre-line',
+  fontWeight: 900,
 
-class Block {
-  _id = ''
-  focus: NewBlockFocus = 'NO_FOCUS'
-  data?: str
-}
-
-class Ids {
-  ids: strs = []
-  needsUpdate = false
-}
+  [`${theme.breakpoints.up('sm')}`]: {
+    marginBottom: '2rem',
+    fontSize: '3.5rem',
+  },
+}))

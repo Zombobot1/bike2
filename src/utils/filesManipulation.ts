@@ -19,7 +19,7 @@ async function retrieveImageFromClipboard(items: ClipboardItems): OBlobP {
 export function readImageFromKeyboard(onRead: (f: File) => void) {
   async function retrieveImage(data: ClipboardItems) {
     const imageBlob = await retrieveImageFromClipboard(data)
-    if (imageBlob) onRead(new File([imageBlob], `img.png`))
+    if (imageBlob) onRead(new File([imageBlob], `img.png`, { type: 'image/png' }))
   }
   return () => navigator.clipboard.read().then(retrieveImage).catch(console.error)
 }

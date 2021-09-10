@@ -1,7 +1,7 @@
 import { combine } from '../utils/utils'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useRouter } from '../components/utils/hooks/useRouter'
-import { ThemeType, useUTheme } from '../components/utils/Shell/theming/theme'
+import { ThemeType, useUTheme } from '../components/application/theming/theme'
 import { useIsSM, useMount, useToggle } from '../components/utils/hooks/hooks'
 import { bool, Fn, JSObjects, str, strs } from '../utils/types'
 import { TreeItem, TreeView } from '@material-ui/lab'
@@ -33,6 +33,7 @@ import ModeNightRoundedIcon from '@material-ui/icons/ModeNightRounded'
 import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded'
 import AutoFixHighRoundedIcon from '@material-ui/icons/AutoFixHighRounded'
 import FullscreenRoundedIcon from '@material-ui/icons/FullscreenRounded'
+import AutorenewRoundedIcon from '@material-ui/icons/AutorenewRounded'
 import { storify } from './utils'
 
 export const _SORYBOOK = '/_stories'
@@ -85,9 +86,11 @@ interface Menu_ {
   toggleTheme: Fn
   toggleFullscreen: Fn
   toggleHighlight: Fn
+  rerenderStory: Fn
+  navRef: React.MutableRefObject<HTMLElement | undefined>
 }
 
-function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight }: Menu_) {
+function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight, rerenderStory, navRef }: Menu_) {
   const [open, setOpen] = useState(false)
   const anchorRef = useRef<HTMLButtonElement>(null)
 
@@ -110,7 +113,7 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight }: Men
       <IconButton ref={anchorRef} onClick={handleToggle}>
         <MoreHorizRoundedIcon />
       </IconButton>
-      <Popper open={open} anchorEl={anchorRef.current} role={undefined} placement="bottom-start" transition>
+      <Popper open={open} anchorEl={anchorRef.current} container={navRef.current} placement="bottom-start" transition>
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
@@ -157,6 +160,15 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight }: Men
                       CA+F
                     </Shortcut>
                   </MenuItem>
+                  <MenuItem onClick={combine(rerenderStory, handleClose)}>
+                    <ListItemIcon>
+                      <AutorenewRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Rerender story</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      CA+R
+                    </Shortcut>
+                  </MenuItem>
                 </MenuList>
               </ClickAwayListener>
             </Paper>
@@ -174,9 +186,11 @@ const Shortcut = styled(Typography)({
 interface Nav_ {
   trees: SoryTrees
   toggleHighlight: Fn
+  rerenderStory: Fn
 }
 
-function Nav({ trees, toggleHighlight }: Nav_) {
+function Nav({ trees, toggleHighlight, rerenderStory }: Nav_) {
+  const ref = useRef<HTMLElement>()
   const [isFullscreen, toggleFullscreen] = useToggle(false)
   const { location } = useRouter()
   const pathIds = location.pathname.replace('/_stories/', '').split('--')
@@ -200,6 +214,7 @@ function Nav({ trees, toggleHighlight }: Nav_) {
     if (event.key === 't') toggleTheme()
     else if (event.key === 'f') toggleFullscreen()
     else if (event.key === 'h') toggleHighlight()
+    else if (event.key === 'r') rerenderStory()
   }
 
   useMount(() => {
@@ -210,7 +225,7 @@ function Nav({ trees, toggleHighlight }: Nav_) {
   if (isFullscreen) return null
 
   return (
-    <NavBox>
+    <NavBox ref={ref}>
       <Heading alignItems="center" justifyContent="center" direction="row" spacing={1}>
         <Logo />
         <SoryText>Sorybook</SoryText>
@@ -219,6 +234,8 @@ function Nav({ trees, toggleHighlight }: Nav_) {
           toggleTheme={toggleTheme}
           toggleFullscreen={toggleFullscreen}
           toggleHighlight={toggleHighlight}
+          rerenderStory={rerenderStory}
+          navRef={ref}
         />
       </Heading>
       <Tree
@@ -252,6 +269,8 @@ const NavBox = styled(Box)(({ theme }) => ({
   minWidth: '15rem',
   maxWidth: '15rem',
   paddingLeft: '0.25rem',
+  zIndex: 1000,
+  backgroundColor: theme.palette.background.default,
   borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
 }))
 
@@ -268,7 +287,7 @@ const Right = styled(ArrowRightRoundedIcon)(({ theme }) => ({
 }))
 
 const SoryText = styled(Typography)({
-  fontWeight: 'bold',
+  fontWeight: 600,
   fontSize: '1.5rem',
 })
 
@@ -329,7 +348,7 @@ function Pane({ Sory, highlight }: Pane_) {
   )
 }
 
-const ComponentWrapper = styled(Stack)({
+const ComponentWrapper = styled(Stack, { label: 'Pane' })({
   width: '100%',
   height: '100%',
 })
@@ -342,6 +361,8 @@ export interface SoryBook_ {
 }
 
 function SoryBook_({ trees, sories }: SoryBook_) {
+  const [counter, setCounter] = useState(0)
+  const rerenderStory = () => setCounter((old) => old + 1)
   const [isHighlighted, toggleHighlight] = useToggle(false)
   const { location, history } = useRouter()
   const activeId = location.pathname.replace(_SORYBOOK + '/', '')
@@ -354,8 +375,8 @@ function SoryBook_({ trees, sories }: SoryBook_) {
 
   return (
     <Stack sx={{ height: '100%' }} direction="row">
-      <NavBar trees={trees} toggleHighlight={toggleHighlight} />
-      <Pane Sory={sories.get(activeId) || SORY} highlight={isHighlighted} />
+      <NavBar trees={trees} toggleHighlight={toggleHighlight} rerenderStory={rerenderStory} />
+      <Pane key={counter} Sory={sories.get(activeId) || SORY} highlight={isHighlighted} />
     </Stack>
   )
 }

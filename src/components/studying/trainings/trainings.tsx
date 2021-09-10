@@ -24,7 +24,7 @@ const Trainings_ = () => {
       breakpointCols={columns}
       className="my-masonry-grid"
       columnClassName="my-masonry-grid_column"
-      sx={{ width: isSM ? 4 * 320 + 20 * 3 : 'auto' }}
+      // sx={{ width: isSM ? 4 * 320 + 20 * 3 : 'auto' }}
     >
       {/* {data?.map((e, j) => (
         <TrainingDeck {...e} key={j} />
@@ -36,7 +36,7 @@ const Trainings_ = () => {
 export function Trainings() {
   return (
     <div>
-      <Typography fontSize="large" sx={{ fontWeight: 'bold', marginBottom: 1 }}>
+      <Typography fontSize="large" sx={{ fontWeight: 600, marginBottom: 1 }}>
         Regular trainings
       </Typography>
       <Trainings_ />

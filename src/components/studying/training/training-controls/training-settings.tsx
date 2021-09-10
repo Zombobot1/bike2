@@ -1,62 +1,11 @@
-import { BoolState, Fn } from '../../../../utils/types'
+import { Fn } from '../../../../utils/types'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { MouseEvent, useState, memo } from 'react'
-import {
-  IconButton,
-  MenuItem,
-  Menu,
-  ListItemIcon,
-  ListItemText,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-} from '@material-ui/core'
+import { IconButton, MenuItem, Menu, ListItemIcon, ListItemText } from '@material-ui/core'
 import TimerOffRoundedIcon from '@material-ui/icons/TimerOffRounded'
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
-
-interface AlertDialogP {
-  isOpenS: BoolState
-  onAccept: Fn
-  onClose: Fn
-}
-
-function AlertDialog({ isOpenS, onAccept, onClose }: AlertDialogP) {
-  const [isOpen, setIsOpen] = isOpenS
-
-  const handleClose = () => {
-    onClose()
-    setIsOpen(false)
-  }
-
-  const handleAccept = () => {
-    onAccept()
-    handleClose()
-  }
-
-  return (
-    <Dialog
-      open={isOpen}
-      onClose={handleClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
-    >
-      <DialogTitle id="alert-dialog-title">{'Accept dangerous action'}</DialogTitle>
-      <DialogContent>
-        <DialogContentText id="alert-dialog-description">Do you want to remove card?</DialogContentText>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" color="error" onClick={handleAccept} autoFocus>
-          Agree
-        </Button>
-      </DialogActions>
-    </Dialog>
-  )
-}
+import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
 
 export interface TrainingSettingsP {
   deleteCard: Fn
@@ -101,7 +50,12 @@ export function TrainingSettings_({ deleteCard, isTimerRunning, pauseTimer, resu
       >
         <SettingsRoundedIcon />
       </IconButton>
-      <AlertDialog isOpenS={isAlertOpenS} onAccept={deleteCard} onClose={resumeTimer} />
+      <AcceptRemovalDialog
+        text="Do you want to remove card?"
+        isOpenS={isAlertOpenS}
+        onAccept={deleteCard}
+        onClose={resumeTimer}
+      />
       <Menu
         id="demo-positioned-menu"
         aria-labelledby="demo-positioned-button"

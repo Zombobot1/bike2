@@ -1,7 +1,6 @@
 import { mount } from '@cypress/react'
 import React from 'react'
-import { FAPI } from '../api/fapi'
-import { OuterShell } from '../components/utils/Shell/Shell'
+import { OuterShell } from '../components/application/Shell'
 import { str } from './types'
 import { uuid, uuidS } from './uuid'
 
@@ -30,12 +29,7 @@ export const show = (Component: React.FC) =>
 /**
  * @deprecated Use bar() instead
  */
-export function intercept() {
-  cy.intercept('GET', FAPI.UBLOCK, (r) => r.reply(FAPI.getUBlock(r.url)))
-  cy.intercept('POST', FAPI.UBLOCKS, (r) => r.reply({ i: '' })).as('postUBlock')
-  cy.intercept('PATCH', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('patchUBlock')
-  cy.intercept('DELETE', FAPI.UBLOCK, (r) => r.reply({ i: '' })).as('deleteUBlock')
-}
+export function intercept() {}
 
 function cssPlaceholder($els: JQuery<HTMLElement>) {
   return $els[0].ownerDocument.defaultView?.getComputedStyle($els[0], 'before').getPropertyValue('content')

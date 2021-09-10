@@ -1,9 +1,10 @@
 import { bool, fn, Fn, JSObject, SetStr, str } from '../../../utils/types'
 import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
-import { DependencyList, useCallback, useEffect, useRef, useState, KeyboardEvent } from 'react'
-import { useEffectedState } from '../../utils/hooks/hooks'
-import { styled, useTheme } from '@material-ui/core'
+import { useEffect, useRef, useState, KeyboardEvent } from 'react'
+import { useReactive } from '../../utils/hooks/hooks'
+import { Box, styled, useTheme } from '@material-ui/core'
 import { AddNewBlockUText, UBlockComponent } from '../types'
+import { useRefCallback } from '../../utils/hooks/useRefCallback'
 
 export interface UParagraph extends UBlockComponent {
   tryToChangeFieldType: SetStr
@@ -59,7 +60,7 @@ function UText({
   onFactoryBackspace = fn,
   isCardField,
 }: UText_) {
-  const [text, setText] = useEffectedState(data)
+  const [text, setText] = useReactive(data)
   const [inFocus, setInFocus] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -97,12 +98,7 @@ function UText({
 
   const theme = useTheme()
 
-  let sx: JSObject = {
-    margin: 0,
-    fontSize: '1.5rem',
-    fontFamily: theme.typography.fontFamily,
-    textAlign: text.length < 90 ? 'center' : 'left',
-  }
+  let sx: JSObject = {}
 
   if (inFocus || alwaysShowPlaceholder) {
     sx = {
@@ -127,6 +123,7 @@ function UText({
       marginBottom: 0,
       lineHeight: 1.12,
       flex: '0 0 auto',
+      textAlign: text.length < 90 ? 'center' : 'left',
 
       [`${theme.breakpoints.up('sm')}`]: {
         fontSize: '2rem',
@@ -137,57 +134,48 @@ function UText({
   sx = isFactory && !alwaysShowPlaceholder ? { ...sx, minHeight: '12rem' } : sx
 
   return (
-    <Editable
-      notemotionref={ref}
-      html={text}
-      tagName={component}
-      onBlur={onBlur}
-      onChange={onChange}
-      onFocus={onFocus}
-      placeholder={placeholder}
-      sx={sx}
-      disabled={readonly}
-      role="textbox"
-      onKeyDown={onKeyDown}
-    />
+    <Styles>
+      <Editable
+        innerRef={ref}
+        html={text}
+        tagName={component}
+        onBlur={onBlur}
+        onChange={onChange}
+        onFocus={onFocus}
+        placeholder={placeholder}
+        sx={sx}
+        disabled={readonly}
+        role="textbox"
+        onKeyDown={onKeyDown}
+        data-cy="utext"
+      />
+    </Styles>
   )
 }
+const Styles = styled(Box)(({ theme }) => ({
+  h2: { fontSize: '1.25rem', marginTop: '0.5rem' },
+  h3: { fontSize: '1rem', marginTop: '0.375rem' },
+  h4: { fontSize: '0.875rem', marginTop: '0.25rem' },
+  pre: { fontSize: '1rem' },
 
-interface UContentEditable_ {
-  notemotionref: React.RefObject<HTMLDivElement>
-  html: str
-  tagName: str
-  placeholder?: str
-  disabled?: bool
-  role: str
-  onBlur: React.FocusEventHandler<HTMLDivElement>
-  onChange: (e: ContentEditableEvent) => void
-  onFocus: React.FocusEventHandler<HTMLDivElement>
-  onKeyDown: React.KeyboardEventHandler<HTMLDivElement>
-}
+  [`${theme.breakpoints.up('sm')}`]: {
+    h2: { fontSize: '2.5rem', marginTop: '1rem' },
+    h3: { fontSize: '2rem', marginTop: '0.75rem' },
+    h4: { fontSize: '1.75rem', marginTop: '0.5rem' },
+    pre: { fontSize: '1.5rem' },
+  },
+}))
 
-function UContentEditable(props: UContentEditable_) {
-  return <ContentEditable innerRef={props.notemotionref} {...props} data-cy="utext" /> // cannot use innerRef with emotion - it breaks storybook (it uses emotion 10, whereas I use 11)
-}
+const Editable = styled(ContentEditable, { label: 'ContentEditable ' })(({ theme }) => ({
+  margin: 0,
 
-const Editable = styled(UContentEditable, { label: 'ContentEditable ' })({
   outline: 'none',
-})
+  fontFamily: theme.typography.fontFamily,
+  width: '100%',
+  overflowWrap: 'break-word',
+  whiteSpace: 'pre-line',
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const useRefCallback = <T extends any[]>(
-  value: ((...args: T) => void) | undefined,
-  deps?: DependencyList,
-): ((...args: T) => void) => {
-  const ref = useRef(value)
-
-  useEffect(() => {
-    ref.current = value
-  }, deps ?? [value])
-
-  const result = useCallback((...args: T) => {
-    ref.current?.(...args)
-  }, [])
-
-  return result
-}
+  h2: {
+    color: 'red',
+  },
+}))

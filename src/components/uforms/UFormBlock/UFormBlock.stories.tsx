@@ -10,34 +10,23 @@ function T(props: UBlock) {
   )
 }
 
-const t: UBlock = {
-  _id: '',
-  type: 'INPUT',
-  addNewBlock: fn,
-  deleteBlock: setStr,
-}
-
 const input1: UBlock = {
-  ...t,
-  _id: 'input1',
+  id: 'input1',
 }
 
 const text1: UBlock = {
-  ...t,
-  _id: 'textarea1',
-  type: 'TEXTAREA',
+  id: 'textarea1',
+  initialData: { data: '', type: 'TEXTAREA' },
 }
 
 const checks1: UBlock = {
-  ...t,
-  _id: 'checks1',
-  type: 'CHECKS',
+  id: 'checks1',
+  initialData: { data: '', type: 'CHECKS' },
 }
 
 const radio1: UBlock = {
-  ...t,
-  _id: 'radio1',
-  type: 'RADIO',
+  id: 'radio1',
+  initialData: { data: '', type: 'RADIO' },
 }
 
 export const InputEditing = () => <T {...input1} />
@@ -47,5 +36,4 @@ export const ChecksEditing = () => <T {...checks1} />
 
 export default {
   title: 'UForms/UFormBlock',
-  component: UBlock,
 }

@@ -3,7 +3,7 @@ import { TrainingConceptsInfoP } from './training-cards-info/training-concepts-i
 import { MemoryRouter } from 'react-router-dom'
 import { useState } from 'react'
 import { Box } from '@material-ui/core'
-import { COLORS } from '../../../../utils/Shell/theming/theme'
+import { COLORS } from '../../../../application/theming/theme'
 
 type TrainingCardT = {
   name: string

@@ -9,7 +9,7 @@ export const a = 1
 //   it('Deletes file', async () => {
 //     const spy = jest.spyOn(api, 'deleteFile')
 
-//     render(<UFileS.DeletesFile />)
+//     render(<UFileS.ShowsFile />)
 
 //     const btn = await waitFor(() => screen.getByRole('button'))
 //     userEvent.click(btn)

@@ -88,5 +88,4 @@ export const Invalid = () => <T {...invalidI} />
 
 export default {
   title: 'UForms/UInput',
-  component: UInput,
 }

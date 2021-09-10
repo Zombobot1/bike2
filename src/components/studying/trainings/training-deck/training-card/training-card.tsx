@@ -4,7 +4,7 @@ import { useRouter } from '../../../../utils/hooks/useRouter'
 import { TrainingDTO } from '../../../training/training/training'
 import { styled, Typography } from '@material-ui/core'
 import { chop } from '../../../utils'
-import { STUDY } from '../../../../utils/Shell/App/pages'
+import { STUDY } from '../../../../application/App/pages'
 
 export interface DeckCard extends SmallDeckCard {
   deckPath: string
@@ -67,12 +67,12 @@ const DeckPath = styled(Typography)({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
   marginLeft: 20,
-  fontWeight: 'bold',
+  fontWeight: 600,
 })
 
 const DeckName = styled(Typography)({
   marginLeft: 20,
-  fontWeight: 'bold',
+  fontWeight: 600,
   lineHeight: 1.2,
 })
 

@@ -14,4 +14,10 @@ describe('Fetch', () => {
     show(Fetch.Fail)
     saw('Error!')
   })
+
+  // no idea how to check that data is preserved
+  // it('Shows instantly initial data and preserves it when document is just created', () => {
+  //   show(Fetch.InstantNewData)
+  //   saw('instantData')
+  // })
 })

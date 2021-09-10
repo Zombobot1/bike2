@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { ReactNode } from 'react'
 import { bool, Fn } from '../../utils/types'
 import { getIds } from '../../utils/utils'
@@ -6,7 +7,7 @@ const id = getIds()
 
 type RecP = {
   width?: number
-  height?: number
+  height?: number | string
   color?: string
   isHidden?: boolean
   _id?: string
@@ -28,7 +29,7 @@ export const Rec = ({
     <div
       style={{
         width: stretch ? '100%' : `${width}px`,
-        height: stretch ? '100%' : `${height}px`,
+        height: stretch ? '100%' : `${height}${_.isString(height) ? '' : 'px'}`,
         backgroundColor: color,
         display: isHidden ? 'none' : 'block',
       }}

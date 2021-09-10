@@ -17,7 +17,7 @@ function Error({ message }: Error) {
 
 const ErrorText = styled(Typography)(({ theme }) => ({
   color: theme.palette.error.main,
-  fontWeight: 'bold',
+  fontWeight: 600,
   fontSize: '1.2rem',
 }))
 

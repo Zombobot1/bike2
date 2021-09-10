@@ -1,4 +1,4 @@
-import { Fn, JSObject, str } from './types'
+import { Fn, JSObject, num, str } from './types'
 import { styled } from '@material-ui/core'
 
 type E = {
@@ -17,7 +17,7 @@ export function prevented(f: Fn) {
 export const prevent = (e: E) => e.preventDefault()
 export const combine = (f1: Fn, f2: Fn) => () => {
   f1()
-  f2
+  f2()
 }
 
 export function cast<T>(data: str, default_: T): T {
@@ -73,9 +73,9 @@ export const queryfy = (route: string, args: JSObject) => {
   return result
 }
 
-export const safe = <T>(o?: T, error = 'Object is not safe'): T => {
+export const safe = <T>(o?: T, error = 'Object is not safe'): Exclude<T, null> => {
   if (!o) throw Error(error)
-  return o
+  return o as Exclude<T, null>
 }
 
 export const getIds = () => {
@@ -100,3 +100,5 @@ export function getEmptyStrings(len: number) {
   for (let i = 0; i < len; i++) result.push('')
   return result
 }
+
+export const cut = (string: str, length: num) => (string.length <= length ? string : string.slice(0, length) + '...')

@@ -6,7 +6,6 @@ import { CardCarousel } from './card-carousel'
 import { Fn } from '../../../../utils/types'
 import { Box } from '@material-ui/core'
 import { useRouter } from '../../../utils/hooks/useRouter'
-import { useTraining } from '../../hooks'
 import { safe } from '../../../../utils/utils'
 import { Fetch } from '../../../utils/Fetch/Fetch'
 import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info'
@@ -71,21 +70,22 @@ function cardType(dto?: CardDTO): CardType {
   return 'INTERACTIVE'
 }
 
-function preloadImage(field: FieldDTO) {
+function _preloadImage(field: FieldDTO) {
   if (field.type !== 'IMAGE' || !field.data) return
   const img = new Image()
   img.src = field.data
 }
 
 function TrainingWrapper_() {
-  const { query } = useRouter()
-  const { data } = useTraining(query('id') || '1')
-  const dto = safe(data)
-  const onLastCard = usePagesPathUpdate(dto)
+  // const { query } = useRouter()
+  // const { data } = useTraining(query('id') || '1')
+  // const dto = safe(data)
+  // const onLastCard = usePagesPathUpdate(dto)
 
-  useMount(() => dto.cards.forEach((c) => c.fields.forEach(preloadImage)))
+  // useMount(() => dto.cards.forEach((c) => c.fields.forEach(preloadImage)))
 
-  return <Training dto={dto} onLastCard={onLastCard} />
+  // return <Training dto={dto} onLastCard={onLastCard} //>
+  return null
 }
 
 export const TrainingWrapper = () => (

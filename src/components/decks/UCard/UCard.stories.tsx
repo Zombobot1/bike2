@@ -1,5 +1,5 @@
 import { UCard } from './UCard'
-import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../content/content'
+import { cardWithDifferentFields, cardWithQandA, uCardLong, uCardMinimal } from '../../../content/trainingsAndDecks'
 
 const T = (args: UCard) => (
   <div style={{ width: '500px', height: '715px' }}>
@@ -70,5 +70,4 @@ export const InteractiveAndPassive = () => T(interactiveAndPassiveA)
 
 export default {
   title: 'Decks/UCard',
-  component: UCard,
 }

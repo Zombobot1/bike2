@@ -1,20 +1,28 @@
-import { Stack, styled, Typography, IconButton } from '@material-ui/core'
+import { Stack, styled, Typography, IconButton, alpha } from '@material-ui/core'
 import { str } from '../../../utils/types'
-import { prevented } from '../../../utils/utils'
+import { cast, prevented } from '../../../utils/utils'
 import { Dropzone1 } from '../../utils/Dropzone'
 import { UBlockComponent } from '../types'
 import AttachFileRoundedIcon from '@material-ui/icons/AttachFileRounded'
 import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
 import { useUFile } from './useUFile'
+import { useReactive, useReactiveObject } from '../../utils/hooks/hooks'
+import { apm } from '../../application/theming/theme'
+
+export class UFileDTO {
+  src = ''
+  name = ''
+}
 
 export function UFile({ data, setData, readonly }: UBlockComponent) {
-  const { fileS, isUploading, deleteFile } = useUFile(data, setData)
-  if (!data) return <Dropzone1 fileS={fileS} isUploading={isUploading} />
+  const [fileData] = useReactiveObject(cast(data, new UFileDTO()))
+  const { fileS, isUploading, deleteFile } = useUFile((src, name) => setData(JSON.stringify({ name, src })))
+  if (!fileData.src || isUploading) return <Dropzone1 fileS={fileS} isUploading={isUploading} />
 
   return (
-    <FileContainer direction="row" alignItems="center" onClick={() => window?.open(data, '_blank')?.focus()}>
+    <FileContainer direction="row" alignItems="center" onClick={() => window?.open(fileData.src, '_blank')?.focus()}>
       <AttachFileRoundedIcon />
-      <FileName>{fileNameFromFileData(data)}</FileName>
+      <FileName>{fileData.name}</FileName>
       {!readonly && (
         <Delete onClick={prevented(deleteFile)}>
           <DeleteRoundedIcon />
@@ -24,32 +32,22 @@ export function UFile({ data, setData, readonly }: UBlockComponent) {
   )
 }
 
-export function fileNameWithId(fileData: str): str {
-  return fileData.split('/').slice(-1)[0]
-}
-
-function fileNameFromFileData(fileData: str): str {
-  const nameWithId = fileNameWithId(fileData)
-  const fileId = nameWithId.split('--').slice(-1)[0]
-  return nameWithId.replace('--' + fileId, '') + '.' + fileData.split('.').slice(-1)[0]
-}
-
-const Delete = styled(IconButton)({
+const Delete = styled(IconButton)(({ theme }) => ({
   marginLeft: 'auto',
   opacity: 0,
   transition: 'opacity 0.2s ease-in-out',
-})
+  color: apm(theme, 'SECONDARY'),
+}))
 
 const FileName = styled(Typography)({
   fontSize: '1.3rem',
 })
 
 const FileContainer = styled(Stack, { label: 'UFile' })(({ theme }) => ({
-  width: '100%',
-  height: '2.5rem',
-  borderRadius: 5,
+  padding: '0.5rem',
+  borderRadius: theme.shape.borderRadius,
   '&:hover': {
-    backgroundColor: theme.palette.grey[50],
+    backgroundColor: apm(theme, '100'),
   },
   '&:hover .MuiIconButton-root': {
     opacity: 1,

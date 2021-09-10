@@ -1,6 +1,5 @@
 import { Stack, styled, Typography, useTheme } from '@material-ui/core'
 import { useState } from 'react'
-import { api } from '../../../../api/api'
 import { fancyTime, percentage } from '../../../../utils/formatting'
 import { useMount } from '../../../utils/hooks/hooks'
 import { num, str } from '../../../../utils/types'
@@ -18,9 +17,9 @@ export interface TrainingEnd extends Badge {
   currentTrainingId: str
 }
 
-export function TrainingEnd({ expectedTime, mistakesCount, spentTime, currentTrainingId }: TrainingEnd) {
+export function TrainingEnd({ expectedTime, mistakesCount, spentTime, currentTrainingId: _ }: TrainingEnd) {
   const theme = useTheme()
-  const [nextTraining, setNextTraining] = useState<TrainingDTO | undefined>()
+  const [nextTraining] = useState<TrainingDTO | undefined>()
 
   let color = theme.palette.error.main
   if (spentTime < expectedTime) color = theme.palette.success.main
@@ -30,7 +29,7 @@ export function TrainingEnd({ expectedTime, mistakesCount, spentTime, currentTra
       : `+${percentage(1 - expectedTime / spentTime)}`
 
   useMount(() => {
-    api.getNextTraining(currentTrainingId).then(setNextTraining)
+    // api.getNextTraining(currentTrainingId).then(setNextTraining)
   })
 
   return (
@@ -112,7 +111,7 @@ const Congratulation = styled(Typography)({
 const StatsHeaders = styled(Typography)({
   textAlign: 'center',
   fontSize: '1.5rem',
-  fontWeight: 'bold',
+  fontWeight: 600,
   marginBottom: '0.5rem',
 })
 
@@ -129,5 +128,5 @@ const Stats = styled(Stack, { label: 'Stats' })(({ theme }) => ({
 const Stat = styled(Typography)({
   textAlign: 'center',
   fontSize: '1.2rem',
-  fontWeight: 'bold',
+  fontWeight: 600,
 })

@@ -1,5 +1,5 @@
 import { TrainingDeck } from './training-deck'
-import { trainingDecks } from '../../../../content/content'
+import { trainingDecks } from '../../../../content/trainingsAndDecks'
 import { Box } from '@material-ui/core'
 import { MemoryRouter } from 'react-router-dom'
 

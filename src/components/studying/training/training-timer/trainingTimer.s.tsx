@@ -1,5 +1,5 @@
 import { Stack } from '@material-ui/core'
-import { COLORS } from '../../../utils/Shell/theming/theme'
+import { COLORS } from '../../../application/theming/theme'
 import { useMount } from '../../../utils/hooks/hooks'
 import { TrainingTimer, useTrainingTimer } from './training-timer'
 

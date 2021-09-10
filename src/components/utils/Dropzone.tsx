@@ -1,5 +1,5 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
-import { IconButton, Stack, styled, Typography } from '@material-ui/core'
+import { alpha, IconButton, Stack, styled, Typography } from '@material-ui/core'
 import { useDropzone } from 'react-dropzone'
 import { bool, Files, Fn, fn, OFile, State, str } from '../../utils/types'
 import UploadFileRoundedIcon from '@material-ui/icons/UploadFileRounded'
@@ -7,21 +7,7 @@ import ContentPasteRoundedIcon from '@material-ui/icons/ContentPasteRounded'
 import { prevented } from '../../utils/utils'
 import { readImageFromKeyboard } from '../../utils/filesManipulation'
 import { uuid } from '../../utils/uuid'
-
-export function use1Drop(onDrop: (f: File) => void): State<OFile> {
-  const [file, setFile] = useState<OFile>(null)
-  useEffect(() => {
-    if (file) onDrop(file)
-  }, [file])
-
-  return [file, setFile]
-}
-
-export function use1ImageDrop(onDrop: (f: File) => void) {
-  const fileS = use1Drop(onDrop)
-  const readFromKeyboard = readImageFromKeyboard(onDrop)
-  return { fileS, readFromKeyboard }
-}
+import { apm } from '../application/theming/theme'
 
 interface Dropzone_ {
   icon?: ReactNode
@@ -39,6 +25,21 @@ export function Dropzone1(props: Dropzone1) {
   const filesS = useState<Files>([])
   useEffect(() => setFile(filesS[0][0]), [JSON.stringify(filesS[0])])
   return <Dropzone filesS={filesS} {...props} label={props.label || 'file'} />
+}
+
+export function use1Drop(onDrop: (f: File) => void): State<OFile> {
+  const [file, setFile] = useState<OFile>(null)
+  useEffect(() => {
+    if (file) onDrop(file)
+  }, [file])
+
+  return [file, setFile]
+}
+
+export function use1ImageDrop(onDrop: (f: File) => void) {
+  const fileS = use1Drop(onDrop)
+  const readFromKeyboard = readImageFromKeyboard(onDrop)
+  return { fileS, readFromKeyboard }
 }
 
 export interface Dropzone extends Dropzone_ {
@@ -67,7 +68,7 @@ export function Dropzone({ filesS, label = 'files', readFromKeyboard, icon, isUp
           {!isUploading && Boolean(readFromKeyboard) && (
             <>
               <Vr />
-              <IconButton onClick={prevented(readFromKeyboard || fn)}>
+              <IconButton color="primary" onClick={prevented(readFromKeyboard || fn)}>
                 <ContentPasteRoundedIcon />
               </IconButton>
             </>
@@ -85,10 +86,9 @@ const Vr = styled('div')(({ theme }) => ({
 }))
 
 const DropArea = styled(Stack)(({ theme }) => ({
-  width: '100%',
   height: '70px',
-  borderRadius: 5,
-  backgroundColor: theme.palette.grey[50],
-  color: theme.palette.grey[500],
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: apm(theme, '100'),
+  color: theme.palette.primary.main,
   cursor: 'pointer',
 }))

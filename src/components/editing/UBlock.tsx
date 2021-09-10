@@ -1,8 +1,7 @@
-import { styled } from '@material-ui/core'
+import { Stack, styled } from '@material-ui/core'
 import { useEffect, useState } from 'react'
-import { api } from '../../api/api'
-import { useEffectedState, useMount } from '../utils/hooks/hooks'
-import { bool, fn, Fn, SetStr, str } from '../../utils/types'
+import { useReactive, useMount } from '../utils/hooks/hooks'
+import { bool, fn, Fn, setStr, SetStr, str } from '../../utils/types'
 import {
   AddNewBlock,
   isUFormComponent,
@@ -17,13 +16,14 @@ import { UFile } from './UFile/UFile'
 import { UAudioFile } from './UFile/UAudioFile/UAudioFile'
 import { UImageFile } from './UFile/UImageFile/UImageFile'
 import { UFormBlock } from '../uforms/UFormBlock/UFormBlock'
+import { useData } from '../utils/hooks/useData'
 
+type InitialData = { data: str; type: UComponentType }
 export interface UBlock extends UBlockB {
   addNewBlock?: AddNewBlock
   deleteBlock?: SetStr
   autoFocus?: bool
-  data?: str
-  type?: UComponentType
+  initialData?: InitialData
   isFactory?: bool
   onFactoryBackspace?: Fn
   placeholder?: str
@@ -33,10 +33,20 @@ export interface UBlock extends UBlockB {
   onAnswer?: Fn
 }
 
-export function UBlock({
-  _id,
-  type: initialType,
-  data: initialData,
+interface UBlockDTO {
+  data: str
+  type: UComponentType
+  isDeleted?: bool
+}
+
+export function UBlock(props: UBlock) {
+  if (props.isFactory) return <Factory {...props} />
+  return <UBlock_ {...props} />
+}
+
+function UBlock_({
+  id,
+  initialData,
   addNewBlock = fn,
   readonly = false,
   autoFocus: initialAutoFocus = false,
@@ -48,36 +58,21 @@ export function UBlock({
   onAnswer,
   isCardField,
 }: UBlock) {
-  const [data, setData_] = useState(initialData || '')
-  const [type, setType_] = useState<UComponentType>(initialType || 'TEXT')
-  const [autoFocus, setAutoFocus] = useEffectedState(initialAutoFocus)
-  const [needNewBlock, setNeedNewBlock] = useState<NewBlockFocus | null>(null)
+  const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
 
-  useEffect(() => {
-    if (needNewBlock && addNewBlock) addNewBlock(_id, needNewBlock)
-  }, [needNewBlock])
+  const [autoFocus, setAutoFocus] = useReactive(initialAutoFocus)
+  const setData = (data: str) => setUBlock({ ...ublock, data })
 
-  const setData = (d: str) => {
-    setData_(d)
-    api.patchUBlock(_id, { data: d })
-  }
-
-  const setType = (t: UComponentType) => {
-    setType_(t)
-    api.patchUBlock(_id, { type: t })
-  }
-
-  const commonProps = { data, setData, readonly }
+  const commonProps = { data: ublock.data, setData, readonly }
 
   const utextProps = {
     ...commonProps,
-    tryToChangeFieldType: tryToChangeFieldType(setAutoFocus, setType, setData_),
+    tryToChangeFieldType: tryToChangeFieldType(setAutoFocus, (t) => setUBlock({ ...ublock, type: t }), setData),
     autoFocus,
-    addNewBlock: (focus?: NewBlockFocus, data?: str) => addNewBlock(_id, focus, data),
-    produceNewBlock: isFactory ? setNeedNewBlock : undefined,
+    addNewBlock: (focus?: NewBlockFocus, data?: str) => addNewBlock(id, focus, data),
     deleteBlock: () => {
-      deleteBlock(_id)
-      api.deleteUBlock(_id)
+      deleteBlock(id)
+      setUBlock({ isDeleted: true })
     },
     isFactory,
     onFactoryBackspace,
@@ -85,23 +80,7 @@ export function UBlock({
     isCardField,
   }
 
-  useMount(() => {
-    if (isFactory) return
-    if (initialData !== undefined) return
-
-    let cancelled = false
-
-    api.getUBlock(_id).then((d) => {
-      if (cancelled) return
-      setData_(d.data)
-      setType_(d.type)
-    })
-
-    return () => {
-      cancelled = true
-    }
-  })
-
+  const type = ublock.type
   return (
     <Container>
       {type === 'TEXT' && <UParagraph {...utextProps} />}
@@ -109,11 +88,28 @@ export function UBlock({
       {type === 'HEADING2' && <UHeading2 {...utextProps} />}
       {type === 'HEADING3' && <UHeading3 {...utextProps} />}
       {type === 'FILE' && <UFile {...commonProps} />}
-      {type === 'AUDIO' && <UAudioFile {...commonProps} />}
       {type === 'IMAGE' && <UImageFile {...commonProps} />}
+      {type === 'AUDIO' && <UAudioFile {...commonProps} />}
       {isUFormComponent(type) && (
-        <UFormBlock {...commonProps} _id={_id} type={type as UFormBlockComponent} onAnswer={onAnswer} />
+        <UFormBlock {...commonProps} _id={id || ''} type={type as UFormBlockComponent} onAnswer={onAnswer} />
       )}
+    </Container>
+  )
+}
+
+function Factory({ autoFocus = false, onFactoryBackspace, placeholder }: UBlock) {
+  return (
+    <Container>
+      <UParagraph
+        autoFocus={autoFocus}
+        addNewBlock={fn}
+        isFactory={true}
+        onFactoryBackspace={onFactoryBackspace}
+        placeholder={placeholder}
+        data=""
+        setData={setStr}
+        tryToChangeFieldType={setStr}
+      />
     </Container>
   )
 }

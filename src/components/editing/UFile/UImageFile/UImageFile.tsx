@@ -1,144 +1,183 @@
-import { useEffectedState } from '../../../utils/hooks/hooks'
+import { useIsSM, useReactive, useReactiveObject } from '../../../utils/hooks/hooks'
 import ImageRoundedIcon from '@material-ui/icons/ImageRounded'
 import { srcfy } from '../../../../utils/filesManipulation'
 import { UBlockComponent } from '../../types'
 import { Dropzone1 } from '../../../utils/Dropzone'
 import { useUImageFile } from '../useUFile'
-import { styled } from '@material-ui/core'
+import { alpha, Box, IconButton, Stack, styled } from '@material-ui/core'
+import { bool, num, SetNum, SetStr, str } from '../../../../utils/types'
+import { cast } from '../../../../utils/utils'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
+import { Rec } from '../../../utils/Rec'
+import fluffy from '../../../../content/fluffy.jpg'
 
-export function UImageFile({ data, setData }: UBlockComponent) {
-  const [src, setSrc] = useEffectedState(data)
-  const props = useUImageFile(data, setData, (f) => setSrc(srcfy(f)))
-
-  if (!src) return <Dropzone1 {...props} label="image" icon={<ImageRoundedIcon />} />
-
-  return <Img src={src} alt="uimage" />
+export class UImageFileDTO {
+  src = ''
+  width = 900
 }
 
-const Img = styled('img')({
+export function UImageFile({ data, setData, readonly }: UBlockComponent) {
+  const [imageData, setImageData] = useReactiveObject(cast(data, new UImageFileDTO()))
+  const props = useUImageFile(
+    (src) => setData(JSON.stringify({ ...imageData, src })),
+    (f) => setImageData(() => ({ width: 900, src: srcfy(f) })),
+  )
+
+  if (!imageData.src) return <Dropzone1 {...props} label="image" icon={<ImageRoundedIcon />} />
+
+  return (
+    <Stack direction="row" justifyContent="center">
+      <ResizableWidth
+        readonly={readonly}
+        width={imageData.width}
+        updateWidth={(w) => setData(JSON.stringify({ ...imageData, width: w }))}
+      >
+        <Img src={imageData.src} />
+        {!readonly && (
+          <Delete size="small" onClick={props.deleteFile}>
+            <DeleteRoundedIcon />
+          </Delete>
+        )}
+      </ResizableWidth>
+    </Stack>
+  )
+}
+
+const Img = styled('img')(({ theme }) => ({
   display: 'block',
   width: '100%',
-  borderRadius: 5,
+  borderRadius: theme.shape.borderRadius,
+}))
+
+const Delete = styled(IconButton)(({ theme }) => ({
+  position: 'absolute',
+  right: '1rem',
+  top: '1rem',
+  opacity: 0,
+  transition: 'opacity 0.2s ease-in-out',
+  backgroundColor: alpha(theme.palette.grey[800], 0.6),
+  color: theme.palette.grey[400],
+
+  ':hover': {
+    color: 'white',
+    backgroundColor: alpha(theme.palette.grey[800], 0.6),
+  },
+}))
+
+const ResizableWidth_ = styled('div', { label: 'ResizableWidth' })({
+  position: 'relative',
+
+  ':hover span': {
+    opacity: 1,
+  },
+
+  ':hover .MuiIconButton-root': {
+    opacity: 1,
+  },
 })
 
-// resizing
-// on desktop: use initial 100% width in pixels and calculate minification delta in % send it to server
-// on mobile: turn off
+const ResizeHandle = styled('div')({
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  cursor: 'col-resize',
+  width: '1rem',
+  userSelect: 'none',
+})
 
-// const Div = styled('div')({
-//   position: 'relative',
-// })
+const Left = styled(ResizeHandle)({
+  left: 0,
+})
 
-// const ResizeHandle = styled('div')({
-//   position: 'absolute',
-//   top: 0,
-//   bottom: 0,
-//   cursor: 'col-resize',
-//   width: '1rem',
-//   userSelect: 'none',
-// })
+const Right = styled(ResizeHandle)({
+  right: 0,
+})
 
-// const Left = styled(ResizeHandle)({
-//   left: 0,
-// })
+const HandleContainer = styled('span')(({ theme }) => ({
+  position: 'absolute',
+  inset: 0,
+  margin: 'auto',
+  width: '50%',
+  height: '4rem',
+  opacity: 0,
+  transition: 'opacity 0.1s ease-in-out',
+  border: `1px solid ${alpha(theme.palette.common.white, 0.8)}`,
+  borderRadius: '10px',
+  backgroundColor: alpha(theme.palette.grey[800], 0.6),
+  userSelect: 'none',
+}))
 
-// const Right = styled(ResizeHandle)({
-//   right: 0,
-// })
+interface ResizableWidth {
+  updateWidth: SetNum
+  width: num
+  children: ReactNode
+  readonly?: bool
+}
 
-// const Handle = styled('div')({
-//   position: 'absolute',
-//   inset: 0,
-//   margin: 'auto',
-//   width: '50%',
-//   height: '4rem',
-//   opacity: 0,
-//   transition: 'opacity 0.1s ease-in-out',
-//   border: `1px solid ${alpha(theme.palette.common.white, 0.8)}`,
-//   borderRadius: '10px',
-//   backgroundColor: alpha(grey[800], 0.8),
-//   userSelect: 'none',
-// })
+export function ResizableWidth({ width: initialWidth, updateWidth, children, readonly }: ResizableWidth) {
+  const [width, setWidth] = useReactiveObject({ ...new Width(), width: initialWidth })
+  const [isResizing, setIsResizing] = useState(false)
+  const [needUpdate, setNeedUpdate] = useState(false)
+  const isSM = useIsSM()
 
-// interface ResizableWidth {
-//   width: num
-//   children: ReactNode
-// }
+  useEffect(() => {
+    if (!needUpdate) return
+    updateWidth(width.width)
+    setNeedUpdate(false)
+  }, [needUpdate])
 
-// function ResizableWidth({ width: initialWidth, children }: ResizableWidth) {
-//   const [width, setWidth] = useState(new Width())
-//   const [isHovered, setIsHovered] = useState(false)
-//   const [isResizing, setIsResizing] = useState(false)
+  useEffect(() => {
+    if (
+      Math.abs(width.needResize - width.previousResize) > 1 &&
+      width.widthBeforeResize + width.needResize * 2 >= width.minWidth
+    ) {
+      setWidth((old) => ({ ...old, width: old.widthBeforeResize + old.needResize * 2, previousResize: old.needResize }))
+    }
+  }, [width.needResize])
 
-//   useEffect(() => setWidth((old) => ({ ...old, initialWidth })), [initialWidth])
+  const onMouseDown =
+    (reverse = false) =>
+    () => {
+      const onMouseMove = (e: MouseEvent) =>
+        setWidth((old) => {
+          return { ...old, needResize: reverse ? old.needResize - e.movementX : old.needResize + e.movementX }
+        })
 
-//   useEffect(() => {
-//     if (
-//       Math.abs(width.needResize - width.previousResize) > 1 &&
-//       width.widthBeforeResize + width.needResize * 2 >= width.minWidth
-//     ) {
-//       setWidth((old) => ({ ...old, width: old.widthBeforeResize + old.needResize * 2, previousResize: old.needResize }))
-//     }
-//   }, [width.needResize])
+      function onMouseUp() {
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('mouseup', onMouseUp)
+        setIsResizing(false)
+        setNeedUpdate(true)
+      }
 
-//   const onMouseDown =
-//     (reverse = false) =>
-//     () => {
-//       const onMouseMove = (e: MouseEvent) =>
-//         setWidth((old) => {
-//           return { ...old, needResize: reverse ? old.needResize - e.movementX : old.needResize + e.movementX }
-//         })
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', onMouseUp)
+      setIsResizing(true)
+      setWidth((old) => ({ ...old, widthBeforeResize: old.width, needResize: 0 }))
+    }
 
-//       function onMouseUp() {
-//         window.removeEventListener('mousemove', onMouseMove)
-//         window.removeEventListener('mouseup', onMouseUp)
-//         setIsResizing(false)
-//       }
+  return (
+    <ResizableWidth_ sx={{ width: width.width || '100%', cursor: isResizing ? 'col-resize' : 'default' }}>
+      {isSM && !readonly && (
+        <>
+          <Right onMouseDown={onMouseDown()}>
+            <HandleContainer />
+          </Right>
+          <Left onMouseDown={onMouseDown(true)}>
+            <HandleContainer />
+          </Left>
+        </>
+      )}
+      {children}
+    </ResizableWidth_>
+  )
+}
 
-//       window.addEventListener('mousemove', onMouseMove)
-//       window.addEventListener('mouseup', onMouseUp)
-//       setIsResizing(true)
-//       setWidth((old) => ({ ...old, widthBeforeResize: old.width, needResize: 0 }))
-//     }
-
-//   return (
-//     <Div
-//       sx={{ width: width.width, height: 300, cursor: isResizing ? 'col-resize' : 'default' }}
-//       onMouseEnter={() => setIsHovered(true)}
-//       onMouseLeave={() => setIsHovered(false)}
-//     >
-//       <Right onMouseDown={onMouseDown()}>
-//         <Handle sx={{ opacity: isHovered ? 1 : 0 }} />
-//       </Right>
-//       <Left onMouseDown={onMouseDown(true)}>
-//         <Handle sx={{ opacity: isHovered ? 1 : 0 }} />
-//       </Left>
-//       {children}
-//     </Div>
-//   )
-// }
-
-// class Width {
-//   widthBeforeResize = 0
-//   width = 400
-//   needResize = 0
-//   previousResize = 0
-//   minWidth = 50
-// }
-// type Block = { children: ReactNode; ref: React.MutableRefObject<HTMLDivElement | null> }
-// const Block = (p: Block) => <Box sx={{ width: '100%' }}>{p.children}</Box>
-
-// export const Sandbox = () => {
-//   const ref = useRef<HTMLDivElement>(null)
-//   return (
-//     <Stack direction="row" justifyContent="center" sx={{ width: '1000px', backgroundColor: 'lightgreen' }}>
-//       <Block ref={ref}>
-//         <ResizableWidth width={ref.current?.offsetWidth || 0}>
-//           <Rec stretch={true} />
-//         </ResizableWidth>
-//       </Block>
-//     </Stack>
-//   )
-//   // wrap sorybook Pane in Memory router
-//   // return <SoryBook sories={storify([UCard, UForm, UFormBlock, UChecks, UInput, UTextS, UPageS])} />
-// }
+class Width {
+  widthBeforeResize = 0
+  width = 100
+  needResize = 0
+  previousResize = 0
+  minWidth = 50
+}

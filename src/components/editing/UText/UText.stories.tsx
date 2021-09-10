@@ -11,14 +11,14 @@ function T(props: UBlock) {
 }
 
 const t: UBlock = {
-  _id: '',
+  id: '',
   addNewBlock: fn,
   deleteBlock: setStr,
 }
 
 const data1: UBlock = {
   ...t,
-  _id: 'data1',
+  id: 'data1',
 }
 
 const readonly: UBlock = {
@@ -28,18 +28,18 @@ const readonly: UBlock = {
 
 const data2: UBlock = {
   ...t,
-  _id: '',
+  id: '',
 }
 
 const data3: UBlock = {
   ...t,
-  _id: '',
-  type: 'HEADING1',
+  id: '',
+  // type: 'HEADING1',
 }
 
 const data4: UBlock = {
   ...t,
-  _id: 'data4',
+  id: 'data4',
 }
 
 export const EditsText = () => <T {...data1} />
@@ -50,5 +50,4 @@ export const DisplaysPlaceholderWhenUnfocused = () => <T {...data3} />
 
 export default {
   title: 'Editing/UText',
-  component: UBlock,
 }

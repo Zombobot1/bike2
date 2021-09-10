@@ -1,5 +1,5 @@
 import { Stack, Typography, Slider } from '@material-ui/core'
-import { useEffectedState } from '../../../utils/hooks/hooks'
+import { useReactive } from '../../../utils/hooks/hooks'
 import { TrainingHeader } from './training-header'
 
 interface TrainingHeaderTP {
@@ -10,7 +10,7 @@ interface TrainingHeaderTP {
 }
 
 const TrainingHeaderT = ({ cardsLength, oneCardTimeToAnswer, currentCardIndex, showMore = true }: TrainingHeaderTP) => {
-  const [cci, setCci] = useEffectedState(currentCardIndex)
+  const [cci, setCci] = useReactive(currentCardIndex)
   const ttf = (cardsLength - cci) * oneCardTimeToAnswer
 
   if (!showMore) {

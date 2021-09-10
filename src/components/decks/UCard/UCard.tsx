@@ -100,20 +100,12 @@ export interface UCardField extends FieldDTO {
   readonly?: bool
 }
 
-const UCardField = ({ _id, data, type, isMediaActive, readonly }: UCardField) => {
+const UCardField = ({ _id, data, type: _, isMediaActive, readonly }: UCardField) => {
   const { interactiveSubmit } = useInteractiveSubmit()
 
   if (!data) return null
 
   return (
-    <UBlock
-      _id={_id}
-      data={data}
-      type={type}
-      autoplay={isMediaActive}
-      onAnswer={interactiveSubmit}
-      readonly={readonly}
-      isCardField={true}
-    />
+    <UBlock id={_id} autoplay={isMediaActive} onAnswer={interactiveSubmit} readonly={readonly} isCardField={true} />
   )
 }
