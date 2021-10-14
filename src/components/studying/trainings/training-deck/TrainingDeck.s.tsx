@@ -1,6 +1,6 @@
 import { TrainingDeck } from './training-deck'
 import { trainingDecks } from '../../../../content/trainingsAndDecks'
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 import { MemoryRouter } from 'react-router-dom'
 
 const Template = () => {

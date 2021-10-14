@@ -1,8 +1,8 @@
-import AutorenewOutlinedIcon from '@material-ui/icons/AutorenewOutlined'
-import RemoveRedEyeOutlinedIcon from '@material-ui/icons/RemoveRedEyeOutlined'
-import { Typography, Stack } from '@material-ui/core'
-import { OverridableComponent } from '@material-ui/core/OverridableComponent'
-import { SvgIconTypeMap } from '@material-ui/core/SvgIcon/SvgIcon'
+import AutorenewOutlinedIcon from '@mui/icons-material/AutorenewOutlined'
+import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined'
+import { Typography, Stack } from '@mui/material'
+import { OverridableComponent } from '@mui/material/OverridableComponent'
+import { SvgIconTypeMap } from '@mui/material/SvgIcon/SvgIcon'
 import { fancyNumber } from '../../../../../../utils/formatting'
 
 export interface TrainingConceptsInfoP {

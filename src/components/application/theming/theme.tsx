@@ -1,4 +1,4 @@
-import { alpha, createTheme, Theme, useMediaQuery } from '@material-ui/core'
+import { alpha, createTheme, Theme, useMediaQuery } from '@mui/material'
 import { atom, useAtom } from 'jotai'
 import _ from 'lodash'
 import { num } from '../../../utils/types'
@@ -22,7 +22,7 @@ export const COLORS = {
   light: '#eaedf2',
 }
 
-type APMType = 'BG' | '100' | '200' | '400' | 'BORDER' | 'SECONDARY'
+type APMType = 'BG' | '100' | '200' | '400' | '800' | 'BORDER' | 'SECONDARY'
 const darkSecondaryAlpha = 0.6
 export function apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'BG', lightAlpha?: num) {
   const isDark = theme.palette.mode === 'dark'
@@ -33,10 +33,11 @@ export function apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'BG', lightAl
   }
   const type = typeOrDarkAlpha as APMType
   if (type === 'BORDER') return alpha(primary, 0.3)
-  if (type === 'SECONDARY') return alpha(primary, isDark ? darkSecondaryAlpha : 0.4)
-  if (type === '100') return alpha(primary, isDark ? 0.15 : 0.05)
-  if (type === '200') return alpha(primary, isDark ? 0.2 : 0.1)
-  if (type === '400') return alpha(primary, isDark ? 0.4 : 0.2)
+  else if (type === 'SECONDARY') return alpha(primary, isDark ? darkSecondaryAlpha : 0.4)
+  else if (type === '100') return alpha(primary, isDark ? 0.15 : 0.05)
+  else if (type === '200') return alpha(primary, isDark ? 0.2 : 0.1)
+  else if (type === '400') return alpha(primary, isDark ? 0.4 : 0.2)
+  else if (type === '800') return alpha(primary, isDark ? 0.8 : 0.5)
 
   return isDark ? theme.palette.secondary.main : theme.palette.common.white
 }

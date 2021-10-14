@@ -1,4 +1,4 @@
-import { got, utext, intercept, show, expectCSSPlaceholder } from '../../utils/testUtils'
+import { got, utext, show, expectCSSPlaceholder } from '../../utils/testUtils'
 import * as UForm from './UForm.stories'
 
 // describe('UForm', () => {

@@ -1,31 +1,26 @@
-import { intercept, sent, show, expectCSSPlaceholder, utext } from '../../../utils/testUtils'
-import * as UTextS from './UText.stories'
+import { show, expectCSSPlaceholder, utext } from '../../../utils/testUtils'
+import * as UText from './UText.stories'
 
-// describe('Editable text', () => {
-//   beforeEach(intercept)
-//   it('Gets data from server, edits it, sends it back', () => {
-//     show(UTextS.EditsText)
-//     cy.contains('initial data')
+describe('Editable text', () => {
+  it('Displays placeholders | Changes component', () => {
+    show(UText.ChangesComponents)
 
-//     utext().type(' 1').blur()
-//     sent('@patchUBlock', 'initial data 1')
-//   })
+    utext().then(expectCSSPlaceholder('none'))
+    utext().focus()
+    utext().then(expectCSSPlaceholder('"Type \'/\' for commands"'))
 
-//   it('Displays placeholders | Changes component', () => {
-//     show(UTextS.ChangesComponents)
+    utext().type('/heading1 ')
+    utext().then(expectCSSPlaceholder('"Heading 1"'))
+  })
 
-//     utext().then(expectCSSPlaceholder('none'))
-//     utext().focus()
-//     utext().then(expectCSSPlaceholder('"Type \'/\' for commands"'))
+  it('Makes text bold', () => {
+    show(UText.TransformedText)
+    utext().type('{selectall}{ctrl+b}')
+    cy.get('b').contains('bold')
+  })
 
-//     utext().type('/heading1 ')
-//     utext().then(expectCSSPlaceholder('"Heading 1"'))
-
-//     sent('@patchUBlock', 'HEADING1', 'type')
-//   })
-
-//   it('Is disabled when is readonly', () => {
-//     show(UTextS.ReadOnlyText)
-//     utext().should('have.attr', 'disabled')
-//   })
-// })
+  it('Is disabled when is readonly', () => {
+    show(UText.ReadOnlyText)
+    utext().should('have.attr', 'disabled')
+  })
+})

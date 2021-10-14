@@ -1,5 +1,5 @@
 import { useUFormSubmit } from './useUForm'
-import { Stack, Button, styled, Box } from '@material-ui/core'
+import { Stack, Button, styled, Box } from '@mui/material'
 import { UForm } from './UForm'
 import { UBlockB } from '../editing/types'
 

@@ -1,8 +1,7 @@
-import TableCell from '@material-ui/core/TableCell'
-import { TextField, useTheme, Typography } from '@material-ui/core'
+import TableCell from '@mui/material/TableCell'
+import { TextField, useTheme, Typography } from '@mui/material'
 import { useCell } from './useTable'
 import { useEventListener } from '../../utils/hooks/useEventListener'
-import { KeyboardEvent } from 'react'
 
 interface UTableCell {
   i: number
@@ -18,7 +17,7 @@ export function UTableCell({ i, j, isLast = false }: UTableCell) {
   )
   const theme = useTheme()
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Escape' && isEditing) {
       finishEditing()
       ref.current.focus()
@@ -31,7 +30,7 @@ export function UTableCell({ i, j, isLast = false }: UTableCell) {
     }
   }
 
-  const ref = useEventListener('keydown', handleKeyDown, isEditing)
+  const ref = useEventListener('keydown', handleKeyDown)
 
   return (
     <TableCell

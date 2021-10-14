@@ -1,5 +1,5 @@
+import { styled } from '@mui/material'
 import { Fn, JSObject, num, str } from './types'
-import { styled } from '@material-ui/core'
 
 type E = {
   preventDefault: Fn
@@ -93,7 +93,7 @@ export const catchError = (e: any) => {
   throw new Error(e)
 }
 
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+export const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function getEmptyStrings(len: number) {
   const result = []

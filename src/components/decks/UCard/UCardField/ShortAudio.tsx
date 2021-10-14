@@ -1,7 +1,7 @@
-import VolumeUpRoundedIcon from '@material-ui/icons/VolumeUpRounded'
-import PauseRoundedIcon from '@material-ui/icons/PauseRounded'
+import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
+import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import { useEffect, useState } from 'react'
-import { IconButton } from '@material-ui/core'
+import { IconButton } from '@mui/material'
 import { bool, str } from '../../../../utils/types'
 
 export interface ShortAudio {

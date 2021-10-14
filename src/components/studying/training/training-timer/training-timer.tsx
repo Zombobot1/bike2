@@ -5,8 +5,8 @@ import { Fn, fn } from '../../../../utils/types'
 import { atom, useAtom } from 'jotai'
 import { useMount } from '../../../utils/hooks/hooks'
 import { useIsPageVisible } from '../../../utils/hooks/useIsPageVisible'
-import TimerRoundedIcon from '@material-ui/icons/TimerRounded'
-import { IconButton, styled } from '@material-ui/core'
+import TimerRoundedIcon from '@mui/icons-material/TimerRounded'
+import { IconButton, styled } from '@mui/material'
 
 const timeToAnswerA = atom(0)
 const isRunningA = atom(true)

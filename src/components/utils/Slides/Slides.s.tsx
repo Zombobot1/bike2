@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Stack, TextField } from '@material-ui/core'
+import { Button, ButtonGroup, Stack, TextField } from '@mui/material'
 import { useState } from 'react'
 import { num, nums } from '../../../utils/types'
 import { Rec } from '../Rec'

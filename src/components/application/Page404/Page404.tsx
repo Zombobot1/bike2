@@ -1,4 +1,4 @@
-import { Button, Stack, styled, Typography } from '@material-ui/core'
+import { Button, Stack, styled, Typography } from '@mui/material'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { ReactComponent as Image404SVG } from './404.svg'
 import { ReactComponent as LeftBlobSVG } from './leftBlob.svg'

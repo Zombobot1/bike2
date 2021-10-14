@@ -1,3 +1,5 @@
+import { num, str } from './types'
+
 export const transformedMax = <T>(arr: T[], f: (v: T) => number): number => Math.max(...arr.map(f))
 export const min = <T>(arr: T[], f: (v: T) => number): T => arr.reduce((p, c) => (f(p) - f(c) < 0 ? p : c))
 
@@ -35,3 +37,7 @@ export const zip2 = <T, D>(arr1: T[], arr2: D[]): [T, D][] => {
   for (let i = 0; i < minLength; i += 1) result.push([arr1[i], arr2[i]])
   return result
 }
+
+export const reverse = <T>(array: T[]): T[] => array.map((_, idx) => array[array.length - 1 - idx])
+export const insert = (s: str, i: num, data: str): str => s.slice(0, i) + data + s.slice(i)
+export const cutData = (s: str, i: num, data: str): str => s.slice(0, i) + s.slice(i + data.length)

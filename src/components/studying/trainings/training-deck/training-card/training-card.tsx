@@ -2,7 +2,7 @@ import { SmallDeckCard } from './types'
 import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
 import { useRouter } from '../../../../utils/hooks/useRouter'
 import { TrainingDTO } from '../../../training/training/training'
-import { styled, Typography } from '@material-ui/core'
+import { styled, Typography } from '@mui/material'
 import { chop } from '../../../utils'
 import { STUDY } from '../../../../application/App/pages'
 

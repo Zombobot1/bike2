@@ -4,10 +4,10 @@ import { useRouter } from '../components/utils/hooks/useRouter'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
 import { useIsSM, useMount, useToggle } from '../components/utils/hooks/hooks'
 import { bool, Fn, JSObjects, str, strs } from '../utils/types'
-import { TreeItem, TreeView } from '@material-ui/lab'
-import ArrowDropDownRoundedIcon from '@material-ui/icons/ArrowDropDownRounded'
-import ArrowRightRoundedIcon from '@material-ui/icons/ArrowRightRounded'
-import MoreHorizRoundedIcon from '@material-ui/icons/MoreHorizRounded'
+import { TreeItem, TreeView } from '@mui/lab'
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
+import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
+import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
 import {
   alpha,
   Box,
@@ -24,17 +24,24 @@ import {
   styled,
   SwipeableDrawer,
   Typography,
-} from '@material-ui/core'
+  useTheme,
+} from '@mui/material'
 import useCaseSVG from './useCase.svg'
 import componentSVG from './component.svg'
 import storySVG from './story.svg'
 import { ReactComponent as LogoSVG } from './logo.svg'
-import ModeNightRoundedIcon from '@material-ui/icons/ModeNightRounded'
-import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded'
-import AutoFixHighRoundedIcon from '@material-ui/icons/AutoFixHighRounded'
-import FullscreenRoundedIcon from '@material-ui/icons/FullscreenRounded'
-import AutorenewRoundedIcon from '@material-ui/icons/AutorenewRounded'
+import ModeNightRoundedIcon from '@mui/icons-material/ModeNightRounded'
+import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded'
+import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded'
+import FullscreenRoundedIcon from '@mui/icons-material/FullscreenRounded'
+import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
 import { storify } from './utils'
+import { a } from '../components/editing/UFile/UFile.spec'
+import { ErrorBoundary } from 'react-error-boundary'
+import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
+import { Provider } from 'jotai'
+import { FSProvider } from '../fb/fs'
+import { useLocalStorage } from '../components/utils/hooks/useLocalStorage'
 
 export const _SORYBOOK = '/_stories'
 const SORY: FC = () => null
@@ -85,12 +92,12 @@ interface Menu_ {
   themeType: ThemeType
   toggleTheme: Fn
   toggleFullscreen: Fn
-  toggleHighlight: Fn
+  toggleOutline: Fn
   rerenderStory: Fn
   navRef: React.MutableRefObject<HTMLElement | undefined>
 }
 
-function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight, rerenderStory, navRef }: Menu_) {
+function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerenderStory, navRef }: Menu_) {
   const [open, setOpen] = useState(false)
   const anchorRef = useRef<HTMLButtonElement>(null)
 
@@ -142,13 +149,13 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleHighlight, reren
                       CA+T
                     </Shortcut>
                   </MenuItem>
-                  <MenuItem onClick={combine(toggleHighlight, handleClose)}>
+                  <MenuItem onClick={combine(toggleOutline, handleClose)}>
                     <ListItemIcon>
                       <AutoFixHighRoundedIcon fontSize="small" />
                     </ListItemIcon>
-                    <ListItemText>Highlight</ListItemText>
+                    <ListItemText>Outline</ListItemText>
                     <Shortcut variant="body2" color="text.secondary">
-                      CA+H
+                      CA+O
                     </Shortcut>
                   </MenuItem>
                   <MenuItem onClick={combine(toggleFullscreen, handleClose)}>
@@ -185,11 +192,11 @@ const Shortcut = styled(Typography)({
 
 interface Nav_ {
   trees: SoryTrees
-  toggleHighlight: Fn
+  toggleOutline: Fn
   rerenderStory: Fn
 }
 
-function Nav({ trees, toggleHighlight, rerenderStory }: Nav_) {
+function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
   const ref = useRef<HTMLElement>()
   const [isFullscreen, toggleFullscreen] = useToggle(false)
   const { location } = useRouter()
@@ -211,10 +218,10 @@ function Nav({ trees, toggleHighlight, rerenderStory }: Nav_) {
 
   function handleKeyDown(event: KeyboardEvent) {
     if (!event.ctrlKey || !event.altKey) return
-    if (event.key === 't') toggleTheme()
-    else if (event.key === 'f') toggleFullscreen()
-    else if (event.key === 'h') toggleHighlight()
-    else if (event.key === 'r') rerenderStory()
+    if ('t†'.includes(event.key)) toggleTheme()
+    else if ('fƒ'.includes(event.key)) toggleFullscreen()
+    else if ('oø'.includes(event.key)) toggleOutline()
+    else if ('r®'.includes(event.key)) rerenderStory()
   }
 
   useMount(() => {
@@ -233,7 +240,7 @@ function Nav({ trees, toggleHighlight, rerenderStory }: Nav_) {
           themeType={themeType}
           toggleTheme={toggleTheme}
           toggleFullscreen={toggleFullscreen}
-          toggleHighlight={toggleHighlight}
+          toggleOutline={toggleOutline}
           rerenderStory={rerenderStory}
           navRef={ref}
         />
@@ -332,18 +339,28 @@ function NavBar(props: Nav_) {
 
 interface Pane_ {
   Sory: FC
-  highlight: bool
+  soryId: str
+  outline: bool
 }
 
-function Pane({ Sory, highlight }: Pane_) {
+// provider is used to suppress warning when switching e.g. from upage to fetch with initial data (upage will be updated because it is not unmounted yet?!)
+function Pane({ Sory, outline, soryId }: Pane_) {
+  const theme = useTheme()
   return (
-    <ComponentWrapper alignItems="center" justifyContent="center">
-      {highlight && (
-        <Box sx={{ backgroundColor: 'lightgreen' }}>
+    <ComponentWrapper
+      alignItems="center"
+      justifyContent="center"
+      sx={
+        outline
+          ? { '*': { outline: `1px solid ${theme.palette.mode === 'dark' ? 'rgb(90 48 11)' : 'rgb(221 223 230)'}` } }
+          : {}
+      }
+    >
+      <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
+        <FSProvider key={soryId}>
           <Sory />
-        </Box>
-      )}
-      {!highlight && <Sory />}
+        </FSProvider>
+      </ErrorBoundary>
     </ComponentWrapper>
   )
 }
@@ -363,7 +380,8 @@ export interface SoryBook_ {
 function SoryBook_({ trees, sories }: SoryBook_) {
   const [counter, setCounter] = useState(0)
   const rerenderStory = () => setCounter((old) => old + 1)
-  const [isHighlighted, toggleHighlight] = useToggle(false)
+  const [isOutlined, setIsOutlined] = useLocalStorage('sorybook-outlined', false)
+  const toggleOutline = () => setIsOutlined((o) => !o)
   const { location, history } = useRouter()
   const activeId = location.pathname.replace(_SORYBOOK + '/', '')
 
@@ -375,8 +393,8 @@ function SoryBook_({ trees, sories }: SoryBook_) {
 
   return (
     <Stack sx={{ height: '100%' }} direction="row">
-      <NavBar trees={trees} toggleHighlight={toggleHighlight} rerenderStory={rerenderStory} />
-      <Pane key={counter} Sory={sories.get(activeId) || SORY} highlight={isHighlighted} />
+      <NavBar trees={trees} toggleOutline={toggleOutline} rerenderStory={rerenderStory} />
+      <Pane key={counter} Sory={sories.get(activeId) || SORY} outline={isOutlined} soryId={activeId} />
     </Stack>
   )
 }

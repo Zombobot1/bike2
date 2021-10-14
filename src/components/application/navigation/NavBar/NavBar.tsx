@@ -1,20 +1,22 @@
-import { alpha, Avatar, Box, Drawer, Fab, Paper, Stack, styled, Typography, useTheme } from '@material-ui/core'
+import { alpha, Avatar, Box, Drawer, Fab, Paper, Stack, styled, Typography, useTheme } from '@mui/material'
 
 import { str, BoolState } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
 import { NavLink, NavTree } from './NavTree'
 import { User } from 'firebase/auth'
-import SchoolRoundedIcon from '@material-ui/icons/SchoolRounded'
-import BusinessCenterRoundedIcon from '@material-ui/icons/BusinessCenterRounded'
-import SettingsIcon from '@material-ui/icons/Settings'
-import AddRoundedIcon from '@material-ui/icons/AddRounded'
+import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded'
+import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded'
+import SettingsIcon from '@mui/icons-material/Settings'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
 
 import { WS } from '../workspace'
-import { useShowAppBar } from '../Crumbs/AppBar'
+import { useShowAppBar } from '../AppBar/AppBar'
 import { apm } from '../../theming/theme'
+import { useNewUPage } from '../../../editing/UPage/UPage'
+import { UserDTO } from '../../../../fb/auth'
 
 export interface NavBar {
-  user: User
+  user: UserDTO
   workspace: WS
   isNavBarOpenS: BoolState
 }
@@ -79,6 +81,7 @@ const NavBarWrapper = styled(Stack, { label: 'NavBar' })({
 function NavBar_({ user, workspace }: NavBar) {
   const displayName = user.displayName || `Zombobot ${strShortHash(user.email || '')}`
   const theme = useTheme()
+  const addNewUPage = useNewUPage(workspace)
   const sx = { color: apm(theme, 'SECONDARY') }
   return (
     <NavBox>
@@ -94,7 +97,7 @@ function NavBar_({ user, workspace }: NavBar) {
         </Stack>
         <NavTrees workspace={workspace} />
       </Stack>
-      <FAB color="primary" sx={{ zIndex: 100 }}>
+      <FAB onClick={() => addNewUPage()} color="primary" sx={{ zIndex: 100 }}>
         <AddRoundedIcon />
       </FAB>
     </NavBox>
@@ -145,12 +148,11 @@ const TreesBox = styled(Stack)(({ theme }) => ({
 
     '::-webkit-scrollbar': {
       width: '10px',
-      backgroundColor: apm(theme, 0.2, 0.1),
     },
 
     '::-webkit-scrollbar-thumb': {
       borderRadius: '7.5px',
-      backgroundColor: apm(theme, 0.3, 0.15),
+      backgroundColor: apm(theme, 0.15, 0.15),
     },
   },
 }))

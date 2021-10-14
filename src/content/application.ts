@@ -1,4 +1,11 @@
+import randomColor from 'randomcolor'
+import { NavNodeDTOs } from '../components/application/navigation/NavBar/NavTree'
 import { _WSD } from '../components/application/navigation/workspace'
+import { UPageDataDTO } from '../components/editing/UPage/UPage'
+import { safe } from '../utils/utils'
+import { IdAndBlock, IdAndBlocks } from './types'
+
+const $ = JSON.stringify
 
 export const ws: _WSD = {
   favorite: [
@@ -8,7 +15,7 @@ export const ws: _WSD = {
       children: [
         {
           id: 'pets',
-          name: 'Pets',
+          name: 'Pets & Animals',
         },
         {
           id: 'medicine',
@@ -83,5 +90,34 @@ export const ws: _WSD = {
         },
       ],
     },
+    {
+      id: 'removal',
+      name: 'Removal',
+    },
+    {
+      id: 'empty-page',
+      name: '',
+    },
   ],
 }
+
+function bfs(nodes: NavNodeDTOs): NavNodeDTOs {
+  const queue = [...nodes]
+  const r: NavNodeDTOs = []
+
+  while (queue.length) {
+    const node = safe(queue.shift())
+    if (node?.children) queue.push(...node.children)
+    r.push(node)
+  }
+
+  return r
+}
+
+const exclude = ['removal', 'empty-page', 'pets']
+export const _pages = bfs(ws.personal)
+  .filter((p) => !exclude.includes(p.id))
+  .map((n): IdAndBlock => {
+    const r: UPageDataDTO = { ids: [], name: n.name, color: randomColor({ luminosity: 'bright' }) }
+    return [n.id, { data: $(r), type: 'PAGE' }]
+  })

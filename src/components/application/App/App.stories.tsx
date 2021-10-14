@@ -1,9 +1,10 @@
 import { getAuth } from '@firebase/auth'
-import { Button } from '@material-ui/core'
+import { Button } from '@mui/material'
 import { signOut } from 'firebase/auth'
 import { Suspense, useState } from 'react'
 import { MemoryRouter } from 'react-router'
 import { useSigninCheck } from 'reactfire'
+import { useIsSignedIn } from '../../../fb/auth'
 import { bool, str } from '../../../utils/types'
 import { _getOOBLink } from '../../../_seeding'
 import { useMount } from '../../utils/hooks/hooks'
@@ -18,18 +19,18 @@ interface T_ {
 
 function T_({ initialPosition, prepareForSignIn, showSignOut }: T_) {
   const [position, setPosition] = useState(initialPosition)
-  const { data } = useSigninCheck()
+  const { isSignedIn, signOut } = useIsSignedIn()
 
   useMount(() => {
     if (!prepareForSignIn) return
     localStorage.setItem('emailForSignIn', 'test@gmail.com')
-    signOut(getAuth())
+    signOut()
   })
 
   return (
     <>
-      {showSignOut && data.signedIn && <Button onClick={() => signOut(getAuth())}>Sign Out</Button>}
-      {!data.signedIn && (
+      {showSignOut && isSignedIn && <Button onClick={signOut}>Sign Out</Button>}
+      {!isSignedIn && (
         <Button
           onClick={() => _getOOBLink().then((l) => setPosition(`${FINISH_REGISTRATION}${l}`))}
           data-cy="sign-in-oob"

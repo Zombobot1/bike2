@@ -1,5 +1,5 @@
 import { addS, fancyTime } from '../../../../utils/formatting'
-import { LinearProgress, Stack, styled, Typography, linearProgressClasses } from '@material-ui/core'
+import { LinearProgress, Stack, styled, Typography, linearProgressClasses } from '@mui/material'
 import { useIsSM } from '../../../utils/hooks/hooks'
 
 export interface ProgressBarP {

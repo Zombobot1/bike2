@@ -7,13 +7,13 @@ import { Estimations, useUFormSubmit } from '../../../uforms/useUForm'
 import { min } from '../../../../utils/algorithms'
 import { EstimateCard } from '../training/hooks'
 import { useInteractiveSubmit } from '../hooks'
-import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@material-ui/core'
-import CheckRoundedIcon from '@material-ui/icons/CheckRounded'
-import ArrowRightAltRoundedIcon from '@material-ui/icons/ArrowRightAltRounded'
+import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@mui/material'
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
+import ArrowRightAltRoundedIcon from '@mui/icons-material/ArrowRightAltRounded'
 import { useIsSM } from '../../../utils/hooks/hooks'
 import { TrainingSettings } from './training-settings'
 import { TrainingSettingsP } from './training-settings'
-import KeyboardBackspaceRoundedIcon from '@material-ui/icons/KeyboardBackspaceRounded'
+import KeyboardBackspaceRoundedIcon from '@mui/icons-material/KeyboardBackspaceRounded'
 
 export interface TrainingControlsP extends TrainingSettingsP {
   estimate: EstimateCard

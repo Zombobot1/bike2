@@ -1,6 +1,6 @@
 import { ReactElement, ReactNodeArray, useEffect } from 'react'
-import Slide from '@material-ui/core/Slide'
-import { styled } from '@material-ui/core'
+import Slide from '@mui/material/Slide'
+import { styled } from '@mui/material'
 import { atom, useAtom } from 'jotai'
 import flattenChildren from 'react-flatten-children'
 import { num } from '../../../utils/types'

@@ -1,4 +1,4 @@
-import { alpha, useTheme } from '@material-ui/core'
+import { alpha, useTheme } from '@mui/material'
 import { apm } from '../../application/theming/theme'
 
 export function useValidationColor(validity: string): string {

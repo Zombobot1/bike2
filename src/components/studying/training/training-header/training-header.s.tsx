@@ -1,4 +1,4 @@
-import { Stack, Typography, Slider } from '@material-ui/core'
+import { Stack, Typography, Slider } from '@mui/material'
 import { useReactive } from '../../../utils/hooks/hooks'
 import { TrainingHeader } from './training-header'
 

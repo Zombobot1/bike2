@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 import { str } from '../../../utils/types'
 import { Fetch } from './Fetch'
-import { useData } from '../hooks/useData'
-import { Button } from '@material-ui/core'
+import { useData } from '../../../fb/useData'
+import { Button } from '@mui/material'
 
 type DTO = { d: str }
 

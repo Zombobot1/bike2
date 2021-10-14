@@ -1,4 +1,4 @@
-import { Box, Button, Stack, styled } from '@material-ui/core'
+import { Box, Button, Stack, styled } from '@mui/material'
 import { FC, useState } from 'react'
 import { CardDatas, CardDataP, CardData } from '../../studying/training/training/card-carousel'
 import { Slides, useSlides } from '../../utils/Slides/Slides'

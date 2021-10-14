@@ -3,9 +3,10 @@ import { UAudioFileDTO } from '../components/editing/UFile/UAudioFile/UAudioFile
 import { UImageFileDTO } from '../components/editing/UFile/UImageFile/UImageFile'
 import { UPageDataDTO } from '../components/editing/UPage/UPage'
 import { str } from '../utils/types'
+import { IdAndBlocks } from './types'
+import fluffyJpg from './fluffy.jpg'
+import fluffyMp3 from './fluffy.mp3'
 
-type IdANdBlock = [str, UBlockDTO]
-export type IdANdBlocks = IdANdBlock[]
 const $ = JSON.stringify
 
 const _kittens = `A kitten is a juvenile cat. After being born, kittens display primary altriciality and are totally dependent on their mother for survival. They do not normally open their eyes until after seven to ten days. After about two weeks, kittens quickly develop and begin to explore the world outside the nest. After a further three to four weeks, they begin to eat solid food and grow adult teeth. Domestic kittens are highly social animals and usually enjoy human companionship.`
@@ -31,18 +32,37 @@ const page: UPageDataDTO = {
     'catPdf',
     'fluffyMp3',
     'newCatFile',
+    'kittensInfo',
+    'bath-your-cat',
+    'bath-your-cat-step1',
+    'bath-your-cat-step2',
+    'bath-your-cat-step3',
+    'bath-your-cat-step4',
+    'bath-your-cat-step5',
+    'why-own-cat',
+    'why-own-cat-point1',
+    'why-own-cat-point2',
+    'why-own-cat-point3',
+    'why-own-cat-point4',
+    'why-own-cat-point5',
+    'hypoallergenic-cat',
+    'hypoallergenic-cat1',
+    'hypoallergenic-cat2',
+    'hypoallergenic-cat3',
+    'hypoallergenic-cat4',
+    'hypoallergenic-cat5',
   ],
 }
 
-const mp3: UAudioFileDTO = { src: '/src/content/fluffy.mp3' }
-const img: UImageFileDTO = { src: '/src/content/fluffy.jpg', width: 0 }
+const mp3: UAudioFileDTO = { src: fluffyMp3 }
+const img: UImageFileDTO = { src: fluffyJpg, width: 900 }
 const newCatFile = { name: '', src: '' }
 const pdf = {
   name: 'cat needs.pdf',
-  src: 'https://firebasestorage.googleapis.com/v0/b/universe-55cec.appspot.com/o/cat%20needs.pdf?alt=media&token=231eb8fb-eb37-4461-bb67-66742a8f0da8',
+  src: '/src/content/catneeds.pdf',
 }
 
-export const _kittensBlocks: IdANdBlocks = [
+export const _kittensBlocks: IdAndBlocks = [
   ['kittensH', { type: 'HEADING1', data: 'Kittens' }],
   ['kittens', { type: 'TEXT', data: _kittens }],
   ['fluffyJpg', { type: 'IMAGE', data: $(img) }],
@@ -55,4 +75,67 @@ export const _kittensBlocks: IdANdBlocks = [
   ['fluffyMp3', { type: 'AUDIO', data: $(mp3) }],
   ['newCatFile', { type: 'FILE', data: $(newCatFile) }],
   ['pets', { type: 'PAGE', data: $(page) }],
+]
+
+const _kittensS = `A <b><i>kitten</i></b> is a juvenile cat. After being born`
+const _kittens2S = `A feline litter usually consists of two to five kittens born after a gestation lasting between 64 and 67 days, with an average`
+const _kittens3S = `Kittens develop very quickly from about two weeks of age until their seventh week. Their coordination and strength`
+const _kittens4S = `Kittens are highly social animals and spend most of their `
+
+export const _kittensForFocusPage: UPageDataDTO = {
+  color: '',
+  name: 'Pets',
+  ids: ['kittensHL', 'kittensS', 'newCatFile', 'kittensH2L', 'kittens2S', 'kittens3S', 'kittensH3L', 'kittens4S'],
+  // ids: ['kittensHL', 'kittensS'],
+}
+
+export const _kittensForFocus: IdAndBlocks = [
+  ['kittensHL', { type: 'HEADING1', data: 'Kittens Kittens Kittens' }],
+  ['kittensS', { type: 'TEXT', data: _kittensS }],
+  ['kittensH2L', { type: 'HEADING2', data: 'Development Development' }],
+  ['kittens2S', { type: 'TEXT', data: _kittens2S }],
+  ['kittens3S', { type: 'TEXT', data: _kittens3S }],
+  ['kittensH3L', { type: 'HEADING3', data: 'Sociality Sociality Sociality Sociality' }],
+  ['kittens4S', { type: 'TEXT', data: _kittens4S }],
+  ['kittensInfo', { type: 'TEXT', data: 'Useful information' }],
+  ['petsForFocus', { type: 'PAGE', data: $(_kittensForFocusPage) }],
+]
+
+export const _kittensForListsPage: UPageDataDTO = {
+  color: '',
+  name: 'Pets',
+  ids: [
+    'bath-your-cat',
+    'bath-your-cat-step1',
+    'bath-your-cat-step2',
+    'why-own-cat',
+    'why-own-cat-point1',
+    'why-own-cat-point2',
+    'hypoallergenic-cat',
+    'hypoallergenic-cat1',
+    'hypoallergenic-cat2',
+  ],
+}
+
+const l = (t: str, o = 1): str => $({ text: t, offset: o })
+export const _kittensForLists: IdAndBlocks = [
+  ['bath-your-cat', { type: 'TEXT', data: 'Bath your cat' }],
+  ['bath-your-cat-step1', { type: 'NUMBERED_LIST', data: l('Gather your supplies') }],
+  ['bath-your-cat-step2', { type: 'NUMBERED_LIST', data: l('Rinse your cat') }],
+  ['bath-your-cat-step3', { type: 'NUMBERED_LIST', data: l('Lather your cat with shampoo') }],
+  ['bath-your-cat-step4', { type: 'NUMBERED_LIST', data: l('Rinse your cat again') }],
+  ['bath-your-cat-step5', { type: 'NUMBERED_LIST', data: l('Clean the face') }],
+  ['why-own-cat', { type: 'TEXT', data: 'Why you should own a cat' }],
+  ['why-own-cat-point1', { type: 'BULLET_LIST', data: l('Cats can bathe themselves') }],
+  ['why-own-cat-point2', { type: 'BULLET_LIST', data: l('Cats will keep your house and yard rodent-free') }],
+  ['why-own-cat-point3', { type: 'BULLET_LIST', data: l('Cats are low-maintenance and independent') }],
+  ['why-own-cat-point4', { type: 'BULLET_LIST', data: l('Cats are an eco-friendly pet choice') }],
+  ['why-own-cat-point5', { type: 'BULLET_LIST', data: l('Cats can help reduce stress') }],
+  ['hypoallergenic-cat', { type: 'TEXT', data: 'Best hypoallergenic cat breeds' }],
+  ['hypoallergenic-cat1', { type: 'LIST', data: l('Balinese') }],
+  ['hypoallergenic-cat2', { type: 'LIST', data: l('Oriental Short Hair') }],
+  ['hypoallergenic-cat3', { type: 'LIST', data: l('Devon Rex') }],
+  ['hypoallergenic-cat4', { type: 'LIST', data: l('Sphynx') }],
+  ['hypoallergenic-cat5', { type: 'LIST', data: l('Siberian') }],
+  ['petsForFocus', { type: 'PAGE', data: $(_kittensForListsPage) }],
 ]

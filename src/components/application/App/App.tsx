@@ -1,5 +1,5 @@
 import { Redirect, Route, Switch } from 'react-router-dom'
-import { alpha, Stack, styled } from '@material-ui/core'
+import { alpha, Stack, styled } from '@mui/material'
 import { FinishRegistration, LoginPage } from '../LoginPage/LoginPage'
 import { useSigninCheck, useUser } from 'reactfire'
 import { TrainingWrapper } from '../../studying/training/training/training'
@@ -11,19 +11,20 @@ import { NavBar } from '../navigation/NavBar/NavBar'
 import { safe } from '../../../utils/utils'
 import { useWorkspace } from '../navigation/workspace'
 import { useRouter } from '../../utils/hooks/useRouter'
-import { AppBar } from '../navigation/Crumbs/AppBar'
+import { AppBar } from '../navigation/AppBar/AppBar'
 import { useState } from 'react'
 import { UPage } from '../../editing/UPage/UPage'
 import { apm, COLORS } from '../theming/theme'
+import { useIsSignedIn, useUserInfo } from '../../../fb/auth'
 
 const pages = ['study', 'teach', 'tune']
 
 export function App_() {
-  const { data: signInCheckResult } = useSigninCheck()
+  const { isSignedIn } = useIsSignedIn()
   const isNavBarOpenS = useState(false)
-  if (!signInCheckResult.signedIn) return <LoginPage />
+  if (!isSignedIn) return <LoginPage />
 
-  const { data: user } = useUser()
+  const user = useUserInfo()
   const workspace = useWorkspace(user?.uid || '')
   const { location } = useRouter()
   const id = location.pathname.split('/').slice(-1)[0]
@@ -31,9 +32,8 @@ export function App_() {
 
   return (
     <AppContainer>
-      {/* <div style={{ position: 'sticky', height: '100px', width: '100%', backgroundColor: 'red' }}></div> */}
       <AppBar workspace={workspace} openNavBar={() => isNavBarOpenS[1](true)} />
-      <NavBar user={safe(user)} workspace={workspace} isNavBarOpenS={isNavBarOpenS} />
+      <NavBar user={user} workspace={workspace} isNavBarOpenS={isNavBarOpenS} />
       <Main>
         <Switch>
           <Route path={STUDY_ID}>
@@ -43,7 +43,7 @@ export function App_() {
             <Trainings />
           </Route>
           <Route path={ANY}>
-            <UPage />
+            <UPage workspace={workspace} />
           </Route>
           <Route exact path={APP}>
             <Redirect to={STUDY} />
@@ -77,13 +77,12 @@ const AppContainer = styled('div', { label: 'App' })(({ theme }) => ({
 
   [`${theme.breakpoints.up('sm')}`]: {
     '::-webkit-scrollbar': {
-      width: '15px',
-      backgroundColor: apm(theme, 0.3, 0.1),
+      width: '12px',
     },
 
     '::-webkit-scrollbar-thumb': {
       borderRadius: '7.5px',
-      backgroundColor: apm(theme, 0.45, 0.15),
+      backgroundColor: apm(theme, 0.15),
     },
   },
 }))

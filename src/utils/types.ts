@@ -9,6 +9,7 @@ export type Files = File[]
 export type strP = Promise<str>
 export type strsP = Promise<strs>
 export type voidP = Promise<void>
+export type FileP = Promise<File>
 
 export type OBlob = Blob | null
 export type OFile = File | null
@@ -17,6 +18,7 @@ export type OBlobP = Promise<OBlob>
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type JSObject = { [key: string]: any }
+export type OJSObject = JSObject | undefined
 export type JSObjects = JSObject[]
 export type JSObjectStr = { [key: string]: string }
 

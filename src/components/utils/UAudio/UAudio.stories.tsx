@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 
 import long from '../../../content/long.mp3'
 import { fn } from '../../../utils/types'

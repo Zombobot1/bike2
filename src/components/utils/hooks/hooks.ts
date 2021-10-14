@@ -1,13 +1,16 @@
-import { Fn, State } from '../../../utils/types'
+import { bool, Fn, SetBool, State } from '../../../utils/types'
 import { useEffect, useState } from 'react'
-import { useMediaQuery, useTheme } from '@material-ui/core'
+import { useMediaQuery, useTheme } from '@mui/material'
 import { useReducer } from 'react'
 
-export const useToggle = (init = false) => useReducer((prev) => !prev, init)
+export function useToggle(init = false): [bool, Fn, SetBool] {
+  const [value, setValue] = useState(init)
+  return [value, () => setValue((currentValue) => !currentValue), setValue]
+}
 
 export const useMount = (f: Fn) => useEffect(f, [])
 export const useUnmount = (f: Fn) => useEffect(() => f, [])
-export const useLog = <T>(state: T) => useEffect(() => console.info(state), [state])
+export const useLog = <T>(state: T, tip = '') => useEffect(() => console.info(tip, state), [state])
 
 export const useReactive = <T>(init: T): State<T> => {
   const [state, setState] = useState(init)

@@ -1,63 +1,117 @@
-import * as UPageS from './UBlocksSet.stories'
-import { fakedId, got, intercept, sent, sentTo, show } from '../../../../utils/testUtils'
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../../../../../cypress/support/index.d.ts" />
+import * as UBlocksSet from './UBlocksSet.stories'
+import { got, saw, r, type, show } from '../../../../utils/testUtils'
+import { _initFB, _insertBlocks } from '../../../../_seeding'
+import { _removalBlocks } from '../../../../content/ublocks'
+import { num, str } from '../../../../utils/types'
 
-const utext = () => got('utext')
+const _got = (dataCy: str, n?: num) => (n === -1 ? got(dataCy).last() : got(dataCy).eq(n || 0))
+const utext = (n?: num) => _got('utext', n)
+const ublock = (n?: num) => _got('ublock', n)
+describe('UBlocksSet', () => {
+  it('Focus moves from title to factory | Factory preserves focus when adding empty blocks', () => {
+    show(UBlocksSet.BlocksCreation)
+    utext().type('Title{enter}')
+    type('{enter}')
+    utext(2).should('have.focus')
+    saw('Title')
+  })
 
-// describe('UPage', () => {
-//   beforeEach(intercept)
-//   it('Factory preserves focus when adding empty blocks | create ublock api', () => {
-//     fakedId()
+  it('Focus moves through empty block', () => {
+    show(UBlocksSet.BlocksDeletion)
+    utext(2).type('{uparrow}')
+    type('1')
+    saw('cat1')
 
-//     show(UPageS.CreatesBlocks)
+    type('{downarrow}')
+    type('{downarrow}')
+    type('2')
+    saw('2d')
+  })
 
-//     utext().type('{enter}')
+  it('Factory loses focus on another block click', () => {
+    show(UBlocksSet.BlocksCreation)
+    utext().type('{enter}')
+    type('{enter}')
+    utext(1).click().should('be.focused')
+  })
 
-//     utext().last().should('have.focus')
+  it('Inserts block under image', () => {
+    show(UBlocksSet.BlocksDeletion)
+    ublock(3).click().type('{enter}')
+    type('1')
+    saw('1')
+  })
 
-//     sent('@postUBlock', '0', '_id')
-//     sent('@patchUBlock', '["0"]')
-//   })
+  it('Factory loses focus when adding not empty blocks | block adds new block', () => {
+    show(UBlocksSet.BlocksCreation)
+    utext(1).type('/')
+    utext(1).should('have.focus').type('p').contains('/p')
 
-//   it('Factory loses focus when adding not empty blocks | post ublock api | block adds new block', () => {
-//     show(UPageS.CreatesBlocks)
+    utext(1).type('{enter}')
+    utext(2).should('have.focus')
+  })
 
-//     utext().type('/')
+  it('Factory loses focus on backspace | focus moves on block deletion', () => {
+    show(UBlocksSet.BlocksDeletion)
 
-//     utext().first().should('have.focus').contains('/')
+    utext(-1).type('{Backspace}')
 
-//     sent('@postUBlock', '/')
+    utext(3).should('have.focus').type('{Backspace}{Backspace}')
+    utext(2).should('have.focus').type('{Backspace}')
+  })
 
-//     utext().first().type('{enter}')
-//     utext().eq(1).should('have.focus')
-//   })
+  it('Separate block on enter', () => {
+    show(UBlocksSet.BlocksDeletion)
 
-//   it('Factory loses focus on backspace | focus moves on block deletion | delete api', () => {
-//     show(UPageS.DeletesBlocks)
-//     cy.contains('d')
+    utext(1).type('{leftarrow}{enter}')
+    type('1')
+    saw('1t')
+  })
 
-//     utext().eq(2).type('{Backspace}')
+  it('Separate block on paste', () => {
+    show(UBlocksSet.BlocksDeletion)
 
-//     utext().eq(1).should('have.focus').type('{Backspace}{Backspace}')
-//     utext().first().should('have.focus')
+    utext(1).type('{leftarrow}').paste({ pasteType: 'text/plain', pastePayload: 'r \n\n1\n\n2\n\nthird block' })
+    type('3')
+    saw('car')
+    saw('third blockt3')
+  })
 
-//     sentTo('@deleteUBlock', 'data2')
-//     sent('@patchUBlock', '["data4"]')
-//   })
+  it('Moves up & down', () => {
+    show(UBlocksSet.ArrowsNavigation)
 
-//   it('Factory loses focus on adding not empty block and block is pushed back', () => {
-//     show(UPageS.DeletesBlocks)
-//     cy.contains('d')
+    utext().type(r('{leftarrow}', 12))
 
-//     utext().eq(2).type('/')
+    type('{downarrow}')
+    type('{downarrow}')
+    type('{downarrow}')
+    type('{downarrow}', 3)
+    type('{downarrow}', 3)
+    type('{downarrow}')
+    type('{downarrow}')
+    type('1')
 
-//     utext().eq(2).should('have.focus').contains('/')
-//   })
+    saw('h1ighly')
 
-//   it('Readonly', () => {
-//     show(UPageS.Readonly)
-//     cy.contains('d')
+    type('{uparrow}')
 
-//     utext().eq(0).should('have.attr', 'disabled')
-//     utext().eq(1).should('have.attr', 'disabled')
-//   })
-// })
+    type('{uparrow}')
+    type('{uparrow}', 3)
+    type('{uparrow}', 3)
+    type('{uparrow}')
+    type('{uparrow}')
+    type('2')
+
+    saw('Kitte2ns')
+  })
+
+  // it('Readonly', () => {
+  //   show(UPageS.Readonly)
+  //   cy.contains('d')
+
+  //   utext().eq(0).should('have.attr', 'disabled')
+  //   utext().eq(1).should('have.attr', 'disabled')
+  // })
+})

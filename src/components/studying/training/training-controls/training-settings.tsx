@@ -1,10 +1,10 @@
 import { Fn } from '../../../../utils/types'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { MouseEvent, useState, memo } from 'react'
-import { IconButton, MenuItem, Menu, ListItemIcon, ListItemText } from '@material-ui/core'
-import TimerOffRoundedIcon from '@material-ui/icons/TimerOffRounded'
-import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
-import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded'
+import { IconButton, MenuItem, Menu, ListItemIcon, ListItemText } from '@mui/material'
+import TimerOffRoundedIcon from '@mui/icons-material/TimerOffRounded'
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded'
 import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
 
 export interface TrainingSettingsP {

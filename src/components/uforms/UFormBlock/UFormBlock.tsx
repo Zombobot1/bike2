@@ -1,15 +1,15 @@
-import { Checkbox, FormControlLabel, Radio, Stack, styled, TextField, Typography } from '@material-ui/core'
+import { Checkbox, FormControlLabel, Radio, Stack, styled, TextField, Typography } from '@mui/material'
 import { bool, Fn, SetStr, str, strs } from '../../../utils/types'
-import { UBlockComponent, UFormBlockComponent } from '../../editing/types'
+import { UBlockComponentB, UComponentType, UFormBlockComponent } from '../../editing/types'
 import { UChecks } from './UChecks/UChecks'
 import { UInput } from './UInput/UInput'
 import { useUFormBlock, useUFormBlockEditor } from '../useUForm'
 import { Question } from '../../studying/training/types'
 import { useState, KeyboardEvent, useRef } from 'react'
 
-export interface UFormFieldBase extends UBlockComponent {
+export interface UFormFieldBase extends UBlockComponentB {
   _id: str
-  type: UFormBlockComponent
+  type: UComponentType
 }
 
 export interface UFormBlock extends UFormFieldBase {
@@ -26,7 +26,7 @@ export function UFormBlock(props: UFormBlock) {
 }
 
 function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
-  const props = useUFormBlockEditor(_id, type, data, setData)
+  const props = useUFormBlockEditor(_id, type as UFormBlockComponent, data, setData)
   const { question, onQuestionChange } = props
 
   return (

@@ -1,23 +1,25 @@
-import { Stack, styled, Typography, IconButton, alpha } from '@material-ui/core'
+import { Stack, styled, Typography, IconButton, alpha, Box } from '@mui/material'
 import { str } from '../../../utils/types'
 import { cast, prevented } from '../../../utils/utils'
-import { Dropzone1 } from '../../utils/Dropzone'
-import { UBlockComponent } from '../types'
-import AttachFileRoundedIcon from '@material-ui/icons/AttachFileRounded'
-import DeleteRoundedIcon from '@material-ui/icons/DeleteRounded'
+import { UBlockComponent, UBlockComponentB } from '../types'
+import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { useUFile } from './useUFile'
 import { useReactive, useReactiveObject } from '../../utils/hooks/hooks'
 import { apm } from '../../application/theming/theme'
+import { UImageFile } from './UImageFile/UImageFile'
+import { UAudioFile } from './UAudioFile/UAudioFile'
+import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
 
 export class UFileDTO {
   src = ''
   name = ''
 }
 
-export function UFile({ data, setData, readonly }: UBlockComponent) {
+export function UFile_({ data, setData, readonly }: UBlockComponentB) {
   const [fileData] = useReactiveObject(cast(data, new UFileDTO()))
   const { fileS, isUploading, deleteFile } = useUFile((src, name) => setData(JSON.stringify({ name, src })))
-  if (!fileData.src || isUploading) return <Dropzone1 fileS={fileS} isUploading={isUploading} />
+  if (!fileData.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
 
   return (
     <FileContainer direction="row" alignItems="center" onClick={() => window?.open(fileData.src, '_blank')?.focus()}>
@@ -29,6 +31,16 @@ export function UFile({ data, setData, readonly }: UBlockComponent) {
         </Delete>
       )}
     </FileContainer>
+  )
+}
+
+export function UFile(props: UBlockComponent) {
+  return (
+    <Box sx={{ paddingBottom: '1rem' }}>
+      {props.type === 'FILE' && <UFile_ {...props} />}
+      {props.type === 'IMAGE' && <UImageFile {...props} />}
+      {props.type === 'AUDIO' && <UAudioFile {...props} />}
+    </Box>
   )
 }
 

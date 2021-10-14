@@ -1,6 +1,6 @@
-import { Fab, styled, Zoom } from '@material-ui/core'
-import Brightness2RoundedIcon from '@material-ui/icons/Brightness2Rounded'
-import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded'
+import { Fab, styled, Zoom } from '@mui/material'
+import Brightness2RoundedIcon from '@mui/icons-material/Brightness2Rounded'
+import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded'
 import { COLORS, useUTheme } from './theme'
 
 export function ThemeBtn() {

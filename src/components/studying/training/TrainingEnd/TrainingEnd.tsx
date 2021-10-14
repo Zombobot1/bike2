@@ -1,4 +1,4 @@
-import { Stack, styled, Typography, useTheme } from '@material-ui/core'
+import { Stack, styled, Typography, useTheme } from '@mui/material'
 import { useState } from 'react'
 import { fancyTime, percentage } from '../../../../utils/formatting'
 import { useMount } from '../../../utils/hooks/hooks'

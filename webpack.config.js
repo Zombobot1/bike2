@@ -11,11 +11,11 @@ const { InjectManifest } = require('workbox-webpack-plugin')
 
 let mode = process.env.NODE_ENV === 'production' ? 'production' : 'development'
 let target = 'web' // https://github.com/webpack/webpack-dev-server/issues/2758
-const entry = ['./src/index.tsx']
+const entry = [mode === 'production' ? './src/index.tsx' : './src/_sandbox.tsx']
 
 const plugins = [
   new CleanWebpackPlugin({ cleanAfterEveryBuildPatterns: ['*.LICENSE.txt'] }),
-  new HtmlWebpackPlugin({ template: './src/index.html' }),
+  new HtmlWebpackPlugin({ template: mode === 'production' ? './src/index.html' : './index.html' }),
   new ForkTsCheckerWebpackPlugin({
     typescript: {
       diagnosticOptions: {
@@ -104,6 +104,8 @@ module.exports = {
   },
 
   devServer: {
+    host: '0.0.0.0', // get hostname in terminal and access via it
+    disableHostCheck: true, // for getting access in local network
     contentBase: './dist',
     hot: true,
     historyApiFallback: true, // for router

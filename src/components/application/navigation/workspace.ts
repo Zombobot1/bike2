@@ -1,6 +1,6 @@
-import { bool, str } from '../../../utils/types'
+import { bool, fn, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
-import { addData, useData } from '../../utils/hooks/useData'
+import { useData } from '../../../fb/useData'
 import { NavNodeDTO, NavNodeDTOO, NavNodeDTOs } from './NavBar/NavTree'
 
 type Scope = 'FAVORITE' | 'PERSONAL'
@@ -9,6 +9,7 @@ export interface _WSD {
   favorite: NavNodeDTOs
   personal: NavNodeDTOs
 }
+type SetWSD = (f: Partial<_WSD>) => void
 
 export class WS {
   triggerOpen = (scope: Scope) => (id: str) => {
@@ -39,6 +40,24 @@ export class WS {
     return parentId
   }
 
+  rename = (id: str, name: str) => {
+    this.find(id).name = name
+    this._save()
+  }
+
+  insert = (id: str, parentId?: str, underId?: str) => {
+    if (!parentId) this.personal.unshift({ id, name: '' })
+    else {
+      const parent = this.find(parentId)
+      if (!underId || !parent.children || !parent.children.length) parent.children = [{ id, name: '' }]
+      else {
+        const indexAbove = parent.children.findIndex(({ id }) => id === underId)
+        parent.children = parent.children.splice(indexAbove, 0, { id, name: '' })
+      }
+    }
+    this._save()
+  }
+
   path = (id: str): NavNodeDTOs => {
     const parents = this._parents('PERSONAL')
 
@@ -50,7 +69,12 @@ export class WS {
   find = (id: str): NavNodeDTO => safe(this._find('PERSONAL', id))
   has = (id: str): bool => Boolean(this._find('PERSONAL', id))
 
-  constructor(public favorite: NavNodeDTOs, public personal: NavNodeDTOs, private _id: str) {}
+  constructor(
+    public favorite: NavNodeDTOs,
+    public personal: NavNodeDTOs,
+    private _id: str,
+    private saveFn: SetWSD = fn,
+  ) {}
 
   _addToFavorite = (id: str) => {
     this.favorite.unshift(safe(this.find(id)))
@@ -81,7 +105,8 @@ export class WS {
     return r
   }
 
-  _save = () => addData<_WSD>('ws', this._id, { favorite: this.favorite, personal: this.personal })
+  _save = () => this.saveFn({ favorite: this.favorite, personal: this.personal })
+  _setSave = (fn: SetWSD) => (this.saveFn = fn)
 
   _parents = (scope: Scope): Map<str, NavNodeDTO> => {
     const queue = scope === 'PERSONAL' ? [...this.personal] : [...this.favorite]
@@ -98,6 +123,8 @@ export class WS {
 }
 
 export function useWorkspace(id: str) {
-  const [data] = useData<_WSD>('ws', id)
-  return new WS(data.favorite, data.personal, id)
+  const [data, setData] = useData<_WSD>('ws', id)
+  const r = new WS(data.favorite, data.personal, id)
+  r._setSave(setData)
+  return r
 }

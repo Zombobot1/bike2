@@ -1,5 +1,5 @@
 import { BoolState, Fn, fn, str } from '../../utils/types'
-import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@material-ui/core'
+import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 
 export interface AcceptRemovalDialog {
   text: str

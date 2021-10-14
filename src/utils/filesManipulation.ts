@@ -1,8 +1,14 @@
 import { useState } from 'react'
-import { str, OBlobP, OFile } from './types'
+import { str, OBlobP, OFile, FileP } from './types'
 
 export function srcfy(blob: Blob): str {
   return URL.createObjectURL(blob)
+}
+
+export function imageFromSrc(src: str): FileP {
+  return fetch(src)
+    .then((r) => r.blob())
+    .then((b) => new File([b], 'img.png', { type: 'image/png' }))
 }
 
 async function retrieveImageFromClipboard(items: ClipboardItems): OBlobP {

@@ -3,7 +3,7 @@ import { UFormFieldData, Validity } from '../../types'
 import { fn } from '../../../../utils/types'
 import { InteractiveQuestion } from '../interactive-question'
 import { ErrorText, SuccessText } from '../feedback'
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/material'
 import { useValidationColor } from '../useValidationColor'
 
 export interface UInput extends UFormFieldData {

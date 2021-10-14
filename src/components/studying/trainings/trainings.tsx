@@ -1,4 +1,4 @@
-import { styled, Typography } from '@material-ui/core'
+import { styled, Typography } from '@mui/material'
 
 import Masonry from 'react-masonry-css'
 import { useIsSM } from '../../utils/hooks/hooks'

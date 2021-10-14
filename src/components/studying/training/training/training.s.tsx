@@ -1,7 +1,7 @@
 import { Training, TrainingDTO } from './training'
 import { MemoryRouter } from 'react-router-dom'
 import { trainings } from '../../../../content/trainingsAndDecks'
-import { Stack, Button } from '@material-ui/core'
+import { Stack, Button } from '@mui/material'
 import { useIsSM, useToggle } from '../../../utils/hooks/hooks'
 
 const TrainingT = (args: TrainingDTO) => {

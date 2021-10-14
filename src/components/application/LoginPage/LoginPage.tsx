@@ -1,15 +1,5 @@
-import {
-  Box,
-  Button,
-  Divider,
-  FormControl,
-  InputLabel,
-  OutlinedInput,
-  Stack,
-  styled,
-  Typography,
-} from '@material-ui/core'
-import GoogleIcon from '@material-ui/icons/Google'
+import { Box, Button, Divider, FormControl, InputLabel, OutlinedInput, Stack, styled, Typography } from '@mui/material'
+import GoogleIcon from '@mui/icons-material/Google'
 
 import { useState } from 'react'
 import { ThemeBtn } from '../theming/ThemeBtn'
@@ -23,6 +13,7 @@ import { ReactComponent as LogoSVG } from './logo.svg'
 import { getAuth, signInWithPopup, GoogleAuthProvider, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import { sendEmailLink } from './sendEmailLink'
 import { apm } from '../theming/theme'
+import { useIsSignedIn } from '../../../fb/auth'
 
 export function FinishRegistration() {
   const [error, setError] = useState('')
@@ -55,8 +46,9 @@ export function FinishRegistration() {
 function LoginForm() {
   const [email, setEmail] = useState('')
   const [error, setError] = useState('')
-
   const [isLinkSent, setIsLinkSent] = useState(false)
+
+  const { signIn } = useIsSignedIn()
 
   function onGoogleSignIn() {
     const provider = new GoogleAuthProvider()
@@ -64,8 +56,7 @@ function LoginForm() {
   }
 
   function onEmailSignIn() {
-    sendEmailLink(email)
-      .then(() => localStorage.setItem('emailForSignIn', email))
+    signIn(email)
       .then(() => setIsLinkSent(true))
       .catch((error) => setError(error.message))
   }

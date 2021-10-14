@@ -1,5 +1,5 @@
-import { IconButton, styled } from '@material-ui/core'
-import VolumeUpRoundedIcon from '@material-ui/icons/VolumeUpRounded'
+import { IconButton, styled } from '@mui/material'
+import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import { ReactComponent as LeftRounding } from './leftImageOuterCircle.svg'
 import { ReactComponent as RightRounding } from './rightImageOuterCircle.svg'
 import fluffy from '../../../../../content/fluffy.jpg'

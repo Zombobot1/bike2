@@ -1,6 +1,6 @@
 import { TableData } from './useTable'
 import { UTable } from './UTable'
-import { Typography, Stack } from '@material-ui/core'
+import { Typography, Stack } from '@mui/material'
 function Template({ data, pasteData }: { data?: TableData; pasteData?: string }) {
   return (
     <Stack spacing={4}>

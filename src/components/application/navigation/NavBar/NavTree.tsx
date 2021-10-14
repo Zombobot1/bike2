@@ -1,7 +1,7 @@
-import { alpha, Box, Collapse, Stack, styled, Typography, useTheme } from '@material-ui/core'
-import FiberManualRecordRoundedIcon from '@material-ui/icons/FiberManualRecordRounded'
-import ArrowDropDownRoundedIcon from '@material-ui/icons/ArrowDropDownRounded'
-import ArrowRightRoundedIcon from '@material-ui/icons/ArrowRightRounded'
+import { alpha, Box, Collapse, Stack, styled, Typography, useTheme } from '@mui/material'
+import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded'
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
+import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { bool, JSObject, num, SetStr, str } from '../../../../utils/types'
 import { prevented } from '../../../../utils/utils'
 import { useRouter } from '../../../utils/hooks/useRouter'
@@ -67,7 +67,7 @@ function NavNode({ id, name, isOpen, onOpen, depth, children }: NavNode) {
               <Dot />
             </Stack>
           )}
-          <Typography sx={{ marginLeft: '0.25rem' }}>{name}</Typography>
+          <Typography sx={{ marginLeft: '0.25rem' }}>{name || 'Untitled'}</Typography>
         </NavNodeLabel>
         <Collapse in={isOpen}>
           {children?.map((c) => (

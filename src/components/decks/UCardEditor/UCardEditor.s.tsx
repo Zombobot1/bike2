@@ -1,4 +1,4 @@
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 import { zip2 } from '../../../utils/algorithms'
 import { srcfy } from '../../../utils/filesManipulation'
 import { str } from '../../../utils/types'

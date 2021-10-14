@@ -1,8 +1,9 @@
-import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { connectAuthEmulator, getAuth, signInWithEmailAndPassword, signInWithEmailLink, signOut } from 'firebase/auth'
 import { JSObject, str, strP } from './utils/types'
 import { getApps, initializeApp } from '@firebase/app'
 import {
   collection,
+  connectFirestoreEmulator,
   deleteDoc,
   doc,
   Firestore,
@@ -23,7 +24,10 @@ export const firebaseConfig = {
 import axios from 'axios'
 import { ws } from './content/application'
 import { blocksS } from './content/ublocks'
-import { getStorage } from 'firebase/storage'
+import { connectStorageEmulator, getStorage } from 'firebase/storage'
+import { IdAndBlocks } from './content/types'
+import { sendEmailLink } from './components/application/LoginPage/sendEmailLink'
+import { FINISH_REGISTRATION } from './components/application/App/pages'
 
 const PROJECT_ID = 'universe-55cec'
 type Promises = Promise<unknown>[]
@@ -41,12 +45,14 @@ export async function cleanUp() {
 }
 
 const set = (col: str, id: str, data: JSObject) => setDoc(doc(getFirestore(), col, id), data)
-const setMany = (col: str, data: [str, JSObject][]) => data.map(([id, d]) => set(col, id, d))
+const _setMany = (col: str, data: [str, JSObject][]) => data.map(([id, d]) => set(col, id, d))
 async function insertMockData(userId: str) {
-  const jobs = [set('ws', userId, ws), set('_t', '1', { d: 'test' }), ...setMany('ublocks', blocksS)]
+  const jobs = [set('ws', userId, ws), set('_t', '1', { d: 'test' }), ..._setMany('ublocks', blocksS)]
   return Promise.all(jobs)
 }
-
+export async function _insertBlocks(blocks: IdAndBlocks) {
+  return Promise.all([..._setMany('ublocks', blocks)])
+}
 const getCode = `http://localhost:9099/emulator/v1/projects/${PROJECT_ID}/oobCodes`
 
 export async function _getOOBLink(): strP {
@@ -63,6 +69,11 @@ export async function _signIn() {
 
   const user = await signInWithEmailAndPassword(getAuth(), 'test@gmail.com', '123456')
   return user.user.uid
+
+  // const signIn = 'http://localhost:9099/identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=API-KEY'
+  // const r = await axios.post(signIn, { email: 'test@gmail.com', password: '123456' })
+  // const d = await r.data
+  // return d.localId
 }
 
 export const _signOut = () => signOut(getAuth())
@@ -77,6 +88,7 @@ export async function _initFB(): strP {
   getStorage(app)
   // connectAuthEmulator(auth, 'http://localhost:9099', { disableWarnings: true })
   // connectFirestoreEmulator(fs, 'localhost', 8080)
+  // connectStorageEmulator(storage, 'localhost', 9199)
   return _signIn()
 }
 

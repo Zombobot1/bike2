@@ -1,5 +1,5 @@
 import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../studying/training/types'
-import { Collapse, Stack, styled } from '@material-ui/core'
+import { Collapse, Stack, styled } from '@mui/material'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { str, bool } from '../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'

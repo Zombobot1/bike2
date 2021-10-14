@@ -1,6 +1,6 @@
 import { UCard } from '../../../decks/UCard/UCard'
 import { CardDTO, CardEstimation } from '../types'
-import { styled } from '@material-ui/core'
+import { styled } from '@mui/material'
 import { Slides } from '../../../utils/Slides/Slides'
 import { TrainingEnd } from '../TrainingEnd/TrainingEnd'
 import { str } from '../../../../utils/types'

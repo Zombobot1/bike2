@@ -1,5 +1,5 @@
 import { TrainingsGroupDTO } from '../../training/training/training'
-import { Autocomplete, Stack, TextField, styled } from '@material-ui/core'
+import { Autocomplete, Stack, TextField, styled } from '@mui/material'
 import { TrainingCard } from './training-card/training-card'
 
 export interface NamedDeck {

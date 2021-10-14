@@ -1,32 +1,23 @@
-import { Box } from '@material-ui/core'
-import { UBlockB } from '../../types'
-import { UBlocksSet, useUBlocks } from './UBlocksSet'
+import { Box } from '@mui/material'
+import { useState } from 'react'
+import { _kittensForFocusPage } from '../../../../content/content'
+import { _removalPage } from '../../../../content/ublocks'
+import { str, strs } from '../../../../utils/types'
+import { UBlocksSet } from './UBlocksSet'
 
-function T(props: UBlockB) {
-  const { idsS } = useUBlocks(props.id)
+const T = (ids: strs, title?: str) => () => {
+  const s = useState(ids)
+  const t = useState(title ?? 'Pets & Animals')
   return (
-    <Box sx={{ width: 500, backgroundColor: '#cff1e6' }}>
-      <UBlocksSet {...props} idsS={idsS} readonly={false} />
+    <Box sx={{ width: 500 }}>
+      <UBlocksSet idsS={s} readonly={false} title={t[0]} setTitle={t[1]} />
     </Box>
   )
 }
 
-const data1: UBlockB = {
-  id: 'emptyPage',
-}
-
-const data2: UBlockB = {
-  id: 'page2',
-}
-
-const data3: UBlockB = {
-  id: 'page3',
-  readonly: true,
-}
-
-export const CreatesBlocks = () => <T {...data1} />
-export const DeletesBlocks = () => <T {...data2} />
-export const Readonly = () => <T {...data3} />
+export const ArrowsNavigation = T(_kittensForFocusPage.ids)
+export const BlocksCreation = T([], '')
+export const BlocksDeletion = T(_removalPage.ids)
 
 export default {
   title: 'Editing/UBlocksSet',

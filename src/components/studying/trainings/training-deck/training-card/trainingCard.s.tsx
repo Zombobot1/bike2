@@ -2,7 +2,7 @@ import { TrainingCard } from './training-card'
 import { TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
 import { MemoryRouter } from 'react-router-dom'
 import { useState } from 'react'
-import { Box } from '@material-ui/core'
+import { Box } from '@mui/material'
 import { COLORS } from '../../../../application/theming/theme'
 
 type TrainingCardT = {

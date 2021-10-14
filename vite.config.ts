@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [reactRefresh(), svgrPlugin()],
   server: {
     open: true,
+    host: '0.0.0.0',
   },
   esbuild: {
     jsxInject: `import React from 'react'`,

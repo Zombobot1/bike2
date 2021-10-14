@@ -1,7 +1,7 @@
-import { styled, Typography } from '@material-ui/core'
+import { styled, Typography } from '@mui/material'
 import { Validity } from '../types'
-import CloseRoundedIcon from '@material-ui/icons/CloseRounded'
-import CheckRoundedIcon from '@material-ui/icons/CheckRounded'
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded'
 
 export interface InteractiveQuestionP {
   question: string

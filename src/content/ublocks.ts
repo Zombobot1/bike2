@@ -1,7 +1,9 @@
 import { UBlockDTO } from '../components/editing/types'
 import { Question } from '../components/studying/training/types'
 import { str, strs } from '../utils/types'
-import { IdANdBlocks, _kittensBlocks } from './content'
+import { _pages } from './application'
+import { _kittensBlocks, _kittensForFocus, _kittensForLists } from './content'
+import { IdAndBlocks } from './types'
 
 const eq: Question = {
   correctAnswer: [],
@@ -26,27 +28,30 @@ const checks = qS(
   'Select right:',
 )
 
+export const _removalPage = { color: '#39c6a5', name: 'Removal', ids: ['cat', 'emptyString', 'd', 'fluffyJpg'] }
+export const _removalBlocks: IdAndBlocks = [
+  ['cat', { type: 'TEXT', data: 'cat' }],
+  ['f-full', { type: 'TEXT', data: 'f'.repeat(33) + ' ' + 'f'.repeat(33) }], // if word is too long caret position is calculated wrong
+  ['d', { type: 'TEXT', data: 'd' }],
+  ['emptyString', { type: 'TEXT', data: '' }],
+]
+
 const $ = JSON.stringify
 
-export const blocksS: IdANdBlocks = [
+export const blocksS: IdAndBlocks = [
+  ..._pages,
   ..._kittensBlocks,
-  ['data1', { type: 'TEXT', data: 'initial data' }],
-  ['data2', { type: 'TEXT', data: 'd' }],
-  ['data4', { type: 'TEXT', data: '' }],
-  ['file1', { type: 'FILE', data: '' }],
-  ['file2', { type: 'FILE', data: 'http://uni.com/static/complex--name--uuid.pdf' }],
-  // ['audio1', { type: 'AUDIO', data: fluffyMp3 }],
-  ['audio2', { type: 'AUDIO', data: '' }],
-  // ['image1', { type: 'IMAGE', data: fluffyJpg }],
-  ['image2', { type: 'IMAGE', data: '' }],
+  ..._kittensForFocus,
+  ..._removalBlocks,
+  ..._kittensForLists,
   ['input1', { type: 'INPUT', data: $(eq) }],
   ['textarea1', { type: 'TEXTAREA', data: $(eq) }],
   ['checks1', { type: 'CHECKS', data: $(eq) }],
   ['checks2', { type: 'CHECKS', data: checks }],
   ['radio1', { type: 'RADIO', data: $(eq) }],
 
-  ['page2', { type: 'PAGE', data: $({ color: '#39c6a5', name: 'Page 2', ids: ['data4', 'data2'] }) }],
-  ['page3', { type: 'PAGE', data: $({ color: '#39c6a5', name: 'Page 3', ids: ['data2'] }) }],
+  ['empty-page', { type: 'PAGE', data: $({ color: '#39c6a5', name: '', ids: [] }) }],
+  ['removal', { type: 'PAGE', data: $(_removalPage) }],
   ['emptyQ', { type: 'QUESTION', data: '' }],
   ['withoutAnswer', { type: 'QUESTION', data: $(['checks2']) }],
 ]

@@ -11,16 +11,16 @@ export interface UCardFactory {
   prepopulatedData?: NewCardData
 }
 
-export function UCardFactory({ addCreatedCard, onSubmit, template: _, prepopulatedData = [] }: UCardFactory) {
-  const { submit, setNewCardData, newCardData } = useNewCardData('')
-  const { setSubmit } = useSubmitNewCardData()
+export function UCardFactory() {
+  // const { submit, setNewCardData, newCardData } = useNewCardData('')
+  // const { setSubmit } = useSubmitNewCardData()
 
-  function afterSubmit(createdCard: CardData) {
-    setNewCardData(prepopulatedData)
-    addCreatedCard(createdCard)
-  }
+  // function afterSubmit(createdCard: CardData) {
+  //   setNewCardData(prepopulatedData)
+  //   addCreatedCard(createdCard)
+  // }
 
-  useEffect(() => setSubmit(() => submit((d) => onSubmit(d).then(afterSubmit))), [JSON.stringify(newCardData)])
+  // useEffect(() => setSubmit(() => submit((d) => onSubmit(d).then(afterSubmit))), [JSON.stringify(newCardData)])
 
   return null
 }

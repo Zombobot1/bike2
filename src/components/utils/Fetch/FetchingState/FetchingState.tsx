@@ -1,5 +1,5 @@
-import { CircularProgress, Stack, styled, Typography } from '@material-ui/core'
-import { circularProgressClasses } from '@material-ui/core/CircularProgress'
+import { CircularProgress, Stack, styled, Typography } from '@mui/material'
+import { circularProgressClasses } from '@mui/material/CircularProgress'
 import { str } from '../../../../utils/types'
 
 export interface Error {
