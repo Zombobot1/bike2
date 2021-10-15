@@ -3,7 +3,7 @@
     "componentFolder": "src",
     "testFiles": "**/*spec.{js,jsx,ts,tsx}"
   },
-  "viewportHeight": 700,
-  "viewportWidth": 1000,
+  "viewportHeight": 1080,
+  "viewportWidth": 600,
   "video": false
 }

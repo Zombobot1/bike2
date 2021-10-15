@@ -16,6 +16,7 @@ export interface UText extends UBlockComponent {
   onTitleEnter?: Fn
   isCardField?: bool
   arrowNavigation?: ArrowNavigation
+  clearFocus?: Fn
 }
 
 export class UListDTO {

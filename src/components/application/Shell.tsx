@@ -15,6 +15,7 @@ import { getFirestore } from 'firebase/firestore'
 import { App } from './App/App'
 import { firebaseConfig } from '../../_seeding'
 import { registerServiceWorker } from '../../serviceWorkerRegistration'
+import { _MOCK_FB } from '../../fb/utils'
 
 export interface OuterShell {
   children: ReactNode
@@ -23,15 +24,20 @@ export interface OuterShell {
 export function OuterShell({ children }: OuterShell) {
   const { theme } = useUTheme()
 
+  const isProduction = process.env.NODE_ENV !== 'development' || !_MOCK_FB
   return (
     <StrictMode>
       <Router>
         <OuterShell_>
           <ThemeProvider theme={theme}>
             <CssBaseline />
-            <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-              <FB>{children}</FB>
-            </FirebaseAppProvider>
+            {isProduction ? (
+              <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+                <FB>{children}</FB>
+              </FirebaseAppProvider>
+            ) : (
+              <>{children}</>
+            )}
           </ThemeProvider>
         </OuterShell_>
       </Router>

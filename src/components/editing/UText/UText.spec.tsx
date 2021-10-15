@@ -1,4 +1,6 @@
-import { show, expectCSSPlaceholder, utext } from '../../../utils/testUtils'
+import { show, expectCSSPlaceholder, utext, type, saw } from '../../../utils/testUtils'
+import { safe } from '../../../utils/utils'
+import { select } from '../../utils/Selection/selection'
 import * as UText from './UText.stories'
 
 describe('Editable text', () => {
@@ -14,9 +16,37 @@ describe('Editable text', () => {
   })
 
   it('Makes text bold', () => {
-    show(UText.TransformedText)
+    show(UText.BoldText)
     utext().type('{selectall}{ctrl+b}')
     cy.get('b').contains('bold')
+  })
+
+  it('creates link', () => {
+    show(UText.TextWithLink)
+    cy.then(() => select(safe(document.querySelector('pre')), 0, 4))
+    utext().focus()
+
+    type('{ctrl+k}')
+
+    cy.get('span').contains('Link')
+
+    type('a{enter}')
+    type('!')
+
+    saw('Link!')
+  })
+
+  it('removes link', () => {
+    show(UText.TextWithLink)
+    cy.then(() => select(safe(document.querySelector('pre')), 9, 9 + 7))
+    utext().focus()
+
+    type('{ctrl+k}')
+    type('{esc}')
+    type('!')
+
+    cy.get('a').should('not.exist')
+    saw('ref!')
   })
 
   it('Is disabled when is readonly', () => {

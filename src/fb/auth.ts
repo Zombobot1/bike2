@@ -39,7 +39,11 @@ export function useIsSignedIn() {
       setIsSignedIn(true)
       return Promise.resolve('')
     }
-    return { isSignedIn, signIn, signOut: () => setIsSignedIn(false) }
+    return {
+      isSignedIn,
+      signIn,
+      signOut: () => setIsSignedIn(false),
+    }
   } else {
     const { data } = useSigninCheck()
     const signIn = (email: str) => sendEmailLink(email).then(() => localStorage.setItem('emailForSignIn', email))

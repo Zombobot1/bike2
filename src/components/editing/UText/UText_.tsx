@@ -52,6 +52,7 @@ export function UText_({
   handleKeyDown = fn,
   offset = 0,
   appendedData,
+  clearFocus = fn,
 }: UText_) {
   const [text, setText] = useReactive(data)
   const [focus, setFocus] = useReactiveObject(initialFocus)
@@ -115,8 +116,9 @@ export function UText_({
       if (!e.shiftKey && e.key === 'Enter') {
         e.preventDefault()
         if (isFactory) addNewBlock('NO_FOCUS')
-        else if (onTitleEnter) onTitleEnter()
-        else {
+        else if (onTitleEnter) {
+          onTitleEnter()
+        } else {
           const isList = isUListComponent(type)
           const newText = splitText()
           if (isList) {
@@ -260,7 +262,7 @@ export function UText_({
   sx = isFactory && !alwaysShowPlaceholder ? { ...sx, minHeight: '12rem' } : sx
 
   return (
-    <Styles sx={{ position: 'relative' }}>
+    <Styles sx={{ position: 'relative' }} onClick={clearFocus}>
       {!!linkOffset.b && (
         <ClickAwayListener onClickAway={insertLink}>
           <Paper
@@ -287,7 +289,7 @@ export function UText_({
       )}
       <Editable
         innerRef={ref}
-        html={text}
+        html={text.replaceAll('&', '&amp;')}
         tagName={component}
         onBlur={onBlur}
         onChange={onChange}

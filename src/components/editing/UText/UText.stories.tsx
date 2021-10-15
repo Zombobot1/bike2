@@ -48,6 +48,11 @@ const bold: UBlock = {
   initialData: { data: 'bold', type: 'TEXT' },
 }
 
+const link: UBlock = {
+  id: 'link',
+  initialData: { data: 'Link and <a href="a">old ref</a> and text', type: 'TEXT' },
+}
+
 const transformedText: UBlock = {
   id: 'transformedText',
   initialData: {
@@ -58,11 +63,13 @@ const transformedText: UBlock = {
 
 export const SetsFocus = () => <T {...data1} />
 export const ReadOnlyText = () => <T {...readonly} />
-export const BoldText = () => <T {...bold} />
 export const TransformedText = () => <T {...transformedText} />
 export const ChangesComponents = () => <T {...data4} />
 export const DisplaysPlaceholderWhenFocused = () => <T {...data2} />
 export const DisplaysPlaceholderWhenUnfocused = () => <T {...data3} />
+
+export const BoldText = () => <T {...bold} />
+export const TextWithLink = () => <T {...link} />
 
 export default {
   title: 'Editing/UText',

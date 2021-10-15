@@ -136,6 +136,7 @@ export function UBlocksSet({
         <UHeading0
           focus={activeBlock.id === 'title' ? activeBlock.focus : undefined}
           arrowNavigation={{ up: fn, down: onTitleEnter }}
+          clearFocus={() => setActiveBlock(new ActiveBlock())}
           onTitleEnter={onTitleEnter}
           data={title || ''}
           setData={setStr}
@@ -177,7 +178,6 @@ export function UBlocksSet({
           })}
         </div>
       </ClickAwayListener>
-
       {(!ids.length || !oneBlockOnly) && (
         <UParagraph
           key={`factory-${activeBlock.id}`}

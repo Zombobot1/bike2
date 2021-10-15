@@ -5,12 +5,12 @@
   "scripts": {
     "start": "vite",
     "test": "cypress open-ct",
+    "test-ci": "cypress run-ct --browser chrome",
     "serve": "npm run build && serve -s dist",
     "seed": "ts-node ./src/_seed.ts",
     "lint": "eslint ./src/**/*.{tsx,ts,js} --fix --max-warnings=0",
     "check": "npm run lint && tsc && npm run test-ci",
     "build": "rimraf ./dist && cross-env NODE_ENV=production webpack",
-    "test-ci": "cypress run-ct",
     "commit-dangerously": "git add . && git commit --no-verify -m",
     "pre-commit": "npm run check && git add .",
     "prepare": "is-ci || husky install",

@@ -47,7 +47,7 @@ export function toggleTag(block: HTMLElement, tag: Tags): str {
 export function toggleTags(block: HTMLElement, tag: Tags, additionalTag: Tags): str {
   const selected = selectedText()
   const textBeforeSelection = getTextBeforeSelection(block)
-  console.log('after del', { h: block.innerHTML, additionalTag, textBeforeSelection, selected })
+
   if (containsTagBefore(block.innerHTML, tag, textBeforeSelection, selected))
     return removeTagBefore(block.innerHTML, tag, textBeforeSelection, selected)
   if (containsTagBefore(block.innerHTML, additionalTag, textBeforeSelection, selected)) {
@@ -118,12 +118,15 @@ export function select(node: ChildNode, from: num, to: num) {
 export const selectedText = () => window.getSelection()?.toString().trim() || ''
 
 function getTextBeforeSelection(block: HTMLElement) {
-  const { start, offset } = startNodeAndOffset()
   const content = dfsText(block)
+  const cypressBug = content[0]?.textContent === ''
+  if (!content.length || cypressBug) return ''
+
+  const { start, offset } = startNodeAndOffset()
   const index = content.findIndex((n) => n === start)
   if (index === -1) throw new Error('Selection is not in block')
 
-  const selectedNodeContent = safe(start.textContent)
+  const selectedNodeContent = safe(start.textContent || (start as Text).wholeText)
   const selectedNodeContentLength = selectedNodeContent.length
 
   let textBeforeSelection = content
@@ -139,11 +142,11 @@ function getTextBeforeSelection(block: HTMLElement) {
 }
 
 function startNodeAndOffset(): { start: Node; offset: num } {
-  const { focusNode, focusOffset, anchorNode, anchorOffset } = safe(window.getSelection())
+  const s = safe(window.getSelection())
 
-  return isSelectedBackwards()
-    ? { start: safe(focusNode), offset: focusOffset }
-    : { start: safe(anchorNode), offset: anchorOffset }
+  return !s.toString() && isSelectedBackwards()
+    ? { start: safe(s.focusNode), offset: s.focusOffset }
+    : { start: safe(s.anchorNode), offset: s.anchorOffset }
 }
 
 function isSelectedBackwards() {

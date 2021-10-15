@@ -18,6 +18,13 @@ describe('UBlocksSet', () => {
     saw('Title')
   })
 
+  it('Focus moves from title with content second time', () => {
+    show(UBlocksSet.BlocksCreation)
+    utext().type('{enter}')
+    utext().type('{enter}')
+    utext(1).should('have.focus')
+  })
+
   it('Focus moves through empty block', () => {
     show(UBlocksSet.BlocksDeletion)
     utext(2).type('{uparrow}')

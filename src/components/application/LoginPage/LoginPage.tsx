@@ -128,7 +128,7 @@ const Logo = styled(LogoSVG)(({ theme }) => ({
     fill: theme.palette.primary.main,
   },
   '.u-tip': {
-    fill: apm(theme),
+    fill: theme.palette.mode === 'dark' ? theme.palette.common.white : theme.palette.secondary.main,
   },
 }))
 

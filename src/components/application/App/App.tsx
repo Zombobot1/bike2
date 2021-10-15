@@ -19,11 +19,26 @@ import { useIsSignedIn, useUserInfo } from '../../../fb/auth'
 
 const pages = ['study', 'teach', 'tune']
 
-export function App_() {
-  const { isSignedIn } = useIsSignedIn()
-  const isNavBarOpenS = useState(false)
-  if (!isSignedIn) return <LoginPage />
+export function App() {
+  return (
+    <Switch>
+      <Route exact path={APP}>
+        <Redirect to={STUDY} />
+      </Route>
+      <Route path={FINISH_REGISTRATION}>
+        <FinishRegistration />
+      </Route>
+      <Route path={ANY}>
+        <Fetch>
+          <App_ />
+        </Fetch>
+      </Route>
+    </Switch>
+  )
+}
 
+function App__() {
+  const isNavBarOpenS = useState(false)
   const user = useUserInfo()
   const workspace = useWorkspace(user?.uid || '')
   const { location } = useRouter()
@@ -45,28 +60,16 @@ export function App_() {
           <Route path={ANY}>
             <UPage workspace={workspace} />
           </Route>
-          <Route exact path={APP}>
-            <Redirect to={STUDY} />
-          </Route>
         </Switch>
       </Main>
     </AppContainer>
   )
 }
 
-export function App() {
-  return (
-    <Switch>
-      <Route path={FINISH_REGISTRATION}>
-        <FinishRegistration />
-      </Route>
-      <Route path={ANY}>
-        <Fetch>
-          <App_ />
-        </Fetch>
-      </Route>
-    </Switch>
-  )
+function App_() {
+  const { isSignedIn } = useIsSignedIn()
+  if (!isSignedIn) return <LoginPage />
+  return <App__ />
 }
 
 const AppContainer = styled('div', { label: 'App' })(({ theme }) => ({

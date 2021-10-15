@@ -2,7 +2,10 @@ import { got, saw, show } from '../../../utils/testUtils'
 import * as ThemeBtn from './ThemeBtn.stories'
 
 describe('ThemeBtn', () => {
-  beforeEach(() => localStorage.clear())
+  beforeEach(() => {
+    localStorage.setItem('themeType', 'LIGHT')
+  })
+
   it('Changes Theme', () => {
     show(ThemeBtn.ChangesTheme)
 

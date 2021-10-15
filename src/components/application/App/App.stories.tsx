@@ -18,11 +18,14 @@ interface T_ {
 }
 
 function T_({ initialPosition, prepareForSignIn, showSignOut }: T_) {
-  const [position, setPosition] = useState(initialPosition)
-  const { isSignedIn, signOut } = useIsSignedIn()
+  const { isSignedIn, signOut, signIn } = useIsSignedIn()
+  // const signIn = () => _getOOBLink().then((l) => setPosition(`${FINISH_REGISTRATION}${l}`))
 
   useMount(() => {
-    if (!prepareForSignIn) return
+    if (!prepareForSignIn) {
+      if (!isSignedIn) signIn('')
+      return
+    }
     localStorage.setItem('emailForSignIn', 'test@gmail.com')
     signOut()
   })
@@ -31,14 +34,11 @@ function T_({ initialPosition, prepareForSignIn, showSignOut }: T_) {
     <>
       {showSignOut && isSignedIn && <Button onClick={signOut}>Sign Out</Button>}
       {!isSignedIn && (
-        <Button
-          onClick={() => _getOOBLink().then((l) => setPosition(`${FINISH_REGISTRATION}${l}`))}
-          data-cy="sign-in-oob"
-        >
+        <Button onClick={() => signIn('')} data-cy="sign-in-oob">
           Sign In
         </Button>
       )}
-      <MemoryRouter key={position} initialEntries={[position]}>
+      <MemoryRouter key={initialPosition} initialEntries={[initialPosition]}>
         <App />
       </MemoryRouter>
     </>
@@ -71,6 +71,7 @@ const data3: T_ = {
 export const ShowsStudyAfterLogin = () => T(data1)
 export const Shows404AndLetsGoToStudy = () => T(data2)
 export const FavoriteAdditionAndDeletion = () => T(data3)
+export const Application = () => T(data3)
 
 export default {
   title: 'App/App',
