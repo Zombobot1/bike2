@@ -1,6 +1,6 @@
 import { doc, getFirestore, setDoc } from '@firebase/firestore'
 import { useFirestore, useFirestoreDocData } from 'reactfire'
-import { bool, str } from '../utils/types'
+import { str } from '../utils/types'
 import { useFS } from './fs'
 import { _MOCK_FB } from './utils'
 

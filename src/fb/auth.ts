@@ -1,4 +1,4 @@
-import { getAuth, GoogleAuthProvider } from '@firebase/auth'
+import { getAuth } from '@firebase/auth'
 import { signOut } from 'firebase/auth'
 import { atom, useAtom } from 'jotai'
 import { useSigninCheck, useUser } from 'reactfire'

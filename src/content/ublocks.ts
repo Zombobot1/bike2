@@ -1,4 +1,3 @@
-import { UBlockDTO } from '../components/editing/types'
 import { Question } from '../components/studying/training/types'
 import { str, strs } from '../utils/types'
 import { _pages } from './application'

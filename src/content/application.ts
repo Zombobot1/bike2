@@ -3,7 +3,7 @@ import { NavNodeDTOs } from '../components/application/navigation/NavBar/NavTree
 import { _WSD } from '../components/application/navigation/workspace'
 import { UPageDataDTO } from '../components/editing/UPage/UPage'
 import { safe } from '../utils/utils'
-import { IdAndBlock, IdAndBlocks } from './types'
+import { IdAndBlock } from './types'
 
 const $ = JSON.stringify
 

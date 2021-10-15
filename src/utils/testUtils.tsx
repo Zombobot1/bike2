@@ -1,12 +1,9 @@
 import { mount } from '@cypress/react'
-import { Provider } from 'jotai'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { OuterShell } from '../components/application/Shell'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
-import { useMount } from '../components/utils/hooks/hooks'
-import { _fs } from '../content/fs'
-import { FSProvider, useFS } from '../fb/fs'
+import { FSProvider } from '../fb/fs'
 import { num, str } from './types'
 import { uuid, uuidS } from './uuid'
 

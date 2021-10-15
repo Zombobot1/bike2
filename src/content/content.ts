@@ -1,4 +1,3 @@
-import { UBlockDTO } from '../components/editing/types'
 import { UAudioFileDTO } from '../components/editing/UFile/UAudioFile/UAudioFile'
 import { UImageFileDTO } from '../components/editing/UFile/UImageFile/UImageFile'
 import { UPageDataDTO } from '../components/editing/UPage/UPage'

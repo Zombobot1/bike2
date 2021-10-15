@@ -3,7 +3,7 @@ import imageCompression from 'browser-image-compression'
 import { getDownloadURL, getStorage } from 'firebase/storage'
 import { srcfy } from '../utils/filesManipulation'
 import { sslugify } from '../utils/sslugify'
-import { bool, str, strP } from '../utils/types'
+import { bool, strP } from '../utils/types'
 import { uuid } from '../utils/uuid'
 import { _MOCK_FB } from './utils'
 
