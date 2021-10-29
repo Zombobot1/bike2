@@ -11,10 +11,10 @@ import { NewCardData } from './useNewCardData'
 
 const cardTemplate: CardTemplateDTO = {
   fields: [
-    { name: 'phrase', type: 'TEXT' },
-    { name: 'meaning', type: 'TEXT' },
-    { name: 'image', type: 'IMAGE' },
-    { name: 'audio', type: 'AUDIO' },
+    { name: 'phrase', type: 'text' },
+    { name: 'meaning', type: 'text' },
+    { name: 'image', type: 'image' },
+    { name: 'audio', type: 'audio' },
   ],
 }
 

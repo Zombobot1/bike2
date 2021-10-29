@@ -11,7 +11,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 
 import { WS } from '../workspace'
 import { useShowAppBar } from '../AppBar/AppBar'
-import { apm } from '../../theming/theme'
+import { _apm } from '../../theming/theme'
 import { useNewUPage } from '../../../editing/UPage/UPage'
 import { UserDTO } from '../../../../fb/auth'
 
@@ -32,7 +32,7 @@ export function NavBar(props: NavBar) {
         <NavBarWrapper justifyContent="center">
           <Paper
             sx={{ position: 'relative' }}
-            elevation={theme.palette.mode === 'dark' ? 1 : 3}
+            elevation={theme.palette.mode === 'dark' ? 1 : 6}
             onMouseEnter={showAppBar}
             onMouseLeave={hideAppBar}
           >
@@ -82,7 +82,7 @@ function NavBar_({ user, workspace }: NavBar) {
   const displayName = user.displayName || `Zombobot ${strShortHash(user.email || '')}`
   const theme = useTheme()
   const addNewUPage = useNewUPage(workspace)
-  const sx = { color: apm(theme, 'SECONDARY') }
+  const sx = { color: _apm(theme, 'secondary') }
   return (
     <NavBox>
       <Stack spacing={3}>
@@ -124,13 +124,13 @@ function NavTrees({ workspace }: { workspace: WS }) {
         {workspace.favorite.length && (
           <Box sx={{ marginBottom: '1.5rem' }}>
             <Section color="text.secondary">Favorite</Section>
-            <NavTree nodes={workspace.favorite} onOpen={workspace.triggerOpen('FAVORITE')} />
+            <NavTree nodes={workspace.favorite} onOpen={workspace.triggerOpen('favorite')} />
           </Box>
         )}
         {workspace.personal.length && (
           <div>
             <Section color="text.secondary">Workspace</Section>
-            <NavTree nodes={workspace.personal} onOpen={workspace.triggerOpen('PERSONAL')} />
+            <NavTree nodes={workspace.personal} onOpen={workspace.triggerOpen('personal')} />
           </div>
         )}
       </main>
@@ -152,7 +152,7 @@ const TreesBox = styled(Stack)(({ theme }) => ({
 
     '::-webkit-scrollbar-thumb': {
       borderRadius: '7.5px',
-      backgroundColor: apm(theme, 0.15, 0.15),
+      backgroundColor: _apm(theme, 0.15),
     },
   },
 }))

@@ -4,6 +4,6 @@
     "testFiles": "**/*spec.{js,jsx,ts,tsx}"
   },
   "viewportHeight": 1080,
-  "viewportWidth": 600,
+  "viewportWidth": 1000,
   "video": false
 }

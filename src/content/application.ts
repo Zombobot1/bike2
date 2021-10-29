@@ -119,5 +119,5 @@ export const _pages = bfs(ws.personal)
   .filter((p) => !exclude.includes(p.id))
   .map((n): IdAndBlock => {
     const r: UPageDataDTO = { ids: [], name: n.name, color: randomColor({ luminosity: 'bright' }) }
-    return [n.id, { data: $(r), type: 'PAGE' }]
+    return [n.id, { data: $(r), type: 'page' }]
   })

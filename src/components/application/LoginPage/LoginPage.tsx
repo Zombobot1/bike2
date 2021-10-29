@@ -12,7 +12,7 @@ import { ReactComponent as WaveSVG } from './wave.svg'
 import { ReactComponent as LogoSVG } from './logo.svg'
 import { getAuth, signInWithPopup, GoogleAuthProvider, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import { sendEmailLink } from './sendEmailLink'
-import { apm } from '../theming/theme'
+import { _apm } from '../theming/theme'
 import { useIsSignedIn } from '../../../fb/auth'
 
 export function FinishRegistration() {

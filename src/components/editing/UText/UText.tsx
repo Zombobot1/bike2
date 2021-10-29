@@ -1,4 +1,7 @@
 import { isUListComponent } from '../types'
+import { Callout } from './Callout/Callout'
+import { Code } from './Code/Code'
+import { Quote } from './Quote/Quote'
 import { UText as UTextP } from './types'
 import { UList } from './UList/UList'
 import { UText_ } from './UText_'
@@ -7,11 +10,14 @@ export function UText(props: UTextP) {
   const { type } = props
   return (
     <>
-      {type === 'TEXT' && <UParagraph {...props} />}
-      {type === 'HEADING0' && <UHeading1 {...props} />}
-      {type === 'HEADING1' && <UHeading1 {...props} />}
-      {type === 'HEADING2' && <UHeading2 {...props} />}
-      {type === 'HEADING3' && <UHeading3 {...props} />}
+      {type === 'text' && <UParagraph {...props} />}
+      {type === 'heading0' && <UHeading1 {...props} />}
+      {type === 'heading1' && <UHeading1 {...props} />}
+      {type === 'heading2' && <UHeading2 {...props} />}
+      {type === 'heading3' && <UHeading3 {...props} />}
+      {type === 'quote' && <Quote {...props} />}
+      {type === 'callout' && <Callout {...props} />}
+      {type === 'code' && <Code {...props} />}
       {isUListComponent(type) && <UList {...props} />}
     </>
   )

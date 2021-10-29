@@ -2,6 +2,7 @@ import { num, str } from './types'
 
 export const transformedMax = <T>(arr: T[], f: (v: T) => number): number => Math.max(...arr.map(f))
 export const min = <T>(arr: T[], f: (v: T) => number): T => arr.reduce((p, c) => (f(p) - f(c) < 0 ? p : c))
+export const max = <T>(arr: T[], f: (v: T) => number): T => arr.reduce((p, c) => (f(p) - f(c) > 0 ? p : c))
 
 export const sum = <T>(arr: T[], f: (p: number, v: T) => number): number => arr.reduce(f, 0)
 export const avg = <T>(arr: T[], f: (p: number, v: T) => number): number => arr.reduce(f, 0) / arr.length

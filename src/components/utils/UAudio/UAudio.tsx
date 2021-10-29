@@ -5,10 +5,10 @@ import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded'
 import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded'
 import VolumeOffRoundedIcon from '@mui/icons-material/VolumeOffRounded'
-import { combine } from '../../../utils/utils'
+import { all } from '../../../utils/utils'
 import { bool, Fn, num, str } from '../../../utils/types'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
-import { apm } from '../../application/theming/theme'
+import { _apm } from '../../application/theming/theme'
 
 export interface UAudio {
   src: str
@@ -51,7 +51,7 @@ export function UAudio({ src, onDelete, readonly }: UAudio) {
 
   return (
     <UAudio_ direction="row" alignItems="center">
-      <IconButton color="primary" onClick={combine(togglePlay, isPlaying ? () => audio.pause() : () => audio.play())}>
+      <IconButton color="primary" onClick={all(togglePlay, isPlaying ? () => audio.pause() : () => audio.play())}>
         {isPlaying ? <PauseRoundedIcon /> : <PlayArrowRoundedIcon />}
       </IconButton>
       <Typography sx={{ fontSize: '0.85rem', minWidth: '5rem', marginLeft: '0.25rem', marginRight: '0.25rem' }}>
@@ -96,7 +96,7 @@ export function UAudio({ src, onDelete, readonly }: UAudio) {
 const UAudio_ = styled(Stack)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   padding: '0.5rem',
-  backgroundColor: apm(theme, '100'),
+  backgroundColor: _apm(theme, '100'),
 }))
 
 const StraightSlider = styled(Slider)({
@@ -110,7 +110,7 @@ const StraightSlider = styled(Slider)({
 })
 
 const Delete = styled(IconButton)(({ theme }) => ({
-  color: apm(theme, 'SECONDARY'),
+  color: _apm(theme, 'secondary'),
 }))
 
 function time(current: num, duration: num): str {

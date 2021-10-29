@@ -7,7 +7,7 @@ import { useMount, useReactive } from '../../utils/hooks/hooks'
 import { useRefCallback } from '../../utils/hooks/useRefCallback'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { useShowAppBar } from '../../application/navigation/AppBar/AppBar'
-import { apm } from '../../application/theming/theme'
+import { _apm } from '../../application/theming/theme'
 import { UBlockB, UBlockDTO, UComponentType } from '../types'
 import { UBlocksSet, useDeleteUPage, useUBlocks } from './UBlocksSet/UBlocksSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
@@ -35,33 +35,18 @@ export interface UPage {
 export function UPage({ workspace }: UPage) {
   const { location } = useRouter()
   const id = location.pathname.replace('/', '')
-  const { idsS, ublock, setUBlockData } = useUBlocks<UPageDTO, UPageDataDTO>(id)
+  const { ids, ublock, setUBlockData } = useUBlocks<UPageDTO, UPageDataDTO>(id)
   const addNewUPage = useNewUPage(workspace)
 
   const [color, setColor] = useReactive(ublock.data.color)
-  const [name, setName] = useReactive(ublock.data.name)
-  const ref = useRef<HTMLDivElement>(null)
+  const [name] = useReactive(ublock.data.name)
   const { showAppBar, hideAppBar } = useShowAppBar()
 
-  const onChange = useRefCallback((e) => setName(e.target.value))
-  const onBlur = useRefCallback(() => {
+  const rename = (name: str) => {
     setUBlockData({ ...ublock.data, name })
     workspace.rename(id, name)
-  }, [name, ublock.data])
-
-  const onKeyDown = useRefCallback(
-    (e: KeyboardEvent<HTMLInputElement>) => {
-      if (!e.shiftKey && e.key === 'Enter') {
-        e.preventDefault()
-        ref.current?.blur()
-      }
-    },
-    [ref],
-  )
-
-  useMount(() => {
-    if (!name) ref.current?.focus()
-  })
+  }
+  const setIds = (ids: strs) => setUBlockData({ ...ublock.data, ids })
 
   return (
     <PageWrapper alignItems="center">
@@ -78,18 +63,14 @@ export function UPage({ workspace }: UPage) {
         </ColorPicker>
       </ColoredBox>
       <Page>
-        <Editable
-          innerRef={ref}
-          html={name}
-          tagName="h1"
-          onBlur={onBlur}
-          onChange={onChange}
-          role="textbox"
-          onKeyDown={onKeyDown}
-          placeholder="Untitled"
-          data-cy="page-name"
+        <UBlocksSet
+          ids={ids}
+          setIds={setIds}
+          readonly={false}
+          addNewUPage={(underId) => addNewUPage(id, underId, color)}
+          title={name}
+          setTitle={rename}
         />
-        <UBlocksSet idsS={idsS} readonly={false} addNewUPage={(underId) => addNewUPage(id, underId, color)} />
       </Page>
     </PageWrapper>
   )
@@ -101,7 +82,7 @@ export function useNewUPage(workspace: WS) {
   function addNewUPage(parentId?: str, underId?: str, parentColor?: str) {
     const id = uuid.v4()
     const newPage: UPageDataDTO = { color: parentColor || randomColor({ luminosity: 'bright' }), ids: [], name: '' }
-    addData<UBlockDTO>('ublocks', id, { type: 'PAGE', data: JSON.stringify(newPage) })
+    addData<UBlockDTO>('ublocks', id, { type: 'page', data: JSON.stringify(newPage) })
     history.push('/' + id)
     workspace.insert(id, parentId, underId)
   }
@@ -118,7 +99,7 @@ const PageWrapper = styled(Stack, { label: 'UPage' })({
 const Page = styled('div')(({ theme }) => ({
   width: '85%',
   borderRadius: '2rem',
-  backgroundColor: apm(theme),
+  backgroundColor: _apm(theme),
 
   [`${theme.breakpoints.up('sm')}`]: {
     width: '70%',
@@ -156,32 +137,5 @@ const ColoredBox = styled('div')(({ theme }) => ({
 
   svg: {
     display: 'block',
-  },
-}))
-
-const Editable = styled(ContentEditable, { label: 'ContentEditable ' })(({ theme }) => ({
-  outline: 'none',
-  margin: 0,
-  paddingBottom: '1rem',
-  fontSize: '1.75rem',
-  fontFamily: theme.typography.fontFamily,
-  overflowWrap: 'break-word',
-  whiteSpace: 'pre-line',
-  fontWeight: 900,
-
-  [`${theme.breakpoints.up('sm')}`]: {
-    paddingBottom: '2rem',
-    fontSize: '3.5rem',
-  },
-
-  ':empty:before': {
-    content: 'attr(placeholder)',
-    fontSize: '1.75rem',
-    color: apm(theme, 'SECONDARY'),
-    cursor: 'text',
-
-    [`${theme.breakpoints.up('sm')}`]: {
-      fontSize: '3.5rem',
-    },
   },
 }))

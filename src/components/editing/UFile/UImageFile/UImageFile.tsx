@@ -13,13 +13,11 @@ import fluffy from '../../../../content/fluffy.jpg'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
-export class UImageFileDTO {
-  src = ''
-  width = 900
-  isNew?: bool
+export interface UImageFile extends UBlockComponentB {
+  maxWidth: num
 }
 
-export function UImageFile({ data, setData, readonly }: UBlockComponentB) {
+export function UImageFile({ data, setData, readonly, maxWidth }: UImageFile) {
   const [imageData, setImageData] = useReactiveObject(cast(data, new UImageFileDTO()))
   const [newSrc, setNewSrc] = useState('') // user can change width before image is uploaded
   const props = useUImageFile(setNewSrc, (f) => setImageData(() => ({ width: 900, src: srcfy(f) })))
@@ -38,20 +36,19 @@ export function UImageFile({ data, setData, readonly }: UBlockComponentB) {
   if (!imageData.src) return <Drop1zone {...props} label="image" icon={<ImageRoundedIcon />} />
 
   return (
-    <Stack direction="row" justifyContent="center">
-      <ResizableWidth
-        readonly={readonly}
-        width={imageData.width}
-        updateWidth={(w) => setData(JSON.stringify({ ...imageData, width: w }))}
-      >
-        <Img src={imageData.src} />
-        {!readonly && (
-          <Delete size="small" onClick={props.deleteFile}>
-            <DeleteRoundedIcon />
-          </Delete>
-        )}
-      </ResizableWidth>
-    </Stack>
+    <ResizableWidth
+      readonly={readonly}
+      width={imageData.width}
+      maxWidth={maxWidth}
+      updateWidth={(w) => setData(JSON.stringify({ ...imageData, width: w }))}
+    >
+      <Img src={imageData.src} data-cy="img" />
+      {!readonly && (
+        <Delete size="small" onClick={props.deleteFile}>
+          <DeleteRoundedIcon />
+        </Delete>
+      )}
+    </ResizableWidth>
   )
 }
 
@@ -75,3 +72,9 @@ const Delete = styled(IconButton)(({ theme }) => ({
     backgroundColor: alpha(theme.palette.grey[800], 0.6),
   },
 }))
+
+export class UImageFileDTO {
+  src = ''
+  width = 900
+  isNew?: bool
+}

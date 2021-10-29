@@ -14,7 +14,7 @@ import { useRouter } from '../../utils/hooks/useRouter'
 import { AppBar } from '../navigation/AppBar/AppBar'
 import { useState } from 'react'
 import { UPage } from '../../editing/UPage/UPage'
-import { apm, COLORS } from '../theming/theme'
+import { _apm, COLORS } from '../theming/theme'
 import { useIsSignedIn, useUserInfo } from '../../../fb/auth'
 
 const pages = ['study', 'teach', 'tune']
@@ -80,12 +80,12 @@ const AppContainer = styled('div', { label: 'App' })(({ theme }) => ({
 
   [`${theme.breakpoints.up('sm')}`]: {
     '::-webkit-scrollbar': {
-      width: '12px',
+      width: '10px',
     },
 
     '::-webkit-scrollbar-thumb': {
       borderRadius: '7.5px',
-      backgroundColor: apm(theme, 0.15),
+      backgroundColor: _apm(theme, 0.15),
     },
   },
 }))

@@ -1,30 +1,38 @@
 import { styled } from '@mui/material'
-import { Fn, JSObject, num, str } from './types'
+import { fn, Fn, JSObject, num, str, strs } from './types'
 
 type E = {
   preventDefault: Fn
   stopPropagation: Fn
+  nativeEvent: {
+    stopImmediatePropagation: Fn
+  }
 }
 
 export function prevented(f: Fn) {
   return (e: E) => {
-    e.preventDefault()
-    e.stopPropagation()
+    prevent(e)
     f()
   }
 }
 
-export const prevent = (e: E) => e.preventDefault()
-export const combine = (f1: Fn, f2: Fn) => () => {
-  f1()
-  f2()
+export const prevent = (e: E) => {
+  e.preventDefault()
+  e.stopPropagation()
+  e.nativeEvent.stopImmediatePropagation()
+}
+// eslint-disable-next-line @typescript-eslint/ban-types
+export function all(...fs: Array<Function | undefined>) {
+  return (_?: unknown) => {
+    fs.forEach((f) => (f ? f() : fn()))
+  }
 }
 
 export function cast<T>(data: str, default_: T): T {
   if (!data) return default_
 
   try {
-    return JSON.parse(data) as T
+    return { ...default_, ...JSON.parse(data) } as T
   } catch (error) {
     console.error(error)
   }
@@ -74,7 +82,7 @@ export const queryfy = (route: string, args: JSObject) => {
 }
 
 export const safe = <T>(o?: T, error = 'Object is not safe'): Exclude<T, null> => {
-  if (!o) throw Error(error)
+  if (o === undefined || o === null) throw Error(error)
   return o as Exclude<T, null>
 }
 
@@ -102,3 +110,8 @@ export function getEmptyStrings(len: number) {
 }
 
 export const cut = (string: str, length: num) => (string.length <= length ? string : string.slice(0, length) + '...')
+
+export const mod = (n: num, m: num) => ((n % m) + m) % m
+
+export const filterProps = (props: JSObject, excessive: strs) =>
+  Object.fromEntries(Object.entries(props).filter(([k]) => !excessive.includes(k)))

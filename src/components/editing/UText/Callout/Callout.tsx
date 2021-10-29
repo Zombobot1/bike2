@@ -1,0 +1,77 @@
+import { cast } from '../../../../utils/utils'
+import { useReactiveObject } from '../../../utils/hooks/hooks'
+import { RStack } from '../../../utils/MuiUtils'
+import { UText } from '../types'
+import { UText_ } from '../UText_'
+import { alpha, Box, ClickAwayListener, IconButton, Menu, MenuItem, Select, styled, useTheme } from '@mui/material'
+import { useRef, useState } from 'react'
+import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
+import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
+import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded'
+import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
+import { bool, SetStr, str, StrState } from '../../../../utils/types'
+import { _apm } from '../../../application/theming/theme'
+
+export function Callout(props: UText) {
+  const [data] = useReactiveObject(cast(props.data, new CalloutDTO()))
+  const setText = (d: str) => props.setData(JSON.stringify({ ...data, text: d }))
+  const setType = (t: str) => props.setData(JSON.stringify({ ...data, type: t }))
+
+  const theme = useTheme()
+  const bg = alpha(theme.palette[data.type].main, theme.palette.mode === 'dark' ? 0.2 : 0.1)
+  return (
+    <Box sx={{ paddingBottom: '1rem' }}>
+      <Container sx={{ backgroundColor: bg }} alignItems="start" spacing={1}>
+        <CalloutTypePicker type={data.type} setType={setType} readonly={props.readonly} />
+        <UText_ {...props} data={data.text} setData={setText} component="pre" color={theme.palette[data.type].main} />
+      </Container>
+    </Box>
+  )
+}
+
+const Container = styled(RStack)(({ theme }) => ({
+  flex: 1,
+  borderRadius: theme.shape.borderRadius,
+  paddingTop: '1.5rem',
+  paddingLeft: '1rem',
+  paddingRight: '1.5rem',
+  paddingBottom: '0.5rem',
+}))
+
+export class CalloutDTO {
+  text = ''
+  type: 'info' | 'success' | 'warning' | 'error' = 'info'
+}
+
+const icons: { [key: string]: JSX.Element } = {
+  info: <InfoRoundedIcon color="info" fontSize="large" />,
+  success: <CheckCircleRoundedIcon color="success" fontSize="large" />,
+  warning: <WarningRoundedIcon color="warning" fontSize="large" />,
+  error: <ErrorRoundedIcon color="error" fontSize="large" />,
+}
+
+interface CalloutTypePicker_ {
+  type: str
+  setType: SetStr
+  readonly?: bool
+}
+
+function CalloutTypePicker({ type, setType, readonly }: CalloutTypePicker_) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const { isOpen, toggleOpen, close } = useMenu()
+  return (
+    <>
+      <IconButton onClick={toggleOpen} ref={ref} disabled={readonly}>
+        {icons[type]}
+      </IconButton>
+      <UMenu isOpen={isOpen} btnRef={ref} close={close}>
+        {Object.entries(icons).map(([k, icon], i) => (
+          <MenuItem value={i} key={i} onClick={() => setType(k)}>
+            {icon}
+          </MenuItem>
+        ))}
+      </UMenu>
+    </>
+  )
+}

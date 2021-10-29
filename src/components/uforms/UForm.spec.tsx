@@ -1,32 +1,61 @@
-import { got, utext, show, expectCSSPlaceholder } from '../../utils/testUtils'
+import { got, type, show, utext, saw, tick, disabled, click, _red } from '../../utils/testUtils'
+import { str } from '../../utils/types'
 import * as UForm from './UForm.stories'
 
-// describe('UForm', () => {
-//   beforeEach(intercept)
-//   it('Is displayed as one block page', () => {
-//     show(UForm.EmptyQuestion)
+describe('UForm', () => {
+  it('forbids empty submit | calculates score | retries', () => {
+    show(UForm.Submit)
 
-//     utext().then(expectCSSPlaceholder('"Type /checks or /input etc."'))
-//     utext().type('/checks ')
-//     got('explanation').should('be.visible')
-//     utext().should('not.exist')
-//   })
+    click('submit')
+    saw('Answer required!')
 
-//   it('Prevents empty answer submission | shows readonly feedback', () => {
-//     show(UForm.SubmittingAnswer)
-//     cy.contains('Select right:')
+    click(['rtick'], ['ctick', 1]).type('answer', 'c').click('submit')
+    saw('Score: 0%')
 
-//     got('submit-btn').click()
-//     cy.contains('Answer, please!').should('be.visible')
+    click(['retry'], ['rtick', 2], ['ctick'], ['ctick', 2]).type('answer', 'persian').click('submit')
+    saw('Score: 100%')
+  })
 
-//     got('option tick', 'AL').eq(0).click({ force: true })
-//     cy.contains('Answer, please!').should('not.exist')
-//     got('option tick', 'AL').eq(3).click({ force: true })
+  it('creates | submits | edits', () => {
+    show(UForm.Empty)
 
-//     got('submit-btn').click()
-//     cy.get('.MuiCheckbox-root').eq(0).should('have.css', 'color', 'rgba(5, 166, 119, 0.6)')
-//     cy.get('.MuiCheckbox-root').eq(1).should('have.css', 'color', 'rgba(5, 166, 119, 0.6)')
-//     cy.get('.MuiCheckbox-root').eq(3).should('have.css', 'color', 'rgba(250, 82, 82, 0.6)')
-//     cy.contains('Explanation').should('be.visible')
-//   })
-// })
+    type('New form')
+    type(['utext', '/'], ['checks '], ['etext', 1, 'Q1']).click('ctick')
+    type(['utext', '/'], ['input '], ['etext', 2, 'Q2'], ['correct answer', 'a'])
+    click('view')
+    saw('Q1', 'Q2')
+
+    click('ctick').type('answer', 'a').click('submit')
+    saw('Score: 100%')
+
+    click('edit').type('correct answer', 'b').click('view')
+    click('ctick').type('answer', 'a').click('submit')
+    saw('Score: 50%')
+  })
+
+  it('validates empty | without answer', () => {
+    show(UForm.Empty)
+
+    click('view')
+    saw('Add questions!', [() => got('view'), _red])
+
+    type(['utext', '/'], ['checks '])
+    click('view')
+    saw('Select correct answer!')
+
+    click(['ctick'], ['view'], ['ctick'], ['submit'])
+  })
+
+  it.only('shows error when empty and readonly | when does not contains correct answer', () => {
+    show(UForm.EmptyWithName)
+
+    saw('Missing questions!')
+    click(['edit'], ['view'])
+    saw('Add questions!')
+
+    type(['utext', '/'], ['checks ']).click('view')
+    saw('Select correct answer!')
+
+    click(['ctick'], ['view'], ['ctick'], ['submit'])
+  })
+})

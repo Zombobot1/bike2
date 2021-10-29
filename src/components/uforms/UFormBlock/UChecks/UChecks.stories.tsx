@@ -1,29 +1,21 @@
 import { UChecks } from './UChecks'
 import { useState } from 'react'
 import { Question } from '../../../studying/training/types'
+import { bool, str, strs } from '../../../../utils/types'
 
 interface T {
-  _id: string
   question: Question
-  wasSubmitted: boolean
-  value: string[]
-  validationError: string
-  selectMultiple: boolean
+  wasSubmitted: bool
+  value: strs
+  validationError: str
+  selectMultiple: bool
 }
 
-const T = ({ _id, question, value, wasSubmitted, validationError, selectMultiple }: T) => {
-  const [value_, setValue] = useState(value)
+const T = (props: T) => () => {
+  const [value_, setValue] = useState(props.value)
   return (
-    <div style={{ width: '50%' }}>
-      <UChecks
-        _id={_id}
-        answer={value_}
-        onAnswerChange={setValue}
-        validationError={validationError}
-        wasSubmitted={wasSubmitted}
-        question={question}
-        selectMultiple={selectMultiple}
-      />
+    <div style={{ width: '500px' }}>
+      <UChecks answer={value_} onAnswerChange={setValue} {...props} />
     </div>
   )
 }
@@ -36,7 +28,6 @@ const selectOneOptions = [
 const selectOneCorrectAnswer = ['Option 1']
 
 const radioData: T = {
-  _id: 'radioData',
   question: {
     question: 'Please select',
     options: selectOneOptions,
@@ -53,7 +44,6 @@ const selectMultipleOptions = ['Right', 'Also right', 'Wrong', 'Option', 'Also w
 const selectMultipleCorrectAnswer = ['Right', 'Also right']
 
 const checksData: T = {
-  _id: 'checksData',
   question: {
     question: 'Please select',
     options: selectMultipleOptions,
@@ -96,12 +86,12 @@ const wrongMultiple: T = {
   selectMultiple: true,
 }
 
-export const SelectOne = () => <T {...selectOne} />
-export const SelectMany = () => <T {...selectMany} />
-export const SelectOneRight = () => <T {...right} />
-export const SelectOneWrong = () => <T {...wrong} />
-export const SelectManyWrong = () => <T {...wrongMultiple} />
-export const Invalid = () => <T {...invalid} />
+export const SelectOne = T(selectOne)
+export const SelectMany = T(selectMany)
+export const SelectOneRight = T(right)
+export const SelectOneWrong = T(wrong)
+export const SelectManyWrong = T(wrongMultiple)
+export const Invalid = T(invalid)
 
 export default {
   title: 'UForms/UChecks',

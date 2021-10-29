@@ -49,7 +49,7 @@ export const useCardSettings = (cardsS: State<CardDatas>, currentCardIndex: num)
   return { onDeleteCard, setTimeToAnswer }
 }
 
-type CardTransition = 'TRANSIT' | 'NO_TRANSITION'
+type CardTransition = 'transit' | 'no-transition'
 export type EstimateCard = (e: CardEstimation, ct?: CardTransition) => Fn | undefined
 
 const cardDTOToCardData = (dto: CardDTO): CardData => ({ dto, showHidden: false })
@@ -84,7 +84,7 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
 
   const { timeToFinish } = useTimeToFinish(cards, currentCardIndex)
 
-  const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'TRANSIT'): Fn | undefined => {
+  const estimateCard: EstimateCard = (e: CardEstimation, transition: CardTransition = 'transit'): Fn | undefined => {
     // const isLastCard = currentCardIndex < cards.length - 1
 
     setCards((cs) => cs.map((c, i) => (i === currentCardIndex ? { ...c, estimation: e } : c)))
@@ -96,8 +96,8 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
     //     if (!isLastCard) setCards((cs) => [...cs, ...cardDTOsToCardDatas(cards)])
     //   })
 
-    if (transition === 'TRANSIT') goToNextCard()
-    else if (transition === 'NO_TRANSITION') return goToNextCard
+    if (transition === 'transit') goToNextCard()
+    else if (transition === 'no-transition') return goToNextCard
   }
 
   useUnmount(resetMistakesCount)

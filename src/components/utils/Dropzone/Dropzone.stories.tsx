@@ -1,6 +1,6 @@
 import { Stack, Typography } from '@mui/material'
 import { useState } from 'react'
-import { combine, wait } from '../../../utils/utils'
+import { all, wait } from '../../../utils/utils'
 import { useToggle } from '../hooks/hooks'
 import { Drop1zone, use1Drop } from './Drop1zone'
 
@@ -11,7 +11,7 @@ const T =
     const [name, setName] = useState('')
     const fileS = use1Drop((f) => {
       toggleIsUploading()
-      wait(1000).then(combine(() => setName(f.name), toggleIsUploading))
+      wait(1000).then(all(() => setName(f.name), toggleIsUploading))
     })
 
     return (

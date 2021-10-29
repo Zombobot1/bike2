@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { fn, setStr } from '../../../../utils/types'
-import { UBlock } from '../../UBlock'
+import { UBlock } from '../../UBlock/UBlock'
 
 function T(props: UBlock) {
   return (
@@ -16,7 +16,7 @@ const data1: UBlock = {
 
 const data2: UBlock = {
   id: 'newAudio',
-  initialData: { data: '', type: 'AUDIO' },
+  initialData: { data: '', type: 'audio' },
 }
 
 const data3: UBlock = {

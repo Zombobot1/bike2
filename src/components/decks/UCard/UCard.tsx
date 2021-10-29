@@ -4,7 +4,7 @@ import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { str, bool } from '../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'
 import { useInteractiveSubmit } from '../../studying/training/hooks'
-import { UBlock } from '../../editing/UBlock'
+import { UBlock } from '../../editing/UBlock/UBlock'
 
 export interface UCard {
   readonly: bool

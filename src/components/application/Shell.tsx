@@ -2,7 +2,7 @@ import { ReactNode, StrictMode } from 'react'
 import { CssBaseline, styled, ThemeProvider } from '@mui/material'
 import { useUTheme } from './theming/theme'
 import { useEffect, useState, forwardRef } from 'react'
-import { Fn } from '../../utils/types'
+import { bool, Fn } from '../../utils/types'
 import { useNotifications } from './useNotifications'
 import { Snackbar } from '@mui/material'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
@@ -19,10 +19,11 @@ import { _MOCK_FB } from '../../fb/utils'
 
 export interface OuterShell {
   children: ReactNode
+  autoDarkMode?: bool
 }
 
-export function OuterShell({ children }: OuterShell) {
-  const { theme } = useUTheme()
+export function OuterShell({ children, autoDarkMode = true }: OuterShell) {
+  const { theme } = useUTheme({ autoDarkMode })
 
   const isProduction = process.env.NODE_ENV !== 'development' || !_MOCK_FB
   return (

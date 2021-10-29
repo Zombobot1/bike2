@@ -1,40 +1,36 @@
-import { useUFormSubmit } from './useUForm'
+import { useUForm } from './useUForm'
 import { Stack, Button, styled, Box } from '@mui/material'
 import { UForm } from './UForm'
 import { UBlockB } from '../editing/types'
+import { UBlock } from '../editing/UBlock/UBlock'
+import { _fuzzyQuiz } from '../../content/content'
 
-function T(props: UBlockB) {
-  const { submit } = useUFormSubmit()
-
+const T = (props: UBlock) => () => {
   return (
-    <Box sx={{ width: '400px' }}>
-      <UForm {...props} />
-      <Panel direction="row" justifyContent="flex-end">
-        <Button onClick={() => submit(() => ({}))} data-cy="submit-btn">
-          Submit
-        </Button>
-      </Panel>
+    <Box sx={{ width: 500 }}>
+      <UBlock {...props} />
     </Box>
   )
 }
 
-const Panel = styled(Stack)({
-  marginTop: 20,
-})
-
-const emptyQ: UBlockB = {
-  id: 'emptyQ',
+const empty: UBlock = {
+  id: 'empty-exercise',
+  initialData: { data: '', type: 'exercise' },
 }
 
-const withoutAnswer: UBlockB = {
-  id: 'withoutAnswer',
-  readonly: true,
+const emptyWithName: UBlock = {
+  id: 'empty-named-exercise',
+  initialData: { data: JSON.stringify({ name: 'Form', ids: [] }), type: 'exercise' },
 }
 
-export const SubmittingAnswer = () => <T {...withoutAnswer} /> // check validation error disappearance and feedback and readOnlyAfterSubmit
-export const EmptyQuestion = () => <T {...emptyQ} /> // check no factory is shown
+const submit: UBlock = {
+  id: 'submit-exercise',
+  initialData: _fuzzyQuiz,
+}
 
-// export const Composite = () => <T {...composite} />
+export const Empty = T(empty)
+export const EmptyWithName = T(emptyWithName)
+export const Submit = T(submit)
 
 export default {
   title: 'UForms/UForm',

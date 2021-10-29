@@ -1,7 +1,7 @@
 import { Box, Stack } from '@mui/material'
 import { useRef } from 'react'
 import { Rec } from '../../../utils/Rec'
-import { UBlock } from '../../UBlock'
+import { UBlock } from '../../UBlock/UBlock'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
 function T(props: UBlock) {
@@ -18,7 +18,7 @@ const data1: UBlock = {
 
 const data2: UBlock = {
   id: 'newImage',
-  initialData: { data: '', type: 'IMAGE' },
+  initialData: { data: '', type: 'image' },
 }
 
 const data3: UBlock = {

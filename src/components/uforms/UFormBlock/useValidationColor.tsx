@@ -1,13 +1,14 @@
 import { alpha, useTheme } from '@mui/material'
-import { apm } from '../../application/theming/theme'
+import { _apm } from '../../application/theming/theme'
+import { Validity } from '../types'
 
-export function useValidationColor(validity: string): string {
+export function useValidationColor(validity: Validity): string {
   const theme = useTheme()
-  const validColor = alpha(theme.palette.success.main, 0.6)
-  const invalidColor = alpha(theme.palette.error.main, 0.6)
+  const validColor = theme.palette.success.main
+  const invalidColor = theme.palette.error.main
 
-  let color = apm(theme, 'SECONDARY')
-  if (validity === 'VALID') color = validColor
-  else if (validity === 'INVALID') color = invalidColor
+  let color = _apm(theme, 'secondary')
+  if (validity === 'valid') color = validColor
+  else if (validity === 'invalid') color = invalidColor
   return color
 }

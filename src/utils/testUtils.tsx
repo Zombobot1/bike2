@@ -1,32 +1,109 @@
 import { mount } from '@cypress/react'
+import { Box } from '@mui/material'
+import _ from 'lodash'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { OuterShell } from '../components/application/Shell'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { FSProvider } from '../fb/fs'
-import { num, str } from './types'
+import { Fn, num, str } from './types'
 import { uuid, uuidS } from './uuid'
 
+type CYChain = Cypress.Chainable<JQuery<HTMLElement> | undefined>
+
 // sometimes it is not possible to assign data-* attribute (e.g. Checkbox)
-export const got = (selector: str, type: 'CY' | 'AL' = 'CY') =>
-  cy.get(`[${type === 'CY' ? 'data-cy' : 'aria-label'}="${selector}"]`)
+export const got = (selector: str, eq = 0) => {
+  const r = cy.get(`[data-cy="${selector}"]`)
+  if (eq === -1) return r.last()
+  return r.eq(eq)
+}
 export const utext = () => got('utext')
 
-export const saw = (text: str) => cy.contains(text) // RegExp(`^${text}$`) doesn't detect text correctly
-export const r = (key: str, n: num) => key.repeat(n)
-export const type = (text: str, n = 1) => cy.focused().type(r(text, n))
+function _type(textOrCY: str, textOrEQ?: str | num, text?: str) {
+  if (textOrEQ === undefined) cy.focused().type(textOrCY)
+  else if (textOrEQ && !text) got(textOrCY).type(textOrEQ as str)
+  else got(textOrCY, textOrEQ as num).type(text as str)
+}
 
+// type('t') type('utext', 't') type('utext', 1, 't') - basic calls
+// type(['t'], ['t']) type(['t'], ['utext', 1, 't']) - advanced calls
+type TypeArgs = Array<str | num>
+type TypeFn = (
+  textOrCYorArr: str | TypeArgs, // 1st arg determines basic or advanced call
+  textOrEQ?: str | num | TypeArgs,
+  text?: str | TypeArgs,
+  ...rest: TypeArgs[]
+) => { click: (cy: str | TypeArgs, eq?: num | TypeArgs, ...rest: TypeArgs[]) => { type: TypeFn }; blur: Fn }
+export const type: TypeFn = (textOrCYorArr, textOrEQ, text, ...rest) => {
+  if (_.isString(textOrCYorArr)) _type(textOrCYorArr as str, textOrEQ as str | num, text as str)
+  else {
+    const args: TypeArgs[] = [textOrCYorArr, textOrEQ as TypeArgs, text as TypeArgs, ...rest].filter(Boolean)
+    // type(['t'], ['utext', 1, 't'])
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    args.forEach((a) => (_type as Function)(...a))
+  }
+
+  return { click, blur }
+}
+
+export const blur = () => cy.focused().blur()
+
+const _click = (cy: str, eq = 0): { type: TypeFn } => {
+  if (cy.endsWith('-h')) got(cy, eq).realHover().realClick()
+  else cy.endsWith('tick') ? tick(cy, eq) : got(cy, eq).click()
+  return { type }
+}
+
+// to unify actions click can call tick
+// click('btn')
+// click(['b1'], ['b2', 1])
+export const click = (cy: str | TypeArgs, eq?: num | TypeArgs, ...rest: TypeArgs[]): { type: TypeFn } => {
+  if (!Array.isArray(cy)) _click(cy as str, eq as num)
+  else {
+    const args: TypeArgs[] = [cy, eq as TypeArgs, ...rest]
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    args.forEach((a) => (_click as Function)(...a))
+  }
+  return { type }
+}
+
+export const tick = (cy: str, eq = 0): { type: TypeFn } => {
+  got(cy, eq).click({ force: true }) // MUI sets opacity to 0
+  return { type }
+}
+
+const _saw = (text: str) => (text.endsWith('-cy') ? got(text.slice(0, -3)).should('exist') : cy.contains(text)) // RegExp(`^${text}$`) doesn't detect text correctly
+
+type Color = 'c' | 'bg' | undefined
+type Colored = Array<str | (() => CYChain) | Color>
+function sawColored([el, color, type = 'c']: Colored) {
+  const element = (_.isString(el) ? () => cy.contains(el as str) : el) as () => CYChain
+  if (color === 'disabled') disabled(element())
+  else {
+    if (type === 'c') element().should('have.css', 'color', color)
+    else element().should('have.css', 'background-color', color)
+  }
+}
+
+// saw('t')
+// saw('t-ty') - checks by cy (DO NOT ADD "-cy" IT TO ELEMENTS)
+// saw('t', 't')
+// saw('t', ['t', 'red'])
+// saw([el, 'red'])
+export const saw = (...args: Array<str | Colored>) => args.forEach((a) => (Array.isArray(a) ? sawColored(a) : _saw(a)))
+export const lost = (text: str) => cy.contains(text).should('not.exist')
 export const doNotFret = () => cy.on('uncaught:exception', () => false)
 
 export const fakedId = () => cy.stub(uuid, 'v4').callsFake(uuidS())
 
-export const show = (Component: React.FC) =>
+export const show = (Component: React.FC, pd = '') =>
   mount(
-    <OuterShell>
+    <OuterShell autoDarkMode={false}>
       <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
         <FSProvider>
-          {/* <div style={{ width: '100%', height: '100px', backgroundColor: 'red' }} /> */}
-          <Component />
+          <Box sx={{ paddingLeft: pd || 0 }}>
+            <Component />
+          </Box>
         </FSProvider>
       </ErrorBoundary>
     </OuterShell>,
@@ -39,3 +116,9 @@ function cssPlaceholder($els: JQuery<HTMLElement>) {
 export function expectCSSPlaceholder(target: str) {
   return ($els: JQuery<HTMLElement>) => expect(cssPlaceholder($els)).to.eq(target)
 }
+
+export const disabled = (e: CYChain) => e.should('have.attr', 'disabled')
+
+export const _red = 'rgb(250, 82, 82)'
+export const _green = 'rgb(5, 166, 119)'
+export const _disabled = 'disabled'

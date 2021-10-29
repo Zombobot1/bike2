@@ -1,58 +1,37 @@
 import { useState } from 'react'
+import { Question } from '../../../studying/training/types'
 import { UInput } from './UInput'
 
 interface T {
-  _id: string
-  question: string
-  explanation: string
+  question: Question
   value: string
   autoFocus: boolean
   wasSubmitted: boolean
-  correctAnswer: string
   validationError: string
   showTipOnMobile?: boolean
   multiline: boolean
 }
 
-const T = ({
-  _id,
-  question,
-  correctAnswer,
-  explanation,
-  value,
-  wasSubmitted,
-  validationError,
-  autoFocus,
-  showTipOnMobile,
-  multiline,
-}: T) => {
-  const [value_, setValue] = useState([value])
+const T = (props: T) => () => {
+  const [value_, setValue] = useState([props.value])
   return (
     <div style={{ width: '50%' }}>
-      <UInput
-        _id={_id}
-        answer={value_}
-        onAnswerChange={setValue}
-        question={{ question, correctAnswer: [correctAnswer], explanation, options: [] }}
-        wasSubmitted={wasSubmitted}
-        autoFocus={autoFocus}
-        validationError={validationError}
-        showTipOnMobile={showTipOnMobile}
-        multiline={multiline}
-      />
+      <UInput answer={value_} onAnswerChange={setValue} {...props} />
     </div>
   )
 }
 
 const defaultI: T = {
-  _id: 'defaultI',
   multiline: false,
-  question: 'Enter abc',
+  question: {
+    question: 'Enter abc',
+    correctAnswer: ['abc'],
+    explanation: 'abc',
+    options: [],
+  },
   value: '',
   autoFocus: false,
   wasSubmitted: false,
-  correctAnswer: 'abc',
-  explanation: 'abc',
   validationError: '',
 }
 
@@ -80,11 +59,11 @@ const text: T = {
   multiline: true,
 }
 
-export const ShortText = () => <T {...defaultI} />
-export const Text = () => <T {...text} />
-export const Right = () => <T {...rightI} />
-export const Wrong = () => <T {...wrongI} />
-export const Invalid = () => <T {...invalidI} />
+export const ShortText = T(defaultI)
+export const Text = T(text)
+export const Right = T(rightI)
+export const Wrong = T(wrongI)
+export const Invalid = T(invalidI)
 
 export default {
   title: 'UForms/UInput',

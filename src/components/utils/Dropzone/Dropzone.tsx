@@ -7,7 +7,7 @@ import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded'
 import { prevented } from '../../../utils/utils'
 import { readImageFromKeyboard } from '../../../utils/filesManipulation'
 import { uuid } from '../../../utils/uuid'
-import { apm } from '../../application/theming/theme'
+import { _apm } from '../../application/theming/theme'
 
 export interface DropzoneB {
   icon?: ReactNode
@@ -70,6 +70,6 @@ const Vr = styled('div')(({ theme }) => ({
 const DropArea = styled(Stack)(({ theme }) => ({
   height: '70px',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: apm(theme, '100'),
+  backgroundColor: _apm(theme, '100'),
   color: theme.palette.primary.main,
 }))

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { TrainingTimer, useTrainingTimer } from '../training-timer/training-timer'
 import { cardEstimationToNumber, CardType } from '../types'
 import { bool, Fn, num } from '../../../../utils/types'
-import { Estimations, useUFormSubmit } from '../../../uforms/useUForm'
+import { useUForm } from '../../../uforms/useUForm'
 import { min } from '../../../../utils/algorithms'
 import { EstimateCard } from '../training/hooks'
 import { useInteractiveSubmit } from '../hooks'
@@ -36,15 +36,13 @@ export const TrainingControls = ({
   isAtEnd,
   onTrainingEnd,
 }: TrainingControlsP) => {
-  const { submit } = useUFormSubmit()
+  const { submit } = useUForm()
 
   const [goToNextCardFn, setGoToNextCardFn] = useState<GoToNextCard | null>(null)
 
-  const onSubmit = (estimations: Estimations) => {
-    const finalMark = estimations.length
-      ? min(estimations, (e) => cardEstimationToNumber(e.estimation)).estimation
-      : 'BAD'
-    const gtnc = estimate(finalMark, 'NO_TRANSITION')
+  const onSubmit = (estimation: num) => {
+    const finalMark = estimation === 1 ? 'GOOD' : 'BAD'
+    const gtnc = estimate(finalMark, 'no-transition')
     if (gtnc) setGoToNextCardFn({ go: gtnc })
   }
 
@@ -81,14 +79,14 @@ export const TrainingControls = ({
       {!isAtEnd && (
         <>
           <TrainingTimer />
-          {cardType === 'PASSIVE' && (
+          {cardType === 'passive' && (
             <SelfEstimateBtn
               estimate={estimate}
               areFieldsHidden={areFieldsHidden}
               showHiddenFields={showHiddenFields}
             />
           )}
-          {cardType === 'INTERACTIVE' && (
+          {cardType === 'interactive' && (
             <EstimateBtn submit={interactiveSubmit} goToNextCard={goToNextCard} isSubmitted={Boolean(goToNextCardFn)} />
           )}
           <TrainingSettings cardId={cardId} deleteCard={deleteCard} />

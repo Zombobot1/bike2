@@ -6,12 +6,13 @@ import { alpha, styled } from '@mui/material'
 interface ResizableWidth {
   updateWidth: SetNum
   width: num
+  maxWidth: num
   children: ReactNode
   readonly?: bool
 }
 
-export function ResizableWidth({ width: initialWidth, updateWidth, children, readonly }: ResizableWidth) {
-  const [width, setWidth] = useReactiveObject({ ...new Width(), width: initialWidth })
+export function ResizableWidth({ width: initialWidth, updateWidth, children, readonly, maxWidth }: ResizableWidth) {
+  const [width, setWidth] = useReactiveObject({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
   const [isResizing, setIsResizing] = useState(false)
   const [needUpdate, setNeedUpdate] = useState(false)
   const isSM = useIsSM()
@@ -29,7 +30,7 @@ export function ResizableWidth({ width: initialWidth, updateWidth, children, rea
     ) {
       setWidth((old) => ({
         ...old,
-        width: old.widthBeforeResize + old.needResize * 2,
+        width: Math.min(old.widthBeforeResize + old.needResize * 2, maxWidth),
         previousResize: old.needResize,
       }))
     }
@@ -57,7 +58,7 @@ export function ResizableWidth({ width: initialWidth, updateWidth, children, rea
     }
 
   return (
-    <ResizableWidth_ sx={{ width: width.width || '100%', cursor: isResizing ? 'col-resize' : 'default' }}>
+    <ResizableWidth_ sx={{ width: width.width, cursor: isResizing ? 'col-resize' : 'default' }}>
       {isSM && !readonly && (
         <>
           <Right onMouseDown={onMouseDown()}>

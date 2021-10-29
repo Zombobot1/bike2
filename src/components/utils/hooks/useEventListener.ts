@@ -26,9 +26,10 @@ function _useEventListener<T extends HTMLElement = HTMLDivElement>(
 export const useEventListener = <T extends Event | SyntheticEvent>(
   eventName: keyof WindowEventMap,
   handler: (e: T) => void,
+  ref?: unknown,
 ) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const ref: any = useRef(null)
-  _useEventListener(eventName, handler as (e: Event) => void, ref)
-  return ref
+  const newRef: any = useRef(null)
+  _useEventListener(eventName, handler as (e: Event) => void, newRef || ref)
+  return newRef || ref
 }

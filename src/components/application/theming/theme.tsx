@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { alpha, createTheme, Theme, useMediaQuery } from '@mui/material'
 import { atom, useAtom } from 'jotai'
-import _ from 'lodash'
-import { num } from '../../../utils/types'
+import _, { property } from 'lodash'
+import { bool, JSObject, num, str } from '../../../utils/types'
 
 export const COLORS = {
   white: '#fff',
@@ -16,15 +17,15 @@ export const COLORS = {
   tertiary: '#1b998b',
   info: '#0948b3',
   success: '#05a677',
-  warning: '#f5b759',
+  warning: '#ffaa01', // consider callout
   error: '#fa5252',
   bg: '#F5F8FB',
   light: '#eaedf2',
 }
 
-type APMType = 'BG' | '100' | '200' | '400' | '800' | 'BORDER' | 'SECONDARY'
+type APMType = 'bg' | '100' | '200' | '400' | '800' | 'border' | 'secondary' | 'btn'
 const darkSecondaryAlpha = 0.6
-export function apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'BG', lightAlpha?: num) {
+export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'bg', lightAlpha?: num) {
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
   if (!_.isString(typeOrDarkAlpha)) {
@@ -32,8 +33,9 @@ export function apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'BG', lightAl
     return alpha(primary, isDark ? darkAlpha : lightAlpha || darkAlpha)
   }
   const type = typeOrDarkAlpha as APMType
-  if (type === 'BORDER') return alpha(primary, 0.3)
-  else if (type === 'SECONDARY') return alpha(primary, isDark ? darkSecondaryAlpha : 0.4)
+  if (type === 'border') return alpha(primary, 0.3)
+  else if (type === 'secondary') return alpha(primary, isDark ? darkSecondaryAlpha : 0.4)
+  else if (type === 'btn') return isDark ? theme.palette.primary.main : theme.palette.text.secondary
   else if (type === '100') return alpha(primary, isDark ? 0.15 : 0.05)
   else if (type === '200') return alpha(primary, isDark ? 0.2 : 0.1)
   else if (type === '400') return alpha(primary, isDark ? 0.4 : 0.2)
@@ -41,8 +43,17 @@ export function apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'BG', lightAl
 
   return isDark ? theme.palette.secondary.main : theme.palette.common.white
 }
+type Speed = '.1' | '.2' | '.3'
+export const _tra = (property: str, speed: Speed = '.2') => `${property} 0${speed}s  ease-in-out`
 
 export const SM = '(max-width: 550px)'
+
+function isMac() {
+  // return navigator.platform.includes('Mac') deprecated
+  return navigator.userAgent.includes('Mac')
+}
+
+type Scroll = 'v' | 'h'
 
 const theme = {
   typography: {
@@ -72,6 +83,35 @@ const theme = {
       main: COLORS.error,
     },
   },
+
+  isDark: function () {
+    const t = this as any
+    return t.palette.mode === 'dark'
+  },
+
+  apm: function (typeOrDarkAlpha: APMType | num = 'bg', lightAlpha?: num) {
+    return _apm(this as any, typeOrDarkAlpha, lightAlpha)
+  },
+
+  tra: (property: str, speed: Speed = '.2') => `${property} 0${speed}s  ease-in-out`,
+  bd: function () {
+    return `1px solid ${_apm(this as any, 'border')}`
+  },
+
+  scroll: function (type: Scroll) {
+    if (isMac()) return {}
+    return {
+      '::-webkit-scrollbar': {
+        width: '10px',
+        height: type === 'h' ? '10px' : undefined,
+      },
+
+      '::-webkit-scrollbar-thumb': {
+        borderRadius: '7.5px',
+        backgroundColor: _apm(this as any, 0.15),
+      },
+    }
+  },
 }
 
 const lightTheme = createTheme(theme)
@@ -88,7 +128,25 @@ const darkTheme = createTheme({
   },
 })
 
-export type ThemeType = 'LIGHT' | 'DARK'
+declare module '@mui/material/styles' {
+  interface Theme {
+    apm: (typeOrDarkAlpha?: APMType | num, lightAlpha?: num) => str
+    tra: (property: str, speed?: Speed) => str
+    bd: () => str
+    scroll: (type: Scroll) => JSObject
+    isDark: () => bool
+  }
+  // allow configuration using `createTheme`
+  interface ThemeOptions {
+    apm?: (typeOrDarkAlpha?: APMType | num, lightAlpha?: num) => str
+    tra?: (property: str, speed?: Speed) => str
+    bd?: () => str
+    scroll?: (type: Scroll) => JSObject
+    isDark?: () => bool
+  }
+}
+
+export type ThemeType = 'light' | 'dark'
 type ThemeTypeO = ThemeType | null
 
 const THEME_KEY = 'themeType'
@@ -96,13 +154,14 @@ const getThemeType = () => localStorage.getItem(THEME_KEY) as ThemeTypeO
 const setThemeType = (type: ThemeType) => localStorage.setItem(THEME_KEY, type)
 const themeA = atom<ThemeTypeO>(getThemeType())
 
-export function useUTheme() {
+export function useUTheme({ autoDarkMode = true } = {}) {
   const [overriddenThemeType, setOverriddenThemeType] = useAtom(themeA)
   const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  let currentThemeType: ThemeType = prefersDarkMode ? 'DARK' : 'LIGHT'
+  let currentThemeType: ThemeType = 'light'
+  if (autoDarkMode) currentThemeType = prefersDarkMode ? 'dark' : 'light'
   if (overriddenThemeType) currentThemeType = overriddenThemeType
 
-  const theme = currentThemeType === 'DARK' ? darkTheme : lightTheme
+  const theme = currentThemeType === 'dark' ? darkTheme : lightTheme
 
   function setTheme(type: ThemeType) {
     setThemeType(type)
@@ -111,8 +170,8 @@ export function useUTheme() {
 
   function toggleTheme() {
     const oldType = getThemeType()
-    let newType: ThemeType = 'DARK'
-    if (oldType && oldType === 'DARK') newType = 'LIGHT'
+    let newType: ThemeType = 'dark'
+    if (oldType && oldType === 'dark') newType = 'light'
     setTheme(newType)
   }
   return { theme, toggleTheme, themeType: currentThemeType }

@@ -1,16 +1,17 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../../cypress/support/index.d.ts" />
 import * as UBlocksSet from './UBlocksSet.stories'
-import { got, saw, r, type, show } from '../../../../utils/testUtils'
+import { got, saw, type, show, click } from '../../../../utils/testUtils'
 import { _initFB, _insertBlocks } from '../../../../_seeding'
 import { _removalBlocks } from '../../../../content/ublocks'
 import { num, str } from '../../../../utils/types'
+import { _fluffyBlob } from '../../../../content/content'
 
-const _got = (dataCy: str, n?: num) => (n === -1 ? got(dataCy).last() : got(dataCy).eq(n || 0))
-const utext = (n?: num) => _got('utext', n)
-const ublock = (n?: num) => _got('ublock', n)
+const utext = (n?: num) => got('utext', n)
+const ublock = (n?: num) => got('ublock', n)
+
 describe('UBlocksSet', () => {
-  it('Focus moves from title to factory | Factory preserves focus when adding empty blocks', () => {
+  it('focus moves from title to factory & factory preserves focus when adding empty blocks', () => {
     show(UBlocksSet.BlocksCreation)
     utext().type('Title{enter}')
     type('{enter}')
@@ -42,6 +43,12 @@ describe('UBlocksSet', () => {
     utext().type('{enter}')
     type('{enter}')
     utext(1).click().should('be.focused')
+  })
+
+  it('inserts block by add button', () => {
+    show(UBlocksSet.OneEmptyBlock, '5rem')
+    click('add-block-h').type('1')
+    saw('1')
   })
 
   it('Inserts block under image', () => {
@@ -89,13 +96,12 @@ describe('UBlocksSet', () => {
   it('Moves up & down', () => {
     show(UBlocksSet.ArrowsNavigation)
 
-    utext().type(r('{leftarrow}', 12))
-
+    type('utext', '{leftarrow}'.repeat(12))
     type('{downarrow}')
     type('{downarrow}')
     type('{downarrow}')
-    type('{downarrow}', 3)
-    type('{downarrow}', 3)
+    type('{downarrow}'.repeat(3))
+    type('{downarrow}'.repeat(3))
     type('{downarrow}')
     type('{downarrow}')
     type('1')
@@ -105,13 +111,24 @@ describe('UBlocksSet', () => {
     type('{uparrow}')
 
     type('{uparrow}')
-    type('{uparrow}', 3)
-    type('{uparrow}', 3)
+    type('{uparrow}'.repeat(3))
+    type('{uparrow}'.repeat(3))
     type('{uparrow}')
     type('{uparrow}')
     type('2')
 
     saw('Kitte2ns')
+  })
+
+  it('pastes image', () => {
+    show(UBlocksSet.OneEmptyBlock)
+    cy.then(_fluffyBlob).then((b) => utext(1).paste({ pasteType: 'image/png', pastePayload: b }))
+    saw('img-cy', 'selection-cy')
+  })
+
+  it.only('deletes selected blocks', () => {
+    show(UBlocksSet.BlocksDeletion)
+    click('block-menu-h') // select image!!
   })
 
   // it('Readonly', () => {

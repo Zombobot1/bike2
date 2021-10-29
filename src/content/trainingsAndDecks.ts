@@ -14,85 +14,85 @@ Here's another way to explain it: The is used to refer to a specific or particul
 
 const field1: FieldDTO = {
   _id: 'field1',
-  type: 'TEXT',
+  type: 'text',
   data: question,
 }
 
 const field2: FieldDTO = {
   _id: 'field2',
-  type: 'TEXT',
+  type: 'text',
   data: answer,
 }
 
 const fluffyEn: FieldDTO = {
   _id: 'fluffyEn',
-  type: 'TEXT',
+  type: 'text',
   data: 'Kitten',
 }
 
 const fluffyIpa: FieldDTO = {
   _id: 'fluffyIpa',
-  type: 'TEXT',
+  type: 'text',
   data: 'ˈkɪtn',
 }
 
 const theatreEn: FieldDTO = {
   _id: 'theatreEn',
-  type: 'TEXT',
+  type: 'text',
   data: 'Theatre',
 }
 
 const theatreIpa: FieldDTO = {
   _id: 'theatreIpa',
-  type: 'TEXT',
+  type: 'text',
   data: 'ˈθiətər',
 }
 
 const theatreRu: FieldDTO = {
   _id: 'theatreRu',
-  type: 'TEXT',
+  type: 'text',
   data: 'Театр',
 }
 
 const fluffyRu: FieldDTO = {
   _id: 'fluffyRu',
-  type: 'TEXT',
+  type: 'text',
   data: 'Котёнок',
 }
 
 export const fluffyEnLong: FieldDTO = {
   _id: 'fluffyEnLong',
-  type: 'TEXT',
+  type: 'text',
   data: 'Looks like you got yourself a little, sleek, gray kitten',
 }
 
 const fluffyIpaLong: FieldDTO = {
   _id: 'fluffyIpaLong',
-  type: 'TEXT',
+  type: 'text',
   data: 'lʊks laɪk juː gɒt jɔːˈsɛlf ə ˈlɪtl, sliːk, greɪ ˈkɪtn',
 }
 
 const fluffyImg: FieldDTO = {
   _id: 'fluffyImg',
-  type: 'IMAGE',
+  type: 'image',
   data: fluffyJpg,
 }
 
 const fluffyAudio: FieldDTO = {
   _id: 'fluffyAudio',
-  type: 'AUDIO',
+  type: 'audio',
   data: fluffyMp3,
 }
 
 const fluffyRuLong: FieldDTO = {
   _id: 'fluffyRuLong',
-  type: 'TEXT',
+  type: 'text',
   data: 'Выглядит ты завела себе веселого, серого котенка.',
 }
 
 const selectRight: FieldDTO = {
   _id: 'selectRight',
-  type: 'RADIO',
+  type: 'radio',
   data: JSON.stringify({
     question: 'Please select one:',
     options: ['Correct', 'Wrong'],
@@ -103,19 +103,19 @@ const selectRight: FieldDTO = {
 
 const passiveText: FieldDTO = {
   _id: 'passiveText',
-  type: 'TEXT',
+  type: 'text',
   data: 'I need to go to the ... to have an operation.',
 }
 
 const anotherPassiveText: FieldDTO = {
   _id: 'anotherPassiveText',
-  type: 'TEXT',
+  type: 'text',
   data: 'Some short text',
 }
 
 const typeA: FieldDTO = {
   _id: 'typeA',
-  type: 'INPUT',
+  type: 'input',
   data: JSON.stringify({
     question: 'Please type a and use enter to submit:',
     options: [],
@@ -126,7 +126,7 @@ const typeA: FieldDTO = {
 
 const field15: FieldDTO = {
   _id: 'field15',
-  type: 'INPUT',
+  type: 'input',
   data: JSON.stringify({
     question: 'Please type a and DO NOT use enter to submit:',
     options: [],

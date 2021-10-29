@@ -21,19 +21,19 @@ export function UList(props: UText) {
     if (!atStart || e.key !== 'Tab') return
     e.preventDefault()
     if (e.shiftKey) {
-      if (data.offset === 1) props.setType('TEXT', data.text, 'start')
+      if (data.offset === 1) props.setType('text', data.text, 'start')
       else if (data.offset > 1) setOffset(data.offset - 1)
     } else setOffset(data.offset + 1)
   }
 
   let leftPart = <Box sx={{ minWidth: 2 * data.offset + 'rem' }} />
-  if (props.type === 'BULLET_LIST') {
+  if (props.type === 'bullet-list') {
     leftPart = (
       <LeftPartContainer offset={data.offset}>
         <FiberManualRecordRoundedIcon sx={{ width: '0.75rem', height: '0.75rem' }} />
       </LeftPartContainer>
     )
-  } else if (props.type === 'NUMBERED_LIST') {
+  } else if (props.type === 'numbered-list') {
     let index = 1
     if (props.previousBlockInfo?.offset === data.offset) index += props.previousBlockInfo?.typesStrike || 0
     leftPart = (
@@ -44,7 +44,7 @@ export function UList(props: UText) {
   }
 
   return (
-    <Stack direction="row">
+    <Stack direction="row" sx={{ flex: 1 }}>
       {leftPart}
       <UText_
         {...props}

@@ -22,12 +22,12 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded'
 import StarRoundedIcon from '@mui/icons-material/StarRounded'
 import { atom, useAtom } from 'jotai'
-import { apm } from '../../theming/theme'
+import { _apm } from '../../theming/theme'
 import { bool, Fn, num, SetStr, str } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { safeSplit } from '../../../../utils/algorithms'
-import { combine, cut } from '../../../../utils/utils'
+import { all, cut } from '../../../../utils/utils'
 import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
 import { useDeleteUPage } from '../../../editing/UPage/UBlocksSet/UBlocksSet'
 
@@ -39,7 +39,7 @@ export interface AppBar {
 const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
   position: 'sticky',
   top: 0,
-  borderBottom: `solid 1px ${apm(theme, 'BORDER')}`,
+  borderBottom: `solid 1px ${_apm(theme, 'border')}`,
   zIndex: 2,
   backgroundColor: theme.palette.background.paper,
   transition: 'opacity 0.3s ease-in-out',
@@ -59,7 +59,6 @@ export function AppBar({ workspace, openNavBar }: AppBar) {
   const [showAppBar] = useAtom(showAppBarA)
   const { location, history } = useRouter()
   const showUPageOptions = !location.pathname.includes('/study')
-
   return (
     <AppBar_ direction="row" alignItems="center" sx={showAppBar ? { opacity: '1 !important' } : {}}>
       {!isSM && (
@@ -84,7 +83,7 @@ const Btn = styled(Button)({
 })
 
 const Separator = styled('span')(({ theme }) => ({
-  color: apm(theme, 'SECONDARY'),
+  color: _apm(theme, 'secondary'),
   fontSize: '1.3rem',
   [`${theme.breakpoints.up('sm')}`]: {
     fontSize: '1.5rem',
@@ -134,7 +133,7 @@ export function Crumbs({ workspace }: { workspace: WS }) {
       {!overflow &&
         path.map((node, i) => (
           <Fragment key={node.id}>
-            <Btn onClick={() => history.push(node.id)} size="small">
+            <Btn onClick={() => history.push(node.id)} size="small" data-cy="ab-btn">
               {crop(node.name || 'Untitled', i)}
             </Btn>
             {i < path.length - 1 && <Separator>/</Separator>}
@@ -142,13 +141,13 @@ export function Crumbs({ workspace }: { workspace: WS }) {
         ))}
       {overflow && (
         <>
-          <Btn onClick={() => history.push(path[0].id)} size="small">
+          <Btn onClick={() => history.push(path[0].id)} size="small" data-cy="ab-btn">
             {crop(path[0].name || 'Untitled', 0)}
           </Btn>
           <Separator>/</Separator>
           <CollapsedLinks path={path} />
           <Separator>/</Separator>
-          <Btn onClick={() => history.push(path.slice(-1)[0].id)} size="small">
+          <Btn onClick={() => history.push(path.slice(-1)[0].id)} size="small" data-cy="ab-btn">
             {crop(path.slice(-1)[0].name || 'Untitled', path.length - 1)}
           </Btn>
         </>
@@ -169,7 +168,7 @@ function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
 
   return (
     <>
-      <Btn size="small" ref={anchorRef} onClick={handleToggle} sx={{ minWidth: '2rem' }}>
+      <Btn size="small" ref={anchorRef} onClick={handleToggle} sx={{ minWidth: '2rem' }} data-cy="...-btn">
         ...
       </Btn>
       <Popper open={open} anchorEl={anchorRef.current} placement="bottom" transition>
@@ -184,7 +183,11 @@ function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open} onKeyDown={handleListKeyDown}>
                   {path.slice(1, -1).map((n) => (
-                    <MenuItem key={n.id} onClick={combine(() => history.push('/' + n.id), handleClose)}>
+                    <MenuItem
+                      key={n.id}
+                      onClick={all(() => history.push('/' + n.id), handleClose)}
+                      data-cy="...-page-btn"
+                    >
                       <ListItemText>{n.name || 'Untitled'}</ListItemText>
                     </MenuItem>
                   ))}
@@ -240,14 +243,14 @@ function UPageOptions({ workspace, path, history }: { workspace: WS; path: str; 
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open} onKeyDown={handleListKeyDown}>
-                  <MenuItem onClick={combine(() => isAlertOpenS[1](true), handleClose)}>
+                  <MenuItem onClick={all(() => isAlertOpenS[1](true), handleClose)}>
                     <ListItemIcon>
                       <DeleteRoundedIcon fontSize="small" color="error" />
                     </ListItemIcon>
                     <ListItemText primaryTypographyProps={{ color: 'error' }}>Delete page</ListItemText>
                   </MenuItem>
                   {!isSM && (
-                    <MenuItem onClick={combine(workspace.triggerFavorite(id), handleClose)}>
+                    <MenuItem onClick={all(workspace.triggerFavorite(id), handleClose)}>
                       <ListItemIcon>
                         {workspace.isFavorite(id) ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
                       </ListItemIcon>

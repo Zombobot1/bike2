@@ -5,7 +5,7 @@ import { ResizableWidth } from './ResizableWidth'
 function T() {
   return (
     <Stack direction="row" justifyContent="center" sx={{ height: 300 }}>
-      <ResizableWidth updateWidth={() => {}} width={600}>
+      <ResizableWidth updateWidth={() => {}} width={600} maxWidth={1000}>
         <Rec stretch={true} height={300} />
       </ResizableWidth>
     </Stack>

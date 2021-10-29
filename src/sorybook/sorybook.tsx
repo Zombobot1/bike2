@@ -1,4 +1,4 @@
-import { combine } from '../utils/utils'
+import { all } from '../utils/utils'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useRouter } from '../components/utils/hooks/useRouter'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
@@ -134,20 +134,20 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                   aria-labelledby="composition-button"
                   onKeyDown={handleListKeyDown}
                 >
-                  <MenuItem onClick={combine(toggleTheme, handleClose)}>
+                  <MenuItem onClick={all(toggleTheme, handleClose)}>
                     <ListItemIcon>
-                      {themeType === 'LIGHT' ? (
+                      {themeType === 'light' ? (
                         <ModeNightRoundedIcon fontSize="small" />
                       ) : (
                         <WbSunnyRoundedIcon fontSize="small" />
                       )}
                     </ListItemIcon>
-                    <ListItemText>Set {themeType === 'LIGHT' ? 'Dark theme' : 'Light theme'}</ListItemText>
+                    <ListItemText>Set {themeType === 'light' ? 'Dark theme' : 'Light theme'}</ListItemText>
                     <Shortcut variant="body2" color="text.secondary">
                       CA+T
                     </Shortcut>
                   </MenuItem>
-                  <MenuItem onClick={combine(toggleOutline, handleClose)}>
+                  <MenuItem onClick={all(toggleOutline, handleClose)}>
                     <ListItemIcon>
                       <AutoFixHighRoundedIcon fontSize="small" />
                     </ListItemIcon>
@@ -156,7 +156,7 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                       CA+O
                     </Shortcut>
                   </MenuItem>
-                  <MenuItem onClick={combine(toggleFullscreen, handleClose)}>
+                  <MenuItem onClick={all(toggleFullscreen, handleClose)}>
                     <ListItemIcon>
                       <FullscreenRoundedIcon fontSize="small" />
                     </ListItemIcon>
@@ -165,7 +165,7 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                       CA+F
                     </Shortcut>
                   </MenuItem>
-                  <MenuItem onClick={combine(rerenderStory, handleClose)}>
+                  <MenuItem onClick={all(rerenderStory, handleClose)}>
                     <ListItemIcon>
                       <AutorenewRoundedIcon fontSize="small" />
                     </ListItemIcon>
@@ -347,7 +347,6 @@ function Pane({ Sory, outline, soryId }: Pane_) {
   return (
     <ComponentWrapper
       alignItems="center"
-      justifyContent="center"
       sx={
         outline
           ? { '*': { outline: `1px solid ${theme.palette.mode === 'dark' ? 'rgb(90 48 11)' : 'rgb(221 223 230)'}` } }
@@ -366,6 +365,17 @@ function Pane({ Sory, outline, soryId }: Pane_) {
 const ComponentWrapper = styled(Stack, { label: 'Pane' })({
   width: '100%',
   height: '100%',
+  overflowY: 'auto',
+
+  ':after': {
+    content: '""',
+    margin: 'auto',
+  },
+
+  ':before': {
+    content: '""',
+    margin: 'auto',
+  },
 })
 
 export type IdAndSory = Map<str, FC>

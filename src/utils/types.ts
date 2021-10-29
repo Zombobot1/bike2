@@ -24,6 +24,7 @@ export type JSObjectStr = { [key: string]: string }
 
 export type Fn = () => void
 export type SetStr = (s: str) => void
+export type SetStrs = (s: strs) => void
 export type SetBool = (s: bool) => void
 export type SetNum = (s: num) => void
 
@@ -35,6 +36,8 @@ export type Instantiable = { new (...args: any[]): any }
 export interface WithId {
   _id: string
 }
+
+export type SVGIcon = React.FC<React.SVGProps<SVGSVGElement>> & { title?: string | undefined }
 
 export type SetState<T> = React.Dispatch<React.SetStateAction<T>>
 export type State<T> = [T, SetState<T>]

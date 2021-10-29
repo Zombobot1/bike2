@@ -66,7 +66,7 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft, isAtEnd = fals
         cardType={cardType}
         showHiddenFields={() => setHidden(false)}
         areFieldsHidden={areHidden}
-        estimate={cardType === 'PASSIVE' ? estimatePassive : estimateInteractive}
+        estimate={cardType === 'passive' ? estimatePassive : estimateInteractive}
         currentCardIndex={0}
         deleteCard={() => setWasDeleted(true)}
         cardId="1"
@@ -76,19 +76,19 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft, isAtEnd = fals
 }
 
 const passiveCardControls: TrainingControlsTP = {
-  cardType: 'PASSIVE',
+  cardType: 'passive',
   areFieldsHidden: true,
   timeLeft: 99,
 }
 
 const interactiveCardControls: TrainingControlsTP = {
-  cardType: 'INTERACTIVE',
+  cardType: 'interactive',
   areFieldsHidden: true,
   timeLeft: 99,
 }
 
 const atTimeout: TrainingControlsTP = {
-  cardType: 'INTERACTIVE',
+  cardType: 'interactive',
   areFieldsHidden: true,
   timeLeft: 1,
 }

@@ -3,7 +3,7 @@ import { safe } from '../../../utils/utils'
 import { useData } from '../../../fb/useData'
 import { NavNodeDTO, NavNodeDTOO, NavNodeDTOs } from './NavBar/NavTree'
 
-type Scope = 'FAVORITE' | 'PERSONAL'
+type Scope = 'favorite' | 'personal'
 
 export interface _WSD {
   favorite: NavNodeDTOs
@@ -28,14 +28,14 @@ export class WS {
         parent.children = parent?.children?.filter((c) => c.id !== id)
         return parent.id
       } else {
-        if (scope === 'FAVORITE') this.favorite = this.favorite.filter((n) => n.id !== id)
+        if (scope === 'favorite') this.favorite = this.favorite.filter((n) => n.id !== id)
         else this.personal = this.personal.filter((n) => n.id !== id)
       }
       return this.personal[0].id || 'study'
     }
 
-    if (this._find('FAVORITE', id)) deletePage('FAVORITE', id)
-    const parentId = deletePage('PERSONAL', id)
+    if (this._find('favorite', id)) deletePage('favorite', id)
+    const parentId = deletePage('personal', id)
     this._save()
     return parentId
   }
@@ -59,15 +59,15 @@ export class WS {
   }
 
   path = (id: str): NavNodeDTOs => {
-    const parents = this._parents('PERSONAL')
+    const parents = this._parents('personal')
 
     const r: NavNodeDTOs = [this.find(id)]
     while (parents.has(r[0].id)) r.unshift(safe(parents.get(r[0].id)))
     return r
   }
 
-  find = (id: str): NavNodeDTO => safe(this._find('PERSONAL', id))
-  has = (id: str): bool => Boolean(this._find('PERSONAL', id))
+  find = (id: str): NavNodeDTO => safe(this._find('personal', id))
+  has = (id: str): bool => Boolean(this._find('personal', id))
 
   constructor(
     public favorite: NavNodeDTOs,
@@ -91,7 +91,7 @@ export class WS {
   }
 
   _bfs = (scope: Scope): NavNodeDTOs => {
-    const nodes = scope === 'FAVORITE' ? this.favorite : this.personal
+    const nodes = scope === 'favorite' ? this.favorite : this.personal
 
     const queue = [...nodes]
     const r: NavNodeDTOs = []
@@ -109,7 +109,7 @@ export class WS {
   _setSave = (fn: SetWSD) => (this.saveFn = fn)
 
   _parents = (scope: Scope): Map<str, NavNodeDTO> => {
-    const queue = scope === 'PERSONAL' ? [...this.personal] : [...this.favorite]
+    const queue = scope === 'personal' ? [...this.personal] : [...this.favorite]
     const idAndParent = new Map<str, NavNodeDTO>()
 
     while (queue.length) {

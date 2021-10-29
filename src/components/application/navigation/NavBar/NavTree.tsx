@@ -7,7 +7,7 @@ import { prevented } from '../../../../utils/utils'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { ReactNode } from 'react'
 import { sslugify } from '../../../../utils/sslugify'
-import { apm } from '../../theming/theme'
+import { _apm } from '../../theming/theme'
 
 export interface NavTree {
   nodes: NavNodeDTOs
@@ -49,7 +49,7 @@ function NavNode({ id, name, isOpen, onOpen, depth, children }: NavNode) {
           onClick={() => history.push('/' + id)}
           direction="row"
           alignItems="center"
-          sx={location.pathname === '/' + id ? { backgroundColor: apm(theme, '400') } : {}}
+          sx={location.pathname === '/' + id ? { backgroundColor: _apm(theme, '400') } : {}}
         >
           <Box sx={{ width: 16 * depth }} />
           {children && isOpen && (
@@ -84,10 +84,10 @@ const IconBox = styled(Box)(({ theme }: JSObject) => ({
   height: '23px',
   borderRadius: '4px',
   transition: 'background-color 0.1s ease-in-out',
-  color: apm(theme, 'SECONDARY'),
+  color: _apm(theme, 'secondary'),
 
   ':hover': {
-    backgroundColor: apm(theme, '200'),
+    backgroundColor: _apm(theme, '200'),
   },
 
   '.MuiSvgIcon-root': {
@@ -113,7 +113,7 @@ const NavNodeLabel = styled(Stack)(({ theme }) => ({
   borderRadius: '0.5rem',
 
   '&:hover::before': {
-    backgroundColor: apm(theme, '200'),
+    backgroundColor: _apm(theme, '200'),
   },
 
   ':before': {
@@ -127,7 +127,7 @@ const NavNodeLabel = styled(Stack)(({ theme }) => ({
 const Dot = styled(FiberManualRecordRoundedIcon)(({ theme }) => ({
   width: '8px',
   height: '8px',
-  color: apm(theme, 'SECONDARY'),
+  color: _apm(theme, 'secondary'),
 }))
 
 export interface NavLink {
@@ -144,7 +144,7 @@ export function NavLink({ name, icon }: NavLink) {
       direction="row"
       alignItems="center"
       spacing={1}
-      sx={location.pathname === '/' + id ? { backgroundColor: apm(theme, '400') } : {}}
+      sx={location.pathname === '/' + id ? { backgroundColor: _apm(theme, '400') } : {}}
     >
       {icon}
       <Typography sx={{ marginLeft: '0.25rem' }}>{name}</Typography>

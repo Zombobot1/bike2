@@ -95,15 +95,7 @@ export function Page404() {
         <Image404 />
         <Whooops>Whooops!</Whooops>
         <Text color="text.secondary">The page you are looking for is not found :(</Text>
-        <Button
-          onClick={() => {
-            console.log('pushing')
-            history.push('/')
-          }}
-          variant="contained"
-          size="large"
-          data-cy="go-home"
-        >
+        <Button onClick={() => history.push('/')} variant="contained" size="large" data-cy="go-home">
           Go back home
         </Button>
       </Content>

@@ -13,10 +13,10 @@ export function ThemeBtn() {
   return (
     <>
       <Zoom
-        in={themeType === 'LIGHT'}
+        in={themeType === 'light'}
         timeout={transitionDuration}
         style={{
-          transitionDelay: `${themeType === 'LIGHT' ? transitionDuration.exit : 0}ms`,
+          transitionDelay: `${themeType === 'light' ? transitionDuration.exit : 0}ms`,
         }}
         unmountOnExit
       >
@@ -25,10 +25,10 @@ export function ThemeBtn() {
         </FabLight>
       </Zoom>
       <Zoom
-        in={themeType === 'DARK'}
+        in={themeType === 'dark'}
         timeout={transitionDuration}
         style={{
-          transitionDelay: `${themeType === 'DARK' ? transitionDuration.exit : 0}ms`,
+          transitionDelay: `${themeType === 'dark' ? transitionDuration.exit : 0}ms`,
         }}
         unmountOnExit
       >

@@ -63,15 +63,15 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
 }
 
 function cardType(dto?: CardDTO): CardType {
-  if (!dto) return 'PASSIVE'
-  if (dto.hiddenFields?.length) return 'PASSIVE'
-  if (dto.fields.find((f) => f.type === 'TEXTAREA')) return 'PASSIVE'
+  if (!dto) return 'passive'
+  if (dto.hiddenFields?.length) return 'passive'
+  if (dto.fields.find((f) => f.type === 'textarea')) return 'passive'
 
-  return 'INTERACTIVE'
+  return 'interactive'
 }
 
 function _preloadImage(field: FieldDTO) {
-  if (field.type !== 'IMAGE' || !field.data) return
+  if (field.type !== 'image' || !field.data) return
   const img = new Image()
   img.src = field.data
 }

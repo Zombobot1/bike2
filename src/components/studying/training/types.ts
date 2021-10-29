@@ -50,7 +50,7 @@ export interface CardDTO {
 export type CardDTOs = CardDTO[]
 export type CardDTOsP = Promise<CardDTOs>
 
-export type CardType = 'PASSIVE' | 'INTERACTIVE'
+export type CardType = 'passive' | 'interactive'
 
 export interface UserCardAnswerDTO {
   deckId: string

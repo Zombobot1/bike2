@@ -1,120 +1,131 @@
 import { ClickAwayListener, Stack } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useLog, useMount, useReactiveObject } from '../../../utils/hooks/hooks'
-import { bool, fn, JSObjectStr, num, SetStr, setStr, State, str, strs, StrState } from '../../../../utils/types'
+import {
+  bool,
+  fn,
+  JSObjectStr,
+  num,
+  SetStr,
+  setStr,
+  SetStrs,
+  State,
+  str,
+  strs,
+  StrState,
+} from '../../../../utils/types'
 import { cast, safe } from '../../../../utils/utils'
 import { uuid } from '../../../../utils/uuid'
 import { BlockInfo, isUTextComponent, NewBlockFocus, UBlockB, UBlockDTO, UComponentType, UTextFocus } from '../../types'
-import { UBlock } from '../../UBlock'
+import { UBlock } from '../../UBlock/UBlock'
 import { useData } from '../../../../fb/useData'
 import { addDoc } from '@firebase/firestore'
-import { UHeading0, UParagraph, UText } from '../../UText/UText'
+import { UHeading0, UHeading1, UParagraph, UText } from '../../UText/UText'
 import { useMap } from '../../../utils/hooks/useMap'
 import { reverse, safeSplit } from '../../../../utils/algorithms'
 import { useArray } from '../../../utils/hooks/useArray'
 import { atom } from 'jotai'
-import { useSelection } from '../../useSelection'
+import { useSelection } from '../../UBlock/useSelection'
 
 export interface UBlocksSet {
   readonly?: bool
-  idsS: State<strs>
+  ids: strs
+  setIds: SetStrs
   title?: str
   setTitle?: SetStr
+  inner?: bool
 
   addNewUPage?: SetStr
-  oneBlockOnly?: bool
   factoryPlaceholder?: str
 }
 
 export function UBlocksSet({
-  idsS,
+  ids,
+  setIds,
   readonly,
   title,
   setTitle,
   addNewUPage = setStr,
-  oneBlockOnly = false,
   factoryPlaceholder,
+  inner,
 }: UBlocksSet) {
-  const [ids, setIds] = idsS
   const [activeBlock, setActiveBlock] = useState(new ActiveBlock())
   const addedBlocks = useArray<AddedBlock>()
   const [blockAboveDeleted, setBlockAboveDeleted] = useState(new DeletedBlock())
   const idAndInfo = useMap<str, BlockInfo>()
   const { dispatch, selection } = useSelection()
 
-  const addNewBlocks = (underId = '', focus = 'FOCUS_END', data = '', type: UComponentType = 'TEXT') => {
+  const addNewBlocks = (underId = '', focus = 'focus-end', data = '', type: UComponentType = 'text') => {
     let newBlocks: AddedBlock[] = []
-    if (type !== 'IMAGE') {
+    if (type !== 'image') {
       const blocksData = safeSplit(data, '\n\n')
       newBlocks = blocksData.length
         ? blocksData.map((d): AddedBlock => ({ id: uuid.v4(), data: d, type }))
         : [{ id: uuid.v4(), data: '', type }]
     } else {
-      newBlocks.push({ id: uuid.v4(), data, type: 'IMAGE' })
+      newBlocks.push({ id: uuid.v4(), data, type: 'image' })
     }
 
     addedBlocks.reset(newBlocks)
 
-    if (type === 'IMAGE') {
+    if (type === 'image') {
       setActiveBlock({ id: '' })
       dispatch({ a: 'select', id: newBlocks[0].id })
     } else {
       setActiveBlock((old) =>
-        focus !== 'NO_FOCUS'
-          ? { data, focus: { type: focus === 'FOCUS_START' ? 'start' : 'end' }, id: safe(newBlocks.at(-1)).id }
+        focus !== 'no-focus'
+          ? { data, focus: { type: focus === 'focus-start' ? 'start' : 'end' }, id: safe(newBlocks.at(-1)).id }
           : old,
       )
     }
-
-    setIds((old) => {
-      const blockAbove = old.indexOf(underId) + 1
-      const newIds = newBlocks.map((b) => b.id)
-      if (blockAbove === 0) return [...old, ...newIds]
-      return [...old.slice(0, blockAbove), ...newIds, ...old.slice(blockAbove, old.length)]
-    })
+    const blockAbove = ids.indexOf(underId) + 1
+    const newIds = newBlocks.map((b) => b.id)
+    setIds(
+      blockAbove === 0
+        ? [...ids, ...newIds]
+        : [...ids.slice(0, blockAbove), ...newIds, ...ids.slice(blockAbove, ids.length)],
+    )
   }
 
   const deleteBlock = (id: str, data = '') => {
     setBlockAboveDeleted({ id: ids[ids.indexOf(id) - 1] || '', data })
-    setIds((old) => {
-      const blockBefore = old.indexOf(id) - 1
-      setActiveBlock({
-        id: old[blockBefore] || '',
-        focus: !data ? { type: 'end' } : { type: 'end-integer', xOffset: data.length },
-      })
-      return old.filter((oldId) => oldId !== id)
+    const blockBefore = ids.indexOf(id) - 1
+    setActiveBlock({
+      id: ids[blockBefore] || '',
+      focus: !data ? { type: 'end' } : { type: 'end-integer', xOffset: data.length },
     })
+    setIds(ids.filter((oldId) => oldId !== id))
   }
 
-  function findUTextId(direction: 'UP' | 'DOWN' | 'FIRST' | 'LAST', i?: num): str {
+  function findUTextId(direction: 'up' | 'down' | 'first' | 'last', i?: num): str {
     let searchArea = ids.slice(0, i).reverse()
-    if (direction === 'DOWN') searchArea = ids.slice((i || 0) + 1)
-    else if (direction === 'LAST') searchArea = [...ids].reverse()
-    else if (direction === 'FIRST') searchArea = ids
+    if (direction === 'down') searchArea = ids.slice((i || 0) + 1)
+    else if (direction === 'last') searchArea = [...ids].reverse()
+    else if (direction === 'first') searchArea = ids
     const index = searchArea.findIndex((id) => isUTextComponent(idAndInfo.get(id)?.type))
-    if (index === -1) return direction === 'UP' ? 'title' : 'factory'
+    if (index === -1) return direction === 'up' ? 'title' : 'factory'
     return searchArea[index]
   }
 
   const focusUp = (id: str) => (xOffset?: num) =>
-    setActiveBlock({ id: findUTextId('UP', ids.indexOf(id)), focus: { type: 'end', xOffset } })
+    setActiveBlock({ id: findUTextId('up', ids.indexOf(id)), focus: { type: 'end', xOffset } })
   const focusDown = (id: str) => (xOffset?: num) =>
-    setActiveBlock({ id: findUTextId('DOWN', ids.indexOf(id)), focus: { type: 'start', xOffset } })
-  const onFactoryBackspace = () => setActiveBlock({ id: findUTextId('LAST'), focus: { type: 'end' } })
-  const onTitleEnter = (x?: num) => setActiveBlock({ id: findUTextId('FIRST'), focus: { type: 'start', xOffset: x } })
+    setActiveBlock({ id: findUTextId('down', ids.indexOf(id)), focus: { type: 'start', xOffset } })
+  const onFactoryBackspace = () => setActiveBlock({ id: findUTextId('last'), focus: { type: 'end' } })
+  const onTitleEnter = (x?: num) => setActiveBlock({ id: findUTextId('first'), focus: { type: 'start', xOffset: x } })
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (!selection.ids.length) return
       if (e.key === 'Enter') {
         e.preventDefault() // otherwise new block will contain div with br
-        e.stopImmediatePropagation() // other
-        if (isUTextComponent(idAndInfo.get(selection.ids[0])?.type))
-          setActiveBlock({ id: selection.ids[0], focus: { type: 'end' } })
-        else addNewBlocks(selection.ids.at(-1), 'FOCUS_START', '')
+        e.stopImmediatePropagation()
+        const type = idAndInfo.get(selection.ids[0])?.type
+        if (isUTextComponent(type) && type !== 'code') setActiveBlock({ id: selection.ids[0], focus: { type: 'end' } })
+        else addNewBlocks(selection.ids.at(-1), 'focus-start', '')
         dispatch({ a: 'clear' })
       } else if (e.key === 'Backspace') {
-        setIds((old) => old.filter((id) => !selection.ids.includes(id)))
+        setIds(ids.filter((id) => !selection.ids.includes(id)))
         dispatch({ a: 'clear' })
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
         navigator.clipboard.writeText(
@@ -128,7 +139,7 @@ export function UBlocksSet({
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [selection])
+  }, [selection, ids])
 
   return (
     <Stack>
@@ -143,7 +154,7 @@ export function UBlocksSet({
           tryToChangeFieldType={setStr}
           setType={fn}
           addNewBlock={fn}
-          type="TEXT"
+          type="text"
         />
       )}
       <ClickAwayListener onClickAway={() => dispatch({ a: 'clear' })}>
@@ -167,7 +178,7 @@ export function UBlocksSet({
                 }
                 addNewBlock={(focus, data, isImage) => addNewBlocks(_id, focus, data, isImage)}
                 addInfo={(info) => idAndInfo.set(_id, info)}
-                addNewUPage={() => addNewUPage(ids.slice(0, i).find((id) => idAndInfo.get(id)?.type === 'PAGE') || '')}
+                addNewUPage={() => addNewUPage(ids.slice(0, i).find((id) => idAndInfo.get(id)?.type === 'page') || '')}
                 deleteBlock={deleteBlock}
                 appendedData={_id === blockAboveDeleted.id ? blockAboveDeleted.data : undefined}
                 resetActiveBlock={() => setActiveBlock({ id: '' })}
@@ -178,7 +189,7 @@ export function UBlocksSet({
           })}
         </div>
       </ClickAwayListener>
-      {(!ids.length || !oneBlockOnly) && (
+      {!readonly && (
         <UParagraph
           key={`factory-${activeBlock.id}`}
           focus={activeBlock.id === 'factory' ? { type: 'start' } : undefined}
@@ -191,7 +202,7 @@ export function UBlocksSet({
           setData={setStr}
           tryToChangeFieldType={setStr}
           setType={fn}
-          type="TEXT"
+          type="text"
         />
       )}
     </Stack>
@@ -203,12 +214,10 @@ export function useUBlocks<T extends UBlocks, D>(id: str) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [ublock, setUBlock] = useData<any>('ublocks', id)
   const data = cast<{ ids: strs }>((ublock as { data: str }).data, { ids: [] })
-  const idsS = useReactiveObject(data.ids)
   return {
-    idsS,
+    ids: data.ids,
     ublock: { ...ublock, data } as T,
     setUBlockData: (d: D) => setUBlock({ data: JSON.stringify(d) }),
-    setUBlockType: (t: UComponentType) => setUBlock({ type: t }), // type is not included in versioning
   }
 }
 
@@ -225,7 +234,7 @@ class ActiveBlock {
 class AddedBlock {
   id = ''
   data = ''
-  type: UComponentType = 'TEXT'
+  type: UComponentType = 'text'
 }
 
 class DeletedBlock {

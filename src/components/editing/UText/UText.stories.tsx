@@ -2,7 +2,7 @@ import { Box, Button } from '@mui/material'
 import { useState } from 'react'
 import { fn, num, setStr } from '../../../utils/types'
 import { useMount } from '../../utils/hooks/hooks'
-import { UBlock } from '../UBlock'
+import { UBlock } from '../UBlock/UBlock'
 
 function T(props: UBlock) {
   const [f, sf] = useState(props.focus)
@@ -31,12 +31,12 @@ const readonly: UBlock = {
 
 const data2: UBlock = {
   id: 'newEmptyText',
-  initialData: { data: '', type: 'TEXT' },
+  initialData: { data: '', type: 'text' },
 }
 
 const data3: UBlock = {
   id: 'newEmptyHeader',
-  initialData: { data: '', type: 'HEADING1' },
+  initialData: { data: '', type: 'heading1' },
 }
 
 const data4: UBlock = {
@@ -45,19 +45,19 @@ const data4: UBlock = {
 
 const bold: UBlock = {
   id: 'bold',
-  initialData: { data: 'bold', type: 'TEXT' },
+  initialData: { data: 'bold', type: 'text' },
 }
 
 const link: UBlock = {
   id: 'link',
-  initialData: { data: 'Link and <a href="a">old ref</a> and text', type: 'TEXT' },
+  initialData: { data: 'Link and <a href="a">old ref</a> and text', type: 'text' },
 }
 
 const transformedText: UBlock = {
   id: 'transformedText',
   initialData: {
     data: 'Example: <b>bold</b> <code>code</code> <a href="https://www.google.com/" target="_blank">link</a>',
-    type: 'TEXT',
+    type: 'text',
   },
 }
 

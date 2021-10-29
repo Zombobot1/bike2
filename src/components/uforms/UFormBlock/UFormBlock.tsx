@@ -1,4 +1,16 @@
-import { Checkbox, FormControlLabel, Radio, Stack, styled, TextField, Typography } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  Chip,
+  FormControlLabel,
+  Radio,
+  Stack,
+  styled,
+  TextField,
+  TextFieldProps,
+  Typography,
+  useTheme,
+} from '@mui/material'
 import { bool, Fn, SetStr, str, strs } from '../../../utils/types'
 import { UBlockComponentB, UComponentType, UFormBlockComponent } from '../../editing/types'
 import { UChecks } from './UChecks/UChecks'
@@ -6,6 +18,10 @@ import { UInput } from './UInput/UInput'
 import { useUFormBlock, useUFormBlockEditor } from '../useUForm'
 import { Question } from '../../studying/training/types'
 import { useState, KeyboardEvent, useRef } from 'react'
+import { EditableText } from '../../utils/EditableText/EditableText'
+import { _apm } from '../../application/theming/theme'
+import { CTick, RTick, TextInput } from '../../utils/MuiUtils'
+import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded'
 
 export interface UFormFieldBase extends UBlockComponentB {
   _id: str
@@ -26,32 +42,33 @@ export function UFormBlock(props: UFormBlock) {
 }
 
 function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
-  const props = useUFormBlockEditor(_id, type as UFormBlockComponent, data, setData)
-  const { question, onQuestionChange } = props
+  const props = useUFormBlockEditor(_id, type as UFormBlockComponent, data, setData, {
+    isTextArea: type === 'textarea',
+  })
+  const { question, onQuestionChange, validationError } = props
 
   return (
-    <Stack spacing={2}>
-      <TextField
-        variant="standard"
+    <Stack spacing={2} sx={{ paddingBottom: '2rem' }}>
+      <EditableText
         placeholder="Type question"
-        defaultValue={question.question}
-        onBlur={(e) => onQuestionChange({ ...question, question: e.target.value })}
-        multiline
-        inputProps={{ 'aria-label': 'question', 'data-cy': 'question' }}
+        text={question.question}
+        setText={(q) => onQuestionChange({ ...question, question: q })}
       />
-      {type === 'CHECKS' && <Options selectMultiple={true} {...props} />}
-      {type === 'RADIO' && <Options selectMultiple={false} {...props} />}
-      {type === 'INPUT' && (
-        <TextField
+      {type === 'checks' && <Options selectMultiple={true} {...props} />}
+      {type === 'radio' && <Options selectMultiple={false} {...props} />}
+      {type === 'input' && (
+        <TextInput
           variant="outlined"
           placeholder="Set correct answer"
           defaultValue={question.correctAnswer[0]}
           onBlur={(e) => onQuestionChange({ ...question, correctAnswer: [e.target.value] })}
           inputProps={{ 'aria-label': 'correct answer', 'data-cy': 'correct answer' }}
+          error={!!validationError}
+          helperText={validationError}
         />
       )}
-      {type === 'TEXTAREA' && (
-        <TextField
+      {type === 'textarea' && (
+        <TextInput
           color="success"
           variant="filled"
           label="Add explanation"
@@ -62,8 +79,8 @@ function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
           inputProps={{ 'aria-label': 'explanation', 'data-cy': 'explanation' }}
         />
       )}
-      {type !== 'TEXTAREA' && (
-        <TextField
+      {type !== 'textarea' && (
+        <TextInput
           color="success"
           variant="filled"
           label="Add explanation"
@@ -81,9 +98,10 @@ interface Options_ {
   selectMultiple: bool
   question: Question
   onQuestionChange: (q: Question) => void
+  validationError: str
 }
 
-function Options({ selectMultiple, question, onQuestionChange }: Options_) {
+function Options({ selectMultiple, question, onQuestionChange, validationError }: Options_) {
   const [newOptionsCount, setNewOptionsCount] = useState(0)
   const [focusLast, setFocusLast] = useState(false)
   const setOptions = (options: strs) => onQuestionChange({ ...question, options: options.filter(Boolean) })
@@ -101,9 +119,9 @@ function Options({ selectMultiple, question, onQuestionChange }: Options_) {
 
   return (
     <div>
-      {!question.correctAnswer.length && <Typography color="text.secondary">Select correct answer</Typography>}
-      {question.options.map((o, i) => {
-        return (
+      {validationError && <Warning size="small" color="error" label={validationError} icon={<ArrowDown />} />}
+      <Box sx={{ paddingBottom: '0.5rem' }}>
+        {question.options.map((o, i) => (
           <Option
             key={o}
             selectMultiple={selectMultiple}
@@ -116,12 +134,20 @@ function Options({ selectMultiple, question, onQuestionChange }: Options_) {
             blurLast={() => setFocusLast(false)}
             setOptionsAndAnswer={setOptionsAndAnswer}
           />
-        )
-      })}
-      <EmptyOption key={`Add new ${newOptionsCount}`} selectMultiple={selectMultiple} addNew={addNew} />
+        ))}
+        <EmptyOption key={`Add new ${newOptionsCount}`} selectMultiple={selectMultiple} addNew={addNew} />
+      </Box>
     </div>
   )
 }
+
+const Warning = styled(Chip)({
+  marginBottom: '0.5rem',
+})
+
+const ArrowDown = styled(ReplyRoundedIcon)({
+  transform: 'rotate(-90deg)',
+})
 
 interface Option_ {
   selectMultiple: bool
@@ -164,13 +190,7 @@ function Option({
     <Stack direction="row">
       <Tick
         label=""
-        control={
-          selectMultiple ? (
-            <Checkbox inputProps={{ 'aria-label': 'option tick' }} />
-          ) : (
-            <Radio inputProps={{ 'aria-label': 'option tick' }} />
-          )
-        }
+        control={selectMultiple ? <CTick /> : <RTick />}
         checked={correctAnswer.includes(option)}
         onChange={() => onOptionClick(option)}
       />
@@ -220,7 +240,7 @@ const Tick = styled(FormControlLabel)({
   marginRight: '0.25rem',
 })
 
-const OptionLabel = styled(TextField)({
+const OptionLabel = styled(TextInput)({
   transform: 'translateY(5px)',
 })
 
@@ -232,11 +252,11 @@ function UFormBlock_({ _id, type, data, onAnswer, shuffleOptions, autoFocus, sho
   const inputProps = { ...commonProps, autoFocus, showTipOnMobile }
 
   return (
-    <>
-      {type === 'CHECKS' && <UChecks {...checksProps} selectMultiple={true} />}
-      {type === 'RADIO' && <UChecks {...checksProps} selectMultiple={false} />}
-      {type === 'INPUT' && <UInput {...inputProps} multiline={false} />}
-      {type === 'TEXTAREA' && <UInput {...inputProps} multiline={true} />}
-    </>
+    <Box sx={{ paddingBottom: '2rem' }}>
+      {type === 'checks' && <UChecks {...checksProps} selectMultiple={true} />}
+      {type === 'radio' && <UChecks {...checksProps} selectMultiple={false} />}
+      {type === 'input' && <UInput {...inputProps} multiline={false} />}
+      {type === 'textarea' && <UInput {...inputProps} multiline={true} />}
+    </Box>
   )
 }

@@ -3,6 +3,34 @@ import { bool, fn, num, str, voidP } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { containsTagBefore, insertTag, removeTagBefore } from './htmlAsStr'
 
+export function relativeDimensions(component: str, rec?: DOMRect) {
+  const px = rec?.x || 0
+  const py = rec?.y || 0
+  const pb = rec?.bottom || 0
+
+  const xy = getCaretCoordinates()
+  const x = xy.x - px
+  const y = xy.y - py
+  const b = pb - xy.b - 8 // -8 because y and b have 2px error
+
+  const m = sizeMultipliers.get(component) || 1
+  const isTop = y / (16 * m) < 1
+  const isBottom = b / (16 * m) < 1
+
+  return { x, isTop, isBottom }
+}
+
+export function getCaretRelativeCoordinates(rec?: DOMRect) {
+  const px = rec?.x || 0
+  const py = rec?.y || 0
+
+  const xy = getCaretCoordinates()
+  const x = xy.x - px
+  const y = xy.y - py
+
+  return { x, y }
+}
+
 export function selectionCoordinates(relativeTo: HTMLElement): { x: num; b: num } {
   const range = safe(window.getSelection()?.getRangeAt(0))
 
@@ -76,7 +104,7 @@ export function setCursor(
   let scrolled = 0
 
   const getX = () => range.getBoundingClientRect().x - node.getBoundingClientRect().x
-  const needScroll = Boolean(xOffset !== undefined)
+  const needScroll = xOffset !== undefined && xOffset > 0
   let isNotEnough = () => needScroll && getX() < (xOffset as num)
   if (direction === 'backward') {
     content.reverse()
@@ -116,6 +144,27 @@ export function select(node: ChildNode, from: num, to: num) {
 }
 
 export const selectedText = () => window.getSelection()?.toString().trim() || ''
+
+export function getCaretCoordinates(fromStart = true): { x: num; y: num; b: num } {
+  const selection = window.getSelection()
+  if (selection && selection.rangeCount !== 0) {
+    const range = selection.getRangeAt(0).cloneRange()
+    range.collapse(fromStart)
+    const rect = range.getClientRects()[0]
+    if (rect) return { x: rect.x, y: rect.y, b: rect.bottom }
+  }
+  return { x: -1, y: -1, b: -1 } // it's safe
+  // throw new Error('Cannot retrieve caret coordinates') // it throws too often
+}
+
+const sizeMultipliers = new Map([
+  ['code', (3.8 + 1) / 1.5],
+  ['h1', (3.5 + 0.5) / 1.5],
+  ['h2', (2.5 + 0.5) / 1.5],
+  ['h3', (2 + 0.5) / 1.5],
+  ['h4', (1.75 + 0.25) / 1.5],
+  ['pre', 1],
+])
 
 function getTextBeforeSelection(block: HTMLElement) {
   const content = dfsText(block)

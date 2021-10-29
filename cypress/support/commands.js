@@ -45,9 +45,11 @@
 Cypress.Commands.add('paste', { prevSubject: true }, function (subject, pasteOptions) {
   const { pastePayload, pasteType } = pasteOptions
   const data = pasteType === 'application/json' ? JSON.stringify(pastePayload) : pastePayload
-  // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer
-  const clipboardData = new DataTransfer()
-  clipboardData.setData(pasteType, data)
+
+  const clipboardData = new DataTransfer() // https://developer.mozilla.org/en-US/docs/Web/API/DataTransfer
+  if (pasteType === 'image/png') clipboardData.items.add(pastePayload)
+  else clipboardData.setData(pasteType, data)
+
   // https://developer.mozilla.org/en-US/docs/Web/API/Element/paste_event
   const pasteEvent = new ClipboardEvent('paste', {
     bubbles: true,

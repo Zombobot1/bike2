@@ -1,5 +1,7 @@
 export const a = 1
 
+// test that isNew disappears
+
 // describe('UImageFile', () => {
 //   it('Shows image', async () => {
 //     render(<UImageFileS.ShowsImage />)
