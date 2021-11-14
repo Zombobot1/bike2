@@ -1,9 +1,8 @@
-import { connectAuthEmulator, getAuth, signInWithEmailAndPassword, signInWithEmailLink, signOut } from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { JSObject, str, strP } from './utils/types'
 import { getApps, initializeApp } from '@firebase/app'
 import {
   collection,
-  connectFirestoreEmulator,
   deleteDoc,
   doc,
   Firestore,
@@ -24,10 +23,8 @@ export const firebaseConfig = {
 import axios from 'axios'
 import { ws } from './content/application'
 import { blocksS } from './content/ublocks'
-import { connectStorageEmulator, getStorage } from 'firebase/storage'
+import { getStorage } from 'firebase/storage'
 import { IdAndBlocks } from './content/types'
-import { sendEmailLink } from './components/application/LoginPage/sendEmailLink'
-import { FINISH_REGISTRATION } from './components/application/App/pages'
 
 const PROJECT_ID = 'universe-55cec'
 type Promises = Promise<unknown>[]

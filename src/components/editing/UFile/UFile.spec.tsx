@@ -1,4 +1,13 @@
-export const a = 1
+import { show } from '../../../utils/testUtils'
+import * as UFile from './UFile.stories'
+
+describe('UFile', () => {
+  it('Shows uploaded file', () => {
+    show(UFile.ShowsFile)
+    // const file = await waitFor(() => screen.getByText('complex--name.pdf'))
+    // expect(file).toBeVisible()
+  })
+})
 
 // describe('UFile', () => {
 //   it('Shows uploaded file', async () => {
@@ -40,4 +49,3 @@ export const a = 1
 // })
 
 // configure({ getElementError })
-// beforeAll(startServer)

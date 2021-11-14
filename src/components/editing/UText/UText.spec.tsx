@@ -1,9 +1,9 @@
-import { show, expectCSSPlaceholder, utext, type, saw } from '../../../utils/testUtils'
+import { show, expectCSSPlaceholder, utext, type, saw, got } from '../../../utils/testUtils'
 import { safe } from '../../../utils/utils'
-import { select } from '../../utils/Selection/selection'
+import { select, setCursor } from '../../utils/Selection/selection'
 import * as UText from './UText.stories'
 
-describe('Editable text', () => {
+describe('UText', () => {
   it('Displays placeholders | Changes component', () => {
     show(UText.ChangesComponents)
 
@@ -28,7 +28,7 @@ describe('Editable text', () => {
 
     type('{ctrl+k}')
 
-    cy.get('span').contains('Link')
+    cy.get('strong').contains('Link')
 
     type('a{enter}')
     type('!')
@@ -52,5 +52,55 @@ describe('Editable text', () => {
   it('Is disabled when is readonly', () => {
     show(UText.ReadOnlyText)
     utext().should('have.attr', 'disabled')
+  })
+
+  it('after tex editing focus moves behind it | edits tex', () => {
+    show(UText.TransformedText)
+    cy.get(`[data-id="1"]`).realClick()
+    type([' + b{enter}'], ['!'])
+    saw('!bold')
+
+    cy.get(`[data-id="1"]`).realClick()
+    saw('{2} + b')
+  })
+
+  it('Inserts tex in empty block', () => {
+    show(UText.Empty)
+    utext().focus()
+    type(['{ctrl+E}'], ['w{enter}'])
+    saw('w')
+  })
+
+  it('Inserts tex in text', () => {
+    show(UText.BoldText)
+    cy.then(() => select(document.getElementsByTagName('pre')[0], 1, 3))
+    utext().focus()
+    type(['{ctrl+E}'], ['+{esc}'])
+    saw('ol+', 'b', 'd')
+  })
+
+  it('shows tex placeholder | inserts tex after tex in the end', () => {
+    show(UText.Tex)
+    cy.then(() => setCursor(document.getElementsByTagName('pre')[0], 0, 'backward'))
+    utext().focus()
+    type('{ctrl+E}')
+    saw('write TeX')
+    type(['+{esc}'])
+    saw('+')
+  })
+
+  it('shows tex editor with correct offset | returns cursor after 2nd tex in block', () => {
+    show(UText.TwoTex)
+    cy.get(`[data-id="2"]`).realClick()
+
+    got('tex-box')
+      .should('have.css', 'top')
+      .then((height) => +String(height).replace('px', '')) // convert
+      .should('be.closeTo', 88, 2)
+
+    got('tex-box').should('have.css', 'left', '158.125px')
+    type(['{esc}'], ['!'])
+
+    saw('!cat')
   })
 })

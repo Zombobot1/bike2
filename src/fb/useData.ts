@@ -1,4 +1,5 @@
 import { doc, getFirestore, setDoc } from '@firebase/firestore'
+import { useCallback } from 'react'
 import { useFirestore, useFirestoreDocData } from 'reactfire'
 import { str } from '../utils/types'
 import { useFS } from './fs'
@@ -7,7 +8,7 @@ import { _MOCK_FB } from './utils'
 function useData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
   const { setDoc, getDoc } = useFS()
   const data = getDoc(col, id, initialData)
-  const setData_ = (data: Partial<T>) => setDoc(col, id, data)
+  const setData_ = useCallback((data: Partial<T>) => setDoc(col, id, data), [])
 
   if (!data) throw new Error(`Document ${id} in ${col} not found`)
   return [data as T, setData_]
@@ -16,7 +17,7 @@ function useData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) =>
 export function useData<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
   if (process.env.NODE_ENV === 'development' && _MOCK_FB) return useData_(col, id, initialData)
 
-  const setData_ = (data: Partial<T>) => setData(col, id, data)
+  const setData_ = useCallback((data: Partial<T>) => setData(col, id, data), [])
   const data = useFirestoreDocData(doc(useFirestore(), col, id), { initialData }).data
   if (!data && initialData) {
     addData(col, id, initialData)

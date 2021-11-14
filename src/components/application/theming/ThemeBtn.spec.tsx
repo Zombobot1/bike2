@@ -5,11 +5,8 @@ const light = 'rgb(255, 122, 0)'
 const dark = 'rgb(4, 15, 48)'
 
 describe('ThemeBtn', () => {
-  beforeEach(() => {
-    localStorage.setItem('themeType', 'light')
-  })
-
   it('Changes Theme', () => {
+    localStorage.setItem('themeType', 'light')
     show(ThemeBtn.ChangesTheme)
 
     got('theme-btn-l').click()

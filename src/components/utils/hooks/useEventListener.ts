@@ -1,5 +1,4 @@
 import { useEffect, useRef, SyntheticEvent, RefObject } from 'react'
-import { Fn } from '../../../utils/types'
 
 // introduced to avoid [dependency] for useEventListener
 function _useEventListener<T extends HTMLElement = HTMLDivElement>(

@@ -1,10 +1,9 @@
+/* eslint-disable mocha/no-exclusive-tests */
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../../cypress/support/index.d.ts" />
 import * as UBlocksSet from './UBlocksSet.stories'
 import { got, saw, type, show, click } from '../../../../utils/testUtils'
-import { _initFB, _insertBlocks } from '../../../../_seeding'
-import { _removalBlocks } from '../../../../content/ublocks'
-import { num, str } from '../../../../utils/types'
+import { num } from '../../../../utils/types'
 import { _fluffyBlob } from '../../../../content/content'
 
 const utext = (n?: num) => got('utext', n)
@@ -63,7 +62,7 @@ describe('UBlocksSet', () => {
     utext(1).type('/')
     utext(1).should('have.focus').type('p').contains('/p')
 
-    utext(1).type('{enter}')
+    type('{enter}')
     utext(2).should('have.focus')
   })
 
@@ -84,13 +83,34 @@ describe('UBlocksSet', () => {
     saw('1t')
   })
 
-  it('Separate block on paste', () => {
+  it.only('Separate block on paste', () => {
     show(UBlocksSet.BlocksDeletion)
 
     utext(1).type('{leftarrow}').paste({ pasteType: 'text/plain', pastePayload: 'r \n\n1\n\n2\n\nthird block' })
     type('3')
     saw('car')
     saw('third blockt3')
+  })
+
+  it('handles block separation with inline latex', () => {
+    show(UBlocksSet.WihLatex)
+    utext(1).focus()
+    type(['{rightarrow}'.repeat(8)], ['{enter}'], ['!'])
+    saw('!nd')
+  })
+
+  it('handles block separation between 2 latex', () => {
+    show(UBlocksSet.WihLatex)
+    utext(3).focus()
+    type(['{rightarrow}'.repeat(8)], ['{enter}'], ['!'])
+    saw('!mall')
+  })
+
+  it('preserves cursor position when tex is changed', () => {
+    show(UBlocksSet.WihLatex)
+    cy.get(`[data-id="666"]`).realClick()
+    type(['+{enter}'], ['!'])
+    saw('!small')
   })
 
   it('Moves up & down', () => {
@@ -119,17 +139,17 @@ describe('UBlocksSet', () => {
 
     saw('Kitte2ns')
   })
-
+  // it was before inline latex separation and caused it to fail -> keep it on the bottom of spec
   it('pastes image', () => {
     show(UBlocksSet.OneEmptyBlock)
     cy.then(_fluffyBlob).then((b) => utext(1).paste({ pasteType: 'image/png', pastePayload: b }))
     saw('img-cy', 'selection-cy')
   })
 
-  it.only('deletes selected blocks', () => {
-    show(UBlocksSet.BlocksDeletion)
-    click('block-menu-h') // select image!!
-  })
+  // it.only('deletes selected blocks', () => {
+  //   show(UBlocksSet.BlocksDeletion)
+  //   click('block-menu-h') // select image!!
+  // })
 
   // it('Readonly', () => {
   //   show(UPageS.Readonly)

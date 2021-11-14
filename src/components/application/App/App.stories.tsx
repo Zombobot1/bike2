@@ -1,15 +1,10 @@
-import { getAuth } from '@firebase/auth'
 import { Button } from '@mui/material'
-import { signOut } from 'firebase/auth'
-import { Suspense, useState } from 'react'
+import { Suspense } from 'react'
 import { MemoryRouter } from 'react-router'
-import { useSigninCheck } from 'reactfire'
 import { useIsSignedIn } from '../../../fb/auth'
 import { bool, str } from '../../../utils/types'
-import { _getOOBLink } from '../../../_seeding'
 import { useMount } from '../../utils/hooks/hooks'
 import { App } from './App'
-import { FINISH_REGISTRATION } from './pages'
 
 interface T_ {
   initialPosition: str

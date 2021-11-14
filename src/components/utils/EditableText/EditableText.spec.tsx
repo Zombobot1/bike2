@@ -1,4 +1,4 @@
-import { got, utext, show, saw, expectCSSPlaceholder } from '../../../utils/testUtils'
+import { got, show, saw, expectCSSPlaceholder } from '../../../utils/testUtils'
 import * as EditableText from './EditableText.stories'
 
 const etext = () => got('etext')

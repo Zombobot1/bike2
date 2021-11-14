@@ -4,7 +4,6 @@ import { fn } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
 import { BlockAutocomplete, BlockTurner } from './BlockAutocomplete'
-import { UElementsOptions } from './UElementsOptions'
 
 function Turner() {
   const ref = useRef<HTMLButtonElement>(null)

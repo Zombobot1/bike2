@@ -1,9 +1,8 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { bool } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
-import { useMount } from './hooks'
-import { useEventListener } from './useEventListener'
 
-export function useElementSize<T extends HTMLElement = HTMLDivElement>() {
+export function useElementSize<T extends HTMLElement = HTMLDivElement>({ passive }: { passive?: bool } = {}) {
   const ref = useRef<T>(null)
   const [size, setSize] = useState(new Size())
   const [ob] = useState(new ResizeObserver((e) => setSize((old) => ({ ...old, width: e[0].contentRect.width })))) // anomaly: incorrect width without observing
@@ -18,11 +17,12 @@ export function useElementSize<T extends HTMLElement = HTMLDivElement>() {
     }
   }, [ref])
 
-  useMount(() => {
+  useEffect(() => {
+    if (passive) return
     updateSize()
     ob.observe(safe(ref?.current))
     return () => ob.disconnect()
-  })
+  }, [passive]) // cypress anomaly: observer throws in UText latex editing
 
   return { ref, ...size }
 }

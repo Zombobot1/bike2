@@ -1,20 +1,8 @@
-import {
-  Popper,
-  Grow,
-  Paper,
-  ClickAwayListener,
-  TextField,
-  MenuList,
-  useTheme,
-  Box,
-  MenuItem,
-  ListItemText,
-  Stack,
-} from '@mui/material'
+import { Popper, Grow, Paper, ClickAwayListener, MenuList, useTheme, Box, MenuItem, ListItemText } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
 import { fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
 import { filterProps, mod } from '../../../utils/utils'
-import { useReactive, useReactiveObject } from '../hooks/hooks'
+import { useReactive } from '../hooks/hooks'
 import { useOnScreen } from '../hooks/useOnScreen'
 import { TextInput } from '../MuiUtils'
 import { MenuB, menuFilterProps, useMenu } from './UMenu'

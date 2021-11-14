@@ -1,15 +1,16 @@
-import { Stack, styled, Typography, IconButton, alpha, Box } from '@mui/material'
-import { num, str } from '../../../utils/types'
+import { Stack, styled, Typography, IconButton, Box } from '@mui/material'
+import { num } from '../../../utils/types'
 import { cast, prevented } from '../../../utils/utils'
 import { UBlockComponent, UBlockComponentB } from '../types'
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { useUFile } from './useUFile'
-import { useReactive, useReactiveObject } from '../../utils/hooks/hooks'
+import { useReactiveObject } from '../../utils/hooks/hooks'
 import { _apm } from '../../application/theming/theme'
 import { UImageFile } from './UImageFile/UImageFile'
 import { UAudioFile } from './UAudioFile/UAudioFile'
 import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
+import { UVideoFile } from './UVideoFile/UVideoFile'
 
 export class UFileDTO {
   src = ''
@@ -44,6 +45,7 @@ export function UFile(props: UFile) {
       {props.type === 'file' && <UFile_ {...props} />}
       {props.type === 'image' && <UImageFile {...props} />}
       {props.type === 'audio' && <UAudioFile {...props} />}
+      {props.type === 'video' && <UVideoFile {...props} />}
     </Box>
   )
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { alpha, createTheme, Theme, useMediaQuery } from '@mui/material'
 import { atom, useAtom } from 'jotai'
-import _, { property } from 'lodash'
+import _ from 'lodash'
 import { bool, JSObject, num, str } from '../../../utils/types'
 
 export const COLORS = {
@@ -23,9 +23,9 @@ export const COLORS = {
   light: '#eaedf2',
 }
 
-type APMType = 'bg' | '100' | '200' | '400' | '800' | 'border' | 'secondary' | 'btn'
-const darkSecondaryAlpha = 0.6
-export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'bg', lightAlpha?: num) {
+type APMType = 'bg' | 'bg-hover' | '100' | '200' | '400' | '800' | 'border' | 'secondary' | 'btn'
+
+export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = '100', lightAlpha?: num) {
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
   if (!_.isString(typeOrDarkAlpha)) {
@@ -34,10 +34,10 @@ export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = 'bg', lightA
   }
   const type = typeOrDarkAlpha as APMType
   if (type === 'border') return alpha(primary, 0.3)
-  else if (type === 'secondary') return alpha(primary, isDark ? darkSecondaryAlpha : 0.4)
+  else if (type === 'secondary') return alpha(primary, isDark ? 0.6 : 0.4)
   else if (type === 'btn') return isDark ? theme.palette.primary.main : theme.palette.text.secondary
-  else if (type === '100') return alpha(primary, isDark ? 0.15 : 0.05)
-  else if (type === '200') return alpha(primary, isDark ? 0.2 : 0.1)
+  else if (type === '100' || type === 'bg') return alpha(primary, isDark ? 0.15 : 0.05)
+  else if (type === '200' || type === 'bg-hover') return alpha(primary, isDark ? 0.2 : 0.1)
   else if (type === '400') return alpha(primary, isDark ? 0.4 : 0.2)
   else if (type === '800') return alpha(primary, isDark ? 0.8 : 0.5)
 
@@ -82,6 +82,7 @@ const theme = {
     error: {
       main: COLORS.error,
     },
+    text: { secondary: alpha(COLORS.primary, 0.4) },
   },
 
   isDark: function () {
@@ -122,7 +123,7 @@ const darkTheme = createTheme({
     primary: { main: COLORS.secondary },
     secondary: { main: COLORS.primary, light: COLORS.primaryLight5, dark: COLORS.primaryLightM5 },
     action: { active: COLORS.secondary, hover: alpha(COLORS.secondary, 0.1), selected: alpha(COLORS.secondary, 0.26) },
-    text: { primary: COLORS.secondary, secondary: alpha(COLORS.secondary, darkSecondaryAlpha) },
+    text: { primary: COLORS.secondary, secondary: alpha(COLORS.secondary, 0.6) },
     background: { default: COLORS.primary, paper: COLORS.primary },
     mode: 'dark',
   },

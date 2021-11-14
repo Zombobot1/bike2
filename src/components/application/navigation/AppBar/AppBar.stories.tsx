@@ -1,5 +1,4 @@
 import { MemoryRouter } from 'react-router'
-import { useUser } from 'reactfire'
 import { ws } from '../../../../content/application'
 import { useUserInfo } from '../../../../fb/auth'
 import { fn, str } from '../../../../utils/types'

@@ -41,4 +41,3 @@ export const a = 1
 // })
 
 // configure({ getElementError })
-// beforeAll(startServer)

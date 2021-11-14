@@ -2,8 +2,8 @@ import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
 import { bool, str, strs } from '../../../utils/types'
 import { useRef, useState } from 'react'
-import { max, safeSplit } from '../../../utils/algorithms'
-import { Box, Button, MenuItem } from '@mui/material'
+import { max } from '../../../utils/algorithms'
+import { Button, MenuItem } from '@mui/material'
 import { UMenu, useMenu } from '../UMenu/UMenu'
 
 export interface UAutocomplete {
@@ -66,7 +66,7 @@ function highlight(option: str, input: str): BoldedTexts {
   return r
 }
 
-export function SelectText({ placeholder, options, value: initialValue }: UAutocomplete) {
+export function SelectText({ options, value: initialValue }: UAutocomplete) {
   const ref = useRef<HTMLButtonElement>(null)
   const [value, setValue] = useState(initialValue)
   const { isOpen, toggleOpen, close } = useMenu()

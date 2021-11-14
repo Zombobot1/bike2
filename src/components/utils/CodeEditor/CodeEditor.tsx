@@ -1,16 +1,10 @@
-import { useRef, useState, KeyboardEvent, useEffect, memo } from 'react'
+import { useRef, useState, KeyboardEvent, useEffect } from 'react'
 import { safe } from '../../../utils/utils'
 import { useRefCallback } from '../hooks/useRefCallback'
-import {
-  cursorOffset,
-  getCaretCoordinates,
-  getCaretRelativeCoordinates,
-  relativeDimensions,
-  setCursor,
-} from '../Selection/selection'
+import { cursorOffset, getCaretRelativeCoordinates, setCursor } from '../Selection/selection'
 import { CodeRoot } from './CodeRoot'
 import { highlight, programmingLanguages, unhighlight } from './highlight'
-import { bool, SetStr, str, strs } from '../../../utils/types'
+import { bool, Fn, fn, num, SetStr, str, strs } from '../../../utils/types'
 import { Box, Button, styled, Typography } from '@mui/material'
 import ContentEditable from 'react-contenteditable'
 import { insert } from '../../../utils/algorithms'
@@ -19,45 +13,61 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import { LongMenu, useLongMenu } from '../UMenu/LongMenu'
 import { copyText } from '../../../utils/copyText'
-import { useDebugInformation } from '../hooks/useDebug'
-import { ArrowNavigation, UTextFocus } from '../../editing/types'
+import { UTextFocus } from '../../editing/types'
+import { useMount } from '../hooks/hooks'
 
 export interface CodeEditor {
-  focus?: UTextFocus
   language: str
   code: str
   setCode: SetStr
-  setLanguage: SetStr
+  setLanguage?: SetStr
+  focus?: UTextFocus
   readonly?: bool
-  arrowNavigation?: ArrowNavigation
+  goUp?: (x?: num) => void
+  goDown?: (x?: num) => void
+  mini?: bool
+  onEnter?: Fn
+  placeholder?: str
+  autoFocus?: bool
 }
-
-// export const CodeEditor = memo(
-//   _CodeEditor,
-//   (prev, n) => prev.code !== n.code || prev.readonly !== n.readonly || prev.language !== n.language,
-// )
 
 export function CodeEditor({
   code: initialCode,
   setCode: saveCode,
   language,
-  setLanguage,
+  setLanguage = fn,
   readonly,
-  arrowNavigation,
+  goUp,
+  goDown,
   focus,
+  mini,
+  onEnter = fn,
+  placeholder,
+  autoFocus,
 }: CodeEditor) {
   const [code, setCode] = useState(highlight(initialCode, language))
+  const [cursorPosition, setCursorPosition] = useState<num | null>(null)
+
   useEffect(() => {
     setCode(highlight(unhighlight(code), language))
   }, [language])
 
+  useEffect(() => {
+    if (cursorPosition !== null) setCursor(safe(ref.current), cursorPosition, 'forward', 'symbol')
+  }, [cursorPosition])
+
   const ref = useRef<HTMLDivElement>(null)
   const onChange = useRefCallback((e) => {
     const cp = cursorOffset(safe(ref.current))
-    setCode(highlight(unhighlight(e.target.value), language))
-    setTimeout(() => setCursor(safe(ref.current), cp, 'forward', 'symbol')) // hack
+    const newCode = unhighlight(e.target.value)
+    setCode(highlight(newCode, language))
+    if (mini) saveCode(newCode)
+    setCursorPosition(cp)
   })
-  const onBlur = useRefCallback(() => saveCode(unhighlight(code)), [code])
+  const onBlur = useRefCallback(() => {
+    const newCode = unhighlight(code)
+    if (newCode !== initialCode) saveCode(newCode)
+  }, [code])
 
   const onKeyDown = useRefCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
@@ -66,19 +76,26 @@ export function CodeEditor({
         e.preventDefault()
         const cp = cursorOffset(sRef)
         setCode(highlight(insert(unhighlight(code), cp, '  '), language))
-        setTimeout(() => setCursor(sRef, cp + 2, 'forward', 'symbol')) // hack
+        setCursorPosition(cp + 2)
       } else if (e.key === 'Enter') {
         e.preventDefault()
+        if (mini && !e.shiftKey) return onEnter()
         const cp = cursorOffset(sRef)
         setCode(highlight(insert(unhighlight(code), cp, '\n'), language))
-        setTimeout(() => setCursor(sRef, cp + 1, 'forward', 'symbol')) // hack
-      } else if (e.key === 'ArrowUp') {
+        setCursorPosition(cp + 1)
+      } else if (e.key === 'Escape') {
+        if (mini) return onEnter()
+      }
+
+      if (!goUp || !goDown) return
+
+      if (e.key === 'ArrowUp') {
         const cp = cursorOffset(sRef)
         const isTop = cp < unhighlight(code).split('\n')[0]?.length
         if (isTop) {
           e.preventDefault()
           e.stopPropagation()
-          arrowNavigation?.up(getCaretRelativeCoordinates(sRef.getBoundingClientRect()).x)
+          goUp(getCaretRelativeCoordinates(sRef.getBoundingClientRect()).x)
           ref.current?.blur()
         }
       } else if (e.key === 'ArrowDown') {
@@ -87,15 +104,15 @@ export function CodeEditor({
         if (isBottom) {
           e.preventDefault()
           e.stopPropagation()
-          arrowNavigation?.down(getCaretRelativeCoordinates(sRef.getBoundingClientRect()).x)
+          goDown(getCaretRelativeCoordinates(sRef.getBoundingClientRect()).x)
         }
       } else if (e.key === 'ArrowLeft') {
-        if (!cursorOffset(sRef)) arrowNavigation?.up()
+        if (!cursorOffset(sRef)) goUp()
       } else if (e.key === 'ArrowRight') {
-        if (cursorOffset(sRef) === unhighlight(code).length) arrowNavigation?.down()
+        if (cursorOffset(sRef) === unhighlight(code).length) goDown()
       }
     },
-    [ref, code, arrowNavigation],
+    [ref, code, goUp, goDown],
   )
 
   useEffect(() => {
@@ -108,25 +125,42 @@ export function CodeEditor({
     )
   }, [JSON.stringify(focus)])
 
+  useMount(() => {
+    if (autoFocus) setCursor(safe(ref.current), 0, 'backward')
+  })
+
+  const Root = mini ? SmallCodeRoot : BigCodeRoot
+
   return (
     <Container>
-      <SelectLanguage selected={language} languages={programmingLanguages} onSelect={setLanguage} readonly={readonly} />
-      <CopyBtn icon={ContentCopyIcon} onClick={() => copyText(unhighlight(code))} />
-      <CodeRoot>
+      {!mini && (
+        <>
+          <SelectLanguage
+            selected={language}
+            languages={programmingLanguages}
+            onSelect={setLanguage}
+            readonly={readonly}
+          />
+          <CopyBtn icon={ContentCopyIcon} onClick={() => copyText(unhighlight(code))} />
+        </>
+      )}
+      <Root>
         <Editable
           className="language-"
           innerRef={ref}
           html={code}
-          tagName={'pre'}
+          tagName={'div'}
+          sx={mini ? { width: 400 / 16 + 'rem' } : {}}
           onBlur={onBlur}
           onChange={onChange}
           role="textbox"
           onKeyDown={onKeyDown}
           spellCheck={false}
           disabled={readonly}
+          placeholder={placeholder}
           data-cy="etext"
         />
-      </CodeRoot>
+      </Root>
     </Container>
   )
 }
@@ -146,6 +180,30 @@ const CopyBtn = styled(IBtn)(({ theme }) => ({
   top: '0.5rem',
   opacity: 0,
   transition: theme.tra('opacity'),
+}))
+
+const BigCodeRoot = styled(CodeRoot)(({ theme }) => ({
+  div: {
+    padding: '3rem 2rem',
+    borderRadius: theme.shape.borderRadius,
+    border: theme.bd(),
+
+    ...theme.scroll('h'),
+
+    overflow: 'auto',
+    whiteSpace: 'pre',
+  },
+}))
+
+const SmallCodeRoot = styled(CodeRoot)(({ theme }) => ({
+  'div:empty:before': {
+    content: 'attr(placeholder)',
+    color: theme.palette.text.secondary,
+    cursor: 'text',
+  },
+  div: {
+    whiteSpace: 'pre-wrap',
+  },
 }))
 
 const Editable = styled(ContentEditable)({

@@ -1,14 +1,14 @@
-import { UOption, OptionIconP } from '../../../utils/UMenu/UMenu'
+import { UOption } from '../../../utils/UMenu/UMenu'
 import { ReactComponent as H1I } from './h1.svg'
 import TextFieldsRoundedIcon from '@mui/icons-material/TextFieldsRounded'
-import { Fn } from '../../../../utils/types'
+import { Fn, OptionIconP } from '../../../../utils/types'
 
 export interface UElementsOptions {
   context: 'general' | 'uform'
   close: Fn
 }
 
-export function UElementsOptions({ context, close }: UElementsOptions) {
+export function UElementsOptions({ close }: UElementsOptions) {
   return (
     <>
       <UOption icon={TextFieldsRoundedIcon} text="Text" close={close} />

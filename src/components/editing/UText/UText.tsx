@@ -24,14 +24,7 @@ export function UText(props: UTextP) {
 }
 
 export function UParagraph(props: UTextP) {
-  return (
-    <UText_
-      {...props}
-      component="pre"
-      placeholder={props.placeholder || "Type '/' for commands"}
-      alwaysShowPlaceholder={Boolean(props.placeholder)}
-    />
-  )
+  return <UText_ {...props} component="pre" placeholder="Type '/' for commands" hidePlaceholder={true} />
 }
 
 export const UHeading0 = (props: UTextP) => <UText_ {...props} component="h1" placeholder="Untitled" />

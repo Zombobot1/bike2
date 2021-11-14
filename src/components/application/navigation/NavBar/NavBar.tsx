@@ -1,9 +1,8 @@
-import { alpha, Avatar, Box, Drawer, Fab, Paper, Stack, styled, Typography, useTheme } from '@mui/material'
+import { Avatar, Box, Drawer, Fab, Paper, Stack, styled, Typography, useTheme } from '@mui/material'
 
 import { str, BoolState } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
 import { NavLink, NavTree } from './NavTree'
-import { User } from 'firebase/auth'
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded'
 import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded'
 import SettingsIcon from '@mui/icons-material/Settings'
@@ -104,11 +103,11 @@ function NavBar_({ user, workspace }: NavBar) {
   )
 }
 
-const NavBox = styled(Box)(({ theme }) => ({
+const NavBox = styled(Box)({
   '.MuiAvatar-root': {
     fontSize: 'unset', // if set inline it unsets color as well
   },
-}))
+})
 
 const FAB = styled(Fab)({
   position: 'absolute',

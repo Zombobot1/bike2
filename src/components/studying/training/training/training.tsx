@@ -1,15 +1,12 @@
 import { CardDTO, CardDTOs, CardType, FieldDTO } from '../types'
 import { TrainingHeader } from '../training-header/training-header'
 import { TrainingControls } from '../training-controls/training-controls'
-import { useCards, usePagesPathUpdate } from './hooks'
+import { useCards } from './hooks'
 import { CardCarousel } from './card-carousel'
 import { Fn } from '../../../../utils/types'
 import { Box } from '@mui/material'
-import { useRouter } from '../../../utils/hooks/useRouter'
-import { safe } from '../../../../utils/utils'
 import { Fetch } from '../../../utils/Fetch/Fetch'
 import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info'
-import { useMount } from '../../../utils/hooks/hooks'
 
 export interface TrainingDTO {
   _id: string

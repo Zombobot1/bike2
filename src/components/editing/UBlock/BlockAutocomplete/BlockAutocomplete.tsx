@@ -1,9 +1,8 @@
 import { RefObject } from 'react'
 import { bool, Fn } from '../../../../utils/types'
-import { UMenu, UOption, useMenu } from '../../../utils/UMenu/UMenu'
+import { UMenu, UOption } from '../../../utils/UMenu/UMenu'
 import { UElementsOptions } from './UElementsOptions'
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
-import { useHover } from '../../../utils/hooks/useHover'
 
 export interface BlockAutocomplete {
   btnRef: RefObject<HTMLButtonElement | HTMLLIElement>

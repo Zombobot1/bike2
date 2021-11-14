@@ -1,4 +1,4 @@
-import { got, saw, show, tick, type, click, lost, _disabled, _green, _red } from '../../../utils/testUtils'
+import { got, saw, show, type, click, lost, _disabled, _green, _red } from '../../../utils/testUtils'
 import { str } from '../../../utils/types'
 import * as UFormBlockS from './UFormBlock.stories'
 

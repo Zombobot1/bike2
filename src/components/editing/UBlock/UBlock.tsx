@@ -1,10 +1,10 @@
-import { alpha, Button, Stack, styled, Tooltip } from '@mui/material'
-import { RefObject, useEffect, useRef, useState } from 'react'
-import { useReactive, useMount, useReactiveObject } from '../../utils/hooks/hooks'
-import { bool, fn, Fn, num, SetBool, setStr, SetStr, str } from '../../../utils/types'
+import { alpha, styled, Tooltip } from '@mui/material'
+import { useCallback, useRef } from 'react'
+import { useReactiveObject } from '../../utils/hooks/hooks'
+import { bool, fn, Fn, num, SetStr, str } from '../../../utils/types'
 import {
   AddNewBlockUText,
-  ArrowNavigation,
+  ArrowNavigationFn,
   BlockInfo,
   FocusType,
   InitialData,
@@ -13,38 +13,34 @@ import {
   isUFormBlockComponent,
   isUFormComponent,
   isUTextComponent,
-  NewBlockFocus,
   regexAndType,
   UBlockB,
   UComponentType,
-  UFormBlockComponent,
   UTextFocus,
 } from '../types'
-import { UHeading0, UHeading1, UHeading2, UHeading3, UText } from '../UText/UText'
+import { UText } from '../UText/UText'
 import { UFile } from '../UFile/UFile'
-import { UAudioFile } from '../UFile/UAudioFile/UAudioFile'
-import { UImageFile } from '../UFile/UImageFile/UImageFile'
 import { UFormBlock } from '../../uforms/UFormBlock/UFormBlock'
 import { useData } from '../../../fb/useData'
 import { useSelection } from './useSelection'
 import { UForm } from '../../uforms/UForm'
 import { RStack } from '../../utils/MuiUtils'
 import { UMenu, UOption, useMenu } from '../../utils/UMenu/UMenu'
-import { useClientRect, useElementSize } from '../../utils/hooks/useElementSize'
+import { useElementSize } from '../../utils/hooks/useElementSize'
 import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { _apm, _tra } from '../../application/theming/theme'
-import { useHover } from '../../utils/hooks/useHover'
-import { prevented } from '../../../utils/utils'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
-import { useDebugInformation } from '../../utils/hooks/useDebug'
+import { Equation } from '../Equation/Equation'
 
 export interface UBlock extends UBlockB {
   addNewBlock?: AddNewBlockUText
-  addInfo?: (i: BlockInfo) => void
+  addData?: (id: str, data: str) => void
+  addInfo?: (id: str, i: BlockInfo) => void
   previousBlockInfo?: BlockInfo
-  arrowNavigation?: ArrowNavigation
-  addNewUPage?: Fn
+  goUp?: ArrowNavigationFn
+  goDown?: ArrowNavigationFn
+  addNewUPage?: SetStr
   deleteBlock?: (id: str, data?: str) => void
   appendedData?: str
   focus?: UTextFocus
@@ -73,7 +69,7 @@ export function UBlock({
   readonly = false,
   focus: initialFocus,
   isFactory = false,
-  deleteBlock = fn,
+  deleteBlock: deleteUBlock = fn,
   onFactoryBackspace,
   placeholder,
   autoplay: _,
@@ -81,7 +77,9 @@ export function UBlock({
   isCardField,
   addInfo = fn,
   addNewUPage = fn,
-  arrowNavigation,
+  goUp,
+  goDown,
+  addData,
   resetActiveBlock = fn,
   i = 100,
   previousBlockInfo,
@@ -91,31 +89,43 @@ export function UBlock({
   const { selection, dispatch } = useSelection(ublock.type)
 
   const [focus, setFocus] = useReactiveObject(initialFocus)
-  const setData = (data: str) => setUBlock({ ...ublock, data })
-  const setType = (type: UComponentType, data = '', focus: FocusType = 'end') => {
-    setUBlock({ data, type })
-    setFocus({ type: focus })
-  }
+  const setData = useCallback((data: str) => setUBlock({ ...ublock, data }), [JSON.stringify(ublock)])
+  const setType = useCallback(
+    (type: UComponentType, data = '', focus: FocusType = 'end') => {
+      setUBlock({ data, type })
+      setFocus({ type: focus })
+    },
+    [JSON.stringify(ublock), JSON.stringify(focus)],
+  )
+  const tryToChangeFieldType = useCallback(getTryToChangeFieldType(id, setType, addNewUPage), [setType, addNewUPage])
+  const deleteBlock = useCallback(
+    (data?: str) => {
+      deleteUBlock(id, data)
+      setUBlock({ isDeleted: true })
+    },
+    [deleteUBlock, setUBlock],
+  )
 
-  const { ref, width } = useElementSize()
-  const commonProps = { data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16 }
+  const notFullWidth = isNotFullWidthComponent(ublock.type)
+
+  const { ref, width } = useElementSize({ passive: !notFullWidth })
+  const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16 }
 
   const utextProps = {
     ...commonProps,
-    tryToChangeFieldType: tryToChangeFieldType(setType, addNewUPage),
+    tryToChangeFieldType,
     setType,
     focus,
     addNewBlock,
-    deleteBlock: (data?: str) => {
-      deleteBlock(id, data)
-      setUBlock({ isDeleted: true })
-    },
+    deleteBlock,
     isFactory,
     onFactoryBackspace,
     placeholder,
     isCardField,
-    arrowNavigation,
+    goUp,
+    goDown,
     addInfo,
+    addData,
     previousBlockInfo,
     appendedData,
   }
@@ -137,7 +147,7 @@ export function UBlock({
       ref={ref}
     >
       <RStack>
-        <InnerContainer sx={{ width: isNotFullWidthComponent(ublock.type) ? 'default' : '100%' }}>
+        <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }}>
           <BlockMenu
             onAddClick={() => addNewBlock('focus-start')}
             onMenuClick={() => dispatch({ a: 'select-by-click', id })}
@@ -146,8 +156,9 @@ export function UBlock({
           {selection.ids.includes(id) && <Selection data-cy="selection" />}
           {isUTextComponent(ublock.type) && <UText {...utextProps} />}
           {isUFileComponent(ublock.type) && <UFile {...commonProps} />}
-          {isUFormBlockComponent(ublock.type) && <UFormBlock {...commonProps} _id={id} onAnswer={onAnswer} />}
+          {isUFormBlockComponent(ublock.type) && <UFormBlock {...commonProps} onAnswer={onAnswer} />}
           {isUFormComponent(ublock.type) && <UForm {...commonProps} />}
+          {ublock.type === 'equation' && <Equation {...commonProps} />}
         </InnerContainer>
       </RStack>
     </Container>
@@ -157,17 +168,17 @@ export function UBlock({
 const Container = styled('div', { label: 'UBlock' })({
   width: '100%',
   minHeight: '1.5rem',
-  ':hover': {
-    '.ublock--block-menu-container': {
-      opacity: 1,
-    },
-  },
 })
 
 const InnerContainer = styled('div')({
   position: 'relative',
   height: '100%',
   padding: '0 0.5rem',
+  ':hover': {
+    '> .ublock--block-menu-container': {
+      opacity: 1,
+    },
+  },
 })
 
 const Selection = styled('div')(({ theme }) => ({
@@ -181,16 +192,17 @@ const Selection = styled('div')(({ theme }) => ({
   marginBottom: '0.5rem',
 }))
 
-const tryToChangeFieldType = (setType: (v: UComponentType) => void, addNewUPage: Fn) => (newData: str) => {
-  if (!newData.includes(' ')) return
+const getTryToChangeFieldType =
+  (id: str, setType: (v: UComponentType) => void, addNewUPage: SetStr) => (newData: str) => {
+    if (!newData.includes(' ')) return
 
-  const firstElement = newData.split(' ')
-  const newType = regexAndType.get(firstElement[0])
-  if (!newType) return
+    const firstElement = newData.split(' ')
+    const newType = regexAndType.get(firstElement[0])
+    if (!newType) return
 
-  setType(newType)
-  if (newType === 'page') addNewUPage()
-}
+    setType(newType)
+    if (newType === 'page') addNewUPage(id)
+  }
 
 interface BlockMenu {
   selectedMany: bool
@@ -199,7 +211,7 @@ interface BlockMenu {
   readonly?: bool
 }
 
-function BlockMenu({ onAddClick, onMenuClick, selectedMany, readonly }: BlockMenu) {
+function BlockMenu({ onAddClick, onMenuClick, readonly }: BlockMenu) {
   const ref = useRef<HTMLButtonElement>(null)
   const { close, isOpen, toggleOpen } = useMenu(onMenuClick)
   return (

@@ -1,10 +1,12 @@
 import { bool, Fn, SetStr, str } from '../../../utils/types'
-import { AddNewBlockUText, ArrowNavigation, BlockInfo, SetUBlockType, UBlockComponent, UTextFocus } from '../types'
+import { AddNewBlockUText, ArrowNavigationFn, BlockInfo, SetUBlockType, UBlockComponent, UTextFocus } from '../types'
 
 export interface UText extends UBlockComponent {
+  id: str
   tryToChangeFieldType: SetStr
   setType: SetUBlockType
-  addInfo?: (i: BlockInfo) => void
+  addInfo?: (id: str, i: BlockInfo) => void
+  addData?: (id: str, i: str) => void
   appendedData?: str
   previousBlockInfo?: BlockInfo
   focus?: UTextFocus
@@ -15,7 +17,8 @@ export interface UText extends UBlockComponent {
   onFactoryBackspace?: Fn
   onTitleEnter?: Fn
   isCardField?: bool
-  arrowNavigation?: ArrowNavigation
+  goUp?: ArrowNavigationFn
+  goDown?: ArrowNavigationFn
   clearFocus?: Fn
 }
 

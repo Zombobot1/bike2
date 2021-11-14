@@ -1,4 +1,4 @@
-export interface InlineQuestion {}
+// export interface InlineQuestion {}
 export function InlineQuestion() {
   return null
 }

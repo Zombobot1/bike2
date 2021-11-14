@@ -1,8 +1,7 @@
 import { Box } from '@mui/material'
-import { fn, setStr } from '../../../utils/types'
 import { UBlock } from '../UBlock/UBlock'
 
-function T(props: UBlock) {
+const T = (props: UBlock) => () => {
   return (
     <Box sx={{ width: 500 }}>
       <UBlock {...props} />
@@ -24,9 +23,9 @@ const data3: UBlock = {
   readonly: true,
 }
 
-export const ShowsFile = () => T(data2)
-export const ReadOnly = () => T(data3)
-export const UploadsFile = () => T(data1)
+export const ShowsFile = T(data2)
+export const ReadOnly = T(data3)
+export const UploadsFile = T(data1)
 
 export default {
   title: 'Editing/UFile',

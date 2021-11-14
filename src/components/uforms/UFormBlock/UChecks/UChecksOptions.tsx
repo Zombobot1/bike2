@@ -1,5 +1,4 @@
-import { Checkbox, FormControlLabel, Radio } from '@mui/material'
-import _ from 'lodash'
+import { FormControlLabel } from '@mui/material'
 import { shuffle } from 'lodash'
 import { useEffect, useState } from 'react'
 import { bool, Fn, SetStr, str, strs } from '../../../../utils/types'

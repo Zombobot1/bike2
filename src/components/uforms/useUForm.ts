@@ -1,5 +1,5 @@
 import { atom, useAtom } from 'jotai'
-import { CardEstimation, Question } from '../studying/training/types'
+import { Question } from '../studying/training/types'
 import { useCallback, useEffect, useState } from 'react'
 import { bool, num, SetStr, str, strs } from '../../utils/types'
 import { UFormBlockComponent } from '../editing/types'

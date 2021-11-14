@@ -1,12 +1,10 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react'
-import { alpha, Box, CircularProgress, IconButton, Stack, styled, Typography } from '@mui/material'
+import { ReactNode, useCallback } from 'react'
+import { CircularProgress, IconButton, Stack, styled, Typography } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
-import { bool, Files, Fn, fn, OFile, State, str } from '../../../utils/types'
+import { bool, Files, Fn, fn, State, str } from '../../../utils/types'
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded'
 import { prevented } from '../../../utils/utils'
-import { readImageFromKeyboard } from '../../../utils/filesManipulation'
-import { uuid } from '../../../utils/uuid'
 import { _apm } from '../../application/theming/theme'
 
 export interface DropzoneB {

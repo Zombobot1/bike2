@@ -1,7 +1,4 @@
-import { Provider } from 'jotai'
 import { MemoryRouter } from 'react-router'
-import { useUser } from 'reactfire'
-import { ws } from '../../../content/application'
 import { useUserInfo } from '../../../fb/auth'
 import { str } from '../../../utils/types'
 import { useWorkspace } from '../../application/navigation/workspace'

@@ -3,7 +3,7 @@ import { UListDTO, UText } from '../types'
 import { UText_ } from '../UText_'
 import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded'
 import { Box } from '@mui/system'
-import { useLog, useReactive, useReactiveObject } from '../../../utils/hooks/hooks'
+import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { cast } from '../../../../utils/utils'
 import { num, str } from '../../../../utils/types'
 import { KeyboardEvent, ReactNode, useEffect } from 'react'
@@ -14,7 +14,7 @@ export function UList(props: UText) {
   const setOffset = (o: num) => props.setData(JSON.stringify({ ...data, offset: o }))
 
   useEffect(() => {
-    if (props.addInfo) props.addInfo({ data: props.data, offset: data.offset, type: props.type })
+    if (props.addInfo) props.addInfo(props.id, { offset: data.offset, type: props.type })
   }, [data.offset])
 
   function handleTab(e: KeyboardEvent<HTMLInputElement>, atStart = false) {
@@ -53,7 +53,6 @@ export function UList(props: UText) {
         setData={setText}
         placeholder="List"
         component="pre"
-        alwaysShowPlaceholder={true}
         handleKeyDown={handleTab}
       />
     </Stack>

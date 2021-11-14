@@ -1,16 +1,4 @@
-import {
-  Box,
-  Checkbox,
-  Chip,
-  FormControlLabel,
-  Radio,
-  Stack,
-  styled,
-  TextField,
-  TextFieldProps,
-  Typography,
-  useTheme,
-} from '@mui/material'
+import { Box, Checkbox, Chip, FormControlLabel, Radio, Stack, styled } from '@mui/material'
 import { bool, Fn, SetStr, str, strs } from '../../../utils/types'
 import { UBlockComponentB, UComponentType, UFormBlockComponent } from '../../editing/types'
 import { UChecks } from './UChecks/UChecks'
@@ -19,12 +7,11 @@ import { useUFormBlock, useUFormBlockEditor } from '../useUForm'
 import { Question } from '../../studying/training/types'
 import { useState, KeyboardEvent, useRef } from 'react'
 import { EditableText } from '../../utils/EditableText/EditableText'
-import { _apm } from '../../application/theming/theme'
 import { CTick, RTick, TextInput } from '../../utils/MuiUtils'
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded'
 
 export interface UFormFieldBase extends UBlockComponentB {
-  _id: str
+  id: str
   type: UComponentType
 }
 
@@ -41,7 +28,7 @@ export function UFormBlock(props: UFormBlock) {
   return <UFormBlockEditor {...props} />
 }
 
-function UFormBlockEditor({ _id, type, data, setData }: UFormFieldBase) {
+function UFormBlockEditor({ id: _id, type, data, setData }: UFormFieldBase) {
   const props = useUFormBlockEditor(_id, type as UFormBlockComponent, data, setData, {
     isTextArea: type === 'textarea',
   })
@@ -244,7 +231,7 @@ const OptionLabel = styled(TextInput)({
   transform: 'translateY(5px)',
 })
 
-function UFormBlock_({ _id, type, data, onAnswer, shuffleOptions, autoFocus, showTipOnMobile }: UFormBlock) {
+function UFormBlock_({ id: _id, type, data, onAnswer, shuffleOptions, autoFocus, showTipOnMobile }: UFormBlock) {
   const props = useUFormBlock(_id, data)
 
   const commonProps = { _id, ...props, onAnswer }

@@ -1,8 +1,5 @@
-import { Box, Stack } from '@mui/material'
-import { useRef } from 'react'
-import { Rec } from '../../../utils/Rec'
+import { Box } from '@mui/material'
 import { UBlock } from '../../UBlock/UBlock'
-import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
 function T(props: UBlock) {
   return (

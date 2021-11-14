@@ -1,23 +1,21 @@
-import { Box, styled } from '@mui/material'
-import ContentEditable from 'react-contenteditable'
-import { SetStr, str } from '../../../../utils/types'
+import { Box } from '@mui/material'
+import { str } from '../../../../utils/types'
 import { cast } from '../../../../utils/utils'
-import { EditableText } from '../../../utils/EditableText/EditableText'
-import { useReactive, useReactiveObject } from '../../../utils/hooks/hooks'
-import { RStack } from '../../../utils/MuiUtils'
+import { useMount, useReactiveObject } from '../../../utils/hooks/hooks'
 import { UText } from '../types'
-import { UText_ } from '../UText_'
 import { CodeEditor } from '../../../utils/CodeEditor/CodeEditor'
 import { useEffect } from 'react'
 
-export function Code(props: UText) {
-  const [data] = useReactiveObject(cast(props.data, new CodeDTO()))
-  const setCode = (d: str) => props.setData(JSON.stringify({ ...data, code: d }))
-  const setLanguage = (l: str) => props.setData(JSON.stringify({ ...data, language: l }))
+export function Code(ps: UText) {
+  const [data] = useReactiveObject(cast(ps.data, new CodeDTO()))
+  const setCode = (d: str) => ps.setData(JSON.stringify({ ...data, code: d }))
+  const setLanguage = (l: str) => ps.setData(JSON.stringify({ ...data, language: l }))
 
   useEffect(() => {
-    if (props.addInfo) props.addInfo({ data: data.code, type: 'code', offset: 0 })
+    if (ps.addInfo) ps.addInfo(ps.id, { type: 'code', offset: 0 })
   }, [data.code])
+
+  useMount(() => ps.addData?.(ps.id, ps.data))
 
   return (
     <Box sx={{ paddingBottom: '1rem' }}>
@@ -26,9 +24,10 @@ export function Code(props: UText) {
         language={data.language}
         setCode={setCode}
         setLanguage={setLanguage}
-        readonly={props.readonly}
-        arrowNavigation={props.arrowNavigation}
-        focus={props.focus}
+        readonly={ps.readonly}
+        goUp={(x) => ps.goUp?.(ps.id, x)}
+        goDown={(x) => ps.goDown?.(ps.id, x)}
+        focus={ps.focus}
       />
     </Box>
   )

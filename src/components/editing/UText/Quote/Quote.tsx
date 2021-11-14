@@ -16,7 +16,7 @@ export function Quote(props: UText) {
 }
 
 const Left = styled(Box)(({ theme }) => ({
-  height: '100%',
+  height: '95%',
   width: '100%',
   borderRadius: '0.2rem',
   backgroundColor: theme.palette.primary.main,

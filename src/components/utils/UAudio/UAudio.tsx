@@ -1,4 +1,4 @@
-import { alpha, Box, Collapse, IconButton, Slider, Stack, styled, Typography } from '@mui/material'
+import { Box, Collapse, IconButton, Slider, Stack, styled, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useMount, useToggle } from '../hooks/hooks'
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded'

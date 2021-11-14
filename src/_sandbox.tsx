@@ -10,6 +10,8 @@ const Sandbox = () => {
     <OuterShell>
       <SoryBook
         sories={[
+          Equation,
+          UVideoFile,
           UAutocomplete,
           CodeEditor,
           Code,
@@ -48,8 +50,9 @@ const Sandbox = () => {
     </OuterShell>
   )
 }
-
+import * as Equation from './components/editing/Equation/Equation.stories'
 import * as CodeEditor from './components/utils/CodeEditor/CodeEditor.stories'
+import * as UVideoFile from './components/editing/UFile/UVideoFile/UVideoFile.stories'
 import * as UFile from './components/editing/UFile/UFile.stories'
 import * as UAudio from './components/utils/UAudio/UAudio.stories'
 import * as UAutocomplete from './components/utils/UAutocomplete/UAutocomplete.stories'
@@ -84,15 +87,11 @@ import * as UImageFile from './components/editing/UFile/UImageFile/UImageFile.st
 import * as SB from './components/utils/Sandbox.stories'
 import { OuterShell } from './components/application/Shell'
 import { wrapPromise, _initFB } from './_seeding'
-import { Suspense, useRef } from 'react'
+import { Suspense } from 'react'
 import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingState'
-import { Box, Stack } from '@mui/material'
 
-import { Rec } from './components/utils/Rec'
 import { _MOCK_FB } from './fb/utils'
 import { fn } from './utils/types'
-import { useMount } from './components/utils/hooks/hooks'
-import { _fs } from './content/fs'
 
 // import { UAudioFileS } from './components/editing/UFile/UAudioFile/UAudioFile.stories'
 

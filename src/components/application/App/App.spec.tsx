@@ -1,5 +1,4 @@
 import { got, saw, show } from '../../../utils/testUtils'
-import { _initFB } from '../../../_seeding'
 import * as App from './App.stories'
 
 describe('App', () => {

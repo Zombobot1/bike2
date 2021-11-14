@@ -1,12 +1,8 @@
-import { useState, KeyboardEvent } from 'react'
-import { UFormFieldData, Validity } from '../../types'
+import { UFormFieldData } from '../../types'
 import { fn } from '../../../../utils/types'
 import { InteractiveQuestion } from '../interactive-question'
 import { Feedback } from '../Feedback'
-import { TextField } from '@mui/material'
-import { useValidationColor } from '../useValidationColor'
 import { isUInputValid, UInputField } from './UInputField'
-import { isAnswerCorrect } from '../../useUForm'
 
 export interface UInput extends UFormFieldData {
   showTipOnMobile?: boolean

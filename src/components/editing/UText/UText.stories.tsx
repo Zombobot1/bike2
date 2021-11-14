@@ -1,7 +1,5 @@
 import { Box, Button } from '@mui/material'
 import { useState } from 'react'
-import { fn, num, setStr } from '../../../utils/types'
-import { useMount } from '../../utils/hooks/hooks'
 import { UBlock } from '../UBlock/UBlock'
 
 function T(props: UBlock) {
@@ -10,11 +8,7 @@ function T(props: UBlock) {
   return (
     <Box sx={{ width: 500 }}>
       <Button onClick={() => sf((f) => ({ ...f, type: f?.type === 'end' ? 'start' : 'end' }))}>Focus</Button>
-      <UBlock
-        {...props}
-        focus={f}
-        arrowNavigation={{ up: (x) => console.info('up ' + x ?? ''), down: (x) => console.info('down ' + x ?? '') }}
-      />
+      <UBlock {...props} focus={f} />
     </Box>
   )
 }
@@ -39,7 +33,7 @@ const data3: UBlock = {
   initialData: { data: '', type: 'heading1' },
 }
 
-const data4: UBlock = {
+const empty: UBlock = {
   id: 'emptyString',
 }
 
@@ -53,23 +47,38 @@ const link: UBlock = {
   initialData: { data: 'Link and <a href="a">old ref</a> and text', type: 'text' },
 }
 
+const _link = '<a href="https://www.google.com/" target="_blank">link</a>'
+const _eq = '<code data-id="1" contenteditable="false">E^2 = \\frac{1}{2}</code>'
+const _eq2 = '<code data-id="2" contenteditable="false">E^3 = \\frac{3}{2}</code>'
+const _text = 'Example: ' + _eq + ' <b>bold</b> <mark>code</mark> ' + _link
+
 const transformedText: UBlock = {
   id: 'transformedText',
-  initialData: {
-    data: 'Example: <b>bold</b> <code>code</code> <a href="https://www.google.com/" target="_blank">link</a>',
-    type: 'text',
-  },
+  initialData: { data: _text, type: 'text' },
 }
 
+const tex: UBlock = {
+  id: 'tex',
+  initialData: { data: _eq, type: 'text' },
+}
+
+const twoTex: UBlock = {
+  id: 'twoTex',
+  initialData: { data: `${'nice '.repeat(10)} ${_eq} small ${_eq2} cat`, type: 'text' },
+}
+
+export const Empty = () => <T {...empty} />
 export const SetsFocus = () => <T {...data1} />
 export const ReadOnlyText = () => <T {...readonly} />
 export const TransformedText = () => <T {...transformedText} />
-export const ChangesComponents = () => <T {...data4} />
+export const ChangesComponents = () => <T {...empty} />
 export const DisplaysPlaceholderWhenFocused = () => <T {...data2} />
 export const DisplaysPlaceholderWhenUnfocused = () => <T {...data3} />
 
 export const BoldText = () => <T {...bold} />
 export const TextWithLink = () => <T {...link} />
+export const Tex = () => <T {...tex} />
+export const TwoTex = () => <T {...twoTex} />
 
 export default {
   title: 'Editing/UText',

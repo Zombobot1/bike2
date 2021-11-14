@@ -4,11 +4,11 @@ export type UListComponent = 'list' | 'bullet-list' | 'numbered-list'
 export type AdvancedTextComponent = 'code' | 'quote' | 'callout'
 export type HeadingComponent = 'heading1' | 'heading2' | 'heading3' | 'heading0'
 export type UTextComponent = 'text' | HeadingComponent | UListComponent | AdvancedTextComponent
-export type UFileComponent = 'file' | 'image' | 'audio'
+export type UFileComponent = 'file' | 'image' | 'audio' | 'video'
 export type UFormBlockComponent = 'radio' | 'input' | 'checks' | 'textarea' | 'inline-question'
 export type UFormComponent = 'test' | 'exercise' | 'question'
 export type UProjectionComponent = 'page' | UFormComponent
-export type UComponentType = UTextComponent | UFileComponent | UFormBlockComponent | UProjectionComponent
+export type UComponentType = UTextComponent | UFileComponent | UFormBlockComponent | UProjectionComponent | 'equation'
 
 export function isUTextComponent(t?: UComponentType): bool {
   if (!t) return false
@@ -30,7 +30,7 @@ export function isUTextComponent(t?: UComponentType): bool {
 
 export function isNotFullWidthComponent(t?: UComponentType): bool {
   if (!t) return false
-  return isUFormComponent(t) || t === 'image'
+  return t === 'image' || t === 'video' // isUFormComponent(t) || causes cypress error
 }
 
 export function isAdvancedText(t?: UComponentType): bool {
@@ -61,7 +61,7 @@ export function isUFormBlockComponent(t: UComponentType): bool {
 }
 
 export function isUFileComponent(t: UComponentType): bool {
-  const types: UComponentType[] = ['file', 'image', 'audio']
+  const types: UComponentType[] = ['file', 'image', 'audio', 'video']
   return types.includes(t)
 }
 
@@ -83,16 +83,21 @@ export interface UBlockComponent extends UBlockComponentB {
 }
 
 export type NewBlockFocus = 'focus-start' | 'focus-end' | 'no-focus'
-export type AddNewBlockUText = (focus?: NewBlockFocus, data?: str, type?: UComponentType, offset?: num) => void
+export type AddNewBlockUText = (
+  underId: str,
+  focus?: NewBlockFocus,
+  data?: str,
+  type?: UComponentType,
+  offset?: num,
+) => void
 export type InitialData = { data: str; type: UComponentType }
-export type BlockInfo = { type: UComponentType; data: str; offset: num; typesStrike?: num }
+export type BlockInfo = { type: UComponentType; offset: num; typesStrike?: num }
 
 export type SetUBlockType = (type: UComponentType, data?: str, focus?: FocusType) => void
-type NavigationFn = (xOffset?: num) => void
-export type ArrowNavigation = { up: NavigationFn; down: NavigationFn }
+export type ArrowNavigationFn = (id: str, xOffset?: num) => void
 
 export type FocusType = 'start' | 'start-integer' | 'end' | 'end-integer'
-export type UTextFocus = { type: FocusType; xOffset?: num }
+export type UTextFocus = { type: FocusType; xOffset?: num; forceUpdate?: bool }
 
 export const regexAndType = new Map<str, UComponentType>([
   ['/text', 'text'],

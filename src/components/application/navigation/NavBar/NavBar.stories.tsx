@@ -1,7 +1,6 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
 import { MemoryRouter } from 'react-router'
-import { useUser } from 'reactfire'
 import { useUserInfo } from '../../../../fb/auth'
 import { safe } from '../../../../utils/utils'
 import { useWorkspace } from '../workspace'

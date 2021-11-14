@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { num } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 
 export function useMap<K, V>(init: [K, V][] = []) {
@@ -7,6 +6,7 @@ export function useMap<K, V>(init: [K, V][] = []) {
 
   return {
     entries: () => [...map.entries()],
+    values: () => Array.from(map.values()),
     has: (key: K) => map.has(key),
     get: (key: K) => map.get(key),
     getSafe: (key: K) => safe(map.get(key)),

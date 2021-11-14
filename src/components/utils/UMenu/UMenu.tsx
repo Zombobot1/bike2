@@ -11,22 +11,14 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
-  Stack,
-  TextField,
-  useTheme,
-  Box,
-  Menu,
 } from '@mui/material'
-import { createRef, FC, RefObject, useEffect, useRef, useState } from 'react'
-import { bool, fn, Fn, JSObject, num, nums, SetStr, str, strs } from '../../../utils/types'
+import { FC, RefObject, useRef, useState } from 'react'
+import { bool, fn, Fn, num, nums, OptionIconP, str } from '../../../utils/types'
 import { all as call } from '../../../utils/utils'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { _apm } from '../../application/theming/theme'
 import { useHover } from '../hooks/useHover'
-import { useUForm } from '../../uforms/useUForm'
-import { modes } from 'react-transition-group/SwitchTransition'
-import { LongMenu } from './LongMenu'
-import { filterProps, mod } from '../../../utils/utils'
+import { filterProps } from '../../../utils/utils'
 
 export interface MenuB extends MenuListProps {
   btnRef: RefObject<HTMLButtonElement | HTMLLIElement>
@@ -102,8 +94,6 @@ export function useMenu(onOpen = fn, onClose = fn) {
   const toggleOpen = isOpen ? close : open
   return { isOpen, open, close, toggleOpen, btnRef }
 }
-
-export type OptionIconP = { fontSize: 'large' | 'medium' | 'small' | 'inherit' }
 
 export interface UOption extends MenuItemProps {
   icon: FC<OptionIconP>

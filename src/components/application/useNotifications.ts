@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useMount } from '../utils/hooks/hooks'
-import { SetStr, str, strs } from '../../utils/types'
+import { strs } from '../../utils/types'
 import { useUser } from 'reactfire'
 import { useData } from '../../fb/useData'
 

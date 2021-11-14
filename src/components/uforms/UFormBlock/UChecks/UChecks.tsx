@@ -1,12 +1,8 @@
-import { useEffect, useState } from 'react'
-import { UFormFieldData, Validity } from '../../types'
+import { UFormFieldData } from '../../types'
 import { fn } from '../../../../utils/types'
-import _ from 'lodash'
 import { InteractiveQuestion } from '../interactive-question'
-import { RadioGroup, Checkbox, FormControlLabel, Radio } from '@mui/material'
+import { RadioGroup } from '@mui/material'
 import { Feedback } from '../Feedback'
-import { shuffle } from '../../../../utils/algorithms'
-import { useValidationColor } from '../useValidationColor'
 import { UChecksOptions, useUChecksOptions } from './UChecksOptions'
 
 export interface UChecks extends UFormFieldData {

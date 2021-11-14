@@ -1,7 +1,6 @@
 import { bool, Fn, SetBool, State } from '../../../utils/types'
 import { useEffect, useState } from 'react'
 import { useMediaQuery, useTheme } from '@mui/material'
-import { useReducer } from 'react'
 
 export function useToggle(init = false): [bool, Fn, SetBool] {
   const [value, setValue] = useState(init)

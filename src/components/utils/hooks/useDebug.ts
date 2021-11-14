@@ -9,7 +9,7 @@ export function useRenderCount() {
   return count.current
 }
 
-export function useDebugInformation(componentName: str, props: JSObject) {
+export function useDebugInformation(componentName: str, props: JSObject, log = true) {
   const count = useRenderCount()
   const changedProps = useRef({})
   const previousProps = useRef(props)
@@ -33,7 +33,7 @@ export function useDebugInformation(componentName: str, props: JSObject) {
   useEffect(() => {
     previousProps.current = props
     lastRenderTimestamp.current = Date.now()
-    console.info('[debug-info]', componentName, info)
+    if (log) console.info('[debug-info]', componentName, info)
   })
 
   return info

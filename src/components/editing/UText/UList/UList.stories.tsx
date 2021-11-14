@@ -1,9 +1,7 @@
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import { useState } from 'react'
 import { _kittensForListsPage } from '../../../../content/content'
-import { UBlock } from '../../UBlock/UBlock'
 import { UBlocksSet } from '../../UPage/UBlocksSet/UBlocksSet'
-import { UList } from './UList'
 
 function T() {
   const idsS = useState(_kittensForListsPage.ids)

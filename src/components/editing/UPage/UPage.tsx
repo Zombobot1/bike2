@@ -1,15 +1,11 @@
-import { Box, Button, Stack, styled, Typography } from '@mui/material'
+import { Button, Stack, styled } from '@mui/material'
 import randomColor from 'randomcolor'
-import { useRef, useState, KeyboardEvent } from 'react'
-import ContentEditable from 'react-contenteditable'
-import { bool, JSObjectStr, str, strs } from '../../../utils/types'
-import { useMount, useReactive } from '../../utils/hooks/hooks'
-import { useRefCallback } from '../../utils/hooks/useRefCallback'
+import { bool, str, strs } from '../../../utils/types'
+import { useReactive } from '../../utils/hooks/hooks'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { useShowAppBar } from '../../application/navigation/AppBar/AppBar'
-import { _apm } from '../../application/theming/theme'
-import { UBlockB, UBlockDTO, UComponentType } from '../types'
-import { UBlocksSet, useDeleteUPage, useUBlocks } from './UBlocksSet/UBlocksSet'
+import { UBlockDTO, UComponentType } from '../types'
+import { UBlocksSet, useUBlocks } from './UBlocksSet/UBlocksSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
 import { uuid } from '../../../utils/uuid'
 import { WS } from '../../application/navigation/workspace'
@@ -31,7 +27,7 @@ export interface UPageDTO {
 export interface UPage {
   workspace: WS
 }
-
+// smallText readOnly fullWidth showToC (default true)
 export function UPage({ workspace }: UPage) {
   const { location } = useRouter()
   const id = location.pathname.replace('/', '')
@@ -99,7 +95,6 @@ const PageWrapper = styled(Stack, { label: 'UPage' })({
 const Page = styled('div')(({ theme }) => ({
   width: '85%',
   borderRadius: '2rem',
-  backgroundColor: _apm(theme),
 
   [`${theme.breakpoints.up('sm')}`]: {
     width: '70%',
@@ -127,7 +122,7 @@ const ColorPicker = styled(Button)(({ theme }) => ({
   },
 }))
 
-const ColoredBox = styled('div')(({ theme }) => ({
+const ColoredBox = styled('div')({
   position: 'relative',
   width: '100%',
 
@@ -138,4 +133,4 @@ const ColoredBox = styled('div')(({ theme }) => ({
   svg: {
     display: 'block',
   },
-}))
+})

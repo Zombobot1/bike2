@@ -1,6 +1,6 @@
-import { insert, reverse } from '../../../utils/algorithms'
-import { bool, fn, num, str, voidP } from '../../../utils/types'
+import { bool, num, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
+import { dfsText } from './dfsText'
 import { containsTagBefore, insertTag, removeTagBefore } from './htmlAsStr'
 
 export function relativeDimensions(component: str, rec?: DOMRect) {
@@ -33,6 +33,11 @@ export function getCaretRelativeCoordinates(rec?: DOMRect) {
 
 export function selectionCoordinates(relativeTo: HTMLElement): { x: num; b: num } {
   const range = safe(window.getSelection()?.getRangeAt(0))
+  const { x, y } = relativeTo.getBoundingClientRect()
+  const style = window.getComputedStyle(relativeTo, null).getPropertyValue('font-size')
+  const fontSize = parseFloat(style)
+
+  if (!relativeTo.innerHTML) return { x: 0, b: fontSize + 16 } // + 16 for tex editor
 
   const startRange = range.cloneRange()
   startRange.collapse(true)
@@ -42,16 +47,11 @@ export function selectionCoordinates(relativeTo: HTMLElement): { x: num; b: num 
   const { x: startX, y: startY } = startRange.getClientRects()[0]
   const { x: endX, y: endY, bottom: endBottom } = endRange.getClientRects()[0]
 
-  const { x, y } = relativeTo.getBoundingClientRect()
-
-  const style = window.getComputedStyle(relativeTo, null).getPropertyValue('font-size')
-  const fontSize = parseFloat(style)
-
   if (endY === startY) return { x: (startX + endX) / 2 - x, b: endBottom - y + fontSize }
   return { x: endX - x, b: endBottom - y + fontSize }
 }
 
-type Tags = 's' | 'b' | 'i' | 'u' | 'code' | 'span' | 'a'
+type Tags = 's' | 'b' | 'i' | 'u' | 'code' | 'mark' | 'strong' | 'a'
 export function toggleTagMutable(block: HTMLElement, tag: Tags) {
   const selected = selectedText()
   const textBeforeSelection = getTextBeforeSelection(block)
@@ -70,6 +70,20 @@ export function toggleTag(block: HTMLElement, tag: Tags): str {
   if (containsTagBefore(block.innerHTML, tag, textBeforeSelection, selected))
     return removeTagBefore(block.innerHTML, tag, textBeforeSelection, selected)
   return insertTag(block.innerHTML, tag, textBeforeSelection, selected)
+}
+
+export function insertCode(block: HTMLElement, codeId: str, placeholder: str): str {
+  const selected = selectedText()
+  const textBeforeSelection = getTextBeforeSelection(block)
+
+  return insertTag(
+    block.innerHTML,
+    'code',
+    textBeforeSelection,
+    selected,
+    `data-id="${codeId}" contenteditable="false"`,
+    placeholder,
+  )
 }
 
 export function toggleTags(block: HTMLElement, tag: Tags, additionalTag: Tags): str {
@@ -187,7 +201,7 @@ function getTextBeforeSelection(block: HTMLElement) {
     textBeforeSelection += selectedNodeContent.slice(0, -(selectedNodeContentLength - offset))
   else textBeforeSelection += selectedNodeContent
 
-  return textBeforeSelection
+  return textBeforeSelection.replaceAll(' ', ' ') // the first space is dangerous one
 }
 
 function startNodeAndOffset(): { start: Node; offset: num } {
@@ -207,15 +221,6 @@ function isSelectedBackwards() {
 }
 
 type ScrollDirection = 'forward' | 'backward'
-function dfsText(node: ChildNode) {
-  function dfs(node: ChildNode) {
-    const r = [node]
-    for (const child of node.childNodes) r.push(...dfs(child))
-    return r
-  }
-  return dfs(node).filter((n) => n.nodeType === 3)
-}
-
 function scrollStartThroughNode(
   text: ChildNode,
   range: Range,

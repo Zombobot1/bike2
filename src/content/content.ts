@@ -22,12 +22,18 @@ const _kittens3 = `Kittens develop very quickly from about two weeks of age unti
 Their coordination and strength improves. Kittens play-fight with their litter-mates and begin to explore the world outside the nest or den. They learn to wash themselves and others as well as play hunting and stalking games, showing their inborn ability as predators. These innate skills are developed by the kittens' mother or other adult cats, who bring live prey to the nest. Later, the mother demonstrate hunting techniques for the kittens to emulate.
 As they reach three to four weeks old, the kittens are gradually weaned and begin to eat solid food, with weaning usually complete by six to eight weeks.`
 const _kittens4 = `Kittens are highly social animals and spend most of their waking hours interacting with available animals and playing on their own. Play with other kittens peaks in the third or fourth month after birth, with more solitary hunting and stalking play peaking later, at about five months.`
+const _equation = 'i\\hbar {\\frac {\\partial }{\\partial t}}|\\psi (t)\\rangle ={\\hat {H}}|\\psi (t)\\rangle'
+const fallingCats = `Journal Of The American Veterinary Medical Association looked at 132 cats that had fallen an average of 5.5 storeys <code data-id="2" contenteditable="false">h_{total} \\approx 5.5 * 2.5 = 13.77m</code> and survived. It found that a third of them would have died without emergency veterinary treatment. Interestingly, injuries were worse in falls less than seven storeys than in higher tumbles. The researchers think that this is because the cats reach their terminal velocity <code data-id="1" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> after falling about seven storeys (21m), which means they stop accelerating. They then relax, allowing better distribution of impact.`
+const fallingCatsShort1 = `cats <code data-id="2" contenteditable="false">h_{total} \\approx 5.5 * 2.5 = 13.77m</code> and`
+const fallingCatsShort2 = `cats reach their terminal velocity <code data-id="1" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> after falling about seven storeys (21m), <code data-id="2" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> which means they stop accelerating`
+const fallingCatsShort3 = `nice <code data-id="666" contenteditable="false">E=mc^2</code> small <code data-id="2" contenteditable="false">E=mc^2</code> cat`
 
 const page: UPageDataDTO = {
   color: '#0066FF',
   name: 'Pets & animals',
   ids: [
     'catQuote',
+    'fallingCats',
     'kittensH',
     'kittens',
     'fluffyJpg',
@@ -37,6 +43,8 @@ const page: UPageDataDTO = {
     'kittensH3',
     'kittens4',
     'catCallout',
+    'catVideoText',
+    'catVideo',
     'catPdf',
     'fluffyMp3',
     'newCatFile',
@@ -59,12 +67,15 @@ const page: UPageDataDTO = {
     'hypoallergenic-cat3',
     'hypoallergenic-cat4',
     'hypoallergenic-cat5',
+    'waveEquation',
     'catCode',
   ],
 }
 
 const mp3: UAudioFileDTO = { src: fluffyMp3 }
 const img: UImageFileDTO = { src: fluffyJpg, width: 900 }
+const video: UImageFileDTO = { src: 'y8kTYCex8RU', width: 600 }
+
 const newCatFile = { name: '', src: '' }
 const pdf = {
   name: 'cat needs.pdf',
@@ -100,6 +111,8 @@ export function Kitty({ cuteness, roundness = 0.99 }: Kitty) {
 const catCode: CodeDTO = { code: _codeWithPaws, language: 'TypeScript' }
 
 export const _kittensBlocks: IdAndBlocks = [
+  ['catVideoText', { type: 'text', data: 'Watch a short documentary about a small cat' }],
+  ['catVideo', { type: 'video', data: $(video) }],
   ['catCode', { type: 'code', data: $(catCode) }],
   ['catCallout', { type: 'callout', data: $(callout) }],
   ['catQuote', { type: 'quote', data: quote }],
@@ -115,6 +128,11 @@ export const _kittensBlocks: IdAndBlocks = [
   ['fluffyMp3', { type: 'audio', data: $(mp3) }],
   ['newCatFile', { type: 'file', data: $(newCatFile) }],
   ['pets', { type: 'page', data: $(page) }],
+  ['waveEquation', { type: 'equation', data: _equation }],
+  ['fallingCats', { type: 'text', data: fallingCats }],
+  ['fallingCatsShort1', { type: 'text', data: fallingCatsShort1 }],
+  ['fallingCatsShort2', { type: 'text', data: fallingCatsShort2 }],
+  ['fallingCatsShort3', { type: 'text', data: fallingCatsShort3 }],
 ]
 
 const _kittensS = `A <b><i>kitten</i></b> is a juvenile cat. After being born`

@@ -1,6 +1,5 @@
 import { Box } from '@mui/system'
 import { UBlock } from '../../UBlock/UBlock'
-import { CodeEditor } from '../../../utils/CodeEditor/CodeEditor'
 import { UBlocksSet } from '../../UPage/UBlocksSet/UBlocksSet'
 import { _idsForCodeFocus } from '../../../../content/content'
 import { fn } from '../../../../utils/types'

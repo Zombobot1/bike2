@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { num, str } from './types'
 
 export const transformedMax = <T>(arr: T[], f: (v: T) => number): number => Math.max(...arr.map(f))
@@ -41,4 +42,7 @@ export const zip2 = <T, D>(arr1: T[], arr2: D[]): [T, D][] => {
 
 export const reverse = <T>(array: T[]): T[] => array.map((_, idx) => array[array.length - 1 - idx])
 export const insert = (s: str, i: num, data: str): str => s.slice(0, i) + data + s.slice(i)
-export const cutData = (s: str, i: num, data: str): str => s.slice(0, i) + s.slice(i + data.length)
+export function cutData(s: str, start: num, dataOrEnd: str | num): str {
+  if (_.isString(dataOrEnd)) return s.slice(0, start) + s.slice(start + dataOrEnd.length)
+  return s.slice(0, start) + s.slice(dataOrEnd)
+}

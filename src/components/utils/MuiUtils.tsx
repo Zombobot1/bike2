@@ -12,13 +12,11 @@ import {
   RadioProps,
   Checkbox,
   CheckboxProps,
+  useTheme,
 } from '@mui/material'
-import { entries } from 'lodash'
-import { FC, RefObject, useRef, useState } from 'react'
-import { bool, fn, Fn, JSObject, str, strs } from '../../utils/types'
-import { all } from '../../utils/utils'
+import { FC } from 'react'
+import { JSObject, OptionIconP, str, strs, SVGIcon } from '../../utils/types'
 import { _apm } from '../application/theming/theme'
-import { useToggle } from './hooks/hooks'
 
 export function RStack(props: StackProps) {
   return (
@@ -95,6 +93,15 @@ export function CTick(props: CTick) {
     />
   )
 }
+
+export const SVGI =
+  (Component: SVGIcon) =>
+  ({ fontSize }: OptionIconP) => {
+    const theme = useTheme()
+    let style: JSObject = { fill: theme.apm('btn'), width: 24, height: 24 }
+    if (fontSize === 'large') style = { ...style, width: 40, height: 40 }
+    return <Component style={style} />
+  }
 
 const filter = (props: JSObject, excessive: strs) =>
   Object.fromEntries(Object.entries(props).filter(([k]) => !excessive.includes(k)))

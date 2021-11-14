@@ -1,24 +1,17 @@
 import { Box, styled } from '@mui/material'
-import { COLORS, _apm } from '../../application/theming/theme'
+import { COLORS } from '../../application/theming/theme'
 
 // based on https://github.com/PrismJS/prism-themes/blob/master/themes/prism-synthwave84.css
 export const CodeRoot = styled(Box)(({ theme }) => ({
-  'code[class*="language-"], pre[class*="language-"]': {
+  'div[class*="language-"]': {
     tabSize: 2,
     fontSize: '1.25rem',
-    padding: '3rem 2rem',
-    borderRadius: theme.shape.borderRadius,
-    border: theme.bd(),
 
-    ...theme.scroll('h'),
-
-    overflow: 'auto',
     color: theme.isDark() ? '#f92aad' : '#00a7fb',
     textShadow: theme.isDark() ? '0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3' : undefined,
     background: 'none',
     fontFamily: "Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace",
     textAlign: 'left',
-    whiteSpace: 'pre',
     wordSpacing: 'normal',
     wordBreak: 'normal',
     wordWrap: 'normal',

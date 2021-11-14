@@ -46,3 +46,5 @@ export type StrState = State<string>
 export type BoolState = State<boolean>
 
 export type Subset<T, U extends T> = Extract<T, U>
+
+export type OptionIconP = { fontSize: 'large' | 'medium' | 'small' | 'inherit' }

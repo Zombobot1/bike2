@@ -1,8 +1,6 @@
-import { useNewCardData, useSubmitNewCardData } from './useNewCardData'
 import { CardTemplateDTO } from '../dto'
 import { NewCardData } from './useNewCardData'
 import { CardDataP, CardData } from '../../studying/training/training/card-carousel'
-import { useEffect } from 'react'
 
 export interface UCardFactory {
   template: CardTemplateDTO

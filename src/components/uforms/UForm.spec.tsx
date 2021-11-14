@@ -1,5 +1,4 @@
-import { got, type, show, utext, saw, tick, disabled, click, _red } from '../../utils/testUtils'
-import { str } from '../../utils/types'
+import { got, type, show, saw, click, _red } from '../../utils/testUtils'
 import * as UForm from './UForm.stories'
 
 describe('UForm', () => {
@@ -46,7 +45,7 @@ describe('UForm', () => {
     click(['ctick'], ['view'], ['ctick'], ['submit'])
   })
 
-  it.only('shows error when empty and readonly | when does not contains correct answer', () => {
+  it('shows error when empty and readonly | when does not contains correct answer', () => {
     show(UForm.EmptyWithName)
 
     saw('Missing questions!')

@@ -3,15 +3,14 @@ import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { RStack } from '../../../utils/MuiUtils'
 import { UText } from '../types'
 import { UText_ } from '../UText_'
-import { alpha, Box, ClickAwayListener, IconButton, Menu, MenuItem, Select, styled, useTheme } from '@mui/material'
-import { useRef, useState } from 'react'
+import { alpha, Box, IconButton, MenuItem, styled, useTheme } from '@mui/material'
+import { useRef } from 'react'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
-import { bool, SetStr, str, StrState } from '../../../../utils/types'
-import { _apm } from '../../../application/theming/theme'
+import { bool, SetStr, str } from '../../../../utils/types'
 
 export function Callout(props: UText) {
   const [data] = useReactiveObject(cast(props.data, new CalloutDTO()))

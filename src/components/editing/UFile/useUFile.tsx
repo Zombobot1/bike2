@@ -1,9 +1,5 @@
 import { useState } from 'react'
-import { sslugify } from '../../../utils/sslugify'
 import { bool, SetBool, SetStr, str } from '../../../utils/types'
-import { uuid } from '../../../utils/uuid'
-import imageCompression from 'browser-image-compression'
-import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import { uploadFile } from '../../../fb/storage'
 import { use1Drop, use1ImageDrop } from '../../utils/Dropzone/Drop1zone'
 
