@@ -62,7 +62,7 @@ export const Training = ({ dto, onLastCard }: TrainingP) => {
 function cardType(dto?: CardDTO): CardType {
   if (!dto) return 'passive'
   if (dto.hiddenFields?.length) return 'passive'
-  if (dto.fields.find((f) => f.type === 'textarea')) return 'passive'
+  if (dto.fields.find((f) => f.type === 'long-answer')) return 'passive'
 
   return 'interactive'
 }

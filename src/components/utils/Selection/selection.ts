@@ -1,7 +1,15 @@
 import { bool, num, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
+import { sizeMultipliers as arrowNavigationSizeMultipliers } from '../../editing/UText/UText_'
 import { dfsText } from './dfsText'
-import { containsTagBefore, insertTag, removeTagBefore } from './htmlAsStr'
+import {
+  containsTagBefore,
+  containsTagWithClassBefore,
+  cutHtml,
+  insertTag,
+  removeTagBefore,
+  replaceClassBefore,
+} from './htmlAsStr'
 
 export function relativeDimensions(component: str, rec?: DOMRect) {
   const px = rec?.x || 0
@@ -13,11 +21,11 @@ export function relativeDimensions(component: str, rec?: DOMRect) {
   const y = xy.y - py
   const b = pb - xy.b - 8 // -8 because y and b have 2px error
 
-  const m = sizeMultipliers.get(component) || 1
-  const isTop = y / (16 * m) < 1
-  const isBottom = b / (16 * m) < 1
+  const m = arrowNavigationSizeMultipliers.get(component) || 1
+  const toTop = y / (16 * m)
+  const toBottom = b / (16 * m)
 
-  return { x, isTop, isBottom }
+  return { x, isTop: toTop < 1, isBottom: toBottom < 1 }
 }
 
 export function getCaretRelativeCoordinates(rec?: DOMRect) {
@@ -38,6 +46,10 @@ export function selectionCoordinates(relativeTo: HTMLElement): { x: num; b: num 
   const fontSize = parseFloat(style)
 
   if (!relativeTo.innerHTML) return { x: 0, b: fontSize + 16 } // + 16 for tex editor
+  if (!selectedText()) {
+    const { x: rX, bottom: b } = range.getClientRects()[0]
+    return { x: rX - x, b: b - y + fontSize }
+  }
 
   const startRange = range.cloneRange()
   startRange.collapse(true)
@@ -45,14 +57,15 @@ export function selectionCoordinates(relativeTo: HTMLElement): { x: num; b: num 
   endRange.collapse()
 
   const { x: startX, y: startY } = startRange.getClientRects()[0]
+  if (!endRange.getClientRects()[0]) return { x: 0, b: 0 }
   const { x: endX, y: endY, bottom: endBottom } = endRange.getClientRects()[0]
 
   if (endY === startY) return { x: (startX + endX) / 2 - x, b: endBottom - y + fontSize }
   return { x: endX - x, b: endBottom - y + fontSize }
 }
 
-type Tags = 's' | 'b' | 'i' | 'u' | 'code' | 'mark' | 'strong' | 'a'
-export function toggleTagMutable(block: HTMLElement, tag: Tags) {
+export type ToggleableTags = 's' | 'b' | 'i' | 'u' | 'code' | 'mark' | 'strong' | 'a' | 'em'
+export function toggleTagMutable(block: HTMLElement, tag: ToggleableTags) {
   const selected = selectedText()
   const textBeforeSelection = getTextBeforeSelection(block)
 
@@ -63,7 +76,20 @@ export function toggleTagMutable(block: HTMLElement, tag: Tags) {
   setTimeout(() => select(block, textBeforeSelection.length, (textBeforeSelection + selected).length)) // without timeout doesn't change html
 }
 
-export function toggleTag(block: HTMLElement, tag: Tags): str {
+export function toggleEmClass(block: HTMLElement, class_: str) {
+  const selected = selectedText()
+  const textBeforeSelection = getTextBeforeSelection(block)
+  const state = containsTagWithClassBefore(block.innerHTML, 'em', class_, textBeforeSelection, selected)
+
+  if (state === 'right-class') block.innerHTML = removeTagBefore(block.innerHTML, 'em', textBeforeSelection, selected)
+  else if (state === 'no-class')
+    block.innerHTML = insertTag(block.innerHTML, 'em', textBeforeSelection, selected, `class="${class_}"`)
+  else block.innerHTML = replaceClassBefore(block.innerHTML, 'em', class_, textBeforeSelection, selected)
+
+  setTimeout(() => select(block, textBeforeSelection.length, (textBeforeSelection + selected).length)) // without timeout doesn't change html
+}
+
+export function toggleTag(block: HTMLElement, tag: ToggleableTags): str {
   const selected = selectedText()
   const textBeforeSelection = getTextBeforeSelection(block)
 
@@ -72,12 +98,19 @@ export function toggleTag(block: HTMLElement, tag: Tags): str {
   return insertTag(block.innerHTML, tag, textBeforeSelection, selected)
 }
 
-export function insertCode(block: HTMLElement, codeId: str, placeholder: str): str {
+export function insertCode(block: HTMLElement, codeId: str, placeholder: str, { removeSlashOffset = -1 } = {}): str {
   const selected = selectedText()
-  const textBeforeSelection = getTextBeforeSelection(block)
+  let textBeforeSelection = getTextBeforeSelection(block)
+
+  let insertTo = block.innerHTML
+
+  if (removeSlashOffset > 0 && textBeforeSelection.endsWith('/')) {
+    textBeforeSelection = textBeforeSelection.slice(0, -1)
+    insertTo = cutHtml(insertTo, '/', removeSlashOffset)
+  }
 
   return insertTag(
-    block.innerHTML,
+    insertTo,
     'code',
     textBeforeSelection,
     selected,
@@ -86,7 +119,7 @@ export function insertCode(block: HTMLElement, codeId: str, placeholder: str): s
   )
 }
 
-export function toggleTags(block: HTMLElement, tag: Tags, additionalTag: Tags): str {
+export function toggleTags(block: HTMLElement, tag: ToggleableTags, additionalTag: ToggleableTags): str {
   const selected = selectedText()
   const textBeforeSelection = getTextBeforeSelection(block)
 
@@ -145,6 +178,7 @@ export function cursorOffset(node: HTMLElement): num {
 }
 
 export function select(node: ChildNode, from: num, to: num) {
+  // debugger
   const range = document.createRange()
 
   scrollUntil(node, range, from)
@@ -170,15 +204,6 @@ export function getCaretCoordinates(fromStart = true): { x: num; y: num; b: num 
   return { x: -1, y: -1, b: -1 } // it's safe
   // throw new Error('Cannot retrieve caret coordinates') // it throws too often
 }
-
-const sizeMultipliers = new Map([
-  ['code', (3.8 + 1) / 1.5],
-  ['h1', (3.5 + 0.5) / 1.5],
-  ['h2', (2.5 + 0.5) / 1.5],
-  ['h3', (2 + 0.5) / 1.5],
-  ['h4', (1.75 + 0.25) / 1.5],
-  ['pre', 1],
-])
 
 function getTextBeforeSelection(block: HTMLElement) {
   const content = dfsText(block)

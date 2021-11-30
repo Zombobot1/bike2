@@ -1,9 +1,9 @@
 import { str } from '../../utils/types'
-import { UComponentType } from '../editing/types'
+import { UBlockType } from '../editing/types'
 
 type FieldInformationDTO = {
   name: str
-  type: UComponentType
+  type: UBlockType
 }
 type FieldInformationDTOs = FieldInformationDTO[]
 

@@ -1,6 +1,6 @@
 import { Box, Checkbox, Chip, FormControlLabel, Radio, Stack, styled } from '@mui/material'
 import { bool, Fn, SetStr, str, strs } from '../../../utils/types'
-import { UBlockComponentB, UComponentType, UFormBlockComponent } from '../../editing/types'
+import { UBlockComponentB, UBlockType, UQuestionBlock } from '../../editing/types'
 import { UChecks } from './UChecks/UChecks'
 import { UInput } from './UInput/UInput'
 import { useUFormBlock, useUFormBlockEditor } from '../useUForm'
@@ -12,7 +12,7 @@ import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded'
 
 export interface UFormFieldBase extends UBlockComponentB {
   id: str
-  type: UComponentType
+  type: UBlockType
 }
 
 export interface UFormBlock extends UFormFieldBase {
@@ -29,8 +29,8 @@ export function UFormBlock(props: UFormBlock) {
 }
 
 function UFormBlockEditor({ id: _id, type, data, setData }: UFormFieldBase) {
-  const props = useUFormBlockEditor(_id, type as UFormBlockComponent, data, setData, {
-    isTextArea: type === 'textarea',
+  const props = useUFormBlockEditor(_id, type as UQuestionBlock, data, setData, {
+    isTextArea: type === 'long-answer',
   })
   const { question, onQuestionChange, validationError } = props
 
@@ -41,9 +41,9 @@ function UFormBlockEditor({ id: _id, type, data, setData }: UFormFieldBase) {
         text={question.question}
         setText={(q) => onQuestionChange({ ...question, question: q })}
       />
-      {type === 'checks' && <Options selectMultiple={true} {...props} />}
-      {type === 'radio' && <Options selectMultiple={false} {...props} />}
-      {type === 'input' && (
+      {type === 'multiple-choice' && <Options selectMultiple={true} {...props} />}
+      {type === 'single-choice' && <Options selectMultiple={false} {...props} />}
+      {type === 'short-answer' && (
         <TextInput
           variant="outlined"
           placeholder="Set correct answer"
@@ -54,7 +54,7 @@ function UFormBlockEditor({ id: _id, type, data, setData }: UFormFieldBase) {
           helperText={validationError}
         />
       )}
-      {type === 'textarea' && (
+      {type === 'long-answer' && (
         <TextInput
           color="success"
           variant="filled"
@@ -66,7 +66,7 @@ function UFormBlockEditor({ id: _id, type, data, setData }: UFormFieldBase) {
           inputProps={{ 'aria-label': 'explanation', 'data-cy': 'explanation' }}
         />
       )}
-      {type !== 'textarea' && (
+      {type !== 'long-answer' && (
         <TextInput
           color="success"
           variant="filled"
@@ -240,10 +240,10 @@ function UFormBlock_({ id: _id, type, data, onAnswer, shuffleOptions, autoFocus,
 
   return (
     <Box sx={{ paddingBottom: '2rem' }}>
-      {type === 'checks' && <UChecks {...checksProps} selectMultiple={true} />}
-      {type === 'radio' && <UChecks {...checksProps} selectMultiple={false} />}
-      {type === 'input' && <UInput {...inputProps} multiline={false} />}
-      {type === 'textarea' && <UInput {...inputProps} multiline={true} />}
+      {type === 'multiple-choice' && <UChecks {...checksProps} selectMultiple={true} />}
+      {type === 'single-choice' && <UChecks {...checksProps} selectMultiple={false} />}
+      {type === 'short-answer' && <UInput {...inputProps} multiline={false} />}
+      {type === 'long-answer' && <UInput {...inputProps} multiline={true} />}
     </Box>
   )
 }

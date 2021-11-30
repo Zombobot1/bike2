@@ -10,6 +10,7 @@ import { ReactComponent as TEXI } from '../UBlock/BlockAutocomplete/tex.svg'
 import { RStack, SVGI } from '../../utils/MuiUtils'
 
 import { TeXEditor } from '../../utils/CodeEditor/TeXEditor'
+import { PaddedBox } from '../UBlock/PaddedBox'
 
 export function Equation({ data, setData, readonly }: UBlockComponentB) {
   const [eq, setEq] = useReactive(data)
@@ -28,7 +29,7 @@ export function Equation({ data, setData, readonly }: UBlockComponentB) {
   }
 
   return (
-    <Box sx={{ paddingBottom: '1rem' }}>
+    <PaddedBox>
       <MathBox sx={{ backgroundColor: eq ? 'default' : theme.apm('bg') }} ref={ref} onClick={() => setIsOpen(true)}>
         {!eq && (
           <RStack spacing={2}>
@@ -41,7 +42,7 @@ export function Equation({ data, setData, readonly }: UBlockComponentB) {
           <TeXEditor tex={eq} setTex={setEq} close={close} type="big" readonly={readonly} />
         </Popper>
       </MathBox>
-    </Box>
+    </PaddedBox>
   )
 }
 

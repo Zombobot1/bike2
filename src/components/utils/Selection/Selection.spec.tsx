@@ -11,6 +11,9 @@ import {
   removeCode,
   sliceHtml,
   scrollThroughTags,
+  containsTagWithClassBefore,
+  replaceClassBefore,
+  cutHtml,
 } from './htmlAsStr'
 import { cursorOffset } from './selection'
 import * as Selection from './Selection.stories'
@@ -69,7 +72,7 @@ describe('Selection', () => {
 
   it('calculates selection position across 2 rows', () => {
     show(Selection.CalculatesSelectionPosition2Rows)
-    got('rec').should('have.css', 'top', '69.2857px')
+    got('rec').should('have.css', 'top', '69.7076px')
     got('rec').should('have.css', 'left', '38.6094px')
   })
 
@@ -95,6 +98,23 @@ describe('Selection', () => {
     cy.get('code').contains('ata')
   })
 
+  it('toggles class', () => {
+    show(Selection.WrapsTagWithNewClass)
+    cy.get('em').contains('cat').should('have.attr', 'class', 'blue')
+  })
+
+  it('replaces class', () => {
+    const red = '<pre>Nice <em class="red">cat</em></pre>'
+    expect(replaceClassBefore(red, 'em', 'blue', 'Nice ', 'cat')).eq('<pre>Nice <em class="blue">cat</em></pre>')
+  })
+
+  it('detects class', () => {
+    const red = '<pre>Nice <em class="red">cat</em></pre>'
+    expect(containsTagWithClassBefore(red, 'em', 'red', 'Nice ', 'cat')).eq('right-class')
+    expect(containsTagWithClassBefore(red, 'em', 'red-b', 'Nice ', 'cat')).eq('wrong-class')
+    expect(containsTagWithClassBefore('<pre>Nice cat</pre>', 'em', 'red-b', 'Nice ', 'cat')).eq('no-class')
+  })
+
   it('inserts tag at start', () => {
     const actual = insertTag('Example: <b>bold</b>', 'b', '', 'Example')
     expect(actual).eql('<b>Example</b>: <b>bold</b>')
@@ -117,6 +137,10 @@ describe('Selection', () => {
     expect(sliceHtml('a <b>bold</b>', 3)).eql('a <b>b')
     expect(sliceHtml('cat', 2)).eql('ca')
     expect(sliceHtml('a <code>E==mc^2</code> big', 4)).eql('a <code>E==mc^2</code> b')
+  })
+
+  it('cuts html', () => {
+    expect(cutHtml('a <b>b</b> / t', '/', 5)).eql('a <b>b</b>  t')
   })
 
   it('inserts tag', () => {

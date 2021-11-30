@@ -2,7 +2,8 @@
 const path = require('path')
 
 // require('@pmmmwh/react-refresh-webpack-plugin'); doesn't work with cypress
-const ReactRefreshWebpackPlugin = require('@next/react-refresh-utils/ReactRefreshWebpackPlugin').default
+// i changed version of react-refresh from 0.8.3 and had to remove this plugin but vite doesn't use react-refresh
+// const ReactRefreshWebpackPlugin = require('@next/react-refresh-utils/ReactRefreshWebpackPlugin').default
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -72,14 +73,14 @@ if (mode === 'production') {
     }),
   )
 } else {
-  entry.unshift(require.resolve('@next/react-refresh-utils/runtime')) // push doesn't work
-  plugins.push(new ReactRefreshWebpackPlugin())
-  rules.push({
-    test: /\.(tsx|ts|js|mjs|jsx)$/,
-    include: [path.join(__dirname, 'src')],
-    exclude: [/node_modules/],
-    use: [require.resolve('@next/react-refresh-utils/loader')],
-  })
+  // entry.unshift(require.resolve('@next/react-refresh-utils/runtime')) // push doesn't work
+  // plugins.push(new ReactRefreshWebpackPlugin())
+  // rules.push({
+  //   test: /\.(tsx|ts|js|mjs|jsx)$/,
+  //   include: [path.join(__dirname, 'src')],
+  //   exclude: [/node_modules/],
+  //   use: [require.resolve('@next/react-refresh-utils/loader')],
+  // })
 }
 
 module.exports = {

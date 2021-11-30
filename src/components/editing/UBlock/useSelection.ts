@@ -1,24 +1,17 @@
 import { atom } from 'jotai'
 import { useReducerAtom } from 'jotai/utils'
-import { fn, num, str, strs } from '../../../utils/types'
-import { UComponentType } from '../types'
+import { bool, fn, num, str, strs } from '../../../utils/types'
+import { UBlockType } from '../types'
 
-export function useSelection(type?: UComponentType) {
+export function useSelection(type?: UBlockType) {
   const [selection, _dispatch] = useReducerAtom(selectionA, selectionR)
-
   return { selection, dispatch: type === 'code' ? fn : _dispatch }
-}
-
-class Selection {
-  ids: strs = []
-  enteredAtY = -1
-  state: 'none' | 'active' | 'selected' | 'selecting-by-click' = 'none'
 }
 
 type SelectionA =
   | { a: 'select'; id: str }
   | { a: 'select-by-click'; id: str }
-  | { a: 'clear' }
+  | { a: 'clear'; force?: bool }
   | { a: 'mouse-down' }
   | { a: 'mouse-up' }
   | { a: 'mouse-enter'; atY: num; id: str }
@@ -27,7 +20,7 @@ type SelectionA =
 function selectionR(old: Selection, action: SelectionA): Selection {
   switch (action.a) {
     case 'clear':
-      if (old.state === 'selecting-by-click') return { ...old, state: 'selected' }
+      if (old.state === 'selecting-by-click' && !action.force) return { ...old, state: 'selected' } // force when we change type
       return { state: 'none', ids: [], enteredAtY: -1 }
     case 'select':
       window.getSelection()?.removeAllRanges()
@@ -56,6 +49,12 @@ function selectionR(old: Selection, action: SelectionA): Selection {
       return { ...old, ids }
     }
   }
+}
+
+class Selection {
+  ids: strs = []
+  enteredAtY = -1
+  state: 'none' | 'active' | 'selected' | 'selecting-by-click' = 'none'
 }
 
 function loseFocus() {

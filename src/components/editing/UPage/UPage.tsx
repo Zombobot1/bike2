@@ -4,7 +4,7 @@ import { bool, str, strs } from '../../../utils/types'
 import { useReactive } from '../../utils/hooks/hooks'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { useShowAppBar } from '../../application/navigation/AppBar/AppBar'
-import { UBlockDTO, UComponentType } from '../types'
+import { UBlockDTO, UBlockType } from '../types'
 import { UBlocksSet, useUBlocks } from './UBlocksSet/UBlocksSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
 import { uuid } from '../../../utils/uuid'
@@ -18,7 +18,7 @@ export interface UPageDataDTO {
 }
 
 export interface UPageDTO {
-  type: UComponentType
+  type: UBlockType
   data: UPageDataDTO
   isDeleted?: bool
   readonly?: bool

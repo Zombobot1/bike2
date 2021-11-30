@@ -1,10 +1,10 @@
-import { Box } from '@mui/material'
 import { str } from '../../../../utils/types'
 import { cast } from '../../../../utils/utils'
 import { useMount, useReactiveObject } from '../../../utils/hooks/hooks'
 import { UText } from '../types'
 import { CodeEditor } from '../../../utils/CodeEditor/CodeEditor'
 import { useEffect } from 'react'
+import { PaddedBox } from '../../UBlock/PaddedBox'
 
 export function Code(ps: UText) {
   const [data] = useReactiveObject(cast(ps.data, new CodeDTO()))
@@ -18,7 +18,7 @@ export function Code(ps: UText) {
   useMount(() => ps.addData?.(ps.id, ps.data))
 
   return (
-    <Box sx={{ paddingBottom: '1rem' }}>
+    <PaddedBox>
       <CodeEditor
         code={data.code}
         language={data.language}
@@ -29,7 +29,7 @@ export function Code(ps: UText) {
         goDown={(x) => ps.goDown?.(ps.id, x)}
         focus={ps.focus}
       />
-    </Box>
+    </PaddedBox>
   )
 }
 

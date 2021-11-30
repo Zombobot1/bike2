@@ -3,11 +3,13 @@ import { AddNewBlockUText, ArrowNavigationFn, BlockInfo, SetUBlockType, UBlockCo
 
 export interface UText extends UBlockComponent {
   id: str
-  tryToChangeFieldType: SetStr
   setType: SetUBlockType
+  tryToChangeFieldType: SetStr
+  inUForm?: bool
   addInfo?: (id: str, i: BlockInfo) => void
   addData?: (id: str, i: str) => void
   appendedData?: str
+  initialData?: str
   previousBlockInfo?: BlockInfo
   focus?: UTextFocus
   addNewBlock: AddNewBlockUText
@@ -20,6 +22,7 @@ export interface UText extends UBlockComponent {
   goUp?: ArrowNavigationFn
   goDown?: ArrowNavigationFn
   clearFocus?: Fn
+  hideMenus?: bool
 }
 
 export class UListDTO {

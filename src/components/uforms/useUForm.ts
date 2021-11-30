@@ -2,7 +2,7 @@ import { atom, useAtom } from 'jotai'
 import { Question } from '../studying/training/types'
 import { useCallback, useEffect, useState } from 'react'
 import { bool, num, SetStr, str, strs } from '../../utils/types'
-import { UFormBlockComponent } from '../editing/types'
+import { UQuestionBlock } from '../editing/types'
 import { cast } from '../../utils/utils'
 import _ from 'lodash'
 import { avg } from '../../utils/algorithms'
@@ -34,8 +34,8 @@ const QUESTION = {
   options: [],
 }
 
-function getQuestion(t: UFormBlockComponent): Question {
-  const checks: UFormBlockComponent[] = ['checks', 'radio']
+function getQuestion(t: UQuestionBlock): Question {
+  const checks: UQuestionBlock[] = ['multiple-choice', 'single-choice']
   return checks.includes(t) ? { ...QUESTION, options: ['Option'] } : QUESTION
 }
 
@@ -102,7 +102,7 @@ export const useUFormBlock = (_id: str, data: str) => {
 }
 
 type O = { isTextArea?: bool }
-export const useUFormBlockEditor = (_id: str, type: UFormBlockComponent, data: str, setData: SetStr, options?: O) => {
+export const useUFormBlockEditor = (_id: str, type: UQuestionBlock, data: str, setData: SetStr, options?: O) => {
   const [initialQuestion] = useState(() => cast(data, getQuestion(type))) // parse once
   const setQuestion = (q: Question) => setData(JSON.stringify(q))
 

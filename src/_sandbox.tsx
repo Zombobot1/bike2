@@ -10,6 +10,8 @@ const Sandbox = () => {
     <OuterShell>
       <SoryBook
         sories={[
+          UTextOptions,
+          UDivider,
           Equation,
           UVideoFile,
           UAutocomplete,
@@ -50,6 +52,9 @@ const Sandbox = () => {
     </OuterShell>
   )
 }
+
+import * as UTextOptions from './components/editing/UText/UTextOptions/UTextOptions.stories'
+import * as UDivider from './components/editing/UDivider/UDivider.stories'
 import * as Equation from './components/editing/Equation/Equation.stories'
 import * as CodeEditor from './components/utils/CodeEditor/CodeEditor.stories'
 import * as UVideoFile from './components/editing/UFile/UVideoFile/UVideoFile.stories'

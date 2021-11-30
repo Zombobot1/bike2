@@ -4,6 +4,7 @@ import _ from 'lodash'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { OuterShell } from '../components/application/Shell'
+import { uthemeOptions } from '../components/application/theming/theme'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { FSProvider } from '../fb/fs'
 import { Fn, num, str } from './types'
@@ -62,7 +63,7 @@ export const click = (cy: str | TypeArgs, eq?: num | TypeArgs, ...rest: TypeArgs
   else {
     const args: TypeArgs[] = [cy, eq as TypeArgs, ...rest]
     // eslint-disable-next-line @typescript-eslint/ban-types
-    args.forEach((a) => (_click as Function)(...a))
+    args.filter(Boolean).forEach((a) => (_click as Function)(...a))
   }
   return { type }
 }
@@ -96,9 +97,11 @@ export const doNotFret = () => cy.on('uncaught:exception', () => false)
 
 export const fakedId = () => cy.stub(uuid, 'v4').callsFake(uuidS())
 
-export const show = (Component: React.FC, pd = '') =>
+export const show = (Component: React.FC, pd = '') => {
+  uthemeOptions.isCypress = true
+
   mount(
-    <OuterShell autoDarkMode={false}>
+    <OuterShell>
       <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
         <FSProvider>
           <Box sx={{ paddingLeft: pd || 0 }}>
@@ -108,7 +111,7 @@ export const show = (Component: React.FC, pd = '') =>
       </ErrorBoundary>
     </OuterShell>,
   )
-
+}
 function cssPlaceholder($els: JQuery<HTMLElement>) {
   return $els[0].ownerDocument.defaultView?.getComputedStyle($els[0], 'before').getPropertyValue('content')
 }
@@ -121,4 +124,5 @@ export const disabled = (e: CYChain) => e.should('have.attr', 'disabled')
 
 export const _red = 'rgb(250, 82, 82)'
 export const _green = 'rgb(5, 166, 119)'
+export const _greenUText = 'rgb(68, 131, 97)'
 export const _disabled = 'disabled'

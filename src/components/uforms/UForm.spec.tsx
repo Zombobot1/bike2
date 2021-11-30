@@ -19,8 +19,8 @@ describe('UForm', () => {
     show(UForm.Empty)
 
     type('New form')
-    type(['utext', '/'], ['checks '], ['etext', 1, 'Q1']).click('ctick')
-    type(['utext', '/'], ['input '], ['etext', 2, 'Q2'], ['correct answer', 'a'])
+    type(['utext', '['], ['] '], ['etext', 1, 'Q1']).click('ctick')
+    type(['utext', '{'], ['} '], ['etext', 2, 'Q2'], ['correct answer', 'a'])
     click('view')
     saw('Q1', 'Q2')
 
@@ -38,7 +38,7 @@ describe('UForm', () => {
     click('view')
     saw('Add questions!', [() => got('view'), _red])
 
-    type(['utext', '/'], ['checks '])
+    type(['utext', '['], ['] '])
     click('view')
     saw('Select correct answer!')
 
@@ -52,7 +52,7 @@ describe('UForm', () => {
     click(['edit'], ['view'])
     saw('Add questions!')
 
-    type(['utext', '/'], ['checks ']).click('view')
+    type(['utext', '['], ['] ']).click('view')
     saw('Select correct answer!')
 
     click(['ctick'], ['view'], ['ctick'], ['submit'])

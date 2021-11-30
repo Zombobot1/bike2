@@ -1,29 +1,32 @@
-import { RefObject } from 'react'
-import { bool, Fn } from '../../../../utils/types'
-import { UMenu, UOption } from '../../../utils/UMenu/UMenu'
-import { UElementsOptions } from './UElementsOptions'
-import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
+import { num } from '../../../../utils/types'
+import { UMenuControlsB } from '../../../utils/UMenu/UMenu'
+import { ublocksFor, ublockTypeFrom } from './BlockAutocompleteOptions'
+import { LongMenu, useControlledLongMenu } from '../../../utils/UMenu/LongMenu'
+import { UBlockType } from '../../types'
+import { Box } from '@mui/material'
 
 export interface BlockAutocomplete {
-  btnRef: RefObject<HTMLButtonElement | HTMLLIElement>
-  isOpen: bool
-  close: Fn
+  coordinates: { b: num; x: num }
+  menu: UMenuControlsB
   context: 'general' | 'uform'
-  createBlock: Fn
+  createBlock: (t: UBlockType) => void
 }
 
-export function BlockAutocomplete({ context, btnRef, close, isOpen }: BlockAutocomplete) {
+export function BlockAutocomplete({ coordinates, menu, context, createBlock }: BlockAutocomplete) {
+  const ps = useControlledLongMenu(menu, ublocksFor(context), '', (t) => createBlock(ublockTypeFrom(t)), {
+    doNotMemorizeSelection: true,
+  })
   return (
-    <UMenu btnRef={btnRef} isOpen={isOpen} close={close} elevation={8} minWidth="15rem">
-      <UElementsOptions context={context} />
-    </UMenu>
-  )
-}
-
-export function BlockTurner(props: UElementsOptions) {
-  return (
-    <UOption icon={AutorenewRoundedIcon} text="Turn into">
-      <UElementsOptions {...props} />
-    </UOption>
+    <Box
+      sx={{
+        position: 'absolute',
+        top: coordinates.b,
+        left: coordinates.x,
+        zIndex: 2, // otherwise overlapped by file dropzone
+      }}
+      data-cy="block-autocomplete"
+    >
+      <LongMenu {...ps} placeholder="block" elevation={8} maxHeight={3 * 7.3 + 'rem'} />
+    </Box>
   )
 }

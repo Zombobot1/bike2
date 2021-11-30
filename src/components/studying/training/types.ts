@@ -1,6 +1,6 @@
 import { COLORS } from '../../application/theming/theme'
 import { num, str, strs } from '../../../utils/types'
-import { UComponentType } from '../../editing/types'
+import { UBlockType } from '../../editing/types'
 
 export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY'
 const WEIGHTS: { [K in CardEstimation]: number } = {
@@ -34,7 +34,7 @@ export interface Question {
 export interface FieldDTO {
   _id: str
   data: str
-  type: UComponentType
+  type: UBlockType
 }
 
 export type FieldDTOs = FieldDTO[]

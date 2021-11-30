@@ -35,22 +35,22 @@ const T = (props: UBlock) => () => {
 
 const input1: UBlock = {
   id: 'input1',
-  initialData: { data: '', type: 'input' },
+  initialData: { data: '', type: 'short-answer' },
 }
 
 const text1: UBlock = {
   id: 'textarea1',
-  initialData: { data: '', type: 'textarea' },
+  initialData: { data: '', type: 'long-answer' },
 }
 
 const checks1: UBlock = {
   id: 'checks1',
-  initialData: { data: '', type: 'checks' },
+  initialData: { data: '', type: 'multiple-choice' },
 }
 
 const radio1: UBlock = {
   id: 'radio1',
-  initialData: { data: '', type: 'radio' },
+  initialData: { data: '', type: 'single-choice' },
 }
 
 export const InputEditing = T(input1)

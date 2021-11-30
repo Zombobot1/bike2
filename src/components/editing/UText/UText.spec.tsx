@@ -1,4 +1,4 @@
-import { show, expectCSSPlaceholder, utext, type, saw, got } from '../../../utils/testUtils'
+import { show, expectCSSPlaceholder, utext, type, saw, got, lost, click, _greenUText } from '../../../utils/testUtils'
 import { safe } from '../../../utils/utils'
 import { select, setCursor } from '../../utils/Selection/selection'
 import * as UText from './UText.stories'
@@ -11,7 +11,7 @@ describe('UText', () => {
     utext().focus()
     utext().then(expectCSSPlaceholder('"Type \'/\' for commands"'))
 
-    utext().type('/heading1 ')
+    utext().type('{ctrl+shift+1}')
     utext().then(expectCSSPlaceholder('"Heading 1"'))
   })
 
@@ -67,7 +67,7 @@ describe('UText', () => {
   it('Inserts tex in empty block', () => {
     show(UText.Empty)
     utext().focus()
-    type(['{ctrl+E}'], ['w{enter}'])
+    type(['{ctrl+shift+E}'], ['w{enter}'])
     saw('w')
   })
 
@@ -75,17 +75,28 @@ describe('UText', () => {
     show(UText.BoldText)
     cy.then(() => select(document.getElementsByTagName('pre')[0], 1, 3))
     utext().focus()
-    type(['{ctrl+E}'], ['+{esc}'])
+    type(['{ctrl+shift+E}'], ['+{esc}'])
     saw('ol+', 'b', 'd')
+  })
+
+  it('shows options and modifies text', () => {
+    show(UText.BoldText)
+    type('utext', '{selectall}')
+    click(['colors'], ['green'])
+    saw(['bold', _greenUText])
   })
 
   it('shows tex placeholder | inserts tex after tex in the end', () => {
     show(UText.Tex)
     cy.then(() => setCursor(document.getElementsByTagName('pre')[0], 0, 'backward'))
     utext().focus()
-    type('{ctrl+E}')
+    type('{ctrl+shift+E}')
     saw('write TeX')
-    type(['+{esc}'])
+
+    type(['{esc}'])
+    lost('write TeX')
+
+    type(['{ctrl+shift+E}'], ['+{esc}'])
     saw('+')
   })
 
@@ -96,11 +107,15 @@ describe('UText', () => {
     got('tex-box')
       .should('have.css', 'top')
       .then((height) => +String(height).replace('px', '')) // convert
-      .should('be.closeTo', 88, 2)
+      .should('be.closeTo', 88, 10)
 
     got('tex-box').should('have.css', 'left', '158.125px')
     type(['{esc}'], ['!'])
 
     saw('!cat')
   })
+
+  // it('unwraps tag partially <b>bold</b> -> <b>bo</b>o<b>ld</b> (check that attributes are preserved', () => {
+
+  // })
 })

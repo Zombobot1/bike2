@@ -1,11 +1,33 @@
 import { useState } from 'react'
-import { bool, num } from '../../../utils/types'
+import { bool, num, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 
-export function useArray<T>(init: T[] = []) {
+export interface UArray<T> {
+  data: T[]
+
+  map: <D>(f: (e: T) => D, i?: num) => D[]
+  filter: (f: (e: T) => bool, i?: num) => T[]
+  find: (f: (e: T) => bool, i?: num) => T | undefined
+
+  has: (f: (e: T) => bool, i?: num) => bool
+  get: (f: (e: T) => bool, i?: num) => T
+
+  push: (e: T) => void
+  insert: (e: T, i: num) => void
+
+  delete: (i: num) => void
+  deleteElement: (e: T) => void
+
+  reset: (newData: T[]) => void
+  clear: () => void
+}
+
+export function useArray<T = str>(init: T[] = []): UArray<T> {
   const [array, setArray] = useState(init)
 
   return {
+    data: array,
+
     map: <D>(f: (e: T) => D, i?: num) => array.map(f, i),
     filter: (f: (e: T) => bool, i?: num) => array.filter(f, i),
     find: (f: (e: T) => bool, i?: num) => array.find(f, i),
@@ -17,6 +39,9 @@ export function useArray<T>(init: T[] = []) {
     push: (e: T) => setArray((a) => [...a, e]),
     insert: (e: T, i: num) => setArray((a) => [...a.slice(0, i), e, ...a.slice(i + 1, a.length - 1)]),
     delete: (i: num) => setArray((a) => [...a.slice(0, i), ...a.slice(i + 1, a.length - 1)]),
+    deleteElement: (e: T) => setArray((a) => a.filter((element) => element !== e)),
     clear: () => setArray([]),
   }
 }
+
+export type UArrayStr = UArray<str>

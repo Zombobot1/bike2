@@ -1,27 +1,28 @@
 import { alpha, styled, Tooltip } from '@mui/material'
 import { useCallback, useRef } from 'react'
 import { useReactiveObject } from '../../utils/hooks/hooks'
-import { bool, fn, Fn, num, SetStr, str } from '../../../utils/types'
+import { bool, fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
 import {
   AddNewBlockUText,
   ArrowNavigationFn,
   BlockInfo,
   FocusType,
   InitialData,
-  isNotFullWidthComponent,
-  isUFileComponent,
-  isUFormBlockComponent,
-  isUFormComponent,
-  isUTextComponent,
+  isSelectableByClickBlock,
+  isNotFullWidthBlock,
+  isUFileBlock,
+  isUQuestionBlock,
+  isUFormBlock,
+  isUTextBlock,
   regexAndType,
   UBlockB,
-  UComponentType,
+  UBlockType,
   UTextFocus,
 } from '../types'
 import { UText } from '../UText/UText'
 import { UFile } from '../UFile/UFile'
 import { UFormBlock } from '../../uforms/UFormBlock/UFormBlock'
-import { useData } from '../../../fb/useData'
+import { useData, useSetData } from '../../../fb/useData'
 import { useSelection } from './useSelection'
 import { UForm } from '../../uforms/UForm'
 import { RStack } from '../../utils/MuiUtils'
@@ -32,8 +33,12 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { _apm, _tra } from '../../application/theming/theme'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Equation } from '../Equation/Equation'
+import { UDivider } from '../UDivider/UDivider'
+import { utextPaddings } from '../UText/UText_'
+import { BlockTurner } from './BlockAutocomplete/BlockTurner'
 
 export interface UBlock extends UBlockB {
+  inUForm?: bool
   addNewBlock?: AddNewBlockUText
   addData?: (id: str, data: str) => void
   addInfo?: (id: str, i: BlockInfo) => void
@@ -42,6 +47,7 @@ export interface UBlock extends UBlockB {
   goDown?: ArrowNavigationFn
   addNewUPage?: SetStr
   deleteBlock?: (id: str, data?: str) => void
+  deleteBlocks?: (ids: strs) => void
   appendedData?: str
   focus?: UTextFocus
   initialData?: InitialData
@@ -58,7 +64,7 @@ export interface UBlock extends UBlockB {
 
 interface UBlockDTO {
   data: str
-  type: UComponentType
+  type: UBlockType
   isDeleted?: bool
 }
 
@@ -81,23 +87,27 @@ export function UBlock({
   goDown,
   addData,
   resetActiveBlock = fn,
+  deleteBlocks: deleteUBlocks = fn,
   i = 100,
   previousBlockInfo,
   appendedData,
 }: UBlock) {
   const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
+  const { setData: setExternalData } = useSetData()
   const { selection, dispatch } = useSelection(ublock.type)
 
   const [focus, setFocus] = useReactiveObject(initialFocus)
   const setData = useCallback((data: str) => setUBlock({ ...ublock, data }), [JSON.stringify(ublock)])
   const setType = useCallback(
-    (type: UComponentType, data = '', focus: FocusType = 'end') => {
+    (type: UBlockType, data = '', focus: FocusType = 'end') => {
       setUBlock({ data, type })
       setFocus({ type: focus })
     },
     [JSON.stringify(ublock), JSON.stringify(focus)],
   )
-  const tryToChangeFieldType = useCallback(getTryToChangeFieldType(id, setType, addNewUPage), [setType, addNewUPage])
+
+  const tryToChangeFieldType = useCallback(getTryToChangeBlockType(id, setType, addNewUPage), [setType, addNewUPage])
+
   const deleteBlock = useCallback(
     (data?: str) => {
       deleteUBlock(id, data)
@@ -106,7 +116,13 @@ export function UBlock({
     [deleteUBlock, setUBlock],
   )
 
-  const notFullWidth = isNotFullWidthComponent(ublock.type)
+  const deleteBlocks = useCallback(() => {
+    deleteUBlocks(selection.ids)
+    selection.ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true }))
+    dispatch({ a: 'clear' })
+  }, [deleteUBlocks, setExternalData, selection.ids])
+
+  const notFullWidth = isNotFullWidthBlock(ublock.type)
 
   const { ref, width } = useElementSize({ passive: !notFullWidth })
   const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16 }
@@ -128,6 +144,7 @@ export function UBlock({
     addData,
     previousBlockInfo,
     appendedData,
+    initialData: initialData?.data,
   }
 
   return (
@@ -141,7 +158,7 @@ export function UBlock({
       onMouseUp={() => dispatch({ a: 'mouse-up' })}
       onMouseEnter={(e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id })}
       onMouseLeave={(e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id })}
-      onClick={ublock.type === 'image' ? () => dispatch({ a: 'select', id }) : fn}
+      onClick={isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id }) : fn}
       tabIndex={i + 100}
       data-cy="ublock"
       ref={ref}
@@ -149,16 +166,24 @@ export function UBlock({
       <RStack>
         <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }}>
           <BlockMenu
-            onAddClick={() => addNewBlock('focus-start')}
+            data={ublock.data}
+            type={ublock.type}
+            setType={setType}
+            deleteBlock={deleteBlocks}
+            onAddClick={() => addNewBlock(id, 'focus-start')}
             onMenuClick={() => dispatch({ a: 'select-by-click', id })}
+            clearSelection={() => dispatch({ a: 'clear', force: true })}
             selectedMany={selection.ids.length > 1}
+            readonly={readonly}
+            pt={utextPaddings.get(ublock.type.toLowerCase())}
           />
           {selection.ids.includes(id) && <Selection data-cy="selection" />}
-          {isUTextComponent(ublock.type) && <UText {...utextProps} />}
-          {isUFileComponent(ublock.type) && <UFile {...commonProps} />}
-          {isUFormBlockComponent(ublock.type) && <UFormBlock {...commonProps} onAnswer={onAnswer} />}
-          {isUFormComponent(ublock.type) && <UForm {...commonProps} />}
-          {ublock.type === 'equation' && <Equation {...commonProps} />}
+          {isUTextBlock(ublock.type) && <UText {...utextProps} />}
+          {isUFileBlock(ublock.type) && <UFile {...commonProps} />}
+          {isUQuestionBlock(ublock.type) && <UFormBlock {...commonProps} onAnswer={onAnswer} />}
+          {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
+          {ublock.type === 'block-equation' && <Equation {...commonProps} />}
+          {ublock.type === 'divider' && <UDivider />}
         </InnerContainer>
       </RStack>
     </Container>
@@ -170,10 +195,9 @@ const Container = styled('div', { label: 'UBlock' })({
   minHeight: '1.5rem',
 })
 
-const InnerContainer = styled('div')({
+const InnerContainer = styled('div', { label: 'UBlock-InnerContainer' })({
   position: 'relative',
   height: '100%',
-  padding: '0 0.5rem',
   ':hover': {
     '> .ublock--block-menu-container': {
       opacity: 1,
@@ -189,33 +213,51 @@ const Selection = styled('div')(({ theme }) => ({
   right: 0,
   left: 0,
   backgroundColor: alpha(theme.palette.info.main, 0.25),
-  marginBottom: '0.5rem',
+  marginBottom: '0.25rem',
+  marginTop: '0.25rem',
 }))
 
-const getTryToChangeFieldType =
-  (id: str, setType: (v: UComponentType) => void, addNewUPage: SetStr) => (newData: str) => {
-    if (!newData.includes(' ')) return
+const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void, addNewUPage: SetStr) => (newData: str) => {
+  if (!newData.includes(' ')) return
 
-    const firstElement = newData.split(' ')
-    const newType = regexAndType.get(firstElement[0])
-    if (!newType) return
+  const firstElement = newData.split(' ')
+  const newType = regexAndType.get(firstElement[0])
+  if (!newType) return
 
-    setType(newType)
-    if (newType === 'page') addNewUPage(id)
-  }
+  setType(newType)
+  if (newType === 'page') addNewUPage(id)
+}
 
 interface BlockMenu {
+  data: str
+  type: UBlockType
+  clearSelection: Fn
+  deleteBlock: Fn
+  setType: (t: UBlockType, data?: str) => void
   selectedMany: bool
   onAddClick: Fn
   onMenuClick: Fn
   readonly?: bool
+  pt?: str
 }
 
-function BlockMenu({ onAddClick, onMenuClick, readonly }: BlockMenu) {
+function BlockMenu({
+  data,
+  type,
+  deleteBlock,
+  selectedMany,
+  setType,
+  onAddClick,
+  onMenuClick,
+  readonly,
+  clearSelection,
+  pt = '0',
+}: BlockMenu) {
   const ref = useRef<HTMLButtonElement>(null)
   const { close, isOpen, toggleOpen } = useMenu(onMenuClick)
+
   return (
-    <LeftButtons className="ublock--block-menu-container">
+    <LeftButtons className={readonly ? '' : 'ublock--block-menu-container'} sx={{ paddingTop: pt }}>
       <MiniBtn onClick={onAddClick} ref={ref} data-cy="add-block-h">
         <AddI />
       </MiniBtn>
@@ -224,13 +266,18 @@ function BlockMenu({ onAddClick, onMenuClick, readonly }: BlockMenu) {
           <DragI />
         </MiniBtn>
       </Tooltip>
-      {/* Maybe a person can add comments */}
       <UMenu btnRef={ref} close={close} isOpen={isOpen && !readonly} hasNested={true} offset={[85, 0]} elevation={4}>
-        <UOption icon={DeleteRoundedIcon} text="Delete" shortcut="Del" close={close} />
-
-        {/* {!selectedMany && (
-
-        )} */}
+        {/* Maybe user can add comments */}
+        <UOption icon={DeleteRoundedIcon} text="Delete" shortcut="Del" close={close} onClick={deleteBlock} />
+        {!selectedMany && isUTextBlock(type) && (
+          <BlockTurner
+            turnInto={(t) => {
+              clearSelection()
+              close()
+              setType(t, data)
+            }}
+          />
+        )}
       </UMenu>
     </LeftButtons>
   )
@@ -269,7 +316,7 @@ const AddI = styled(AddRoundedIcon)(({ theme }) => ({
   color: _apm(theme, '800'),
 }))
 
-const LeftButtons = styled(RStack)({
+const LeftButtons = styled(RStack, { label: 'BlockMenu' })({
   position: 'absolute',
   transform: 'translateX(-100%)',
   paddingRight: '0.5rem',

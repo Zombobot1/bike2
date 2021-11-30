@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { bool, fn, num, SetStr, setStr, SetStrs, str, strs } from '../../../../utils/types'
 import { cast, safe } from '../../../../utils/utils'
 import { uuid } from '../../../../utils/uuid'
-import { BlockInfo, isUTextComponent, UBlockDTO, UComponentType, UTextFocus } from '../../types'
+import { BlockInfo, isUTextBlock, UBlockDTO, UBlockType, UTextFocus } from '../../types'
 import { UBlock } from '../../UBlock/UBlock'
 import { useData } from '../../../../fb/useData'
 import { UHeading0, UParagraph } from '../../UText/UText'
@@ -22,6 +22,7 @@ export interface UBlocksSet {
 
   addNewUPage?: SetStr
   factoryPlaceholder?: str
+  isUForm?: bool
 }
 
 export function UBlocksSet({
@@ -30,6 +31,7 @@ export function UBlocksSet({
   readonly,
   title,
   setTitle,
+  isUForm,
   addNewUPage = setStr,
   factoryPlaceholder,
 }: UBlocksSet) {
@@ -58,7 +60,7 @@ export function UBlocksSet({
   )
 
   const addNewBlocks = useCallback(
-    (underId = '', focus = 'focus-end', data = '', type: UComponentType = 'text') => {
+    (underId = '', focus = 'focus-end', data = '', type: UBlockType = 'text') => {
       let newBlocks: AddedBlock[] = []
       if (type !== 'image') {
         const blocksData = safeSplit(data, '\n\n')
@@ -105,13 +107,20 @@ export function UBlocksSet({
     [ids],
   )
 
+  const deleteBlocks = useCallback(
+    (idsToRemove: strs) => {
+      setIds(ids.filter((oldId) => !idsToRemove.includes(oldId)))
+    },
+    [ids],
+  )
+
   const findUTextId = useCallback(
     (direction: 'up' | 'down' | 'first' | 'last', i?: num): str => {
       let searchArea = ids.slice(0, i).reverse()
       if (direction === 'down') searchArea = ids.slice((i || 0) + 1)
       else if (direction === 'last') searchArea = [...ids].reverse()
       else if (direction === 'first') searchArea = ids
-      const index = searchArea.findIndex((id) => isUTextComponent(idAndInfo.get(id)?.type))
+      const index = searchArea.findIndex((id) => isUTextBlock(idAndInfo.get(id)?.type))
       if (index === -1) return direction === 'up' ? 'title' : 'factory'
       return searchArea[index]
     },
@@ -149,7 +158,7 @@ export function UBlocksSet({
         e.preventDefault() // otherwise new block will contain div with br
         e.stopImmediatePropagation()
         const type = idAndInfo.get(selection.ids[0])?.type
-        if (isUTextComponent(type) && type !== 'code') setActiveBlock({ id: selection.ids[0], focus: { type: 'end' } })
+        if (isUTextBlock(type) && type !== 'code') setActiveBlock({ id: selection.ids[0], focus: { type: 'end' } })
         else addNewBlocks(selection.ids.at(-1), 'focus-start', '')
         dispatch({ a: 'clear' })
       } else if (e.key === 'Backspace') {
@@ -158,7 +167,7 @@ export function UBlocksSet({
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
         navigator.clipboard.writeText(
           Array.from(idAndData.current.entries())
-            .filter(([id]) => isUTextComponent(idAndInfo.get(id)?.type))
+            .filter(([id]) => isUTextBlock(idAndInfo.get(id)?.type))
             .map(([_, data]) => data)
             .join('\n\n'),
         )
@@ -173,6 +182,7 @@ export function UBlocksSet({
       {setTitle && (
         <UHeading0
           id={'title'}
+          tryToChangeFieldType={fn}
           focus={activeBlock.id === 'title' ? activeBlock.focus : undefined}
           goUp={fn}
           goDown={onTitleEnter}
@@ -180,10 +190,10 @@ export function UBlocksSet({
           onTitleEnter={onTitleEnter}
           data={title || ''}
           setData={setStr}
-          tryToChangeFieldType={setStr}
           setType={fn}
           addNewBlock={fn}
           type="text"
+          hideMenus={true}
         />
       )}
       <ClickAwayListener onClickAway={() => dispatch({ a: 'clear' })}>
@@ -211,10 +221,12 @@ export function UBlocksSet({
                 addData={addData}
                 addNewUPage={_addNewUPage}
                 deleteBlock={deleteBlock}
+                deleteBlocks={deleteBlocks}
                 appendedData={_id === blockAboveDeleted.id ? blockAboveDeleted.data : undefined}
                 resetActiveBlock={clearFocus}
                 i={i}
                 previousBlockInfo={previousBlockInfo}
+                inUForm={isUForm}
               />
             )
           })}
@@ -228,14 +240,15 @@ export function UBlocksSet({
           onFactoryBackspace={onFactoryBackspace}
           goUp={onFactoryBackspace}
           goDown={fn}
+          tryToChangeFieldType={fn}
           addNewBlock={addNewBlocks}
           isFactory={true}
           placeholder={factoryPlaceholder}
           data=""
-          setData={setStr}
-          tryToChangeFieldType={setStr}
+          setData={fn}
           setType={fn}
           type="text"
+          hideMenus={true}
         />
       )}
     </Stack>
@@ -267,7 +280,7 @@ class ActiveBlock {
 class AddedBlock {
   id = ''
   data = ''
-  type: UComponentType = 'text'
+  type: UBlockType = 'text'
 }
 
 class DeletedBlock {

@@ -30,7 +30,7 @@ const data2: UBlock = {
 
 const data3: UBlock = {
   id: 'newEmptyHeader',
-  initialData: { data: '', type: 'heading1' },
+  initialData: { data: '', type: 'heading-1' },
 }
 
 const empty: UBlock = {
@@ -51,10 +51,12 @@ const _link = '<a href="https://www.google.com/" target="_blank">link</a>'
 const _eq = '<code data-id="1" contenteditable="false">E^2 = \\frac{1}{2}</code>'
 const _eq2 = '<code data-id="2" contenteditable="false">E^3 = \\frac{3}{2}</code>'
 const _text = 'Example: ' + _eq + ' <b>bold</b> <mark>code</mark> ' + _link
+const coloredText = `<em class="red">Red</em> <em class="green">Green</em> <em class="blue">Blue</em> <em class="purple">Purple</em> <em class="pink">Pink</em>`
+const backText = `<em class="red-b">Red</em> <em class="green-b">Green</em> <em class="blue-b">Blue</em> <em class="purple-b">Purple</em> <em class="pink-b">Pink</em>`
 
 const transformedText: UBlock = {
   id: 'transformedText',
-  initialData: { data: _text, type: 'text' },
+  initialData: { data: _text + '\n\n' + coloredText + ' ' + backText, type: 'text' },
 }
 
 const tex: UBlock = {

@@ -92,7 +92,7 @@ const fluffyRuLong: FieldDTO = {
 
 const selectRight: FieldDTO = {
   _id: 'selectRight',
-  type: 'radio',
+  type: 'single-choice',
   data: JSON.stringify({
     question: 'Please select one:',
     options: ['Correct', 'Wrong'],
@@ -115,7 +115,7 @@ const anotherPassiveText: FieldDTO = {
 
 const typeA: FieldDTO = {
   _id: 'typeA',
-  type: 'input',
+  type: 'short-answer',
   data: JSON.stringify({
     question: 'Please type a and use enter to submit:',
     options: [],
@@ -126,7 +126,7 @@ const typeA: FieldDTO = {
 
 const field15: FieldDTO = {
   _id: 'field15',
-  type: 'input',
+  type: 'short-answer',
   data: JSON.stringify({
     question: 'Please type a and DO NOT use enter to submit:',
     options: [],

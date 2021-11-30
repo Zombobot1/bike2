@@ -11,12 +11,12 @@ const T = (props: UBlock) => () => {
 
 const data1: UBlock = {
   id: 'newEquation',
-  initialData: { data: '', type: 'equation' },
+  initialData: { data: '', type: 'block-equation' },
 }
 
 const readonly: UBlock = {
   id: 'readonlyEquation',
-  initialData: { data: 'A=\\frac{1}{2}', type: 'equation' },
+  initialData: { data: 'A=\\frac{1}{2}', type: 'block-equation' },
   readonly: true,
 }
 

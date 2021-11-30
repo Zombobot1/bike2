@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { alpha, createTheme, Theme, useMediaQuery } from '@mui/material'
+import { alpha, createTheme, Theme, ThemeOptions, useMediaQuery } from '@mui/material'
 import { atom, useAtom } from 'jotai'
 import _ from 'lodash'
 import { bool, JSObject, num, str } from '../../../utils/types'
@@ -115,9 +115,7 @@ const theme = {
   },
 }
 
-const lightTheme = createTheme(theme)
-
-const darkTheme = createTheme({
+const themeDark: ThemeOptions = {
   ...theme,
   palette: {
     primary: { main: COLORS.secondary },
@@ -127,7 +125,23 @@ const darkTheme = createTheme({
     background: { default: COLORS.primary, paper: COLORS.primary },
     mode: 'dark',
   },
-})
+}
+
+const duration = {
+  shortest: 0,
+  shorter: 0,
+  short: 0,
+  standard: 0,
+  complex: 0,
+  enteringScreen: 0,
+  leavingScreen: 0,
+}
+
+const lightTheme = createTheme(theme)
+const darkTheme = createTheme(themeDark)
+
+const lightCypress = createTheme({ ...theme, transitions: { duration } })
+const darkCypress = createTheme({ ...themeDark, transitions: { duration } })
 
 declare module '@mui/material/styles' {
   interface Theme {
@@ -155,14 +169,18 @@ const getThemeType = () => localStorage.getItem(THEME_KEY) as ThemeTypeO
 const setThemeType = (type: ThemeType) => localStorage.setItem(THEME_KEY, type)
 const themeA = atom<ThemeTypeO>(getThemeType())
 
-export function useUTheme({ autoDarkMode = true } = {}) {
+export const uthemeOptions = { isCypress: true } // for cypress only
+
+export function useUTheme() {
   const [overriddenThemeType, setOverriddenThemeType] = useAtom(themeA)
-  const prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  let currentThemeType: ThemeType = 'light'
-  if (autoDarkMode) currentThemeType = prefersDarkMode ? 'dark' : 'light'
+  let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
+  if (uthemeOptions.isCypress) prefersDarkMode = false
+
+  let currentThemeType: ThemeType = prefersDarkMode ? 'dark' : 'light'
   if (overriddenThemeType) currentThemeType = overriddenThemeType
 
-  const theme = currentThemeType === 'dark' ? darkTheme : lightTheme
+  let theme = currentThemeType === 'dark' ? darkTheme : lightTheme
+  if (uthemeOptions.isCypress) theme = currentThemeType === 'dark' ? darkCypress : lightCypress
 
   function setTheme(type: ThemeType) {
     setThemeType(type)

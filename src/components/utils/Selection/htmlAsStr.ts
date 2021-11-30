@@ -31,6 +31,12 @@ export function removeTagBefore(html: str, tag: str, beforeRemoval: str, removeA
   return insert(cut, start, nodes.replaceAll(tagStartOrEndRe(tag), ''))
 }
 
+export function replaceClassBefore(html: str, tag: str, class_: str, beforeRemoval: str, removeAround: str): str {
+  const { nodes, start } = extractNodesAroundData(html, beforeRemoval, removeAround)
+  const cut = cutData(html, start, nodes)
+  return insert(cut, start, nodes.replaceAll(tagStartRe(tag), `<${tag} class="${class_}">`))
+}
+
 export function removeTag(html: str, tag: str): str {
   return html.replace(tagRe(tag), '$1')
 }
@@ -84,6 +90,15 @@ export function containsTag(html: str, tag: str): bool {
 export const containsTagBefore = (html: str, tag: str, dataBefore: str, data: str) =>
   !!tagStartRe(tag).exec(extractNodesAroundData(html, dataBefore, data).nodes)
 
+type Match = 'no-class' | 'wrong-class' | 'right-class'
+export function containsTagWithClassBefore(html: str, tag: str, class_: str, dataBefore: str, data: str): Match {
+  const nodes = extractNodesAroundData(html, dataBefore, data).nodes
+  const containsTag = !!tagStartRe(tag).exec(nodes)
+  if (!containsTag) return 'no-class'
+  if (!classStartRe(tag, class_).exec(nodes)) return 'wrong-class'
+  return 'right-class'
+}
+
 export function htmlToElement(html: str): HTMLElement {
   const template = document.createElement('template')
   html = html.trim() // Never return a text node of whitespace as the result
@@ -93,6 +108,7 @@ export function htmlToElement(html: str): HTMLElement {
 
 const tagStartOrEndRe = (tag: str) => new RegExp(`<\\/?${tag}.*?>`, 'gm')
 const tagStartRe = (tag: str) => new RegExp(`<${tag}.*?>`, 'gm')
+const classStartRe = (tag: str, class_: str) => new RegExp(`<${tag} class="${class_}">`, 'gm')
 const tagRe = (tag: str) => new RegExp(`<${tag}.*?>(.*?)<\\/${tag}>`, 'gm')
 
 function extractNodesAroundData(html: str, dataBefore: str, data: str): { nodes: str; start: num } {
@@ -128,6 +144,10 @@ function extractNodesAroundData(html: str, dataBefore: str, data: str): { nodes:
 
 export function sliceHtml(html: str, cursorOffset: num): str {
   return html.slice(0, scrollUntil(html, cursorOffset))
+}
+
+export function cutHtml(html: str, dataToCut: str, cursorOffset: num): str {
+  return cutData(html, scrollUntil(html, cursorOffset) - 1, dataToCut) // -1 because slice(0, scrollUntil(html, cursorOffset)) gives +1
 }
 
 function scrollUntil(html: str, untilI: num): num {

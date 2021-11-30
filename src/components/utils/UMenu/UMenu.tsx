@@ -11,24 +11,26 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  Fade,
 } from '@mui/material'
 import { FC, RefObject, useRef, useState } from 'react'
 import { bool, fn, Fn, num, nums, OptionIconP, str } from '../../../utils/types'
 import { all as call } from '../../../utils/utils'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
-import { _apm } from '../../application/theming/theme'
 import { useHover } from '../hooks/useHover'
 import { filterProps } from '../../../utils/utils'
+import useUpdateEffect from '../hooks/useUpdateEffect'
 
 export interface MenuB extends MenuListProps {
-  btnRef: RefObject<HTMLButtonElement | HTMLLIElement>
+  btnRef?: RefObject<HTMLButtonElement | HTMLLIElement>
   isOpen: bool
-  close: Fn
+  close: (success?: 'esc' | 'enter') => void
   elevation?: num
   minWidth?: str
+  maxHeight?: str
 }
 const propsFormHook = ['open', 'toggleOpen']
-export const menuFilterProps = [...propsFormHook, 'btnRef', 'close', 'isOpen', 'elevation', 'minWidth']
+export const menuFilterProps = [...propsFormHook, 'btnRef', 'close', 'isOpen', 'elevation', 'minWidth', 'maxHeight']
 
 export interface UMenu extends MenuB {
   containerRef?: RefObject<HTMLButtonElement | HTMLLIElement>
@@ -38,88 +40,113 @@ export interface UMenu extends MenuB {
   placement?: 'bottom-start' | 'right'
 }
 
-const uMenuFilter = [...menuFilterProps, 'hasNested', 'isNested', 'offset']
+const uMenuFilter = [...menuFilterProps, 'hasNested', 'isNested', 'offset', 'containerRef']
 
-export function UMenu(props: UMenu) {
+export function UMenu(ps: UMenu) {
   function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === 'Escape') props.close()
+    if (event.key === 'Escape') ps.close()
   }
+
+  const Animation = ps.isNested ? Fade : Grow
 
   return (
     <Popper
-      open={props.isOpen}
-      anchorEl={props.btnRef.current}
-      container={props.containerRef?.current}
-      placement={props.placement || 'bottom-start'}
+      open={ps.isOpen}
+      anchorEl={ps.btnRef?.current}
+      container={ps.containerRef?.current}
+      placement={ps.placement || 'bottom-start'}
       transition
-      disablePortal={!!props.containerRef}
+      disablePortal={!!ps.containerRef}
       style={{ zIndex: 20 }}
       modifiers={[
         {
           name: 'offset',
           options: {
-            offset: props.offset,
+            offset: ps.offset,
           },
         },
       ]}
     >
       {({ TransitionProps, placement }) => (
-        <Grow
+        <Animation
           {...TransitionProps}
           style={{
             transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom',
           }}
         >
-          <Paper elevation={props.elevation || 1} sx={{ minWidth: props.minWidth ? props.minWidth : 'default' }}>
+          <Paper
+            elevation={ps.elevation || 1}
+            // setting of overflowY breaks nested menus
+            sx={{ minWidth: ps.minWidth ? ps.minWidth : 'default', maxHeight: ps.maxHeight }}
+          >
             {/* ClickAwayListener is inside paper due to Grow */}
-            <ClickAwayListener onClickAway={props.close}>
+            <ClickAwayListener onClickAway={ps.isNested ? fn : () => ps.close('esc')}>
               <MenuList
-                {...filterProps(props, uMenuFilter)}
-                onClick={props.hasNested ? fn : props.close}
+                {...filterProps(ps, uMenuFilter)}
+                onClick={() => ps.close('enter')}
                 onKeyDown={handleListKeyDown}
               />
             </ClickAwayListener>
           </Paper>
-        </Grow>
+        </Animation>
       )}
     </Popper>
   )
 }
 
-export function useMenu(onOpen = fn, onClose = fn) {
+export interface UMenuControlsB {
+  isOpen: bool
+  open: Fn
+  close: Fn
+  toggleOpen: Fn
+}
+
+export interface UMenuControls extends UMenuControlsB {
+  btnRef: React.MutableRefObject<null>
+}
+
+export function useMenu(onOpen = fn, onClose = fn): UMenuControls {
   const btnRef = useRef(null)
   const [isOpen, setOpen] = useState(false)
-  const open = call(onOpen, () => setOpen(true))
-  const close = call(onClose, () => setOpen(false))
-  const toggleOpen = isOpen ? close : open
+
+  useUpdateEffect(() => {
+    if (isOpen) onOpen()
+    else onClose()
+  }, [isOpen])
+
+  const open = () => setOpen(true)
+  const close = () => setOpen(false)
+  const toggleOpen = () => setOpen((old) => !old)
   return { isOpen, open, close, toggleOpen, btnRef }
 }
 
 export interface UOption extends MenuItemProps {
   icon: FC<OptionIconP>
+  iconSize?: 'small' | 'large'
   text: str
   shortcut?: str
   close?: Fn
 }
-const filterOption = ['icon', 'text', 'shortcut', 'close']
+const filterOption = ['icon', 'text', 'shortcut', 'close', 'iconSize']
 export function UOption(props: UOption) {
   if (props.children) return <NestedOption {...props} />
   return <PlainOption {...props} />
 }
 
-function PlainOption(props: UOption) {
+function PlainOption(ps: UOption) {
   return (
     <MenuItem
-      {...filterProps(props, filterOption)}
-      onClick={props.close ? call(props.onClick, props.close) : props.onClick}
+      {...filterProps(ps, filterOption)}
+      onClick={ps.close ? call(ps.onClick, ps.close) : ps.onClick}
+      data-cy={ps.text.replaceAll(' ', '-').toLowerCase()}
     >
-      <ListItemIcon>
-        <props.icon fontSize="small" />
+      <ListItemIcon sx={{ marginRight: ps.iconSize === 'large' ? '1rem' : 0 }}>
+        <ps.icon fontSize={ps.iconSize || 'small'} />
       </ListItemIcon>
-      <ListItemText>{props.text}</ListItemText>
-      {props.shortcut && (
+      <ListItemText>{ps.text}</ListItemText>
+      {ps.shortcut && (
         <Shortcut variant="body2" color="text.secondary">
-          {props.shortcut}
+          {ps.shortcut}
         </Shortcut>
       )}
     </MenuItem>
@@ -129,7 +156,7 @@ function PlainOption(props: UOption) {
 function NestedOption(props: UOption) {
   const { ref, hovered } = useHover<HTMLLIElement>()
   return (
-    <MenuItem {...filterProps(props, filterOption)} ref={ref}>
+    <MenuItem {...filterProps(props, filterOption)} ref={ref} data-cy={props.text.replaceAll(' ', '-').toLowerCase()}>
       <ListItemIcon>
         <props.icon fontSize="small" />
       </ListItemIcon>
@@ -141,7 +168,7 @@ function NestedOption(props: UOption) {
         containerRef={ref}
         isOpen={hovered}
         btnRef={ref}
-        close={close}
+        close={fn}
         placement="right"
         elevation={16}
         minWidth="15rem"
@@ -154,7 +181,7 @@ function NestedOption(props: UOption) {
 }
 
 const RightI = styled(ArrowRightRoundedIcon)(({ theme }) => ({
-  color: _apm(theme, 'secondary'),
+  color: theme.apm('secondary'),
   transform: 'scale(1.5) translateY(2px)',
 }))
 

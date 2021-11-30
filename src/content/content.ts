@@ -109,6 +109,7 @@ export function Kitty({ cuteness, roundness = 0.99 }: Kitty) {
 }`
 
 const catCode: CodeDTO = { code: _codeWithPaws, language: 'TypeScript' }
+const codeForFocus: CodeDTO = { code: 'I want to dance with a fat cat', language: 'Text' }
 
 export const _kittensBlocks: IdAndBlocks = [
   ['catVideoText', { type: 'text', data: 'Watch a short documentary about a small cat' }],
@@ -116,49 +117,61 @@ export const _kittensBlocks: IdAndBlocks = [
   ['catCode', { type: 'code', data: $(catCode) }],
   ['catCallout', { type: 'callout', data: $(callout) }],
   ['catQuote', { type: 'quote', data: quote }],
-  ['kittensH', { type: 'heading1', data: 'Kittens' }],
+  ['kittensH', { type: 'heading-1', data: 'Kittens' }],
   ['kittens', { type: 'text', data: _kittens }],
   ['fluffyJpg', { type: 'image', data: $(img) }],
-  ['kittensH2', { type: 'heading2', data: 'Development' }],
+  ['kittensH2', { type: 'heading-2', data: 'Development' }],
   ['kittens2', { type: 'text', data: _kittens2 }],
   ['kittens3', { type: 'text', data: _kittens3 }],
-  ['kittensH3', { type: 'heading3', data: 'Sociality' }],
+  ['kittensH3', { type: 'heading-3', data: 'Sociality' }],
   ['kittens4', { type: 'text', data: _kittens4 }],
   ['catPdf', { type: 'file', data: $(pdf) }],
   ['fluffyMp3', { type: 'audio', data: $(mp3) }],
   ['newCatFile', { type: 'file', data: $(newCatFile) }],
   ['pets', { type: 'page', data: $(page) }],
-  ['waveEquation', { type: 'equation', data: _equation }],
+  ['waveEquation', { type: 'block-equation', data: _equation }],
   ['fallingCats', { type: 'text', data: fallingCats }],
   ['fallingCatsShort1', { type: 'text', data: fallingCatsShort1 }],
   ['fallingCatsShort2', { type: 'text', data: fallingCatsShort2 }],
   ['fallingCatsShort3', { type: 'text', data: fallingCatsShort3 }],
+  ['divider', { type: 'divider', data: '' }],
 ]
 
 const _kittensS = `A <b><i>kitten</i></b> is a juvenile cat. After being born`
-const _kittens2S = `A feline litter usually consists of two to five kittens born after a gestation lasting between 64 and 67 days, with an average`
-const _kittens3S = `Kittens develop very quickly from about two weeks of age until their seventh week. Their coordination and strength`
-const _kittens4S = `Kittens are highly social animals and spend most of their `
+const _kittens2S = `A feline litter usually consists of two to five kittens born after a gestation lasting`
+const _kittens3S = `Kittens develop very quickly from about two`
+const _kittens4S = `Kittens are highly social animals and spend`
 
 export const _kittensForFocusPage: UPageDataDTO = {
   color: '',
   name: 'Pets',
-  ids: ['kittensHL', 'kittensS', 'newCatFile', 'kittensH2L', 'kittens2S', 'kittens3S', 'kittensH3L', 'kittens4S'],
+  ids: [
+    'kittensHL',
+    'kittensS',
+    'newCatFile',
+    'kittensH2L',
+    'kittens2S',
+    'kittens3S',
+    'kittensH3L',
+    'codeForFocus',
+    'kittens4S',
+  ],
   // ids: ['kittensHL', 'kittensS'],
 }
 
 export const _idsForCodeFocus = ['hypoallergenic-cat', 'catCode', 'why-own-cat']
 
 export const _kittensForFocus: IdAndBlocks = [
-  ['kittensHL', { type: 'heading1', data: 'Kittens Kittens Kittens' }],
+  ['kittensHL', { type: 'heading-1', data: 'Kittens Kittens Kittens Kittens' }],
   ['kittensS', { type: 'text', data: _kittensS }],
-  ['kittensH2L', { type: 'heading2', data: 'Development Development' }],
+  ['kittensH2L', { type: 'heading-2', data: 'Development Development Development' }],
   ['kittens2S', { type: 'text', data: _kittens2S }],
   ['kittens3S', { type: 'text', data: _kittens3S }],
-  ['kittensH3L', { type: 'heading3', data: 'Sociality Sociality Sociality Sociality' }],
+  ['kittensH3L', { type: 'heading-3', data: 'Sociality Sociality Sociality Sociality' }],
   ['kittens4S', { type: 'text', data: _kittens4S }],
   ['kittensInfo', { type: 'text', data: '<b><i>Useful information</i></b>' }],
   ['petsForFocus', { type: 'page', data: $(_kittensForFocusPage) }],
+  ['codeForFocus', { type: 'code', data: $(codeForFocus) }],
 ]
 
 export const _kittensForListsPage: UPageDataDTO = {
@@ -225,7 +238,7 @@ export const _kittensQuiz: IdAndBlocks = [
   [
     'fq-q1',
     {
-      type: 'radio',
+      type: 'single-choice',
       data: q(
         'What is the proper term for a group of kittens?',
         ['kindle'],
@@ -237,7 +250,7 @@ export const _kittensQuiz: IdAndBlocks = [
   [
     'fq-q2',
     {
-      type: 'checks',
+      type: 'multiple-choice',
       data: q(
         'Why do cats rub against you?',
         ['To say hello', 'To show affiliation'],
@@ -249,14 +262,14 @@ export const _kittensQuiz: IdAndBlocks = [
   [
     'fq-q3',
     {
-      type: 'input',
+      type: 'short-answer',
       data: q('What breed of domestic cat has the longest fur?', ['Persian'], [], ''),
     },
   ],
   [
     'fq-q4',
     {
-      type: 'inline-question',
+      type: 'inline-exercise',
       data: q(inlineQ1, [], [], inlineQ1E),
     },
   ],

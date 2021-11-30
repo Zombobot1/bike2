@@ -1,23 +1,26 @@
 import { bool, num, str } from '../../utils/types'
 
-export type UListComponent = 'list' | 'bullet-list' | 'numbered-list'
-export type AdvancedTextComponent = 'code' | 'quote' | 'callout'
-export type HeadingComponent = 'heading1' | 'heading2' | 'heading3' | 'heading0'
-export type UTextComponent = 'text' | HeadingComponent | UListComponent | AdvancedTextComponent
-export type UFileComponent = 'file' | 'image' | 'audio' | 'video'
-export type UFormBlockComponent = 'radio' | 'input' | 'checks' | 'textarea' | 'inline-question'
-export type UFormComponent = 'test' | 'exercise' | 'question'
-export type UProjectionComponent = 'page' | UFormComponent
-export type UComponentType = UTextComponent | UFileComponent | UFormBlockComponent | UProjectionComponent | 'equation'
+export type UListBlock = 'list' | 'bullet-list' | 'numbered-list'
+export type AdvancedTextBlock = 'code' | 'quote' | 'callout'
+export type HeadingBlock = 'heading-1' | 'heading-2' | 'heading-3' | 'heading-0'
+export type UTextBlock = 'text' | HeadingBlock | UListBlock | AdvancedTextBlock
+export type UFileBlock = 'file' | 'image' | 'audio' | 'video'
+export type UQuestionBlock = 'single-choice' | 'short-answer' | 'multiple-choice' | 'long-answer' | 'inline-exercise'
+export type UFormBlock = 'test' | 'exercise' | 'question'
+export type UProjectionBlock = 'page' | UFormBlock
+type PseudoUBlock = 'inline-equation'
+type UBlocks = 'block-equation' | 'divider' | 'table' | 'cards' | PseudoUBlock
+export type UBlockType = UTextBlock | UFileBlock | UQuestionBlock | UProjectionBlock | UBlocks
+export type UBlockTypes = UBlockType[]
 
-export function isUTextComponent(t?: UComponentType): bool {
+export function isUTextBlock(t?: UBlockType): bool {
   if (!t) return false
-  const types: UComponentType[] = [
+  const types: UBlockTypes = [
     'text',
-    'heading1',
-    'heading2',
-    'heading3',
-    'heading0',
+    'heading-1',
+    'heading-2',
+    'heading-3',
+    'heading-0',
     'list',
     'bullet-list',
     'numbered-list',
@@ -28,40 +31,45 @@ export function isUTextComponent(t?: UComponentType): bool {
   return types.includes(t)
 }
 
-export function isNotFullWidthComponent(t?: UComponentType): bool {
+export function isNotFullWidthBlock(t?: UBlockType): bool {
   if (!t) return false
   return t === 'image' || t === 'video' // isUFormComponent(t) || causes cypress error
 }
 
-export function isAdvancedText(t?: UComponentType): bool {
+export function isSelectableByClickBlock(t?: UBlockType): bool {
   if (!t) return false
-  const types: UComponentType[] = ['code', 'quote', 'callout']
-  return types.includes(t)
+  return t === 'image' || t === 'divider'
 }
 
-export function isPlainTextComponent(t?: UComponentType): bool {
+export function isAdvancedText(t?: UBlockType): bool {
   if (!t) return false
-  return isUTextComponent(t) && !isAdvancedText(t)
+  const types: UBlockTypes = ['code', 'quote', 'callout']
+  return types.includes(t)
 }
 
-export function isUListComponent(t?: UComponentType): bool {
+export function isPlainTextBlock(t?: UBlockType): bool {
   if (!t) return false
-  const types: UComponentType[] = ['list', 'bullet-list', 'numbered-list']
+  return isUTextBlock(t) && !isAdvancedText(t)
+}
+
+export function isUListBlock(t?: UBlockType): bool {
+  if (!t) return false
+  const types: UBlockTypes = ['list', 'bullet-list', 'numbered-list']
   return types.includes(t)
 }
 
-export function isUFormComponent(t: UComponentType): bool {
-  const types: UComponentType[] = ['test', 'exercise', 'question']
+export function isUFormBlock(t: UBlockType): bool {
+  const types: UBlockTypes = ['test', 'exercise', 'question']
   return types.includes(t)
 }
 
-export function isUFormBlockComponent(t: UComponentType): bool {
-  const types: UComponentType[] = ['radio', 'input', 'checks', 'textarea', 'inline-question']
+export function isUQuestionBlock(t: UBlockType): bool {
+  const types: UBlockTypes = ['single-choice', 'short-answer', 'multiple-choice', 'long-answer', 'inline-exercise']
   return types.includes(t)
 }
 
-export function isUFileComponent(t: UComponentType): bool {
-  const types: UComponentType[] = ['file', 'image', 'audio', 'video']
+export function isUFileBlock(t: UBlockType): bool {
+  const types: UBlockTypes = ['file', 'image', 'audio', 'video']
   return types.includes(t)
 }
 
@@ -70,7 +78,7 @@ export interface UBlockB {
   readonly?: bool
 }
 
-export type UBlockDTO = { type: UComponentType; data: str; isDeleted?: bool }
+export type UBlockDTO = { type: UBlockType; data: str; isDeleted?: bool }
 
 export interface UBlockComponentB {
   data: str
@@ -79,7 +87,7 @@ export interface UBlockComponentB {
 }
 
 export interface UBlockComponent extends UBlockComponentB {
-  type: UComponentType
+  type: UBlockType
 }
 
 export type NewBlockFocus = 'focus-start' | 'focus-end' | 'no-focus'
@@ -87,28 +95,32 @@ export type AddNewBlockUText = (
   underId: str,
   focus?: NewBlockFocus,
   data?: str,
-  type?: UComponentType,
+  type?: UBlockType,
   offset?: num,
 ) => void
-export type InitialData = { data: str; type: UComponentType }
-export type BlockInfo = { type: UComponentType; offset: num; typesStrike?: num }
+export type InitialData = { data: str; type: UBlockType }
+export type BlockInfo = { type: UBlockType; offset: num; typesStrike?: num }
 
-export type SetUBlockType = (type: UComponentType, data?: str, focus?: FocusType) => void
+export type SetUBlockType = (type: UBlockType, data?: str, focus?: FocusType) => void
 export type ArrowNavigationFn = (id: str, xOffset?: num) => void
 
 export type FocusType = 'start' | 'start-integer' | 'end' | 'end-integer'
 export type UTextFocus = { type: FocusType; xOffset?: num; forceUpdate?: bool }
+export type SetFocus = (f?: UTextFocus) => void
 
-export const regexAndType = new Map<str, UComponentType>([
-  ['/text', 'text'],
-  ['/heading1', 'heading1'],
-  ['/heading2', 'heading2'],
-  ['/heading3', 'heading3'],
-  ['/input', 'input'],
-  ['/checks', 'checks'],
-  ['/radio', 'radio'],
-  ['/textarea', 'textarea'],
-  ['/page', 'page'],
+export type InlineEditorExit = 'click' | 'key'
+
+export type TeX = { tex: str; html: str; wasUpdated?: bool }
+export type TexMapRef = React.MutableRefObject<Map<str, TeX>>
+
+export const regexAndType = new Map<str, UBlockType>([
+  ['#', 'heading-1'],
+  ['##', 'heading-2'],
+  ['###', 'heading-3'],
+  ['{}', 'short-answer'],
+  ['[]', 'multiple-choice'],
+  ['()', 'single-choice'],
+  ['{ }', 'long-answer'],
   ['*', 'bullet-list'],
   ['1.', 'numbered-list'],
 ])

@@ -3,7 +3,7 @@ import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { RStack } from '../../../utils/MuiUtils'
 import { UText } from '../types'
 import { UText_ } from '../UText_'
-import { alpha, Box, IconButton, MenuItem, styled, useTheme } from '@mui/material'
+import { alpha, IconButton, MenuItem, styled, useTheme } from '@mui/material'
 import { useRef } from 'react'
 import InfoRoundedIcon from '@mui/icons-material/InfoRounded'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
@@ -11,6 +11,7 @@ import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
 import { bool, SetStr, str } from '../../../../utils/types'
+import { PaddedBox } from '../../UBlock/PaddedBox'
 
 export function Callout(props: UText) {
   const [data] = useReactiveObject(cast(props.data, new CalloutDTO()))
@@ -20,22 +21,22 @@ export function Callout(props: UText) {
   const theme = useTheme()
   const bg = alpha(theme.palette[data.type].main, theme.palette.mode === 'dark' ? 0.2 : 0.1)
   return (
-    <Box sx={{ paddingBottom: '1rem' }}>
+    <PaddedBox>
       <Container sx={{ backgroundColor: bg }} alignItems="start" spacing={1}>
         <CalloutTypePicker type={data.type} setType={setType} readonly={props.readonly} />
         <UText_ {...props} data={data.text} setData={setText} component="pre" color={theme.palette[data.type].main} />
       </Container>
-    </Box>
+    </PaddedBox>
   )
 }
 
 const Container = styled(RStack)(({ theme }) => ({
   flex: 1,
   borderRadius: theme.shape.borderRadius,
-  paddingTop: '1.5rem',
+  paddingTop: '1rem',
   paddingLeft: '1rem',
   paddingRight: '1.5rem',
-  paddingBottom: '0.5rem',
+  paddingBottom: '0.75rem',
 }))
 
 export class CalloutDTO {

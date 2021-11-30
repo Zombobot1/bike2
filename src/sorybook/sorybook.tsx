@@ -40,6 +40,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { FSProvider } from '../fb/fs'
 import { useLocalStorage } from '../components/utils/hooks/useLocalStorage'
+import { Provider } from 'jotai'
 
 export const _SORYBOOK = '/_stories'
 const SORY: FC = () => null
@@ -214,12 +215,12 @@ function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
 
   const { toggleTheme, themeType } = useUTheme()
 
-  function handleKeyDown(event: KeyboardEvent) {
-    if (!event.ctrlKey || !event.altKey) return
-    if ('t†'.includes(event.key)) toggleTheme()
-    else if ('fƒ'.includes(event.key)) toggleFullscreen()
-    else if ('oø'.includes(event.key)) toggleOutline()
-    else if ('r®'.includes(event.key)) rerenderStory()
+  function handleKeyDown(e: KeyboardEvent) {
+    if ((!e.ctrlKey && !e.metaKey) || !e.altKey) return
+    if ('t†'.includes(e.key)) toggleTheme()
+    else if ('fƒ'.includes(e.key)) toggleFullscreen()
+    else if ('oø'.includes(e.key)) toggleOutline()
+    else if ('r®'.includes(e.key)) rerenderStory()
   }
 
   useMount(() => {
@@ -344,6 +345,7 @@ interface Pane_ {
 // provider is used to suppress warning when switching e.g. from upage to fetch with initial data (upage will be updated because it is not unmounted yet?!)
 function Pane({ Sory, outline, soryId }: Pane_) {
   const theme = useTheme()
+
   return (
     <ComponentWrapper
       alignItems="center"
@@ -355,7 +357,9 @@ function Pane({ Sory, outline, soryId }: Pane_) {
     >
       <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
         <FSProvider key={soryId}>
-          <Sory />
+          <Provider>
+            <Sory />
+          </Provider>
         </FSProvider>
       </ErrorBoundary>
     </ComponentWrapper>

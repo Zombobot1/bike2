@@ -10,6 +10,7 @@ import {
   select,
   selectionCoordinates,
   setCursor,
+  toggleEmClass,
   toggleTagMutable,
   toggleTags,
 } from './selection'
@@ -21,6 +22,7 @@ const empty = ''
 const linkedData = '<a href="a">Example</a>: <i><b>italic</b></i> and <b><u>bold<u/></b>'
 const codeData = 't1<code>data</code>t2'
 const insertCodeData = 'data'
+const em = '<pre>Nice <em class="red-b">cat</em></pre>'
 
 class RecOffset {
   x = -1
@@ -97,6 +99,13 @@ export const WrapsTag = T((ref) => {
   toggleTagMutable(root, 's')
   root.focus()
 })
+
+export const WrapsTagWithNewClass = T((ref) => {
+  const root = safe(ref.current)
+  select(root, 5, 8)
+  toggleEmClass(root, 'blue')
+  root.focus()
+}, em)
 
 export const WrapsSeveralTags = T((ref, setData) => {
   const root = safe(ref.current)

@@ -64,7 +64,7 @@ function LeftPartContainer({ children, offset }: { children: ReactNode; offset: 
     <Stack
       alignItems="center"
       justifyContent="center"
-      sx={{ paddingBottom: '1rem', paddingLeft: 0.75 + 2 * (offset - 1) + 'rem', paddingRight: '0.75rem' }}
+      sx={{ paddingLeft: 0.75 + 2 * (offset - 1) + 'rem', paddingRight: '0.75rem' }}
     >
       {children}
     </Stack>

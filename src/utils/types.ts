@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 export type num = number
 export type str = string
 export type bool = boolean
@@ -44,7 +46,8 @@ export type State<T> = [T, SetState<T>]
 export type NumState = State<number>
 export type StrState = State<string>
 export type BoolState = State<boolean>
-
+export type Children = ReactNode
 export type Subset<T, U extends T> = Extract<T, U>
 
 export type OptionIconP = { fontSize: 'large' | 'medium' | 'small' | 'inherit' }
+export type UIcon = React.FC<OptionIconP>

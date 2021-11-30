@@ -2,7 +2,7 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../../cypress/support/index.d.ts" />
 import * as UBlocksSet from './UBlocksSet.stories'
-import { got, saw, type, show, click } from '../../../../utils/testUtils'
+import { got, saw, type, show, click, lost } from '../../../../utils/testUtils'
 import { num } from '../../../../utils/types'
 import { _fluffyBlob } from '../../../../content/content'
 
@@ -59,8 +59,8 @@ describe('UBlocksSet', () => {
 
   it('Factory loses focus when adding not empty blocks | block adds new block', () => {
     show(UBlocksSet.BlocksCreation)
-    utext(1).type('/')
-    utext(1).should('have.focus').type('p').contains('/p')
+    utext(1).type('1')
+    utext(1).should('have.focus').type('p').contains('1p')
 
     type('{enter}')
     utext(2).should('have.focus')
@@ -83,7 +83,7 @@ describe('UBlocksSet', () => {
     saw('1t')
   })
 
-  it.only('Separate block on paste', () => {
+  it('Separate block on paste', () => {
     show(UBlocksSet.BlocksDeletion)
 
     utext(1).type('{leftarrow}').paste({ pasteType: 'text/plain', pastePayload: 'r \n\n1\n\n2\n\nthird block' })
@@ -113,43 +113,49 @@ describe('UBlocksSet', () => {
     saw('!small')
   })
 
-  it('Moves up & down', () => {
+  it('moves down | moves to factory | moves up | moves to title', () => {
     show(UBlocksSet.ArrowsNavigation)
 
-    type('utext', '{leftarrow}'.repeat(12))
-    type('{downarrow}')
-    type('{downarrow}')
-    type('{downarrow}')
-    type('{downarrow}'.repeat(3))
-    type('{downarrow}'.repeat(3))
-    type('{downarrow}')
-    type('{downarrow}')
-    type('1')
+    const d = ['{downarrow}']
+    const u = ['{uparrow}']
+    const u2 = ['{uparrow}'.repeat(2)]
+    const d2 = ['{downarrow}'.repeat(2)]
 
+    type('utext', '{movetostart}' + '{rightarrow}'.repeat(2))
+    type(d, d2, d, d2, d2, d, d, d, ['1'])
     saw('h1ighly')
 
-    type('{uparrow}')
+    type(d)
+    got('utext', 8).should('have.focus')
 
-    type('{uparrow}')
-    type('{uparrow}'.repeat(3))
-    type('{uparrow}'.repeat(3))
-    type('{uparrow}')
-    type('{uparrow}')
-    type('2')
+    type(u, ['{movetostart}' + '{rightarrow}'.repeat(8)])
+    type(u, u, u, u, u2, u2, u, u, ['2'])
+    saw('K2ittens')
 
-    saw('Kitte2ns')
+    type(u)
+    got('utext').should('have.focus')
   })
+
+  it('deletes selected blocks', () => {
+    show(UBlocksSet.BlocksDeletion, '2rem')
+    click(['block-menu-h', 2], ['block-menu-h', 3]) // select image!!
+    got('delete').click({ force: true })
+    lost('d')
+    cy.get('img').should('not.exist')
+  })
+
+  it('adds blocks via +', () => {
+    show(UBlocksSet.BlocksDeletion, '4rem')
+    click('add-block-h')
+    utext(2).should('have.focus')
+  })
+
   // it was before inline latex separation and caused it to fail -> keep it on the bottom of spec
   it('pastes image', () => {
     show(UBlocksSet.OneEmptyBlock)
     cy.then(_fluffyBlob).then((b) => utext(1).paste({ pasteType: 'image/png', pastePayload: b }))
     saw('img-cy', 'selection-cy')
   })
-
-  // it.only('deletes selected blocks', () => {
-  //   show(UBlocksSet.BlocksDeletion)
-  //   click('block-menu-h') // select image!!
-  // })
 
   // it('Readonly', () => {
   //   show(UPageS.Readonly)

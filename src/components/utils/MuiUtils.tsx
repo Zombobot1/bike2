@@ -15,7 +15,7 @@ import {
   useTheme,
 } from '@mui/material'
 import { FC } from 'react'
-import { JSObject, OptionIconP, str, strs, SVGIcon } from '../../utils/types'
+import { JSObject, num, OptionIconP, str, strs, SVGIcon } from '../../utils/types'
 import { _apm } from '../application/theming/theme'
 
 export function RStack(props: StackProps) {
@@ -30,9 +30,10 @@ export interface IBtn extends IconButtonProps {
   icon: FC
 }
 
+// when placed in ButtonGroup these props appear: 'fullWidth', 'disableElevation'
 export function IBtn(props: IBtn) {
   return (
-    <IconButton {...filter(props, ['icon'])}>
+    <IconButton {...filter(props, ['icon', 'fullWidth', 'disableElevation'])}>
       <props.icon />
     </IconButton>
   )
@@ -94,14 +95,33 @@ export function CTick(props: CTick) {
   )
 }
 
-export const SVGI =
-  (Component: SVGIcon) =>
-  ({ fontSize }: OptionIconP) => {
-    const theme = useTheme()
-    let style: JSObject = { fill: theme.apm('btn'), width: 24, height: 24 }
+export function SVGI(Component: SVGIcon, { scale = 0 } = {}) {
+  return ({ fontSize }: OptionIconP) => {
+    let style = useIconStyle(scale)
     if (fontSize === 'large') style = { ...style, width: 40, height: 40 }
     return <Component style={style} />
   }
+}
+
+export function SVGIC(Component: SVGIcon, { scale = 0, width = 0, color = '', colorDark = '' } = {}) {
+  return ({ fontSize }: OptionIconP) => {
+    let style = useIconStyle(scale, color, colorDark, width)
+    if (fontSize === 'large') style = { ...style, width: 40, height: 40 }
+    return <Component style={style} />
+  }
+}
+
+function useIconStyle(scale: num, color = '', colorDark = '', width = 0) {
+  const theme = useTheme()
+  let style: JSObject = { fill: 'inherit', opacity: 0.55, width: 24, height: 24 } // https://github.com/mui-org/material-ui/issues/26267#issuecomment-879453793
+  if (color && colorDark) style = { fill: theme.isDark() ? colorDark : color, width: 24, height: 24 }
+  else if (theme.isDark()) style = { fill: theme.palette.primary.main, width: 24, height: 24 }
+
+  if (scale) style = { ...style, transform: `scale(${scale})` }
+  else if (width) style = { ...style, width, height: width }
+
+  return style
+}
 
 const filter = (props: JSObject, excessive: strs) =>
   Object.fromEntries(Object.entries(props).filter(([k]) => !excessive.includes(k)))

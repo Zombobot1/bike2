@@ -5,6 +5,9 @@ const light = 'rgb(255, 122, 0)'
 const dark = 'rgb(4, 15, 48)'
 
 describe('ThemeBtn', () => {
+  // eslint-disable-next-line mocha/no-hooks-for-single-case
+  after(() => localStorage.setItem('themeType', 'light'))
+
   it('Changes Theme', () => {
     localStorage.setItem('themeType', 'light')
     show(ThemeBtn.ChangesTheme)

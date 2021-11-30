@@ -1,4 +1,4 @@
-import { Stack, styled, Typography, IconButton, Box } from '@mui/material'
+import { Stack, styled, Typography, IconButton } from '@mui/material'
 import { num } from '../../../utils/types'
 import { cast, prevented } from '../../../utils/utils'
 import { UBlockComponent, UBlockComponentB } from '../types'
@@ -11,6 +11,7 @@ import { UImageFile } from './UImageFile/UImageFile'
 import { UAudioFile } from './UAudioFile/UAudioFile'
 import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
 import { UVideoFile } from './UVideoFile/UVideoFile'
+import { PaddedBox } from '../UBlock/PaddedBox'
 
 export class UFileDTO {
   src = ''
@@ -41,12 +42,12 @@ export interface UFile extends UBlockComponent {
 
 export function UFile(props: UFile) {
   return (
-    <Box sx={{ paddingBottom: '1rem', width: props.type !== 'image' ? '100%' : 'auto' }}>
+    <PaddedBox sx={{ width: props.type !== 'image' ? '100%' : 'auto' }}>
       {props.type === 'file' && <UFile_ {...props} />}
       {props.type === 'image' && <UImageFile {...props} />}
       {props.type === 'audio' && <UAudioFile {...props} />}
       {props.type === 'video' && <UVideoFile {...props} />}
-    </Box>
+    </PaddedBox>
   )
 }
 
