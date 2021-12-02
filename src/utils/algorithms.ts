@@ -46,3 +46,8 @@ export function cutData(s: str, start: num, dataOrEnd: str | num): str {
   if (_.isString(dataOrEnd)) return s.slice(0, start) + s.slice(start + dataOrEnd.length)
   return s.slice(0, start) + s.slice(dataOrEnd)
 }
+
+export const sort = <T>(arr: T[], toNum: (element: T) => num = (e) => e as unknown as num): T[] => {
+  arr.sort((a, b) => toNum(a) - toNum(b))
+  return arr
+}

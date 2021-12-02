@@ -1,10 +1,10 @@
 import { alpha, Box, styled, useTheme } from '@mui/material'
 import _ from 'lodash'
-import { useEffect, useRef, KeyboardEvent, useState, memo, RefObject } from 'react'
+import { useEffect, useRef, KeyboardEvent, useState, memo } from 'react'
 import ContentEditable from 'react-contenteditable'
 import { safeSplit } from '../../../utils/algorithms'
 import { srcfy } from '../../../utils/filesManipulation'
-import { bool, fn, Fn, JSObject, num, SetNum, SetStr, str } from '../../../utils/types'
+import { bool, DivRef, fn, Fn, JSObject, num, SetNum, SetStr, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { _apm } from '../../application/theming/theme'
 import { unhighlight } from '../../utils/CodeEditor/highlight'
@@ -29,13 +29,13 @@ import { ToggleTex, useTex } from './UTextOptions/UTextInlineEditors/UTextTexEdi
 import { useLinks } from './UTextOptions/UTextInlineEditors/UTextLinkEditor'
 import { useMenuB } from '../../utils/UMenu/useMenuB'
 import { BlockAutocomplete } from '../UBlock/BlockAutocomplete/BlockAutocomplete'
+import { getUTextStyles } from './utextStyles'
 
 function UText__(ps: UText_) {
-  // useDebugInformation(ps.id, ps)
   const ref = useRef<HTMLDivElement>(null)
   const mapRef = useRef(new Map<str, TeX>())
 
-  const { text, onBlur, onTextChange, setText } = useText(ps, mapRef)
+  const { text, onBlur, onTextChange, setText } = useText(ps, ref, mapRef)
   const { setFocus, refocus } = useFocus(ps, ref)
   const texProps = useTex(mapRef, ps, text, setText, setFocus, refocus, ref)
   const { toggleTex } = texProps
@@ -78,7 +78,7 @@ export interface UText_ extends UText {
   color?: str
 }
 
-function useText(ps: UText_, mapRef: TexMapRef) {
+function useText(ps: UText_, ref: DivRef, mapRef: TexMapRef) {
   const [text, setText] = useState(ps.data)
 
   useEffect(() => {
@@ -92,12 +92,25 @@ function useText(ps: UText_, mapRef: TexMapRef) {
     const t = sanitize(text, mapRef)
     if (t !== ps.data) {
       ps.setData(t)
-      ps.addData?.(ps.id, t)
+      ps.addInfo?.(ps.id, {
+        type: ps.type,
+        data: t,
+        offset: ps.offset,
+        scrollTo: () => ref.current?.scrollIntoView({ behavior: 'smooth' }),
+        i: ps.i,
+      })
     }
   }, [text])
 
   useEffect(() => {
-    if (ps.addInfo) ps.addInfo(ps.id, { type: ps.type, offset: ps.offset || 0 })
+    if (ps.addInfo)
+      ps.addInfo(ps.id, {
+        scrollTo: () => ref.current?.scrollIntoView({ behavior: 'smooth' }),
+        type: ps.type,
+        data: sanitize(text, mapRef),
+        offset: ps.offset,
+        i: ps.i,
+      })
   }, [ps.id, ps.type, ps.offset])
 
   useEffect(() => {
@@ -111,7 +124,7 @@ function useText(ps: UText_, mapRef: TexMapRef) {
 }
 const symbolLength = (text: str) => unhighlight(replaceAllCodeToNothing(text)).length
 
-function useAutocomplete(ps: UText_, text: str, toggleTex: ToggleTex, ref: Ref) {
+function useAutocomplete(ps: UText_, text: str, toggleTex: ToggleTex, ref: DivRef) {
   const [offsetBeforeOpen, setOffsetBeforeOpen] = useState(-1)
   const menu = useMenuB(fn, (exit) => {
     if (exit === 'esc') {
@@ -137,7 +150,6 @@ function useAutocomplete(ps: UText_, text: str, toggleTex: ToggleTex, ref: Ref) 
   return { menu, coordinates, createBlock, openAutocomplete }
 }
 
-type Ref = RefObject<HTMLDivElement>
 function useKeyDown(
   ps: UText_,
   text: str,
@@ -146,7 +158,7 @@ function useKeyDown(
   mapRef: TexMapRef,
   toggleLink: Fn,
   toggleTex: SetNum,
-  ref: Ref,
+  ref: DivRef,
 ) {
   const { lastUsedColorClass } = useLastUsedColor()
 
@@ -288,7 +300,7 @@ function useSX(ps: UText_, text: str): JSObject {
   return { sx }
 }
 
-function useFocus(ps: UText_, ref: Ref) {
+function useFocus(ps: UText_, ref: DivRef) {
   const [focus, setFocus] = useReactiveObject(ps.focus)
   useEffect(() => {
     if (!focus) return
@@ -316,12 +328,19 @@ function useTextMount(
   setText: SetStr,
   openAutocomplete: SetNum,
   splitText: (t?: str) => void,
-  ref: Ref,
+  ref: DivRef,
 ) {
   useMount(() => {
     // ps.initialData === text - component mounts twice (why?) -> autocomplete opens twice
     if (ps.initialData === '/' && ps.initialData === text) openAutocomplete(1)
-    ps.addData?.(ps.id, ps.data)
+    ps.addInfo?.(ps.id, {
+      data: ps.data,
+      type: ps.type,
+      offset: ps.offset,
+      i: ps.i,
+      scrollTo: () => ref.current?.scrollIntoView({ behavior: 'smooth' }),
+    })
+
     const sRef = safe(ref.current)
 
     const onPaste = (e: ClipboardEvent) => {
@@ -386,37 +405,8 @@ const Styles = styled(Box)(({ theme }) => ({
     fontStyle: 'normal',
   },
 
-  h1: { fontSize: '1.75rem', paddingBottom: '1.5rem' },
-  h2: { fontSize: '1.25rem', paddingBottom: '0.75rem', paddingTop: '0.75rem' },
-  h3: { fontSize: '1rem', paddingBottom: '0.6875rem', paddingTop: '0.6875rem' },
-  h4: { fontSize: '0.875rem', paddingBottom: '0.625rem', paddingTop: '0.625rem' },
-  pre: { fontSize: '1rem', paddingBottom: '0.5rem', paddingTop: '0.5rem' },
-
-  [`${theme.breakpoints.up('sm')}`]: {
-    h1: { fontSize: '3.5rem', paddingBottom: '2rem' },
-    h2: { fontSize: '2.5rem', paddingBottom: '1rem', paddingTop: '1rem' },
-    h3: { fontSize: '2rem', paddingBottom: '0.875rem', paddingTop: '0.875rem' },
-    h4: { fontSize: '1.75rem', paddingBottom: '0.75rem', paddingTop: '0.75rem' },
-    pre: { fontSize: '1.5rem', paddingBottom: '0.5rem', paddingTop: '0.5rem' },
-  },
+  ...getUTextStyles(theme.breakpoints.up('sm')),
 }))
-
-export const utextPaddings = new Map([
-  ['heading-1', `${1 + 0.5}rem`],
-  ['heading-2', `${0.875 + 0.2}rem`],
-  ['heading-3', `0.75rem`],
-  ['text', `0.5rem`],
-])
-
-// paddingBottom + constant to move up * constant for cypress
-export const sizeMultipliers = new Map([
-  ['code', 3],
-  ['h1', 2 * 1.1],
-  ['h2', (1 + 0.2) * 1.3],
-  ['h3', (0.875 + 0.2) * 1.3],
-  ['h4', (0.75 + 0.2) * 1.3],
-  ['pre', (0.5 + 0.15) * 1.3],
-])
 
 const Editable = styled(ContentEditable, { label: 'ContentEditable ' })(({ theme }) => ({
   width: '100%',

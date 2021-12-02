@@ -73,7 +73,8 @@ export const tick = (cy: str, eq = 0): { type: TypeFn } => {
   return { type }
 }
 
-const _saw = (text: str) => (text.endsWith('-cy') ? got(text.slice(0, -3)).should('exist') : cy.contains(text)) // RegExp(`^${text}$`) doesn't detect text correctly
+const _saw = (text: str, strict = false) =>
+  text.endsWith('-cy') ? got(text.slice(0, -3)).should('exist') : cy.contains(strict ? RegExp(`^${text}$`) : text) // RegExp(`^${text}$`) doesn't detect text correctly
 
 type Color = 'c' | 'bg' | undefined
 type Colored = Array<str | (() => CYChain) | Color>
@@ -87,11 +88,15 @@ function sawColored([el, color, type = 'c']: Colored) {
 }
 
 // saw('t')
-// saw('t-ty') - checks by cy (DO NOT ADD "-cy" IT TO ELEMENTS)
+// saw('t-cy') - checks by cy (DO NOT ADD "-cy" TO ELEMENTS)
 // saw('t', 't')
 // saw('t', ['t', 'red'])
 // saw([el, 'red'])
-export const saw = (...args: Array<str | Colored>) => args.forEach((a) => (Array.isArray(a) ? sawColored(a) : _saw(a)))
+export const saw = (...args: Array<str | Colored>) =>
+  args.forEach((a) => {
+    if (Array.isArray(a)) a[1] === 'strict' ? _saw(a[0] as str, true) : sawColored(a)
+    else _saw(a)
+  })
 export const lost = (text: str) => cy.contains(text).should('not.exist')
 export const doNotFret = () => cy.on('uncaught:exception', () => false)
 

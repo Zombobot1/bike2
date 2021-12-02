@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 export type num = number
 export type str = string
@@ -25,19 +25,13 @@ export type JSObjects = JSObject[]
 export type JSObjectStr = { [key: string]: string }
 
 export type Fn = () => void
+export type Fns = Fn[]
 export type SetStr = (s: str) => void
 export type SetStrs = (s: strs) => void
 export type SetBool = (s: bool) => void
 export type SetNum = (s: num) => void
 
 export const fn: Fn = () => {}
-export const setStr: SetStr = (_: str) => {}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type Instantiable = { new (...args: any[]): any }
-export interface WithId {
-  _id: string
-}
 
 export type SVGIcon = React.FC<React.SVGProps<SVGSVGElement>> & { title?: string | undefined }
 
@@ -47,6 +41,7 @@ export type NumState = State<number>
 export type StrState = State<string>
 export type BoolState = State<boolean>
 export type Children = ReactNode
+export type DivRef = React.RefObject<HTMLDivElement>
 export type Subset<T, U extends T> = Extract<T, U>
 
 export type OptionIconP = { fontSize: 'large' | 'medium' | 'small' | 'inherit' }

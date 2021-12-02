@@ -169,7 +169,7 @@ function Options({ styles, menu, setTextColor, textRef, coordinates, textColor, 
         zIndex: 2, // otherwise overlapped by file dropzone
       }}
     >
-      <ToggleButtonGroup value={styles.data} aria-label="text formatting" sx={groupSX} size="small">
+      <ToggleButtonGroup value={styles._data} aria-label="text formatting" sx={groupSX} size="small">
         {/* Failed to avoid copy pasting because ToggleButtonGroup breaks */}
         <ToggleButton value="link" aria-label="link" onClick={linkEditorPs.toggleLink}>
           <Tooltip

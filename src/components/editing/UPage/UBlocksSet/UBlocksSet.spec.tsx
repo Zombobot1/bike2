@@ -50,7 +50,7 @@ describe('UBlocksSet', () => {
     saw('1')
   })
 
-  it('Inserts block under image', () => {
+  it('Inserts block under active image', () => {
     show(UBlocksSet.BlocksDeletion)
     ublock(3).click().type('{enter}')
     type('1')
@@ -144,10 +144,12 @@ describe('UBlocksSet', () => {
     cy.get('img').should('not.exist')
   })
 
-  it('adds blocks via +', () => {
-    show(UBlocksSet.BlocksDeletion, '4rem')
-    click('add-block-h')
-    utext(2).should('have.focus')
+  it('separates and merges text blocks', () => {
+    show(UBlocksSet.BlocksDeletion)
+    utext(1).type('{leftarrow}{enter}')
+    saw(['t', 'strict'])
+    type(['{backspace}'], ['{enter}'], ['{backspace}'])
+    saw('cat')
   })
 
   // it was before inline latex separation and caused it to fail -> keep it on the bottom of spec

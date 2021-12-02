@@ -178,8 +178,10 @@ const CopyBtn = styled(IBtn)(({ theme }) => ({
   position: 'absolute',
   right: '1rem',
   top: '0.5rem',
-  opacity: 0,
+  opacity: 1,
   transition: theme.tra('opacity'),
+
+  [`${theme.breakpoints.up('sm')}`]: { opacity: 0 },
 }))
 
 const BigCodeRoot = styled(CodeRoot)(({ theme }) => ({
@@ -246,6 +248,8 @@ const LanguageSelector = styled(Box)(({ theme }) => ({
   position: 'absolute',
   left: '1rem',
   top: '0.5rem',
-  opacity: 0,
+  opacity: 1,
   transition: theme.tra('opacity'),
+
+  [`${theme.breakpoints.up('sm')}`]: { opacity: 0 },
 }))

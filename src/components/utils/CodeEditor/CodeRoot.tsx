@@ -5,7 +5,7 @@ import { COLORS } from '../../application/theming/theme'
 export const CodeRoot = styled(Box)(({ theme }) => ({
   'div[class*="language-"]': {
     tabSize: 2,
-    fontSize: '1.25rem',
+    fontSize: '1rem',
 
     color: theme.isDark() ? '#f92aad' : '#00a7fb',
     textShadow: theme.isDark() ? '0 0 2px #100c0f, 0 0 5px #dc078e33, 0 0 10px #fff3' : undefined,
@@ -17,6 +17,8 @@ export const CodeRoot = styled(Box)(({ theme }) => ({
     wordWrap: 'normal',
     lineHeight: '1.5',
     hyphens: 'none',
+
+    [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.25rem' },
   },
 
   ...(theme.isDark() ? dark : light),

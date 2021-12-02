@@ -1,6 +1,6 @@
 import { alpha, styled, Tooltip } from '@mui/material'
 import { useCallback, useRef } from 'react'
-import { useReactiveObject } from '../../utils/hooks/hooks'
+import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
 import { bool, fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
 import {
   AddNewBlockUText,
@@ -34,13 +34,12 @@ import { _apm, _tra } from '../../application/theming/theme'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Equation } from '../Equation/Equation'
 import { UDivider } from '../UDivider/UDivider'
-import { utextPaddings } from '../UText/UText_'
 import { BlockTurner } from './BlockAutocomplete/BlockTurner'
+import { utextPaddings } from '../UText/utextStyles'
 
 export interface UBlock extends UBlockB {
   inUForm?: bool
   addNewBlock?: AddNewBlockUText
-  addData?: (id: str, data: str) => void
   addInfo?: (id: str, i: BlockInfo) => void
   previousBlockInfo?: BlockInfo
   goUp?: ArrowNavigationFn
@@ -85,7 +84,6 @@ export function UBlock({
   addNewUPage = fn,
   goUp,
   goDown,
-  addData,
   resetActiveBlock = fn,
   deleteBlocks: deleteUBlocks = fn,
   i = 100,
@@ -95,7 +93,7 @@ export function UBlock({
   const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
   const { setData: setExternalData } = useSetData()
   const { selection, dispatch } = useSelection(ublock.type)
-
+  const isSM = useIsSM()
   const [focus, setFocus] = useReactiveObject(initialFocus)
   const setData = useCallback((data: str) => setUBlock({ ...ublock, data }), [JSON.stringify(ublock)])
   const setType = useCallback(
@@ -130,6 +128,7 @@ export function UBlock({
   const utextProps = {
     ...commonProps,
     tryToChangeFieldType,
+    i,
     setType,
     focus,
     addNewBlock,
@@ -141,7 +140,6 @@ export function UBlock({
     goUp,
     goDown,
     addInfo,
-    addData,
     previousBlockInfo,
     appendedData,
     initialData: initialData?.data,
@@ -150,33 +148,35 @@ export function UBlock({
   return (
     <Container
       onMouseDown={() => {
-        dispatch({ a: 'mouse-down' })
+        if (isSM) dispatch({ a: 'mouse-down' })
         // if you click on code and then move back to previous focused block focus will be lost: setCursor is not called
         // it is possible to trigger setCursor if special flag "fromCode" is introduced in focus but it doesn't help
         if (ublock.type !== 'code') resetActiveBlock()
       }}
-      onMouseUp={() => dispatch({ a: 'mouse-up' })}
-      onMouseEnter={(e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id })}
-      onMouseLeave={(e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id })}
-      onClick={isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id }) : fn}
+      onMouseUp={isSM ? () => dispatch({ a: 'mouse-up' }) : fn}
+      onMouseEnter={isSM ? (e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id }) : fn}
+      onMouseLeave={isSM ? (e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id }) : fn}
+      onClick={isSM && isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id }) : fn}
       tabIndex={i + 100}
       data-cy="ublock"
       ref={ref}
     >
       <RStack>
         <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }}>
-          <BlockMenu
-            data={ublock.data}
-            type={ublock.type}
-            setType={setType}
-            deleteBlock={deleteBlocks}
-            onAddClick={() => addNewBlock(id, 'focus-start')}
-            onMenuClick={() => dispatch({ a: 'select-by-click', id })}
-            clearSelection={() => dispatch({ a: 'clear', force: true })}
-            selectedMany={selection.ids.length > 1}
-            readonly={readonly}
-            pt={utextPaddings.get(ublock.type.toLowerCase())}
-          />
+          {isSM && (
+            <BlockMenu
+              data={ublock.data}
+              type={ublock.type}
+              setType={setType}
+              deleteBlock={deleteBlocks}
+              onAddClick={() => addNewBlock(id, 'focus-start')}
+              onMenuClick={() => dispatch({ a: 'select-by-click', id })}
+              clearSelection={() => dispatch({ a: 'clear', force: true })}
+              selectedMany={selection.ids.length > 1}
+              readonly={readonly}
+              pt={utextPaddings.get(ublock.type.toLowerCase())}
+            />
+          )}
           {selection.ids.includes(id) && <Selection data-cy="selection" />}
           {isUTextBlock(ublock.type) && <UText {...utextProps} />}
           {isUFileBlock(ublock.type) && <UFile {...commonProps} />}

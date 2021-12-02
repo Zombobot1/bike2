@@ -6,6 +6,7 @@ import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded'
 import { prevented } from '../../../utils/utils'
 import { _apm } from '../../application/theming/theme'
+import { useIsSM } from '../hooks/hooks'
 
 export interface DropzoneB {
   icon?: ReactNode
@@ -23,6 +24,8 @@ export function Dropzone({ filesS, label = 'files', readFromKeyboard, icon, isUp
   const [_, setFiles] = filesS
   const onDrop = useCallback((fs: Files) => setFiles(fs), [])
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: isUploading })
+  const isSM = useIsSM()
+  if (!isSM) return null
   return (
     <DropArea
       {...getRootProps()}

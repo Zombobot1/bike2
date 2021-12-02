@@ -50,7 +50,7 @@ const TEX = SVGI(TEXI)
 
 const MathBox = styled(Box)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
-  padding: '1rem 0.5rem',
+  padding: '0.5rem 0.25rem',
   cursor: 'pointer',
 
   ':hover': {
@@ -62,13 +62,13 @@ const MathBox = styled(Box)(({ theme }) => ({
   },
 
   '.katex': {
-    fontSize: '1.75rem',
+    fontSize: '1.25rem',
+  },
+
+  [`${theme.breakpoints.up('sm')}`]: {
+    padding: '1rem 0.5rem',
+    '.katex': {
+      fontSize: '1.75rem',
+    },
   },
 }))
-
-// const InputBox = styled(Box)({
-//   position: 'absolute',
-//   left: '50%',
-//   bottom: 0,
-//   transform: 'translateY(100%)',
-// })

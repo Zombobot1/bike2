@@ -1,13 +1,13 @@
-import { bool, Fn, SetStr, str } from '../../../utils/types'
+import { bool, Fn, num, SetStr, str } from '../../../utils/types'
 import { AddNewBlockUText, ArrowNavigationFn, BlockInfo, SetUBlockType, UBlockComponent, UTextFocus } from '../types'
 
 export interface UText extends UBlockComponent {
   id: str
   setType: SetUBlockType
   tryToChangeFieldType: SetStr
+  i: num
   inUForm?: bool
   addInfo?: (id: str, i: BlockInfo) => void
-  addData?: (id: str, i: str) => void
   appendedData?: str
   initialData?: str
   previousBlockInfo?: BlockInfo

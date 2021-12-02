@@ -120,7 +120,7 @@ export function useTex(
       }
 
       setText(newData)
-      ps.addData?.(ps.id, sanitize(newData, mapRef))
+      ps.addInfo?.(ps.id, { data: sanitize(newData, mapRef), offset: ps.offset, i: ps.i, type: ps.type })
     }
 
     if (exitedBy === 'key') setFocus({ type: 'start-integer', xOffset: activeTex.offset })

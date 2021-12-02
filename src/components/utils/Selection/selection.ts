@@ -1,6 +1,7 @@
 import { bool, num, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
-import { sizeMultipliers as arrowNavigationSizeMultipliers } from '../../editing/UText/UText_'
+import { arrowNavigationSizeMultipliers } from '../../editing/UText/utextStyles'
+
 import { dfsText } from './dfsText'
 import {
   containsTagBefore,

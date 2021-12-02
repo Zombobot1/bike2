@@ -20,6 +20,7 @@ import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import StarOutlineRoundedIcon from '@mui/icons-material/StarOutlineRounded'
 import StarRoundedIcon from '@mui/icons-material/StarRounded'
+import FormatAlignRightRoundedIcon from '@mui/icons-material/FormatAlignRightRounded'
 import { atom, useAtom } from 'jotai'
 import { _apm } from '../../theming/theme'
 import { bool, Fn, num, SetStr, str } from '../../../../utils/types'
@@ -33,6 +34,7 @@ import { useDeleteUPage } from '../../../editing/UPage/UBlocksSet/UBlocksSet'
 export interface AppBar {
   workspace: WS
   openNavBar: Fn
+  openTOC?: Fn
 }
 
 const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
@@ -53,7 +55,7 @@ const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
   },
 }))
 
-export function AppBar({ workspace, openNavBar }: AppBar) {
+export function AppBar({ workspace, openNavBar, openTOC }: AppBar) {
   const isSM = useIsSM()
   const [showAppBar] = useAtom(showAppBarA)
   const { location, history } = useRouter()
@@ -66,7 +68,9 @@ export function AppBar({ workspace, openNavBar }: AppBar) {
         </IconButton>
       )}
       <Crumbs workspace={workspace} />
-      {showUPageOptions && <UPageOptions history={history} path={location.pathname} workspace={workspace} />}
+      {showUPageOptions && (
+        <UPageOptions history={history} path={location.pathname} workspace={workspace} openTOC={openTOC} />
+      )}
     </AppBar_>
   )
 }
@@ -200,7 +204,14 @@ function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
   )
 }
 
-function UPageOptions({ workspace, path, history }: { workspace: WS; path: str; history: { push: SetStr } }) {
+interface UPageOptions_ {
+  workspace: WS
+  path: str
+  history: { push: SetStr }
+  openTOC?: Fn
+}
+
+function UPageOptions({ workspace, path, history, openTOC }: UPageOptions_) {
   const id = safeSplit(path, '/')[0]
   const deleteUPage = useDeleteUPage(id)
   const delete_ = () => {
@@ -254,6 +265,14 @@ function UPageOptions({ workspace, path, history }: { workspace: WS; path: str; 
                         {workspace.isFavorite(id) ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
                       </ListItemIcon>
                       <ListItemText>{workspace.isFavorite(id) ? 'Remove from favorite' : 'Make favorite'}</ListItemText>
+                    </MenuItem>
+                  )}
+                  {!isSM && openTOC && (
+                    <MenuItem onClick={all(openTOC, handleClose)}>
+                      <ListItemIcon>
+                        <FormatAlignRightRoundedIcon />
+                      </ListItemIcon>
+                      <ListItemText>Show Table Of Contents</ListItemText>
                     </MenuItem>
                   )}
                 </MenuList>

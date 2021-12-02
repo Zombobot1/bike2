@@ -1,15 +1,20 @@
 import { Button, Stack, styled } from '@mui/material'
 import randomColor from 'randomcolor'
-import { bool, str, strs } from '../../../utils/types'
-import { useReactive } from '../../utils/hooks/hooks'
+import { bool, Fn, str, strs } from '../../../utils/types'
+import { useIsSM, useReactive } from '../../utils/hooks/hooks'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { useShowAppBar } from '../../application/navigation/AppBar/AppBar'
-import { UBlockDTO, UBlockType } from '../types'
+import { isIndexableBLock, UBlockDTO, UBlockType } from '../types'
 import { UBlocksSet, useUBlocks } from './UBlocksSet/UBlocksSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
 import { uuid } from '../../../utils/uuid'
 import { WS } from '../../application/navigation/workspace'
 import { useSetData } from '../../../fb/useData'
+import { useEffect, useState } from 'react'
+import { TOCItems } from './TableOfContents/types'
+import { TableOfContents } from './TableOfContents/TableOfContents'
+import { useMap } from '../../utils/hooks/useMap'
+import { safe } from '../../../utils/utils'
 
 export interface UPageDataDTO {
   color: str
@@ -26,9 +31,10 @@ export interface UPageDTO {
 
 export interface UPage {
   workspace: WS
+  setOpenTOC: (f?: Fn) => void
 }
-// smallText readOnly fullWidth showToC (default true)
-export function UPage({ workspace }: UPage) {
+// readOnly fullWidth showToC (default true)
+export function UPage({ workspace, setOpenTOC }: UPage) {
   const { location } = useRouter()
   const id = location.pathname.replace('/', '')
   const { ids, ublock, setUBlockData } = useUBlocks<UPageDTO, UPageDataDTO>(id)
@@ -37,6 +43,17 @@ export function UPage({ workspace }: UPage) {
   const [color, setColor] = useReactive(ublock.data.color)
   const [name] = useReactive(ublock.data.name)
   const { showAppBar, hideAppBar } = useShowAppBar()
+  const tocMap = useMap<str, TOCItems>()
+  const isSM = useIsSM()
+  const isTOCOpenS = useState(false)
+
+  useEffect(() => {
+    if (!isSM && tocMap.has(id) && safe(tocMap.get(id)).find((t) => isIndexableBLock(t.type))) {
+      setOpenTOC(() => () => isTOCOpenS[1](true))
+    } else {
+      setOpenTOC(undefined)
+    }
+  }, [tocMap.get(id), isSM])
 
   const rename = (name: str) => {
     setUBlockData({ ...ublock.data, name })
@@ -66,8 +83,10 @@ export function UPage({ workspace }: UPage) {
           addNewUPage={(underId) => addNewUPage(id, underId, color)}
           title={name}
           setTitle={rename}
+          updateTOC={(toc) => tocMap.set(id, toc)}
         />
       </Page>
+      <TableOfContents data={tocMap.get(id) || []} isOpenS={isTOCOpenS} />
     </PageWrapper>
   )
 }

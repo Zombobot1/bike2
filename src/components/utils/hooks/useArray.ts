@@ -3,7 +3,7 @@ import { bool, num, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 
 export interface UArray<T> {
-  data: T[]
+  _data: T[] // readonly
 
   map: <D>(f: (e: T) => D, i?: num) => D[]
   filter: (f: (e: T) => bool, i?: num) => T[]
@@ -26,7 +26,7 @@ export function useArray<T = str>(init: T[] = []): UArray<T> {
   const [array, setArray] = useState(init)
 
   return {
-    data: array,
+    _data: array, // readonly
 
     map: <D>(f: (e: T) => D, i?: num) => array.map(f, i),
     filter: (f: (e: T) => bool, i?: num) => array.filter(f, i),

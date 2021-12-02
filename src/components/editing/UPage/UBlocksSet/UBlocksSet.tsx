@@ -1,6 +1,6 @@
 import { ClickAwayListener, Stack } from '@mui/material'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { bool, fn, num, SetStr, setStr, SetStrs, str, strs } from '../../../../utils/types'
+import { useCallback, useEffect, useState } from 'react'
+import { bool, fn, num, SetStr, SetStrs, str, strs } from '../../../../utils/types'
 import { cast, safe } from '../../../../utils/utils'
 import { uuid } from '../../../../utils/uuid'
 import { BlockInfo, isUTextBlock, UBlockDTO, UBlockType, UTextFocus } from '../../types'
@@ -11,8 +11,10 @@ import { useMap } from '../../../utils/hooks/useMap'
 import { reverse, safeSplit } from '../../../../utils/algorithms'
 import { useArray } from '../../../utils/hooks/useArray'
 import { useSelection } from '../../UBlock/useSelection'
+import { TOCItems } from '../TableOfContents/types'
 
 export interface UBlocksSet {
+  updateTOC?: (items: TOCItems) => void
   readonly?: bool
   ids: strs
   setIds: SetStrs
@@ -32,16 +34,26 @@ export function UBlocksSet({
   title,
   setTitle,
   isUForm,
-  addNewUPage = setStr,
+  addNewUPage = fn,
+  updateTOC,
   factoryPlaceholder,
 }: UBlocksSet) {
   const [activeBlock, setActiveBlock] = useState(new ActiveBlock())
   const addedBlocks = useArray<AddedBlock>()
   const [blockAboveDeleted, setBlockAboveDeleted] = useState(new DeletedBlock())
   const idAndInfo = useMap<str, BlockInfo>()
-  const idAndData = useRef(new Map<str, str>())
   const { dispatch, selection } = useSelection()
   const _infos = JSON.stringify(idAndInfo.values())
+
+  useEffect(() => {
+    if (updateTOC) {
+      updateTOC(idAndInfo.entries().map(([id, { data, type, scrollTo, i }]) => ({ id, data, type, scrollTo, i })))
+    }
+  }, [_infos])
+
+  useEffect(() => {
+    if (blockAboveDeleted.id) setBlockAboveDeleted(new DeletedBlock())
+  }, [blockAboveDeleted]) // if you separate the same block 2 times it will remove separated content
 
   const addInfo = useCallback(
     (id: str, info: BlockInfo) => {
@@ -49,10 +61,6 @@ export function UBlocksSet({
     },
     [_infos],
   )
-
-  const addData = useCallback((id: str, data: str) => {
-    idAndData.current.set(id, data)
-  }, [])
 
   const _addNewUPage = useCallback(
     (id: str) => addNewUPage(ids.slice(0, ids.indexOf(id)).find((id) => idAndInfo.get(id)?.type === 'page') || ''),
@@ -166,9 +174,9 @@ export function UBlocksSet({
         dispatch({ a: 'clear' })
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
         navigator.clipboard.writeText(
-          Array.from(idAndData.current.entries())
-            .filter(([id]) => isUTextBlock(idAndInfo.get(id)?.type))
-            .map(([_, data]) => data)
+          Array.from(idAndInfo.entries())
+            .filter(([_, { type }]) => isUTextBlock(type))
+            .map(([_, { data }]) => data)
             .join('\n\n'),
         )
       }
@@ -182,6 +190,7 @@ export function UBlocksSet({
       {setTitle && (
         <UHeading0
           id={'title'}
+          i={-1}
           tryToChangeFieldType={fn}
           focus={activeBlock.id === 'title' ? activeBlock.focus : undefined}
           goUp={fn}
@@ -189,7 +198,7 @@ export function UBlocksSet({
           clearFocus={clearFocus}
           onTitleEnter={onTitleEnter}
           data={title || ''}
-          setData={setStr}
+          setData={fn}
           setType={fn}
           addNewBlock={fn}
           type="text"
@@ -218,7 +227,6 @@ export function UBlocksSet({
                 }
                 addNewBlock={addNewBlocks}
                 addInfo={addInfo}
-                addData={addData}
                 addNewUPage={_addNewUPage}
                 deleteBlock={deleteBlock}
                 deleteBlocks={deleteBlocks}
@@ -234,6 +242,7 @@ export function UBlocksSet({
       </ClickAwayListener>
       {!readonly && (
         <UParagraph
+          i={-1}
           key={`factory-${activeBlock.id}`}
           id="factory"
           focus={activeBlock.id === 'factory' ? { type: 'start' } : undefined}

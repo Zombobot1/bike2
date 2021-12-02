@@ -1,4 +1,4 @@
-import { Stack, Typography } from '@mui/material'
+import { Stack, styled, Typography } from '@mui/material'
 import { UListDTO, UText } from '../types'
 import { UText_ } from '../UText_'
 import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded'
@@ -6,16 +6,12 @@ import { Box } from '@mui/system'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { cast } from '../../../../utils/utils'
 import { num, str } from '../../../../utils/types'
-import { KeyboardEvent, ReactNode, useEffect } from 'react'
+import { KeyboardEvent, ReactNode } from 'react'
 
 export function UList(props: UText) {
   const [data] = useReactiveObject(cast(props.data, new UListDTO()))
   const setText = (d: str) => props.setData(JSON.stringify({ ...data, text: d }))
   const setOffset = (o: num) => props.setData(JSON.stringify({ ...data, offset: o }))
-
-  useEffect(() => {
-    if (props.addInfo) props.addInfo(props.id, { offset: data.offset, type: props.type })
-  }, [data.offset])
 
   function handleTab(e: KeyboardEvent<HTMLInputElement>, atStart = false) {
     if (!atStart || e.key !== 'Tab') return
@@ -30,7 +26,7 @@ export function UList(props: UText) {
   if (props.type === 'bullet-list') {
     leftPart = (
       <LeftPartContainer offset={data.offset}>
-        <FiberManualRecordRoundedIcon sx={{ width: '0.75rem', height: '0.75rem' }} />
+        <FiberManualRecordRounded />
       </LeftPartContainer>
     )
   } else if (props.type === 'numbered-list') {
@@ -38,7 +34,7 @@ export function UList(props: UText) {
     if (props.previousBlockInfo?.offset === data.offset) index += props.previousBlockInfo?.typesStrike || 0
     leftPart = (
       <LeftPartContainer offset={data.offset}>
-        <Typography sx={{ fontSize: '1.35rem' }}>{index + '.'}</Typography>
+        <Number>{index + '.'}</Number>
       </LeftPartContainer>
     )
   }
@@ -70,3 +66,14 @@ function LeftPartContainer({ children, offset }: { children: ReactNode; offset: 
     </Stack>
   )
 }
+
+const FiberManualRecordRounded = styled(FiberManualRecordRoundedIcon)(({ theme }) => ({
+  width: '0.5rem',
+  height: '0.5rem',
+  [`${theme.breakpoints.up('sm')}`]: { width: '0.75rem', height: '0.75rem' },
+}))
+
+const Number = styled(Typography)(({ theme }) => ({
+  fontSize: '1rem',
+  [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.35rem' },
+}))

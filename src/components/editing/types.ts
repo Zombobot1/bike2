@@ -1,4 +1,4 @@
-import { bool, num, str } from '../../utils/types'
+import { bool, Fn, num, str } from '../../utils/types'
 
 export type UListBlock = 'list' | 'bullet-list' | 'numbered-list'
 export type AdvancedTextBlock = 'code' | 'quote' | 'callout'
@@ -52,6 +52,12 @@ export function isPlainTextBlock(t?: UBlockType): bool {
   return isUTextBlock(t) && !isAdvancedText(t)
 }
 
+export function isIndexableBLock(t?: UBlockType): bool {
+  if (!t) return false
+  const types: UBlockTypes = ['heading-1', 'heading-2', 'heading-3', 'cards', 'exercise']
+  return types.includes(t)
+}
+
 export function isUListBlock(t?: UBlockType): bool {
   if (!t) return false
   const types: UBlockTypes = ['list', 'bullet-list', 'numbered-list']
@@ -99,7 +105,7 @@ export type AddNewBlockUText = (
   offset?: num,
 ) => void
 export type InitialData = { data: str; type: UBlockType }
-export type BlockInfo = { type: UBlockType; offset: num; typesStrike?: num }
+export type BlockInfo = { type: UBlockType; data: str; i: num; scrollTo?: Fn; offset?: num; typesStrike?: num }
 
 export type SetUBlockType = (type: UBlockType, data?: str, focus?: FocusType) => void
 export type ArrowNavigationFn = (id: str, xOffset?: num) => void
