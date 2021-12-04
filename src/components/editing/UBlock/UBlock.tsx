@@ -1,4 +1,4 @@
-import { alpha, styled, Tooltip } from '@mui/material'
+import { alpha, Box, styled, Tooltip } from '@mui/material'
 import { useCallback, useRef } from 'react'
 import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
 import { bool, fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
@@ -36,6 +36,7 @@ import { Equation } from '../Equation/Equation'
 import { UDivider } from '../UDivider/UDivider'
 import { BlockTurner } from './BlockAutocomplete/BlockTurner'
 import { utextPaddings } from '../UText/utextStyles'
+import { UTable } from '../UTable/UTable'
 
 export interface UBlock extends UBlockB {
   inUForm?: bool
@@ -144,11 +145,11 @@ export function UBlock({
     appendedData,
     initialData: initialData?.data,
   }
-
+  const RStack_ = isSM ? RStack : Box
   return (
     <Container
       onMouseDown={() => {
-        if (isSM) dispatch({ a: 'mouse-down' })
+        if (isSM && ublock.type !== 'table') dispatch({ a: 'mouse-down' })
         // if you click on code and then move back to previous focused block focus will be lost: setCursor is not called
         // it is possible to trigger setCursor if special flag "fromCode" is introduced in focus but it doesn't help
         if (ublock.type !== 'code') resetActiveBlock()
@@ -161,7 +162,7 @@ export function UBlock({
       data-cy="ublock"
       ref={ref}
     >
-      <RStack>
+      <RStack_>
         <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }}>
           {isSM && (
             <BlockMenu
@@ -184,8 +185,9 @@ export function UBlock({
           {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
           {ublock.type === 'block-equation' && <Equation {...commonProps} />}
           {ublock.type === 'divider' && <UDivider />}
+          {ublock.type === 'table' && <UTable {...commonProps} />}
         </InnerContainer>
-      </RStack>
+      </RStack_>
     </Container>
   )
 }

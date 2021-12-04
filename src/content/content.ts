@@ -10,6 +10,7 @@ import { UBlockDTO } from '../components/editing/types'
 import { imageFromSrc } from '../utils/filesManipulation'
 import { CalloutDTO } from '../components/editing/UText/Callout/Callout'
 import { CodeDTO } from '../components/editing/UText/Code/Code'
+import { UTableDTO } from '../components/editing/UTable/UTable'
 
 const $ = JSON.stringify
 
@@ -69,6 +70,7 @@ const page: UPageDataDTO = {
     'hypoallergenic-cat5',
     'waveEquation',
     'catCode',
+    'catTable',
   ],
 }
 
@@ -108,12 +110,32 @@ export function Kitty({ cuteness, roundness = 0.99 }: Kitty) {
   )
 }`
 
+const catTable: UTableDTO = {
+  rows: [
+    ['Breed', 'Cost'],
+    ['The Ashera', 'Up to $125,000'],
+    ['Savannah', '$50,000'],
+    ['Bengal', '$25,000'],
+    ['Persian', '$5,500'],
+    ['Peterbald', '$5,000'],
+    ['Sphynx', '$3,000'],
+    ['Scottish Fold', '$3,000'],
+    ['Russian Blue', '$3,000'],
+    ['American Curl', '$1,200'],
+    ['American Wirehair', '$1,200'],
+    ['British Shorthair', '$800 to $1,000'],
+    ['Maine Coon', '$1,000'],
+  ],
+  widths: [230, 190],
+}
+
 const catCode: CodeDTO = { code: _codeWithPaws, language: 'TypeScript' }
 const codeForFocus: CodeDTO = { code: 'I want to dance with a fat cat', language: 'Text' }
 
 export const _kittensBlocks: IdAndBlocks = [
   ['catVideoText', { type: 'text', data: 'Watch a short documentary about a small cat' }],
   ['catVideo', { type: 'video', data: $(video) }],
+  ['catTable', { type: 'table', data: $(catTable) }],
   ['catCode', { type: 'code', data: $(catCode) }],
   ['catCallout', { type: 'callout', data: $(callout) }],
   ['catQuote', { type: 'quote', data: quote }],

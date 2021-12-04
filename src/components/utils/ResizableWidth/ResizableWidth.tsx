@@ -1,4 +1,4 @@
-import { useIsSM, useReactiveObject } from '../hooks/hooks'
+import { useIsSM } from '../hooks/hooks'
 import { ReactNode, useEffect, useState } from 'react'
 import { bool, num, SetNum } from '../../../utils/types'
 import { alpha, styled } from '@mui/material'
@@ -9,11 +9,31 @@ interface ResizableWidth {
   maxWidth: num
   children: ReactNode
   readonly?: bool
+  rightOnly?: bool
+  hiddenHandler?: bool
+  stretch?: bool
+  stretchHandler?: bool
+  // onWidthChange: SetNum // - too heavy for a table
 }
 
-export function ResizableWidth({ width: initialWidth, updateWidth, children, readonly, maxWidth }: ResizableWidth) {
-  const [width, setWidth] = useReactiveObject({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
+export function ResizableWidth({
+  width: initialWidth,
+  updateWidth,
+  children,
+  readonly,
+  maxWidth,
+  rightOnly,
+  hiddenHandler,
+  stretch,
+  stretchHandler,
+}: ResizableWidth) {
   const [isResizing, setIsResizing] = useState(false)
+  const [width, setWidth] = useState({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
+  useEffect(() => {
+    if (isResizing) return
+    setWidth({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
+  }, [initialWidth, maxWidth])
+
   const [needUpdate, setNeedUpdate] = useState(false)
   const isSM = useIsSM()
 
@@ -24,13 +44,12 @@ export function ResizableWidth({ width: initialWidth, updateWidth, children, rea
   }, [needUpdate])
 
   useEffect(() => {
-    if (
-      Math.abs(width.needResize - width.previousResize) > 1 &&
-      width.widthBeforeResize + width.needResize * 2 >= width.minWidth
-    ) {
+    const scaleBy = rightOnly ? 1 : 2
+    const newWidth = width.widthBeforeResize + width.needResize * scaleBy
+    if (Math.abs(width.needResize - width.previousResize) > 1 && newWidth >= width.minWidth) {
       setWidth((old) => ({
         ...old,
-        width: Math.min(old.widthBeforeResize + old.needResize * 2, maxWidth),
+        width: Math.min(old.widthBeforeResize + old.needResize * scaleBy, maxWidth),
         previousResize: old.needResize,
       }))
     }
@@ -57,16 +76,19 @@ export function ResizableWidth({ width: initialWidth, updateWidth, children, rea
       setWidth((old) => ({ ...old, widthBeforeResize: old.width, needResize: 0 }))
     }
 
+  const sx = stretchHandler ? { height: '70%' } : {}
+
   return (
-    <ResizableWidth_ sx={{ width: width.width, cursor: isResizing ? 'col-resize' : 'default' }}>
+    <ResizableWidth_
+      sx={{
+        width: !isResizing && stretch ? '100%' : width.width,
+        cursor: isResizing ? 'col-resize' : 'default',
+      }}
+    >
       {isSM && !readonly && (
         <>
-          <Right onMouseDown={onMouseDown()}>
-            <Handler />
-          </Right>
-          <Left onMouseDown={onMouseDown(true)}>
-            <Handler />
-          </Left>
+          {!rightOnly && <Left onMouseDown={onMouseDown(true)}>{!hiddenHandler && <Handler />}</Left>}
+          <Right onMouseDown={onMouseDown()}>{(!hiddenHandler || isResizing) && <Handler sx={sx} />}</Right>
         </>
       )}
       {children}

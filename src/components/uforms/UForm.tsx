@@ -44,7 +44,7 @@ export function UForm({ data, setData, readonly }: UBlockComponent) {
   return (
     <Stack>
       <RStack justifyContent="space-between">
-        <EditableText text={name} setText={rename} tag="h4" focusIfEmpty={true} />
+        <EditableText text={name} setText={rename} tag="h4" focusIfEmpty={true} placeholder="Untitled" />
         <RStack spacing={1}>
           {error && <Chip size="small" color="error" label={error} />}
           {!readonly && (

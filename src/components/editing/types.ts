@@ -33,7 +33,8 @@ export function isUTextBlock(t?: UBlockType): bool {
 
 export function isNotFullWidthBlock(t?: UBlockType): bool {
   if (!t) return false
-  return t === 'image' || t === 'video' // isUFormComponent(t) || causes cypress error
+  const types: UBlockTypes = ['image', 'video', 'table']
+  return types.includes(t) // isUFormComponent(t) || causes cypress error
 }
 
 export function isSelectableByClickBlock(t?: UBlockType): bool {
