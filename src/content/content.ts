@@ -181,7 +181,11 @@ export const _kittensForFocusPage: UPageDataDTO = {
   // ids: ['kittensHL', 'kittensS'],
 }
 
-export const _idsForCodeFocus = ['hypoallergenic-cat', 'catCode', 'why-own-cat']
+const petsTestPage: UPageDataDTO = {
+  color: '#0066FF',
+  name: 'Pets & animals',
+  ids: _kittensForFocusPage.ids,
+}
 
 export const _kittensForFocus: IdAndBlocks = [
   ['kittensHL', { type: 'heading-1', data: 'Kittens Kittens Kittens Kittens' }],
@@ -194,6 +198,7 @@ export const _kittensForFocus: IdAndBlocks = [
   ['kittensInfo', { type: 'text', data: '<b><i>Useful information</i></b>' }],
   ['petsForFocus', { type: 'page', data: $(_kittensForFocusPage) }],
   ['codeForFocus', { type: 'code', data: $(codeForFocus) }],
+  ['pets-test', { type: 'page', data: $(petsTestPage) }],
 ]
 
 export const _kittensForListsPage: UPageDataDTO = {
@@ -211,6 +216,8 @@ export const _kittensForListsPage: UPageDataDTO = {
     'hypoallergenic-cat2',
   ],
 }
+
+export const _idsForCodeFocus = ['hypoallergenic-cat', 'catCode', 'why-own-cat']
 
 const l = (t: str, o = 1): str => $({ text: t, offset: o })
 export const _kittensForLists: IdAndBlocks = [

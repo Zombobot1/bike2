@@ -26,6 +26,7 @@
     "uform",
     "umenu",
     "Unmount",
+    "upage",
     "utext"
   ],
   "jestrunner.jestCommand": "npm run test --"

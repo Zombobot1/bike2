@@ -16,6 +16,7 @@ const T = (path: str) => () => {
 
 // export const Readonly = T('/pets')
 export const Full = T('/pets')
+export const Small = T('/pets-test')
 
 export default {
   title: 'Editing/UPage',

@@ -2,7 +2,7 @@ import { all } from '../utils/utils'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useRouter } from '../components/utils/hooks/useRouter'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
-import { useIsSM, useMount, useToggle } from '../components/utils/hooks/hooks'
+import { useIsSM, useMount } from '../components/utils/hooks/hooks'
 import { bool, Fn, JSObjects, str, strs } from '../utils/types'
 import { TreeItem, TreeView } from '@mui/lab'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
@@ -197,7 +197,8 @@ interface Nav_ {
 
 function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
   const ref = useRef<HTMLElement>()
-  const [isFullscreen, toggleFullscreen] = useToggle(false)
+  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', false)
+  const toggleFullscreen = () => setIsFullscreen((old) => !old)
   const { location } = useRouter()
   const pathIds = location.pathname.replace('/_stories/', '').split('--')
   const ids = pathIds[0]
@@ -218,8 +219,10 @@ function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
   function handleKeyDown(e: KeyboardEvent) {
     if ((!e.ctrlKey && !e.metaKey) || !e.altKey) return
     if ('t†'.includes(e.key)) toggleTheme()
-    else if ('fƒ'.includes(e.key)) toggleFullscreen()
-    else if ('oø'.includes(e.key)) toggleOutline()
+    else if ('fƒ'.includes(e.key)) {
+      e.preventDefault()
+      toggleFullscreen()
+    } else if ('oø'.includes(e.key)) toggleOutline()
     else if ('r®'.includes(e.key)) rerenderStory()
   }
 

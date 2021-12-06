@@ -179,7 +179,6 @@ export function cursorOffset(node: HTMLElement): num {
 }
 
 export function select(node: ChildNode, from: num, to: num) {
-  // debugger
   const range = document.createRange()
 
   scrollUntil(node, range, from)

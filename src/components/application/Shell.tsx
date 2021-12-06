@@ -16,6 +16,8 @@ import { App } from './App/App'
 import { firebaseConfig } from '../../_seeding'
 import { registerServiceWorker } from '../../serviceWorkerRegistration'
 import { _MOCK_FB } from '../../fb/utils'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
 
 export interface OuterShell {
   children: ReactNode
@@ -29,16 +31,18 @@ export function OuterShell({ children }: OuterShell) {
     <StrictMode>
       <Router>
         <OuterShell_>
-          <ThemeProvider theme={theme}>
-            <CssBaseline />
-            {isProduction ? (
-              <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-                <FB>{children}</FB>
-              </FirebaseAppProvider>
-            ) : (
-              <>{children}</>
-            )}
-          </ThemeProvider>
+          <DndProvider backend={HTML5Backend}>
+            <ThemeProvider theme={theme}>
+              <CssBaseline />
+              {isProduction ? (
+                <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+                  <FB>{children}</FB>
+                </FirebaseAppProvider>
+              ) : (
+                <>{children}</>
+              )}
+            </ThemeProvider>
+          </DndProvider>
         </OuterShell_>
       </Router>
     </StrictMode>

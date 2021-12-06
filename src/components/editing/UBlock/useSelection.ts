@@ -1,14 +1,17 @@
 import { atom } from 'jotai'
 import { useReducerAtom } from 'jotai/utils'
-import { bool, fn, num, str, strs } from '../../../utils/types'
-import { UBlockType } from '../types'
+import _ from 'lodash'
+import { bool, num, str, strs } from '../../../utils/types'
 
-export function useSelection(type?: UBlockType) {
-  const [selection, _dispatch] = useReducerAtom(selectionA, selectionR)
-  return { selection, dispatch: type === 'code' ? fn : _dispatch }
+export function useSelection() {
+  const [selection, dispatch] = useReducerAtom(selectionA, selectionR)
+  return { selection, dispatch }
 }
 
 type SelectionA =
+  | { a: 'start-drag'; id: str }
+  | { a: 'start-drag'; id: str }
+  | { a: 'end-drag' }
   | { a: 'select'; id: str }
   | { a: 'select-by-click'; id: str }
   | { a: 'clear'; force?: bool }
@@ -19,32 +22,47 @@ type SelectionA =
 
 function selectionR(old: Selection, action: SelectionA): Selection {
   switch (action.a) {
+    case 'start-drag': {
+      const draggingIds = [...old.ids]
+      if (!old.ids.includes(action.id)) draggingIds.push(action.id)
+      return { state: 'dragging', ids: [], draggingIds }
+    }
+    case 'end-drag':
+      if (!old.draggingIds.length) return new Selection()
+      return { state: 'selected', ids: [...old.draggingIds], draggingIds: [] }
     case 'clear':
       if (old.state === 'selecting-by-click' && !action.force) return { ...old, state: 'selected' } // force when we change type
-      return { state: 'none', ids: [], enteredAtY: -1 }
+      return new Selection()
     case 'select':
-      window.getSelection()?.removeAllRanges()
       if (old.state === 'selecting-by-click') return { ...old, ids: [...old.ids, action.id] }
-      return { state: 'selected', ids: [action.id], enteredAtY: -1 }
-    case 'select-by-click': // when drag btn is clicked mouse-down and mouse-up are called before this
-      return { state: 'selecting-by-click', ids: [...old.ids, action.id], enteredAtY: -1 }
+      return { state: 'selected', ids: [action.id], draggingIds: [] }
+    case 'select-by-click': {
+      // when drag btn is clicked mouse-down and mouse-up start-drag are called before this
+      if (old.state === 'dragging')
+        return { ...old, state: 'selecting-by-click', ids: _.uniq([...old.ids, action.id, ...old.draggingIds]) }
+      else return { state: 'selecting-by-click', ids: [...old.ids, action.id], draggingIds: [] }
+    }
     case 'mouse-down':
-      if (old.state === 'selecting-by-click') return old
-      return { ...old, ids: [], state: 'active', enteredAtY: -1 }
+      if (old.state === 'dragging') return old
+      if (old.state === 'selecting-by-click') return { ...old, state: 'selected' }
+      return { ...old, ids: [], state: 'active' }
     case 'mouse-up':
+      enteredAtY.clear()
+      upageScroll = 0
       if (old.state === 'selecting-by-click') return old
       return { ...old, state: old.ids ? 'selected' : 'none' }
     case 'mouse-enter': {
       if (old.state !== 'active') return old
-      loseFocus()
-      return { ...old, ids: [...old.ids, action.id], enteredAtY: action.atY }
+      enteredAtY.set(action.id, action.atY)
+      return { ...old, ids: [...old.ids, action.id] }
     }
     case 'mouse-leave': {
       if (old.state !== 'active') return old
 
       let ids = old.ids
-      if (old.enteredAtY === -1) ids = [...ids, action.id]
-      if (old.enteredAtY > action.atY) ids = ids.filter((id) => id === action.id)
+      if (action.atY + upageScroll <= (enteredAtY.get(action.id) || 0 + upageScroll) + 10) {
+        ids = ids.filter((id) => id !== action.id)
+      }
 
       return { ...old, ids }
     }
@@ -53,14 +71,16 @@ function selectionR(old: Selection, action: SelectionA): Selection {
 
 class Selection {
   ids: strs = []
-  enteredAtY = -1
-  state: 'none' | 'active' | 'selected' | 'selecting-by-click' = 'none'
+  draggingIds: strs = []
+  state: 'dragging' | 'none' | 'active' | 'selected' | 'selecting-by-click' = 'none'
 }
 
-function loseFocus() {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ;(document.activeElement as any)?.blur()
-  window.getSelection()?.removeAllRanges()
-}
+const enteredAtY: Map<str, num> = new Map()
 
 const selectionA = atom(new Selection())
+
+let upageScroll = 0
+
+export const setUPageScroll = (new_: num) => {
+  upageScroll = new_
+}

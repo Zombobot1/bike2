@@ -16,6 +16,12 @@ export const ws: _WSD = {
         {
           id: 'pets',
           name: 'Pets & Animals',
+          children: [
+            {
+              id: 'pets-test',
+              name: 'Pets & Animals',
+            },
+          ],
         },
         {
           id: 'medicine',

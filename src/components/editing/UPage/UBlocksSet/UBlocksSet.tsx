@@ -1,12 +1,12 @@
-import { ClickAwayListener, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import { bool, fn, num, SetStr, SetStrs, str, strs } from '../../../../utils/types'
 import { cast, safe } from '../../../../utils/utils'
 import { uuid } from '../../../../utils/uuid'
 import { BlockInfo, isUTextBlock, UBlockDTO, UBlockType, UTextFocus } from '../../types'
-import { UBlock } from '../../UBlock/UBlock'
+import { UBlock, useDeleteUBlocks } from '../../UBlock/UBlock'
 import { useData } from '../../../../fb/useData'
-import { UHeading0, UParagraph } from '../../UText/UText'
+import { UPageTitle, UParagraph } from '../../UText/UText'
 import { useMap } from '../../../utils/hooks/useMap'
 import { reverse, safeSplit } from '../../../../utils/algorithms'
 import { useArray } from '../../../utils/hooks/useArray'
@@ -115,6 +115,17 @@ export function UBlocksSet({
     [ids],
   )
 
+  const rearrangeBlocks = useCallback(
+    (underId: str) => {
+      if (selection.draggingIds.includes(underId)) return
+      const newIds = ids.filter((oldId) => !selection.draggingIds.includes(oldId))
+      const underI = newIds.indexOf(underId)
+      if (underI === -1) setIds([...selection.draggingIds, ...newIds.slice()]) // drop on title
+      setIds([...newIds.slice(0, underI + 1), ...selection.draggingIds, ...newIds.slice(underI + 1)])
+    },
+    [ids, selection.draggingIds],
+  )
+
   const deleteBlocks = useCallback(
     (idsToRemove: strs) => {
       setIds(ids.filter((oldId) => !idsToRemove.includes(oldId)))
@@ -158,7 +169,7 @@ export function UBlocksSet({
   )
 
   const clearFocus = useCallback(() => setActiveBlock(new ActiveBlock()), [])
-
+  const { deleteExternalUBlocks } = useDeleteUBlocks()
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (!selection.ids.length) return
@@ -171,6 +182,7 @@ export function UBlocksSet({
         dispatch({ a: 'clear' })
       } else if (e.key === 'Backspace') {
         setIds(ids.filter((id) => !selection.ids.includes(id)))
+        deleteExternalUBlocks(selection.ids)
         dispatch({ a: 'clear' })
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
         navigator.clipboard.writeText(
@@ -188,7 +200,7 @@ export function UBlocksSet({
   return (
     <Stack>
       {setTitle && (
-        <UHeading0
+        <UPageTitle
           id={'title'}
           i={-1}
           tryToChangeFieldType={fn}
@@ -203,43 +215,39 @@ export function UBlocksSet({
           addNewBlock={fn}
           type="text"
           hideMenus={true}
+          onDrop={() => rearrangeBlocks('title')}
         />
       )}
-      <ClickAwayListener onClickAway={() => dispatch({ a: 'clear' })}>
-        <div>
-          {ids.map((_id, i) => {
-            const currentType = idAndInfo.get(_id)?.type
-            const typesStrike = currentType
-              ? reverse(ids.slice(0, i)).findIndex((id) => idAndInfo.get(id)?.type !== currentType)
-              : 0
-            const prev = idAndInfo.get(ids[i - 1])
-            const previousBlockInfo = prev ? { ...prev, typesStrike } : undefined
-            return (
-              <UBlock
-                key={_id}
-                id={_id}
-                readonly={readonly}
-                focus={_id === activeBlock.id ? activeBlock.focus : undefined}
-                goUp={focusUp}
-                goDown={focusDown}
-                initialData={
-                  addedBlocks.has((b) => b.id === _id) ? { ...addedBlocks.get((b) => b.id === _id) } : undefined
-                }
-                addNewBlock={addNewBlocks}
-                addInfo={addInfo}
-                addNewUPage={_addNewUPage}
-                deleteBlock={deleteBlock}
-                deleteBlocks={deleteBlocks}
-                appendedData={_id === blockAboveDeleted.id ? blockAboveDeleted.data : undefined}
-                resetActiveBlock={clearFocus}
-                i={i}
-                previousBlockInfo={previousBlockInfo}
-                inUForm={isUForm}
-              />
-            )
-          })}
-        </div>
-      </ClickAwayListener>
+      {ids.map((_id, i) => {
+        const currentType = idAndInfo.get(_id)?.type
+        const typesStrike = currentType
+          ? reverse(ids.slice(0, i)).findIndex((id) => idAndInfo.get(id)?.type !== currentType)
+          : 0
+        const prev = idAndInfo.get(ids[i - 1])
+        const previousBlockInfo = prev ? { ...prev, typesStrike } : undefined
+        return (
+          <UBlock
+            key={_id}
+            id={_id}
+            readonly={readonly}
+            focus={_id === activeBlock.id ? activeBlock.focus : undefined}
+            goUp={focusUp}
+            goDown={focusDown}
+            initialData={addedBlocks.has((b) => b.id === _id) ? { ...addedBlocks.get((b) => b.id === _id) } : undefined}
+            addNewBlock={addNewBlocks}
+            addInfo={addInfo}
+            addNewUPage={_addNewUPage}
+            deleteBlock={deleteBlock}
+            deleteBlocks={deleteBlocks}
+            appendedData={_id === blockAboveDeleted.id ? blockAboveDeleted.data : undefined}
+            resetActiveBlock={clearFocus}
+            i={i}
+            previousBlockInfo={previousBlockInfo}
+            rearrangeBlocks={rearrangeBlocks}
+            inUForm={isUForm}
+          />
+        )
+      })}
       {!readonly && (
         <UParagraph
           i={-1}

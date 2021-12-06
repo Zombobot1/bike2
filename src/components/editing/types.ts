@@ -116,7 +116,10 @@ export type UTextFocus = { type: FocusType; xOffset?: num; forceUpdate?: bool }
 export type SetFocus = (f?: UTextFocus) => void
 
 export type InlineEditorExit = 'click' | 'key'
-
+export enum DragType {
+  ublock = 'ublock',
+  uformBlock = 'uformBlock',
+}
 export type TeX = { tex: str; html: str; wasUpdated?: bool }
 export type TexMapRef = React.MutableRefObject<Map<str, TeX>>
 

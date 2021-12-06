@@ -18,6 +18,7 @@ import {
   UBlockB,
   UBlockType,
   UTextFocus,
+  DragType,
 } from '../types'
 import { UText } from '../UText/UText'
 import { UFile } from '../UFile/UFile'
@@ -37,8 +38,11 @@ import { UDivider } from '../UDivider/UDivider'
 import { BlockTurner } from './BlockAutocomplete/BlockTurner'
 import { utextPaddings } from '../UText/utextStyles'
 import { UTable } from '../UTable/UTable'
+import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
+import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 
 export interface UBlock extends UBlockB {
+  rearrangeBlocks?: SetStr
   inUForm?: bool
   addNewBlock?: AddNewBlockUText
   addInfo?: (id: str, i: BlockInfo) => void
@@ -87,15 +91,42 @@ export function UBlock({
   goDown,
   resetActiveBlock = fn,
   deleteBlocks: deleteUBlocks = fn,
+  rearrangeBlocks = fn,
   i = 100,
   previousBlockInfo,
   appendedData,
 }: UBlock) {
   const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
-  const { setData: setExternalData } = useSetData()
-  const { selection, dispatch } = useSelection(ublock.type)
+  const { deleteExternalUBlocks } = useDeleteUBlocks()
+  const { selection, dispatch } = useSelection()
   const isSM = useIsSM()
   const [focus, setFocus] = useReactiveObject(initialFocus)
+
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
+    type: DragType.ublock,
+    collect: (monitor) => ({
+      isDragging: !!monitor.isDragging(),
+    }),
+  }))
+
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      accept: DragType.ublock,
+      drop: () => rearrangeBlocks(id),
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver(),
+      }),
+    }),
+    [rearrangeBlocks],
+  )
+
+  useUpdateEffect(() => {
+    if (!isDragging) dispatch({ a: 'end-drag' })
+  }, [isDragging])
+
+  const notFullWidth = isNotFullWidthBlock(ublock.type)
+  const { ref, width } = useElementSize({ passive: !notFullWidth })
+
   const setData = useCallback((data: str) => setUBlock({ ...ublock, data }), [JSON.stringify(ublock)])
   const setType = useCallback(
     (type: UBlockType, data = '', focus: FocusType = 'end') => {
@@ -117,13 +148,10 @@ export function UBlock({
 
   const deleteBlocks = useCallback(() => {
     deleteUBlocks(selection.ids)
-    selection.ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true }))
+    deleteExternalUBlocks(selection.ids)
     dispatch({ a: 'clear' })
-  }, [deleteUBlocks, setExternalData, selection.ids])
+  }, [deleteUBlocks, deleteUBlocks, selection.ids])
 
-  const notFullWidth = isNotFullWidthBlock(ublock.type)
-
-  const { ref, width } = useElementSize({ passive: !notFullWidth })
   const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16 }
 
   const utextProps = {
@@ -149,21 +177,18 @@ export function UBlock({
   return (
     <Container
       onMouseDown={() => {
-        if (isSM && ublock.type !== 'table') dispatch({ a: 'mouse-down' })
         // if you click on code and then move back to previous focused block focus will be lost: setCursor is not called
         // it is possible to trigger setCursor if special flag "fromCode" is introduced in focus but it doesn't help
         if (ublock.type !== 'code') resetActiveBlock()
       }}
-      onMouseUp={isSM ? () => dispatch({ a: 'mouse-up' }) : fn}
       onMouseEnter={isSM ? (e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id }) : fn}
       onMouseLeave={isSM ? (e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id }) : fn}
-      onClick={isSM && isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id }) : fn}
       tabIndex={i + 100}
       data-cy="ublock"
       ref={ref}
     >
       <RStack_>
-        <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }}>
+        <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }} ref={drop}>
           {isSM && (
             <BlockMenu
               data={ublock.data}
@@ -172,24 +197,41 @@ export function UBlock({
               deleteBlock={deleteBlocks}
               onAddClick={() => addNewBlock(id, 'focus-start')}
               onMenuClick={() => dispatch({ a: 'select-by-click', id })}
-              clearSelection={() => dispatch({ a: 'clear', force: true })}
+              clearSelection={() => {
+                dispatch({ a: 'clear', force: true })
+              }}
               selectedMany={selection.ids.length > 1}
               readonly={readonly}
               pt={utextPaddings.get(ublock.type.toLowerCase())}
+              drag={drag}
+              startDrag={selection.ids ? () => dispatch({ a: 'start-drag', id }) : fn}
             />
           )}
           {selection.ids.includes(id) && <Selection data-cy="selection" />}
-          {isUTextBlock(ublock.type) && <UText {...utextProps} />}
-          {isUFileBlock(ublock.type) && <UFile {...commonProps} />}
-          {isUQuestionBlock(ublock.type) && <UFormBlock {...commonProps} onAnswer={onAnswer} />}
-          {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
-          {ublock.type === 'block-equation' && <Equation {...commonProps} />}
-          {ublock.type === 'divider' && <UDivider />}
-          {ublock.type === 'table' && <UTable {...commonProps} />}
+          {isOver && !selection.draggingIds.includes(id) && <Dropbox />}
+          <div
+            ref={preview}
+            onClick={isSM && isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id }) : fn}
+          >
+            {isUTextBlock(ublock.type) && <UText {...utextProps} />}
+            {isUFileBlock(ublock.type) && <UFile {...commonProps} />}
+            {isUQuestionBlock(ublock.type) && <UFormBlock {...commonProps} onAnswer={onAnswer} />}
+            {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
+            {ublock.type === 'block-equation' && <Equation {...commonProps} />}
+            {ublock.type === 'divider' && <UDivider />}
+            {ublock.type === 'table' && <UTable {...commonProps} />}
+          </div>
         </InnerContainer>
       </RStack_>
     </Container>
   )
+}
+
+export function useDeleteUBlocks() {
+  const { setData: setExternalData } = useSetData()
+  return {
+    deleteExternalUBlocks: (ids: strs) => ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true })),
+  }
 }
 
 const Container = styled('div', { label: 'UBlock' })({
@@ -219,6 +261,17 @@ const Selection = styled('div')(({ theme }) => ({
   marginTop: '0.25rem',
 }))
 
+const Dropbox = styled('div')(({ theme }) => ({
+  position: 'absolute',
+  zIndex: 2,
+  bottom: 0,
+  right: 0,
+  left: 0,
+  height: '1rem',
+  backgroundColor: alpha(theme.palette.info.main, 0.25),
+  marginTop: '0.25rem',
+}))
+
 const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void, addNewUPage: SetStr) => (newData: str) => {
   if (!newData.includes(' ')) return
 
@@ -239,6 +292,8 @@ interface BlockMenu {
   selectedMany: bool
   onAddClick: Fn
   onMenuClick: Fn
+  drag: ConnectDragSource
+  startDrag: Fn
   readonly?: bool
   pt?: str
 }
@@ -253,18 +308,32 @@ function BlockMenu({
   onMenuClick,
   readonly,
   clearSelection,
+  startDrag,
+  drag,
   pt = '0',
 }: BlockMenu) {
   const ref = useRef<HTMLButtonElement>(null)
   const { close, isOpen, toggleOpen } = useMenu(onMenuClick)
-
   return (
     <LeftButtons className={readonly ? '' : 'ublock--block-menu-container'} sx={{ paddingTop: pt }}>
       <MiniBtn onClick={onAddClick} ref={ref} data-cy="add-block-h">
         <AddI />
       </MiniBtn>
-      <Tooltip title="Click or Drag" placement="right">
-        <MiniBtn onClick={toggleOpen} data-cy="block-menu-h" sx={{ cursor: 'grab' }}>
+      <Tooltip
+        title="Click or Drag"
+        placement="left-start"
+        PopperProps={{
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [-20, 0],
+              },
+            },
+          ],
+        }}
+      >
+        <MiniBtn ref={drag} onClick={toggleOpen} onMouseDown={startDrag} data-cy="block-menu-h" sx={{ cursor: 'grab' }}>
           <DragI />
         </MiniBtn>
       </Tooltip>
