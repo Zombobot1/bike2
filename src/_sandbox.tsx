@@ -10,6 +10,7 @@ const Sandbox = () => {
     <OuterShell>
       <SoryBook
         sories={[
+          UPageBlock,
           UTable,
           TableOfContents,
           UTextOptions,
@@ -66,6 +67,7 @@ import * as UAutocomplete from './components/utils/UAutocomplete/UAutocomplete.s
 import * as UBlocksSet from './components/editing/UPage/UBlocksSet/UBlocksSet.stories'
 import * as UTable from './components/editing/UTable/UTable.stories'
 import * as TableOfContents from './components/editing/UPage/TableOfContents/TableOfContents.stories'
+import * as UPageBlock from './components/editing/UPage/UPageBlock/UPageBlock.stories'
 import * as UPage from './components/editing/UPage/UPage.stories'
 import * as AppBar from './components/application/navigation/AppBar/AppBar.stories'
 import * as NavBar from './components/application/navigation/NavBar/NavBar.stories'

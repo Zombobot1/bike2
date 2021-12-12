@@ -1,6 +1,6 @@
 import { Button, Chip, Stack, styled } from '@mui/material'
 import { str, strs } from '../../utils/types'
-import { cast } from '../../utils/utils'
+import { ucast } from '../../utils/utils'
 import { UBlockComponent } from '../editing/types'
 import { UBlocksSet } from '../editing/UPage/UBlocksSet/UBlocksSet'
 import { EditableText } from '../utils/EditableText/EditableText'
@@ -25,7 +25,7 @@ export interface UFormDTO {
 // tests have an intermediate state: waiting for feedback if there are some manually assessable questions -> student is transferred to a page where teacher can leave feedback
 // exercises & tests can be redone when feedback was provided, all feedback errors are automatically turned into cards and placed in individual decks
 export function UForm({ data, setData, readonly }: UBlockComponent) {
-  const { ids, name } = cast<UFormDataDTO>(data, { ids: [], name: '' })
+  const { ids, name } = ucast<UFormDataDTO>(data, { ids: [], name: '' })
   const rename = (name: str) => setData(JSON.stringify({ ids, name }))
   const setIds = (ids: strs) => setData(JSON.stringify({ name, ids }))
 

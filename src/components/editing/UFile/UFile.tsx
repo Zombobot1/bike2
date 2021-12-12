@@ -1,6 +1,6 @@
 import { Stack, styled, Typography, IconButton } from '@mui/material'
 import { num } from '../../../utils/types'
-import { cast, prevented } from '../../../utils/utils'
+import { ucast, prevented } from '../../../utils/utils'
 import { UBlockComponent, UBlockComponentB } from '../types'
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
@@ -19,7 +19,7 @@ export class UFileDTO {
 }
 
 export function UFile_({ data, setData, readonly }: UBlockComponentB) {
-  const [fileData] = useReactiveObject(cast(data, new UFileDTO()))
+  const [fileData] = useReactiveObject(ucast(data, new UFileDTO()))
   const { fileS, isUploading, deleteFile } = useUFile((src, name) => setData(JSON.stringify({ name, src })))
   if (!fileData.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
 

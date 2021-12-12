@@ -1,10 +1,10 @@
-import { TableBody, styled, Box, useTheme, alpha, Button } from '@mui/material'
+import { TableBody, styled, Box, useTheme, Button } from '@mui/material'
 import { useIsSM, useReactiveObject, useToggle } from '../../utils/hooks/hooks'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { useState } from 'react'
 import { bool, num, SetNum, SetStr, str, strs } from '../../../utils/types'
 import { UBlockComponentB } from '../types'
-import { cast, getEmptyStrings, prevented } from '../../../utils/utils'
+import { ucast, getEmptyStrings, prevented } from '../../../utils/utils'
 import _ from 'lodash'
 import { EditableText } from '../../utils/EditableText/EditableText'
 import { IBtn } from '../../utils/MuiUtils'
@@ -19,7 +19,7 @@ export class UTableDTO {
 }
 
 export function UTable(ps: UBlockComponentB) {
-  const data = cast<UTableDTO>(ps.data, new UTableDTO())
+  const data = ucast<UTableDTO>(ps.data, new UTableDTO())
   const [widths, setWidths] = useReactiveObject(data.widths)
   const [rows, setRows_] = useReactiveObject(data.rows)
   const [resizingIndex, setResizingIndex] = useState(-1)
@@ -150,7 +150,7 @@ function Cell({
   const [clicksCount, setClicksCount] = useState(0)
   let bg: str | undefined = undefined
   if (needBG && !isEditing) bg = theme.apm('bg')
-  if (isEditing) bg = alpha(theme.palette.info.main, 0.25)
+  if (isEditing) bg = theme.apm('info')
 
   const sx = i === 0 && j === 0 ? { transform: 'translate(-120%, -10%)' } : {}
 

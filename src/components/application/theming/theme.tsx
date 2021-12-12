@@ -23,15 +23,18 @@ export const COLORS = {
   light: '#eaedf2',
 }
 
-type APMType = 'bg' | 'bg-hover' | '100' | '200' | '400' | '800' | 'border' | 'secondary' | 'btn'
+type APMType = 'bg' | 'bg-hover' | '100' | '200' | '400' | '800' | 'border' | 'secondary' | 'btn' | 'info'
 
 export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = '100', lightAlpha?: num) {
+  if (typeOrDarkAlpha === 'info') return alpha(theme.palette.info.main, 0.25)
+
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
   if (!_.isString(typeOrDarkAlpha)) {
     const darkAlpha = typeOrDarkAlpha as num
     return alpha(primary, isDark ? darkAlpha : lightAlpha || darkAlpha)
   }
+
   const type = typeOrDarkAlpha as APMType
   if (type === 'border') return alpha(primary, 0.3)
   else if (type === 'secondary') return alpha(primary, isDark ? 0.6 : 0.4)

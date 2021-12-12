@@ -53,6 +53,10 @@ export function removeCode(html: str, id: str): str {
   return html.replace(codeWithIdRe(id), '')
 }
 
+export function hasCode(html: str): bool {
+  return !!anyCodeRe().exec(html)
+}
+
 export function replaceCode(html: str, id: str, newHtml: str): str {
   return html.replace(new RegExp(codeWithIdRe(id)), `<code data-id="${id}" contenteditable="false">${newHtml}</code>`)
 }

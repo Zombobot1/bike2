@@ -34,6 +34,10 @@ const page: UPageDataDTO = {
   name: 'Pets & animals',
   ids: [
     'catQuote',
+    'grow-kitten',
+    'cats-vs-dogs',
+    'pets-research',
+    'how-pets-changed-humanity',
     'fallingCats',
     'kittensH',
     'kittens',
@@ -132,6 +136,11 @@ const catTable: UTableDTO = {
 const catCode: CodeDTO = { code: _codeWithPaws, language: 'TypeScript' }
 const codeForFocus: CodeDTO = { code: 'I want to dance with a fat cat', language: 'Text' }
 
+const catP1: UPageDataDTO = { name: 'How to grow a kitten', color: '#0066FF', ids: [] }
+const catP2: UPageDataDTO = { name: 'Cats vs Dogs', color: '#0066FF', ids: [] }
+const catP3: UPageDataDTO = { name: 'Research papers about evolution of pets', color: '#0066FF', ids: [] }
+const catP4: UPageDataDTO = { name: 'How pets changed humanity', color: '#0066FF', ids: [] }
+
 export const _kittensBlocks: IdAndBlocks = [
   ['catVideoText', { type: 'text', data: 'Watch a short documentary about a small cat' }],
   ['catVideo', { type: 'video', data: $(video) }],
@@ -157,6 +166,10 @@ export const _kittensBlocks: IdAndBlocks = [
   ['fallingCatsShort2', { type: 'text', data: fallingCatsShort2 }],
   ['fallingCatsShort3', { type: 'text', data: fallingCatsShort3 }],
   ['divider', { type: 'divider', data: '' }],
+  ['grow-kitten', { type: 'page', data: $(catP1) }],
+  ['cats-vs-dogs', { type: 'page', data: $(catP2) }],
+  ['pets-research', { type: 'page', data: $(catP3) }],
+  ['how-pets-changed-humanity', { type: 'page', data: $(catP4) }],
 ]
 
 const _kittensS = `A <b><i>kitten</i></b> is a juvenile cat. After being born`
@@ -187,6 +200,12 @@ const petsTestPage: UPageDataDTO = {
   ids: _kittensForFocusPage.ids,
 }
 
+const petsTestSmallPage: UPageDataDTO = {
+  color: '#0066FF',
+  name: 'Pets & animals',
+  ids: ['emptyString'],
+}
+
 export const _kittensForFocus: IdAndBlocks = [
   ['kittensHL', { type: 'heading-1', data: 'Kittens Kittens Kittens Kittens' }],
   ['kittensS', { type: 'text', data: _kittensS }],
@@ -199,6 +218,7 @@ export const _kittensForFocus: IdAndBlocks = [
   ['petsForFocus', { type: 'page', data: $(_kittensForFocusPage) }],
   ['codeForFocus', { type: 'code', data: $(codeForFocus) }],
   ['pets-test', { type: 'page', data: $(petsTestPage) }],
+  ['pets-test-small', { type: 'page', data: $(petsTestSmallPage) }],
 ]
 
 export const _kittensForListsPage: UPageDataDTO = {

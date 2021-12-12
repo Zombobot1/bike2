@@ -9,14 +9,15 @@ const T = (path: str) => () => {
   const workspace = useWorkspace(data.uid)
   return (
     <MemoryRouter initialEntries={[path]}>
-      <UPage workspace={workspace} setOpenTOC={fn} />
+      <UPage workspace={workspace} setOpenTOC={fn} setToggleFullWidth={fn} />
     </MemoryRouter>
   )
 }
 
 // export const Readonly = T('/pets')
 export const Full = T('/pets')
-export const Small = T('/pets-test')
+export const Medium = T('/pets-test')
+export const Small = T('/pets-test-small')
 
 export default {
   title: 'Editing/UPage',

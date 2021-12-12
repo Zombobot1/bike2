@@ -1,4 +1,4 @@
-import { alpha, Box, styled } from '@mui/material'
+import { Box, styled } from '@mui/material'
 import { useDrop } from 'react-dnd'
 import { Fn } from '../../../utils/types'
 import { DragType, isUListBlock } from '../types'
@@ -46,7 +46,7 @@ export function UPageTitle(ps: UPageTitle) {
   )
   return (
     <Box ref={drop} sx={{ position: 'relative' }}>
-      <UText_ {...ps} component="h1" placeholder="Untitled" hideMenus={true} />
+      <UText_ {...ps} component="h1" placeholder="Untitled" hideMenus={true} focusIfEmpty={!ps.data} />
       {isOver && <Dropbox />}
     </Box>
   )
@@ -58,8 +58,8 @@ const Dropbox = styled('div')(({ theme }) => ({
   bottom: 0,
   right: 0,
   left: 0,
-  height: '1rem',
-  backgroundColor: alpha(theme.palette.info.main, 0.25),
+  height: '0.5rem',
+  backgroundColor: theme.apm('info'),
   marginTop: '0.25rem',
 }))
 

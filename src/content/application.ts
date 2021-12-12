@@ -18,7 +18,27 @@ export const ws: _WSD = {
           name: 'Pets & Animals',
           children: [
             {
+              id: 'grow-kitten',
+              name: 'How to grow a kitten',
+            },
+            {
+              id: 'cats-vs-dogs',
+              name: 'Cats vs Dogs',
+            },
+            {
+              id: 'pets-research',
+              name: 'Research papers about evolution of pets',
+            },
+            {
+              id: 'how-pets-changed-humanity',
+              name: 'How pets changed humanity',
+            },
+            {
               id: 'pets-test',
+              name: 'Pets & Animals',
+            },
+            {
+              id: 'pets-test-small',
               name: 'Pets & Animals',
             },
           ],
@@ -67,6 +87,32 @@ export const ws: _WSD = {
             {
               id: 'pets',
               name: 'Pets & Animals',
+              children: [
+                {
+                  id: 'grow-kitten',
+                  name: 'How to grow a kitten',
+                },
+                {
+                  id: 'cats-vs-dogs',
+                  name: 'Cats vs Dogs',
+                },
+                {
+                  id: 'pets-research',
+                  name: 'Research papers about evolution of pets',
+                },
+                {
+                  id: 'how-pets-changed-humanity',
+                  name: 'How pets changed humanity',
+                },
+                {
+                  id: 'pets-test',
+                  name: 'Pets & Animals',
+                },
+                {
+                  id: 'pets-test-small',
+                  name: 'Pets & Animals',
+                },
+              ],
             },
             {
               id: 'medicine',
@@ -120,7 +166,17 @@ function bfs(nodes: NavNodeDTOs): NavNodeDTOs {
   return r
 }
 
-const exclude = ['removal', 'empty-page', 'pets']
+const exclude = [
+  'removal',
+  'empty-page',
+  'pets',
+  'pets-test',
+  'pets-test-small',
+  'grow-kitten',
+  'cats-vs-dogs',
+  'pets-research',
+  'how-pets-changed-humanity',
+]
 export const _pages = bfs(ws.personal)
   .filter((p) => !exclude.includes(p.id))
   .map((n): IdAndBlock => {

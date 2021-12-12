@@ -4,12 +4,12 @@ import { UText_ } from '../UText_'
 import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded'
 import { Box } from '@mui/system'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
-import { cast } from '../../../../utils/utils'
+import { ucast } from '../../../../utils/utils'
 import { num, str } from '../../../../utils/types'
 import { KeyboardEvent, ReactNode } from 'react'
 
 export function UList(props: UText) {
-  const [data] = useReactiveObject(cast(props.data, new UListDTO()))
+  const [data] = useReactiveObject(ucast(props.data, new UListDTO()))
   const setText = (d: str) => props.setData(JSON.stringify({ ...data, text: d }))
   const setOffset = (o: num) => props.setData(JSON.stringify({ ...data, offset: o }))
 

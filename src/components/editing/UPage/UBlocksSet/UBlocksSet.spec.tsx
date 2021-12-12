@@ -1,4 +1,3 @@
-/* eslint-disable mocha/no-exclusive-tests */
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../../cypress/support/index.d.ts" />
 import * as UBlocksSet from './UBlocksSet.stories'

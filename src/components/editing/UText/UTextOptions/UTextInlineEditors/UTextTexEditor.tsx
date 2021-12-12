@@ -57,19 +57,13 @@ export function useTex(
 
   useEffect(() => {
     const el = htmlToElement(`<pre>${ps.data}</pre>`)
-    const needRerender = Array.from(el.getElementsByTagName('code'))
-      .map((e) => {
-        const id = e.getAttribute('data-id') || ''
-        if (!mapRef.current.has(id) || mapRef.current.get(id)?.tex !== e.textContent) return e
-        return null
-      })
-      .filter(Boolean) as HTMLElement[]
+    const needRerender = Array.from(el.getElementsByTagName('code')) // do not optimize rerenders due to reactivity (rerender every time when data changes)
 
     needRerender.forEach((e) => {
       const id = e.getAttribute('data-id') || ''
-      mapRef.current.set(id, { tex: e.innerHTML, html: renderTex(e.innerHTML) })
+      const needNew = !mapRef.current.has(id) || mapRef.current.get(id)?.tex !== e.textContent
+      if (needNew) mapRef.current.set(id, { tex: e.innerHTML, html: renderTex(e.innerHTML) })
     })
-    if (!needRerender.length) return
 
     setText(replaceAllCodeToHTML(ps.data, mapRef.current))
     refocus()

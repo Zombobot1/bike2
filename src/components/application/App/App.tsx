@@ -14,7 +14,7 @@ import { useState } from 'react'
 import { UPage } from '../../editing/UPage/UPage'
 import { _apm } from '../theming/theme'
 import { useIsSignedIn, useUserInfo } from '../../../fb/auth'
-import { Fn } from '../../../utils/types'
+import { fn, Fn } from '../../../utils/types'
 
 const pages = ['study', 'teach', 'tune']
 
@@ -44,9 +44,15 @@ function App__() {
   const id = location.pathname.split('/').slice(-1)[0]
   if (!pages.includes(id) && !workspace.has(id)) return <Page404 />
   const [openTOC, setOpenTOC] = useState<Fn | undefined>(undefined)
+  const [toggleFullWidth, setToggleFullWidth] = useState<Fn>(() => fn)
   return (
     <AppContainer>
-      <AppBar workspace={workspace} openNavBar={() => isNavBarOpenS[1](true)} openTOC={openTOC} />
+      <AppBar
+        workspace={workspace}
+        openNavBar={() => isNavBarOpenS[1](true)}
+        openTOC={openTOC}
+        toggleFullWidth={toggleFullWidth}
+      />
       <NavBar user={user} workspace={workspace} isNavBarOpenS={isNavBarOpenS} />
       <Main>
         <Switch>
@@ -57,7 +63,7 @@ function App__() {
             <Trainings />
           </Route>
           <Route path={ANY}>
-            <UPage workspace={workspace} setOpenTOC={setOpenTOC} />
+            <UPage workspace={workspace} setOpenTOC={setOpenTOC} setToggleFullWidth={setToggleFullWidth} />
           </Route>
         </Switch>
       </Main>

@@ -29,7 +29,8 @@ export function useFS() {
   const { fs, setFS } = useFS_()
 
   const get = (col: str, id: str): OJSObject => {
-    return fs.find((c) => c.name === col)?.docs.find((d) => d.id === id)?.data ?? pendingInsertions.get(col + id)
+    const existingData = fs.find((c) => c.name === col)?.docs.find((d) => d.id === id)?.data
+    return existingData ?? pendingInsertions.get(col + id)
   }
 
   const setDoc = (col: str, id: str, data: JSObject) => {

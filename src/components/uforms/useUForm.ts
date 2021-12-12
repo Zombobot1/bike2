@@ -3,7 +3,7 @@ import { Question } from '../studying/training/types'
 import { useCallback, useEffect, useState } from 'react'
 import { bool, num, SetStr, str, strs } from '../../utils/types'
 import { UQuestionBlock } from '../editing/types'
-import { cast } from '../../utils/utils'
+import { ucast } from '../../utils/utils'
 import _ from 'lodash'
 import { avg } from '../../utils/algorithms'
 import { useReactive } from '../utils/hooks/hooks'
@@ -82,7 +82,7 @@ export function isAnswerCorrect(answer: strs, correctAnswer: strs) {
 }
 
 export const useUFormBlock = (_id: str, data: str) => {
-  const [question] = useState(() => cast(data, QUESTION)) // parse once
+  const [question] = useState(() => ucast(data, QUESTION)) // parse once
   useField(_id, question)
 
   const [fields, setFields] = useAtom(fieldsAtom)
@@ -103,7 +103,7 @@ export const useUFormBlock = (_id: str, data: str) => {
 
 type O = { isTextArea?: bool }
 export const useUFormBlockEditor = (_id: str, type: UQuestionBlock, data: str, setData: SetStr, options?: O) => {
-  const [initialQuestion] = useState(() => cast(data, getQuestion(type))) // parse once
+  const [initialQuestion] = useState(() => ucast(data, getQuestion(type))) // parse once
   const setQuestion = (q: Question) => setData(JSON.stringify(q))
 
   useField(_id, initialQuestion, options)

@@ -10,7 +10,6 @@ import {
   MenuList,
   MenuItem,
   ListItemText,
-  ListItemIcon,
 } from '@mui/material'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
 import { WS } from '../workspace'
@@ -29,19 +28,22 @@ import { useRouter } from '../../../utils/hooks/useRouter'
 import { safeSplit } from '../../../../utils/algorithms'
 import { all, cut } from '../../../../utils/utils'
 import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
-import { useDeleteUPage } from '../../../editing/UPage/UBlocksSet/UBlocksSet'
+import { useDeleteUPage } from '../../../editing/UPage/useDeleteUPage'
+import { UMenu, UOption, useMenu } from '../../../utils/UMenu/UMenu'
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
 
 export interface AppBar {
   workspace: WS
   openNavBar: Fn
   openTOC?: Fn
+  toggleFullWidth: Fn
 }
 
 const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
   position: 'sticky',
   top: 0,
   borderBottom: `solid 1px ${_apm(theme, 'border')}`,
-  zIndex: 2,
+  zIndex: 1000,
   backgroundColor: theme.palette.background.paper,
   transition: 'opacity 0.3s ease-in-out',
 
@@ -55,7 +57,7 @@ const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
   },
 }))
 
-export function AppBar({ workspace, openNavBar, openTOC }: AppBar) {
+export function AppBar({ workspace, openNavBar, openTOC, toggleFullWidth }: AppBar) {
   const isSM = useIsSM()
   const [showAppBar] = useAtom(showAppBarA)
   const { location, history } = useRouter()
@@ -69,7 +71,13 @@ export function AppBar({ workspace, openNavBar, openTOC }: AppBar) {
       )}
       <Crumbs workspace={workspace} />
       {showUPageOptions && (
-        <UPageOptions history={history} path={location.pathname} workspace={workspace} openTOC={openTOC} />
+        <UPageOptions
+          history={history}
+          path={location.pathname}
+          workspace={workspace}
+          openTOC={openTOC}
+          toggleFullWidth={toggleFullWidth}
+        />
       )}
     </AppBar_>
   )
@@ -208,25 +216,16 @@ interface UPageOptions_ {
   workspace: WS
   path: str
   history: { push: SetStr }
+  toggleFullWidth: Fn
   openTOC?: Fn
 }
 
-function UPageOptions({ workspace, path, history, openTOC }: UPageOptions_) {
+function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth }: UPageOptions_) {
   const id = safeSplit(path, '/')[0]
-  const deleteUPage = useDeleteUPage(id)
-  const delete_ = () => {
-    history.push(workspace.delete(id))
-    deleteUPage()
-  }
+  const deleteUPage = useDeleteUPage(workspace)
+  const delete_ = () => history.push(deleteUPage(id))
 
-  const [open, setOpen] = useState(false)
-  const handleClose = () => setOpen(false)
-  function handleListKeyDown(event: React.KeyboardEvent) {
-    if (event.key === 'Escape') setOpen(false)
-  }
-  const anchorRef = useRef<HTMLButtonElement>(null)
-  const handleToggle = () => setOpen((prevOpen) => !prevOpen)
-
+  const menuPs = useMenu()
   const isAlertOpenS = useState(false)
 
   const isSM = useIsSM()
@@ -239,48 +238,23 @@ function UPageOptions({ workspace, path, history, openTOC }: UPageOptions_) {
           {workspace.isFavorite(id) ? <StarRoundedIcon color="primary" /> : <StarOutlineRoundedIcon color="primary" />}
         </IconButton>
       )}
-      <IconButton ref={anchorRef} onClick={handleToggle}>
+      <IconButton ref={menuPs.btnRef} onClick={menuPs.toggleOpen}>
         <MoreHorizRoundedIcon color="primary" />
       </IconButton>
-      <Popper open={open} anchorEl={anchorRef.current} placement="bottom-start" transition>
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{
-              transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom',
-            }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleClose}>
-                <MenuList autoFocusItem={open} onKeyDown={handleListKeyDown}>
-                  <MenuItem onClick={all(() => isAlertOpenS[1](true), handleClose)}>
-                    <ListItemIcon>
-                      <DeleteRoundedIcon fontSize="small" color="error" />
-                    </ListItemIcon>
-                    <ListItemText primaryTypographyProps={{ color: 'error' }}>Delete page</ListItemText>
-                  </MenuItem>
-                  {!isSM && (
-                    <MenuItem onClick={all(workspace.triggerFavorite(id), handleClose)}>
-                      <ListItemIcon>
-                        {workspace.isFavorite(id) ? <StarRoundedIcon /> : <StarOutlineRoundedIcon />}
-                      </ListItemIcon>
-                      <ListItemText>{workspace.isFavorite(id) ? 'Remove from favorite' : 'Make favorite'}</ListItemText>
-                    </MenuItem>
-                  )}
-                  {!isSM && openTOC && (
-                    <MenuItem onClick={all(openTOC, handleClose)}>
-                      <ListItemIcon>
-                        <FormatAlignRightRoundedIcon />
-                      </ListItemIcon>
-                      <ListItemText>Show Table Of Contents</ListItemText>
-                    </MenuItem>
-                  )}
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
+      <UMenu {...menuPs} disablePortal={true}>
+        <UOption icon={DeleteRoundedIcon} text="Delete page" onClick={() => isAlertOpenS[1](true)} />
+        {isSM && <UOption icon={SwapHorizIcon} text="Toggle full width" onClick={toggleFullWidth} />}
+        {!isSM && (
+          <UOption
+            icon={workspace.isFavorite(id) ? StarRoundedIcon : StarOutlineRoundedIcon}
+            text={workspace.isFavorite(id) ? 'Remove from favorite' : 'Make favorite'}
+            onClick={workspace.triggerFavorite(id)}
+          />
         )}
-      </Popper>
+        {!isSM && openTOC && (
+          <UOption icon={FormatAlignRightRoundedIcon} text="Show Table Of Contents" onClick={openTOC} />
+        )}
+      </UMenu>
     </Stack>
   )
 }

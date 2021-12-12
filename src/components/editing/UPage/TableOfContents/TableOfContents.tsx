@@ -58,9 +58,10 @@ const TOCWrapper = styled(Stack, { label: 'TOC' })({
   zIndex: 2,
   position: 'fixed',
   right: 0,
+  top: 0,
 
   ':hover .MuiPaper-root': {
-    transform: 'translateX(-19.5rem)',
+    transform: 'translateX(-17rem)',
   },
 
   '.MuiPaper-root': {
@@ -70,7 +71,7 @@ const TOCWrapper = styled(Stack, { label: 'TOC' })({
     paddingLeft: '2rem',
     paddingRight: '2rem',
     transition: 'transform 0.3s ease-in-out',
-    transform: 'translateX(20rem)',
+    transform: 'translateX(17rem)',
     overflowX: 'hidden',
     overflowY: 'scroll',
   },

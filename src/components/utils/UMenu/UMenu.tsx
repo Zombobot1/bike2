@@ -38,9 +38,10 @@ export interface UMenu extends MenuB {
   isNested?: bool
   offset?: nums
   placement?: 'bottom-start' | 'right'
+  disablePortal?: bool
 }
 
-const uMenuFilter = [...menuFilterProps, 'hasNested', 'isNested', 'offset', 'containerRef']
+const uMenuFilter = [...menuFilterProps, 'hasNested', 'isNested', 'offset', 'containerRef', 'disablePortal']
 
 export function UMenu(ps: UMenu) {
   function handleListKeyDown(event: React.KeyboardEvent) {
@@ -56,7 +57,7 @@ export function UMenu(ps: UMenu) {
       container={ps.containerRef?.current}
       placement={ps.placement || 'bottom-start'}
       transition
-      disablePortal={!!ps.containerRef}
+      disablePortal={!!ps.containerRef || ps.disablePortal}
       style={{ zIndex: 20 }}
       modifiers={[
         {

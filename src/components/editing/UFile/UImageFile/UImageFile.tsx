@@ -5,7 +5,7 @@ import { UBlockComponentB } from '../../types'
 import { useUImageFile } from '../useUFile'
 import { alpha, IconButton, styled } from '@mui/material'
 import { bool, num } from '../../../../utils/types'
-import { cast } from '../../../../utils/utils'
+import { ucast } from '../../../../utils/utils'
 import { useEffect, useState } from 'react'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
@@ -16,7 +16,7 @@ export interface UImageFile extends UBlockComponentB {
 }
 
 export function UImageFile({ data, setData, readonly, maxWidth }: UImageFile) {
-  const [imageData, setImageData] = useReactiveObject(cast(data, new UImageFileDTO()))
+  const [imageData, setImageData] = useReactiveObject(ucast(data, new UImageFileDTO()))
   const [newSrc, setNewSrc] = useState('') // user can change width before image is uploaded
   const props = useUImageFile(setNewSrc, (f) => setImageData(() => ({ width: 900, src: srcfy(f) })))
 

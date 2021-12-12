@@ -1,4 +1,4 @@
-import { alpha, Box, Button, Stack, styled } from '@mui/material'
+import { Box, Button, Stack, styled } from '@mui/material'
 import randomColor from 'randomcolor'
 import { bool, fn, Fn, str, strs } from '../../../utils/types'
 import { useIsSM, useReactive } from '../../utils/hooks/hooks'
@@ -9,24 +9,25 @@ import { UBlocksSet, useUBlocks } from './UBlocksSet/UBlocksSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
 import { uuid } from '../../../utils/uuid'
 import { WS } from '../../application/navigation/workspace'
-import { useSetData } from '../../../fb/useData'
+import { useFirestoreData } from '../../../fb/useData'
 import { useEffect, useRef, useState } from 'react'
 import { TOCItems } from './TableOfContents/types'
 import { TableOfContents } from './TableOfContents/TableOfContents'
 import { useMap } from '../../utils/hooks/useMap'
 import { safe } from '../../../utils/utils'
 import { setUPageScroll, useSelection } from '../UBlock/useSelection'
+import { useDeleteUPage } from './useDeleteUPage'
 
 export interface UPageDataDTO {
   color: str
   name: str
   ids: strs
+  fullWidth?: bool
 }
 
 export interface UPageDTO {
   type: UBlockType
   data: UPageDataDTO
-  fullWidth?: bool
   isDeleted?: bool
   readonly?: bool
 }
@@ -34,14 +35,16 @@ export interface UPageDTO {
 export interface UPage {
   workspace: WS
   setOpenTOC: (f?: Fn) => void
+  setToggleFullWidth: (f: Fn) => void
 }
 // readOnly fullWidth showToC (default true)
-export function UPage({ workspace, setOpenTOC }: UPage) {
+export function UPage({ workspace, setOpenTOC, setToggleFullWidth }: UPage) {
   const { location } = useRouter()
   const id = location.pathname.replace('/', '')
   const { ids, ublock, setUBlockData } = useUBlocks<UPageDTO, UPageDataDTO>(id)
   const { upageRef, onMouseDown, pageRef, selectionRef, setIsSelectionActive } = useSelectablePage()
   const addNewUPage = useNewUPage(workspace)
+  const deleteUPage = useDeleteUPage(workspace, { skipRootDeletion: true })
 
   const [color, setColor] = useReactive(ublock.data.color)
   const [name] = useReactive(ublock.data.name)
@@ -49,6 +52,10 @@ export function UPage({ workspace, setOpenTOC }: UPage) {
   const tocMap = useMap<str, TOCItems>()
   const isSM = useIsSM()
   const isTOCOpenS = useState(false)
+
+  useEffect(() => {
+    setToggleFullWidth(() => () => setUBlockData({ ...ublock.data, fullWidth: !ublock.data.fullWidth }))
+  }, [JSON.stringify(ublock.data)])
 
   useEffect(() => {
     if (!isSM && tocMap.has(id) && safe(tocMap.get(id)).find((t) => isIndexableBLock(t.type))) {
@@ -63,7 +70,16 @@ export function UPage({ workspace, setOpenTOC }: UPage) {
     workspace.rename(id, name)
   }
   const setIds = (ids: strs) => setUBlockData({ ...ublock.data, ids })
-
+  const blockSetProps = {
+    ids: ids,
+    setIds: setIds,
+    readonly: false,
+    addNewUPage: (newId: str, underId?: str) => addNewUPage(newId, id, underId, color),
+    title: name,
+    setTitle: rename,
+    updateTOC: (toc: TOCItems) => tocMap.set(id, toc),
+    deleteUPage,
+  }
   return (
     <UPage_ ref={upageRef} onMouseUp={() => setIsSelectionActive(false)}>
       <ColoredBox sx={{ path: { fill: color } }} onMouseEnter={showAppBar} onMouseLeave={hideAppBar}>
@@ -78,40 +94,50 @@ export function UPage({ workspace, setOpenTOC }: UPage) {
           Set color
         </ColorPicker>
       </ColoredBox>
-      <Stack direction="row" alignItems="stretch" sx={{ minHeight: '100%' }}>
-        <Side onMouseDown={onMouseDown} className="upage--side" />
-        <Page ref={pageRef} sx={!ublock.fullWidth ? { maxWidth: 900 } : {}} className="upage--page">
-          <UBlocksSet
-            ids={ids}
-            setIds={setIds}
-            readonly={false}
-            addNewUPage={(underId) => addNewUPage(id, underId, color)}
-            title={name}
-            setTitle={rename}
-            updateTOC={(toc) => tocMap.set(id, toc)}
-          />
-        </Page>
-        <Side onMouseDown={onMouseDown} className="upage--side" />
-      </Stack>
-      <TableOfContents data={tocMap.get(id) || []} isOpenS={isTOCOpenS} />
+      {isSM && (
+        <Stack direction="row" alignItems="stretch" sx={{ minHeight: '100%' }}>
+          <Side onMouseDown={onMouseDown} className="upage--side" />
+          <Page
+            ref={pageRef}
+            sx={!ublock.data.fullWidth ? { maxWidth: 900 } : { maxWidth: '80%' }}
+            className="upage--page"
+          >
+            <UBlocksSet {...blockSetProps} />
+          </Page>
+          <Side onMouseDown={onMouseDown} className="upage--side" />
+        </Stack>
+      )}
+      {!isSM && (
+        <Box sx={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
+          <UBlocksSet {...blockSetProps} />
+        </Box>
+      )}
       <SelectionBox
         ref={selectionRef}
         sx={{ top: selection.y, left: selection.x, width: selection.width, height: selection.height }}
       />
+      <TableOfContents data={tocMap.get(id) || []} isOpenS={isTOCOpenS} />
     </UPage_>
   )
 }
 
 export function useNewUPage(workspace: WS) {
   const { history } = useRouter()
-  const { addData } = useSetData()
-  function addNewUPage(parentId?: str, underId?: str, parentColor?: str) {
-    const id = uuid.v4()
-    const newPage: UPageDataDTO = { color: parentColor || randomColor({ luminosity: 'bright' }), ids: [], name: '' }
-    addData<UBlockDTO>('ublocks', id, { type: 'page', data: JSON.stringify(newPage) })
+  const { setData, addData } = useFirestoreData()
+
+  function addNewUPage(newId?: str, parentId?: str, underId?: str, parentColor?: str) {
+    const id = newId || uuid.v4()
+    const newPageData: UPageDataDTO = { color: parentColor || randomColor({ luminosity: 'bright' }), ids: [], name: '' }
+    const newPage: UBlockDTO = { type: 'page', data: JSON.stringify(newPageData) }
+
+    if (newId) setData<UBlockDTO>('ublocks', id, newPage)
+    else addData<UBlockDTO>('ublocks', id, newPage)
+
     history.push('/' + id)
+
     workspace.insert(id, parentId, underId)
   }
+
   return addNewUPage
 }
 
@@ -211,7 +237,7 @@ function useSelectablePage() {
 
 const SelectionBox = styled(Box)(({ theme }) => ({
   position: 'absolute',
-  backgroundColor: alpha(theme.palette.info.main, 0.25),
+  backgroundColor: theme.apm('info'),
 }))
 
 class Selection {
@@ -228,31 +254,21 @@ class Selection {
 
 let selection = new Selection()
 
-const UPage_ = styled(Box, { label: 'UPage' })(({ theme }) => ({
+const UPage_ = styled(Box, { label: 'UPage' })({
   overflow: 'auto',
   position: 'relative',
   minHeight: '100%',
   width: '100%',
 
   '.upage--page': {
-    flexGrow: 90,
+    flexGrow: 80,
   },
 
   '.upage--side': {
     userSelect: 'none',
-    flexGrow: 5,
+    flexGrow: 10,
   },
-
-  [`${theme.breakpoints.up('sm')}`]: {
-    '.upage--page': {
-      flexGrow: 80,
-    },
-
-    '.upage--side': {
-      flexGrow: 10,
-    },
-  },
-}))
+})
 
 const Side = Box
 const Page = Box

@@ -6,7 +6,7 @@ import { str } from '../../../../utils/types'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 
 import { UImageFile, UImageFileDTO } from '../UImageFile/UImageFile'
-import { cast as turn } from '../../../../utils/utils'
+import { ucast as turn } from '../../../../utils/utils'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
 export function UVideoFile({ data, setData, readonly, maxWidth }: UImageFile) {

@@ -28,7 +28,7 @@ export function all(...fs: Array<Function | undefined>) {
   }
 }
 
-export function cast<T>(data: str, default_: T): T {
+export function ucast<T>(data: str, default_: T): T {
   if (!data) return default_
 
   try {

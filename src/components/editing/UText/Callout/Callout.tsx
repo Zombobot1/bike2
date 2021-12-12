@@ -1,4 +1,4 @@
-import { cast } from '../../../../utils/utils'
+import { ucast } from '../../../../utils/utils'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { RStack } from '../../../utils/MuiUtils'
 import { UText } from '../types'
@@ -14,7 +14,7 @@ import { bool, SetStr, str } from '../../../../utils/types'
 import { PaddedBox } from '../../UBlock/PaddedBox'
 
 export function Callout(props: UText) {
-  const [data] = useReactiveObject(cast(props.data, new CalloutDTO()))
+  const [data] = useReactiveObject(ucast(props.data, new CalloutDTO()))
   const setText = (d: str) => props.setData(JSON.stringify({ ...data, text: d }))
   const setType = (t: str) => props.setData(JSON.stringify({ ...data, type: t }))
 

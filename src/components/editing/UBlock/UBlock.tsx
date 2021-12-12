@@ -1,4 +1,4 @@
-import { alpha, Box, styled, Tooltip } from '@mui/material'
+import { Box, styled, Tooltip } from '@mui/material'
 import { useCallback, useRef } from 'react'
 import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
 import { bool, fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
@@ -23,7 +23,7 @@ import {
 import { UText } from '../UText/UText'
 import { UFile } from '../UFile/UFile'
 import { UFormBlock } from '../../uforms/UFormBlock/UFormBlock'
-import { useData, useSetData } from '../../../fb/useData'
+import { useData, useFirestoreData } from '../../../fb/useData'
 import { useSelection } from './useSelection'
 import { UForm } from '../../uforms/UForm'
 import { RStack } from '../../utils/MuiUtils'
@@ -40,9 +40,11 @@ import { utextPaddings } from '../UText/utextStyles'
 import { UTable } from '../UTable/UTable'
 import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
+import { UPageBlock } from '../UPage/UPageBlock/UPageBlock'
 
 export interface UBlock extends UBlockB {
   rearrangeBlocks?: SetStr
+  handleMoveBlocksTo?: SetStr
   inUForm?: bool
   addNewBlock?: AddNewBlockUText
   addInfo?: (id: str, i: BlockInfo) => void
@@ -92,6 +94,7 @@ export function UBlock({
   resetActiveBlock = fn,
   deleteBlocks: deleteUBlocks = fn,
   rearrangeBlocks = fn,
+  handleMoveBlocksTo = fn,
   i = 100,
   previousBlockInfo,
   appendedData,
@@ -112,9 +115,11 @@ export function UBlock({
   const [{ isOver }, drop] = useDrop(
     () => ({
       accept: DragType.ublock,
-      drop: () => rearrangeBlocks(id),
+      drop: (_, monitor) => {
+        if (!monitor.didDrop()) rearrangeBlocks(id)
+      },
       collect: (monitor) => ({
-        isOver: !!monitor.isOver(),
+        isOver: !!monitor.isOver({ shallow: true }),
       }),
     }),
     [rearrangeBlocks],
@@ -123,6 +128,10 @@ export function UBlock({
   useUpdateEffect(() => {
     if (!isDragging) dispatch({ a: 'end-drag' })
   }, [isDragging])
+
+  useUpdateEffect(() => {
+    if (ublock.type === 'page') addNewUPage(id)
+  }, [ublock.type])
 
   const notFullWidth = isNotFullWidthBlock(ublock.type)
   const { ref, width } = useElementSize({ passive: !notFullWidth })
@@ -136,14 +145,14 @@ export function UBlock({
     [JSON.stringify(ublock), JSON.stringify(focus)],
   )
 
-  const tryToChangeFieldType = useCallback(getTryToChangeBlockType(id, setType, addNewUPage), [setType, addNewUPage])
+  const tryToChangeFieldType = useCallback(getTryToChangeBlockType(id, setType), [setType])
 
   const deleteBlock = useCallback(
     (data?: str) => {
-      deleteUBlock(id, data)
       setUBlock({ isDeleted: true })
+      deleteUBlock(id, data)
     },
-    [deleteUBlock, setUBlock],
+    [deleteUBlock, setUBlock, ublock.type],
   )
 
   const deleteBlocks = useCallback(() => {
@@ -152,7 +161,7 @@ export function UBlock({
     dispatch({ a: 'clear' })
   }, [deleteUBlocks, deleteUBlocks, selection.ids])
 
-  const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16 }
+  const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16, addInfo }
 
   const utextProps = {
     ...commonProps,
@@ -168,7 +177,6 @@ export function UBlock({
     isCardField,
     goUp,
     goDown,
-    addInfo,
     previousBlockInfo,
     appendedData,
     initialData: initialData?.data,
@@ -220,6 +228,7 @@ export function UBlock({
             {ublock.type === 'block-equation' && <Equation {...commonProps} />}
             {ublock.type === 'divider' && <UDivider />}
             {ublock.type === 'table' && <UTable {...commonProps} />}
+            {ublock.type === 'page' && <UPageBlock {...commonProps} handleMoveBlocksTo={handleMoveBlocksTo} />}
           </div>
         </InnerContainer>
       </RStack_>
@@ -228,7 +237,7 @@ export function UBlock({
 }
 
 export function useDeleteUBlocks() {
-  const { setData: setExternalData } = useSetData()
+  const { setData: setExternalData } = useFirestoreData()
   return {
     deleteExternalUBlocks: (ids: strs) => ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true })),
   }
@@ -256,7 +265,7 @@ const Selection = styled('div')(({ theme }) => ({
   bottom: 0,
   right: 0,
   left: 0,
-  backgroundColor: alpha(theme.palette.info.main, 0.25),
+  backgroundColor: theme.apm('info'),
   marginBottom: '0.25rem',
   marginTop: '0.25rem',
 }))
@@ -267,12 +276,12 @@ const Dropbox = styled('div')(({ theme }) => ({
   bottom: 0,
   right: 0,
   left: 0,
-  height: '1rem',
-  backgroundColor: alpha(theme.palette.info.main, 0.25),
+  height: '0.5rem',
+  backgroundColor: theme.apm('info'),
   marginTop: '0.25rem',
 }))
 
-const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void, addNewUPage: SetStr) => (newData: str) => {
+const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void) => (newData: str) => {
   if (!newData.includes(' ')) return
 
   const firstElement = newData.split(' ')
@@ -280,7 +289,6 @@ const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void, addN
   if (!newType) return
 
   setType(newType)
-  if (newType === 'page') addNewUPage(id)
 }
 
 interface BlockMenu {

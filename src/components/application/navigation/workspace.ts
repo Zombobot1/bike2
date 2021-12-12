@@ -1,7 +1,8 @@
-import { bool, fn, str } from '../../../utils/types'
+import { bool, fn, str, strsP } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { useData } from '../../../fb/useData'
 import { NavNodeDTO, NavNodeDTOO, NavNodeDTOs } from './NavBar/NavTree'
+import { parallel } from '../../../utils/asyncUtils'
 
 type Scope = 'favorite' | 'personal'
 
@@ -21,7 +22,7 @@ export class WS {
   isFavorite = (id: str): bool => Boolean(this.favorite.find((n) => n.id === id))
   triggerFavorite = (id: str) => () => this.isFavorite(id) ? this._removeFromFavorite(id) : this._addToFavorite(id)
 
-  delete = (id: str): str => {
+  delete = (id: str, getIds: (id: str) => strsP, deleteBlock: (id: str) => void): str => {
     const deletePage = (scope: Scope, id: str): str => {
       const parent = this._parents(scope).get(id)
       if (parent) {
@@ -33,6 +34,11 @@ export class WS {
       }
       return this.personal[0].id || 'study'
     }
+
+    const pagesToRemove = bfs(this.find(id)).map((n) => n.id)
+    parallel(pagesToRemove.map((pageId) => getIds(pageId))).then((pages) =>
+      pages.forEach((ids) => ids.forEach((blockId) => deleteBlock(blockId))),
+    )
 
     if (this._find('favorite', id)) deletePage('favorite', id)
     const parentId = deletePage('personal', id)
@@ -126,5 +132,18 @@ export function useWorkspace(id: str) {
   const [data, setData] = useData<_WSD>('ws', id)
   const r = new WS(data.favorite, data.personal, id)
   r._setSave(setData)
+  return r
+}
+
+function bfs(node: NavNodeDTO): NavNodeDTOs {
+  const queue = [...(node.children ? node.children : [])]
+  const r: NavNodeDTOs = [node]
+
+  while (queue.length) {
+    const node = safe(queue.shift())
+    if (node?.children) queue.push(...node.children)
+    r.push(node)
+  }
+
   return r
 }

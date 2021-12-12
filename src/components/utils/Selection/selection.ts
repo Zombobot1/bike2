@@ -211,6 +211,7 @@ function getTextBeforeSelection(block: HTMLElement) {
   if (!content.length || cypressBug) return ''
 
   const { start, offset } = startNodeAndOffset()
+
   const index = content.findIndex((n) => n === start)
   if (index === -1) throw new Error('Selection is not in block')
 
@@ -231,8 +232,7 @@ function getTextBeforeSelection(block: HTMLElement) {
 
 function startNodeAndOffset(): { start: Node; offset: num } {
   const s = safe(window.getSelection())
-
-  return !s.toString() && isSelectedBackwards()
+  return isSelectedBackwards()
     ? { start: safe(s.focusNode), offset: s.focusOffset }
     : { start: safe(s.anchorNode), offset: s.anchorOffset }
 }

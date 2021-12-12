@@ -8,7 +8,7 @@ import { bool, DivRef, fn, Fn, JSObject, num, SetNum, SetStr, str } from '../../
 import { safe } from '../../../utils/utils'
 import { _apm } from '../../application/theming/theme'
 import { unhighlight } from '../../utils/CodeEditor/highlight'
-import { useMount, useReactiveObject } from '../../utils/hooks/hooks'
+import { useMount, useReactive, useReactiveObject } from '../../utils/hooks/hooks'
 import { useRefCallback } from '../../utils/hooks/useRefCallback'
 import { sliceHtml, replaceAllCodeToNothing } from '../../utils/Selection/htmlAsStr'
 import {
@@ -47,6 +47,10 @@ function UText__(ps: UText_) {
 
   useTextMount(ps, text, setText, autocompletePs.openAutocomplete, kdPs.splitText, ref)
 
+  useEffect(() => {
+    if (ps.focusIfEmpty) ref.current?.focus()
+  }, [ps.focusIfEmpty])
+
   let html = text.replaceAll('&', '&amp;')
   if (html.trim().endsWith('</code>')) html += '&nbsp;'
   return (
@@ -76,10 +80,11 @@ export interface UText_ extends UText {
   handleKeyDown?: (e: KeyboardEvent<HTMLInputElement>, atStart?: bool) => void
   offset?: num
   color?: str
+  focusIfEmpty?: bool
 }
 
 function useText(ps: UText_, ref: DivRef, mapRef: TexMapRef) {
-  const [text, setText] = useState(ps.data)
+  const [text, setText] = useReactive(ps.data)
 
   useEffect(() => {
     if (!text) return
@@ -342,7 +347,6 @@ function useTextMount(
     })
 
     const sRef = safe(ref.current)
-
     const onPaste = (e: ClipboardEvent) => {
       e.preventDefault()
       const image = e.clipboardData?.files[0] || e.clipboardData?.getData('image/png')

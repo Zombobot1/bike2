@@ -1,9 +1,9 @@
 import { Stack } from '@mui/material'
 import { useCallback, useEffect, useState } from 'react'
 import { bool, fn, num, SetStr, SetStrs, str, strs } from '../../../../utils/types'
-import { cast, safe } from '../../../../utils/utils'
+import { ucast, safe } from '../../../../utils/utils'
 import { uuid } from '../../../../utils/uuid'
-import { BlockInfo, isUTextBlock, UBlockDTO, UBlockType, UTextFocus } from '../../types'
+import { BlockInfo, isUTextBlock, UBlockType, UTextFocus } from '../../types'
 import { UBlock, useDeleteUBlocks } from '../../UBlock/UBlock'
 import { useData } from '../../../../fb/useData'
 import { UPageTitle, UParagraph } from '../../UText/UText'
@@ -15,6 +15,7 @@ import { TOCItems } from '../TableOfContents/types'
 
 export interface UBlocksSet {
   updateTOC?: (items: TOCItems) => void
+  deleteUPage?: SetStr
   readonly?: bool
   ids: strs
   setIds: SetStrs
@@ -22,7 +23,7 @@ export interface UBlocksSet {
   setTitle?: SetStr
   inner?: bool
 
-  addNewUPage?: SetStr
+  addNewUPage?: (id: str, underId?: str) => void
   factoryPlaceholder?: str
   isUForm?: bool
 }
@@ -35,6 +36,7 @@ export function UBlocksSet({
   setTitle,
   isUForm,
   addNewUPage = fn,
+  deleteUPage = fn,
   updateTOC,
   factoryPlaceholder,
 }: UBlocksSet) {
@@ -63,7 +65,11 @@ export function UBlocksSet({
   )
 
   const _addNewUPage = useCallback(
-    (id: str) => addNewUPage(ids.slice(0, ids.indexOf(id)).find((id) => idAndInfo.get(id)?.type === 'page') || ''),
+    (id: str) =>
+      addNewUPage(
+        id,
+        ids.slice(0, ids.indexOf(id)).find((id) => idAndInfo.get(id)?.type === 'page'),
+      ),
     [ids, _infos],
   )
 
@@ -91,15 +97,16 @@ export function UBlocksSet({
             : old,
         )
       }
+
       const blockAbove = ids.indexOf(underId) + 1
-      const newIds = newBlocks.map((b) => b.id)
-      setIds(
+      const newAddedIds = newBlocks.map((b) => b.id)
+      const newIds =
         blockAbove === 0
-          ? [...ids, ...newIds]
-          : [...ids.slice(0, blockAbove), ...newIds, ...ids.slice(blockAbove, ids.length)],
-      )
+          ? [...ids, ...newAddedIds]
+          : [...ids.slice(0, blockAbove), ...newAddedIds, ...ids.slice(blockAbove, ids.length)]
+      setIds(newIds)
     },
-    [ids],
+    [ids, setIds],
   )
 
   const deleteBlock = useCallback(
@@ -126,11 +133,20 @@ export function UBlocksSet({
     [ids, selection.draggingIds],
   )
 
+  const handleMoveBlocksTo = useCallback(
+    (pageId: str) => {
+      if (selection.draggingIds.includes(pageId)) return
+      setIds(ids.filter((oldId) => !selection.draggingIds.includes(oldId)))
+    },
+    [ids, selection.draggingIds],
+  )
+
   const deleteBlocks = useCallback(
     (idsToRemove: strs) => {
+      idsToRemove.filter((id) => idAndInfo.get(id)?.type === 'page').forEach((id) => deleteUPage(id))
       setIds(ids.filter((oldId) => !idsToRemove.includes(oldId)))
     },
-    [ids],
+    [ids, _infos],
   )
 
   const findUTextId = useCallback(
@@ -244,6 +260,7 @@ export function UBlocksSet({
             i={i}
             previousBlockInfo={previousBlockInfo}
             rearrangeBlocks={rearrangeBlocks}
+            handleMoveBlocksTo={handleMoveBlocksTo}
             inUForm={isUForm}
           />
         )
@@ -276,17 +293,14 @@ type UBlocks = { data: { ids: strs } }
 export function useUBlocks<T extends UBlocks, D>(id: str) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [ublock, setUBlock] = useData<any>('ublocks', id)
-  const data = cast<{ ids: strs }>((ublock as { data: str }).data, { ids: [] })
+  const data = ucast<{ ids: strs }>((ublock as { data: str }).data, { ids: [] })
   return {
     ids: data.ids,
     ublock: { ...ublock, data } as T,
-    setUBlockData: (d: D) => setUBlock({ data: JSON.stringify(d) }),
+    setUBlockData: (d: D) => {
+      setUBlock({ data: JSON.stringify(d) })
+    },
   }
-}
-
-export function useDeleteUPage(id: str) {
-  const [_, setUBlock] = useData<UBlockDTO>('ublocks', id)
-  return () => setUBlock({ isDeleted: true })
 }
 
 class ActiveBlock {

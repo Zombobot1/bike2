@@ -12,7 +12,7 @@ function T({ path }: { path: str }) {
   const workspace = new WS(ws.favorite, ws.personal, useUserInfo().uid)
   return (
     <MemoryRouter initialEntries={[path]}>
-      <AppBar workspace={workspace} openNavBar={fn} />
+      <AppBar workspace={workspace} openNavBar={fn} toggleFullWidth={fn} />
     </MemoryRouter>
   )
 }
