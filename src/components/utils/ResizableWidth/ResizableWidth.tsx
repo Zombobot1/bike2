@@ -1,9 +1,9 @@
 import { useIsSM } from '../hooks/hooks'
-import { ReactNode, useEffect, useState } from 'react'
-import { bool, num, SetNum } from '../../../utils/types'
+import { ReactNode, useEffect, useRef, useState } from 'react'
+import { bool, Fn, fn, num, SetNum, SetStr, str } from '../../../utils/types'
 import { alpha, styled } from '@mui/material'
 
-interface ResizableWidth {
+export interface ResizableWidth {
   updateWidth: SetNum
   width: num
   maxWidth: num
@@ -13,7 +13,7 @@ interface ResizableWidth {
   hiddenHandler?: bool
   stretch?: bool
   stretchHandler?: bool
-  // onWidthChange: SetNum // - too heavy for a table
+  onWidthChange?: SetNum
 }
 
 export function ResizableWidth({
@@ -26,9 +26,11 @@ export function ResizableWidth({
   hiddenHandler,
   stretch,
   stretchHandler,
+  onWidthChange = fn,
 }: ResizableWidth) {
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
+
   useEffect(() => {
     if (isResizing) return
     setWidth({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
@@ -47,6 +49,7 @@ export function ResizableWidth({
     const scaleBy = rightOnly ? 1 : 2
     const newWidth = width.widthBeforeResize + width.needResize * scaleBy
     if (Math.abs(width.needResize - width.previousResize) > 1 && newWidth >= width.minWidth) {
+      onWidthChange(Math.min(newWidth, maxWidth))
       setWidth((old) => ({
         ...old,
         width: Math.min(old.widthBeforeResize + old.needResize * scaleBy, maxWidth),
@@ -96,6 +99,119 @@ export function ResizableWidth({
   )
 }
 
+export interface ResizableFluidWidth {
+  width: str
+  maxWidth: str
+  updateWidth: SetStr
+  onWidthChange?: SetStr
+  children: ReactNode
+  readonly?: bool
+  stretch?: bool
+  onResizeStart: Fn
+}
+
+export function ResizableFluidWidth({
+  width: initialWidth,
+  updateWidth,
+  children,
+  readonly,
+  maxWidth,
+  onWidthChange = fn,
+  stretch,
+  onResizeStart,
+}: ResizableFluidWidth) {
+  const ref = useRef<HTMLDivElement>(null)
+  const [isResizing, setIsResizing] = useState(false)
+  const [width, setWidth] = useState({ ...new WidthStr(), width: min(initialWidth, maxWidth) })
+
+  useEffect(() => {
+    if (isResizing) return
+    setWidth({ ...new WidthStr(), width: min(initialWidth, maxWidth) })
+  }, [initialWidth, maxWidth])
+
+  const [needUpdate, setNeedUpdate] = useState(false)
+  const isSM = useIsSM()
+
+  useEffect(() => {
+    if (!needUpdate) return
+    updateWidth(width.width)
+    setNeedUpdate(false)
+  }, [needUpdate])
+
+  useEffect(() => {
+    const newWidth = width.widthBeforeResize + width.needResize
+
+    if (Math.abs(width.needResize - width.previousResize) > 1 && newWidth >= width.minWidth) {
+      const scaledNewWidth = getNewWidth(width.widthBeforeResizeStr, width.widthBeforeResize, newWidth)
+      const newWidthStr = min(scaledNewWidth, maxWidth)
+      onWidthChange(newWidthStr)
+      setWidth((old) => ({
+        ...old,
+        width: newWidthStr,
+        previousResize: old.needResize,
+      }))
+    }
+  }, [width.needResize])
+
+  const onMouseDown =
+    (reverse = false) =>
+    () => {
+      const onMouseMove = (e: MouseEvent) =>
+        setWidth((old) => {
+          return { ...old, needResize: reverse ? old.needResize - e.movementX : old.needResize + e.movementX }
+        })
+
+      function onMouseUp() {
+        window.removeEventListener('mousemove', onMouseMove)
+        window.removeEventListener('mouseup', onMouseUp)
+        setIsResizing(false)
+        setNeedUpdate(true)
+      }
+
+      window.addEventListener('mousemove', onMouseMove)
+      window.addEventListener('mouseup', onMouseUp)
+
+      setIsResizing(true)
+
+      setWidth((old) => ({
+        ...old,
+        widthBeforeResize: ref.current?.offsetWidth || 0,
+        widthBeforeResizeStr: initialWidth,
+        needResize: 0,
+      }))
+
+      onResizeStart()
+    }
+
+  return (
+    <ResizableWidth_
+      ref={ref}
+      sx={{
+        minWidth: stretch ? undefined : width.width,
+        flexGrow: stretch ? 1 : undefined,
+        cursor: isResizing ? 'col-resize' : 'default',
+      }}
+    >
+      {isSM && !readonly && (
+        <Right onMouseDown={onMouseDown()}>
+          <Handler sx={{ height: '70%' }} />
+        </Right>
+      )}
+      {children}
+    </ResizableWidth_>
+  )
+}
+
+function min(a: str, b: str): str {
+  return Math.min(+a.replace('%', ''), +b.replace('%', '')) + '%'
+}
+
+function getNewWidth(currentWidth: str, widthBeforeResize: num, newWidth: num): str {
+  const currentWidthNum = +currentWidth.replace('%', '')
+  const delta = (newWidth - widthBeforeResize) / widthBeforeResize
+  return currentWidthNum * (1 + delta) + '%'
+}
+
 const ResizableWidth_ = styled('div', { label: 'ResizableWidth' })({
   position: 'relative',
   height: '100%',
@@ -142,6 +258,15 @@ const Handler = styled('span')(({ theme }) => ({
 
 class Width {
   widthBeforeResize = 0
+  width = 100
+  needResize = 0
+  previousResize = 0
+  minWidth = 50
+}
+
+class WidthStr {
+  widthBeforeResize = 0
+  widthBeforeResizeStr = ''
   width = 100
   needResize = 0
   previousResize = 0

@@ -23,6 +23,7 @@ import ViewCarouselRoundedIcon from '@mui/icons-material/ViewCarouselRounded'
 import BallotRoundedIcon from '@mui/icons-material/BallotRounded'
 import FormatListBulletedRoundedIcon from '@mui/icons-material/FormatListBulletedRounded'
 import FormatListNumberedRoundedIcon from '@mui/icons-material/FormatListNumberedRounded'
+import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded'
 
 import { bool, num, str, UIcon } from '../../../../utils/types'
 import { SVGI } from '../../../utils/MuiUtils'
@@ -73,6 +74,7 @@ const ublocks: Items = [
   { text: 'Heading 2', icon: H2, context: any },
   { text: 'Heading 3', icon: H3, context: any },
   { text: 'Numbered list', icon: FormatListNumberedRoundedIcon, context: any },
+  { text: 'Toggle list', icon: PlaylistPlayRoundedIcon, context: any },
   { text: 'Table', icon: TableChartRoundedIcon, context: notTurner },
   { text: 'Block equation', icon: TEX, context: notTurner },
   { text: 'Inline equation', icon: TEXInline, context: notTurner },

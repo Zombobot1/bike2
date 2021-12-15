@@ -202,7 +202,7 @@ function useKeyDown(
           const isList = isUListBlock(ps.type)
           const newText = splitText()
           if (isList) {
-            const data: UListDTO = { text: newText, offset }
+            const data: UListDTO = { text: newText, offset: ps.offset || 1 }
             ps.addNewBlock(ps.id, 'focus-start', JSON.stringify(data), ps.type)
           } else ps.addNewBlock(ps.id, 'focus-start', newText, 'text')
         }

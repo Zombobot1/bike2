@@ -1,6 +1,6 @@
 import { Box, Button } from '@mui/material'
 import { useState } from 'react'
-import { UBlock } from '../UBlock/UBlock'
+import { UBlock, mockUblock } from '../UBlock/UBlock'
 
 function T(props: UBlock) {
   const [f, sf] = useState(props.focus)
@@ -14,6 +14,7 @@ function T(props: UBlock) {
 }
 
 const data1: UBlock = {
+  ...mockUblock,
   id: 'f-full',
   focus: { type: 'start', xOffset: 20 },
 }
@@ -24,25 +25,30 @@ const readonly: UBlock = {
 }
 
 const data2: UBlock = {
+  ...mockUblock,
   id: 'newEmptyText',
   initialData: { data: '', type: 'text' },
 }
 
 const data3: UBlock = {
+  ...mockUblock,
   id: 'newEmptyHeader',
   initialData: { data: '', type: 'heading-1' },
 }
 
 const empty: UBlock = {
+  ...mockUblock,
   id: 'emptyString',
 }
 
 const bold: UBlock = {
+  ...mockUblock,
   id: 'bold',
   initialData: { data: 'bold', type: 'text' },
 }
 
 const link: UBlock = {
+  ...mockUblock,
   id: 'link',
   initialData: { data: 'Link and <a href="a">old ref</a> and text', type: 'text' },
 }
@@ -55,16 +61,15 @@ const coloredText = `<em class="red">Red</em> <em class="green">Green</em> <em c
 const backText = `<em class="red-b">Red</em> <em class="green-b">Green</em> <em class="blue-b">Blue</em> <em class="purple-b">Purple</em> <em class="pink-b">Pink</em>`
 
 const transformedText: UBlock = {
+  ...mockUblock,
   id: 'transformedText',
   initialData: { data: _text + '\n\n' + coloredText + ' ' + backText, type: 'text' },
 }
 
-const tex: UBlock = {
-  id: 'tex',
-  initialData: { data: _eq, type: 'text' },
-}
+const tex: UBlock = { ...mockUblock, id: 'tex', initialData: { data: _eq, type: 'text' } }
 
 const twoTex: UBlock = {
+  ...mockUblock,
   id: 'twoTex',
   initialData: { data: `${'nice '.repeat(10)} ${_eq} small ${_eq2} cat`, type: 'text' },
 }

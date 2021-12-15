@@ -1,5 +1,9 @@
 import { Box, styled, Tooltip } from '@mui/material'
 import { useCallback, useRef } from 'react'
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
+import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded'
+import AddRoundedIcon from '@mui/icons-material/AddRounded'
+import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
 import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
 import { bool, fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
 import {
@@ -29,43 +33,59 @@ import { UForm } from '../../uforms/UForm'
 import { RStack } from '../../utils/MuiUtils'
 import { UMenu, UOption, useMenu } from '../../utils/UMenu/UMenu'
 import { useElementSize } from '../../utils/hooks/useElementSize'
-import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded'
-import AddRoundedIcon from '@mui/icons-material/AddRounded'
-import { _apm, _tra } from '../../application/theming/theme'
-import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Equation } from '../Equation/Equation'
 import { UDivider } from '../UDivider/UDivider'
 import { BlockTurner } from './BlockAutocomplete/BlockTurner'
 import { utextPaddings } from '../UText/utextStyles'
 import { UTable } from '../UTable/UTable'
-import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { UPageBlock } from '../UPage/UPageBlock/UPageBlock'
 
-export interface UBlock extends UBlockB {
-  rearrangeBlocks?: SetStr
-  handleMoveBlocksTo?: SetStr
-  inUForm?: bool
-  addNewBlock?: AddNewBlockUText
-  addInfo?: (id: str, i: BlockInfo) => void
-  previousBlockInfo?: BlockInfo
-  goUp?: ArrowNavigationFn
-  goDown?: ArrowNavigationFn
-  addNewUPage?: SetStr
-  deleteBlock?: (id: str, data?: str) => void
-  deleteBlocks?: (ids: strs) => void
-  appendedData?: str
+export interface BlocksManagement {
+  rearrangeBlocks: SetStr
+  handleMoveBlocksTo: SetStr
+  addNewBlock: AddNewBlockUText
+  deleteBlock: (id: str, data?: str) => void
+  deleteBlocks: (ids: strs) => void
+}
+
+export interface FocusManagement {
   focus?: UTextFocus
+
+  goUp: ArrowNavigationFn
+  goDown: ArrowNavigationFn
+  resetActiveBlock: Fn
+}
+
+export interface UBlock extends BlocksManagement, FocusManagement, UBlockB {
   initialData?: InitialData
-  isFactory?: bool
-  onFactoryBackspace?: Fn
-  placeholder?: str
-  resetActiveBlock?: Fn
-  i?: num
+  appendedData?: str
+  previousBlockInfo?: BlockInfo // doesn't exist on first render
+  i: num
+
+  addNewUPage?: SetStr // not in UForm
+  toggleListOpen?: SetStr // only for toggle list
+  isToggleOpen?: bool
+  openToggleParent?: SetStr
+  addInfo: (id: str, i: BlockInfo) => void
 
   autoplay?: bool
   isCardField?: bool
   onAnswer?: Fn
+}
+
+export const mockUblock: UBlock = {
+  i: 0,
+  id: '404',
+  addInfo: fn,
+  addNewBlock: fn,
+  deleteBlock: fn,
+  deleteBlocks: fn,
+  goDown: fn,
+  goUp: fn,
+  handleMoveBlocksTo: fn,
+  rearrangeBlocks: fn,
+  resetActiveBlock: fn,
 }
 
 interface UBlockDTO {
@@ -80,10 +100,7 @@ export function UBlock({
   addNewBlock = fn,
   readonly = false,
   focus: initialFocus,
-  isFactory = false,
   deleteBlock: deleteUBlock = fn,
-  onFactoryBackspace,
-  placeholder,
   autoplay: _,
   onAnswer,
   isCardField,
@@ -97,6 +114,9 @@ export function UBlock({
   handleMoveBlocksTo = fn,
   i = 100,
   previousBlockInfo,
+  toggleListOpen,
+  openToggleParent,
+  isToggleOpen,
   appendedData,
 }: UBlock) {
   const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
@@ -152,14 +172,14 @@ export function UBlock({
       setUBlock({ isDeleted: true })
       deleteUBlock(id, data)
     },
-    [deleteUBlock, setUBlock, ublock.type],
+    [deleteUBlock, setUBlock],
   )
 
   const deleteBlocks = useCallback(() => {
     deleteUBlocks(selection.ids)
     deleteExternalUBlocks(selection.ids)
     dispatch({ a: 'clear' })
-  }, [deleteUBlocks, deleteUBlocks, selection.ids])
+  }, [deleteUBlocks, selection.ids])
 
   const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16, addInfo }
 
@@ -171,17 +191,18 @@ export function UBlock({
     focus,
     addNewBlock,
     deleteBlock,
-    isFactory,
-    onFactoryBackspace,
-    placeholder,
     isCardField,
     goUp,
     goDown,
     previousBlockInfo,
     appendedData,
     initialData: initialData?.data,
+    toggleListOpen,
+    openToggleParent,
+    isToggleOpen,
   }
   const RStack_ = isSM ? RStack : Box
+
   return (
     <Container
       onMouseDown={() => {
@@ -375,30 +396,30 @@ const MiniBtn = styled('button')(({ theme }) => ({
   },
 
   ':hover': {
-    backgroundColor: _apm(theme, '200'),
+    backgroundColor: theme.apm('200'),
   },
 
   ':active': {
-    backgroundColor: _apm(theme, '400'),
+    backgroundColor: theme.apm('400'),
   },
 }))
 
 const DragI = styled(DragIndicatorRoundedIcon)(({ theme }) => ({
   width: '2rem',
   height: '2rem',
-  color: _apm(theme, '800'),
+  color: theme.apm('800'),
 }))
 
 const AddI = styled(AddRoundedIcon)(({ theme }) => ({
   width: '2rem',
   height: '2rem',
-  color: _apm(theme, '800'),
+  color: theme.apm('800'),
 }))
 
-const LeftButtons = styled(RStack, { label: 'BlockMenu' })({
+const LeftButtons = styled(RStack, { label: 'BlockMenu' })(({ theme }) => ({
   position: 'absolute',
   transform: 'translateX(-100%)',
   paddingRight: '0.5rem',
-  transition: _tra('opacity'),
+  transition: theme.tra('opacity'),
   opacity: 0,
-})
+}))

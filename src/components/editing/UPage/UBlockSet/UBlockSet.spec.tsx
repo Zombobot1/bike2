@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../../../../cypress/support/index.d.ts" />
-import * as UBlocksSet from './UBlocksSet.stories'
+import * as UBlocksSet from './UBlockSet.stories'
 import { got, saw, type, show, click, lost } from '../../../../utils/testUtils'
 import { num } from '../../../../utils/types'
 import { _fluffyBlob } from '../../../../content/content'
@@ -8,7 +8,7 @@ import { _fluffyBlob } from '../../../../content/content'
 const utext = (n?: num) => got('utext', n)
 const ublock = (n?: num) => got('ublock', n)
 
-describe('UBlocksSet', () => {
+describe('UBlockSet', () => {
   it('focus moves from title to factory & factory preserves focus when adding empty blocks', () => {
     show(UBlocksSet.BlocksCreation)
     utext().type('Title{enter}')

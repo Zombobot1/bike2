@@ -279,6 +279,7 @@ const NavBox = styled(Box)(({ theme }) => ({
   maxWidth: '15rem',
   paddingLeft: '0.25rem',
   zIndex: 1000,
+  overflowY: 'auto',
   backgroundColor: theme.palette.background.default,
   borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
 }))

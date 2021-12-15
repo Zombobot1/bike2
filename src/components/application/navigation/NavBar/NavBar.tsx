@@ -11,7 +11,7 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { WS } from '../workspace'
 import { useShowAppBar } from '../AppBar/AppBar'
 import { _apm } from '../../theming/theme'
-import { useNewUPage } from '../../../editing/UPage/UPage'
+import { useNewUPage } from '../../../editing/UPage/useNewUPage'
 import { UserDTO } from '../../../../fb/auth'
 
 export interface NavBar {

@@ -1,0 +1,13 @@
+KNOWN ANOMALIES
+
+Vite reloads entire page
+    If a file doesn't have capitalized function const B = () => {}
+      It doesn't count: const B = () => () => {}
+    If there is a circular dependency
+    If problematic file A depends on B when you change B page will be reloaded
+
+    How to test:
+      Press Ctrl+S even without changes (sorybook tree will blink)
+      Comment out imports and find problematic, then analyze which files are reloaded as well and what they depend on
+      Move dependencies if possible to a separate file
+      If nothing helps restart vite (sometimes it gets stuck)

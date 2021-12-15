@@ -1,5 +1,6 @@
 import { SoryBook } from './sorybook/sorybook'
 import ReactDOM from 'react-dom'
+
 let init = { read: fn }
 if (process.env.NODE_ENV !== 'development' || !_MOCK_FB) init = wrapPromise(_initFB())
 
@@ -64,7 +65,7 @@ import * as UVideoFile from './components/editing/UFile/UVideoFile/UVideoFile.st
 import * as UFile from './components/editing/UFile/UFile.stories'
 import * as UAudio from './components/utils/UAudio/UAudio.stories'
 import * as UAutocomplete from './components/utils/UAutocomplete/UAutocomplete.stories'
-import * as UBlocksSet from './components/editing/UPage/UBlocksSet/UBlocksSet.stories'
+import * as UBlocksSet from './components/editing/UPage/UBlockSet/UBlockSet.stories'
 import * as UTable from './components/editing/UTable/UTable.stories'
 import * as TableOfContents from './components/editing/UPage/TableOfContents/TableOfContents.stories'
 import * as UPageBlock from './components/editing/UPage/UPageBlock/UPageBlock.stories'
@@ -103,8 +104,6 @@ import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingSt
 
 import { _MOCK_FB } from './fb/utils'
 import { fn } from './utils/types'
-
-// import { UAudioFileS } from './components/editing/UFile/UAudioFile/UAudioFile.stories'
 
 ReactDOM.render(
   <Suspense fallback={<FetchingState />}>

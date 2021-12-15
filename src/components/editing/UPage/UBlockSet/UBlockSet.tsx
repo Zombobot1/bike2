@@ -25,7 +25,6 @@ export interface UBlocksSet {
 
   addNewUPage?: (id: str, underId?: str) => void
   factoryPlaceholder?: str
-  isUForm?: bool
 }
 
 export function UBlocksSet({
@@ -34,7 +33,6 @@ export function UBlocksSet({
   readonly,
   title,
   setTitle,
-  isUForm,
   addNewUPage = fn,
   deleteUPage = fn,
   updateTOC,
@@ -106,7 +104,7 @@ export function UBlocksSet({
           : [...ids.slice(0, blockAbove), ...newAddedIds, ...ids.slice(blockAbove, ids.length)]
       setIds(newIds)
     },
-    [ids, setIds],
+    [ids, setIds, _infos],
   )
 
   const deleteBlock = useCallback(
@@ -149,6 +147,27 @@ export function UBlocksSet({
     [ids, _infos],
   )
 
+  const toggleListOpen = useCallback(
+    (id: str) => {
+      const info = idAndInfo.get(id)
+      if (!info) return
+      idAndInfo.set(id, { ...info, isOpen: !info?.isOpen })
+    },
+    [ids, _infos],
+  )
+
+  const openToggleParent = useCallback(
+    (id: str) => {
+      const parentId = ids[ids.indexOf(id) - 1] // top element becomes parent
+      if (!parentId) return
+
+      const info = idAndInfo.get(parentId)
+      if (!info) return
+      idAndInfo.set(parentId, { ...info, isOpen: true })
+    },
+    [ids, _infos],
+  )
+
   const findUTextId = useCallback(
     (direction: 'up' | 'down' | 'first' | 'last', i?: num): str => {
       let searchArea = ids.slice(0, i).reverse()
@@ -186,6 +205,7 @@ export function UBlocksSet({
 
   const clearFocus = useCallback(() => setActiveBlock(new ActiveBlock()), [])
   const { deleteExternalUBlocks } = useDeleteUBlocks()
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (!selection.ids.length) return
@@ -203,7 +223,7 @@ export function UBlocksSet({
       } else if ((e.metaKey || e.ctrlKey) && e.key === 'c') {
         navigator.clipboard.writeText(
           Array.from(idAndInfo.entries())
-            .filter(([_, { type }]) => isUTextBlock(type))
+            .filter(([id, { type }]) => selection.ids.includes(id) && isUTextBlock(type))
             .map(([_, { data }]) => data)
             .join('\n\n'),
         )
@@ -235,12 +255,20 @@ export function UBlocksSet({
         />
       )}
       {ids.map((_id, i) => {
-        const currentType = idAndInfo.get(_id)?.type
+        const info = idAndInfo.get(_id)
+        const currentType = info?.type
         const typesStrike = currentType
           ? reverse(ids.slice(0, i)).findIndex((id) => idAndInfo.get(id)?.type !== currentType)
           : 0
         const prev = idAndInfo.get(ids[i - 1])
         const previousBlockInfo = prev ? { ...prev, typesStrike } : undefined
+
+        let isOpen: bool | undefined = undefined
+        if (info?.type === 'toggle-list' && info?.offset && info?.offset > 1) {
+          isOpen = getIsOpen(ids, idAndInfo._data, i)
+          if (!isOpen) return null
+        }
+
         return (
           <UBlock
             key={_id}
@@ -261,7 +289,9 @@ export function UBlocksSet({
             previousBlockInfo={previousBlockInfo}
             rearrangeBlocks={rearrangeBlocks}
             handleMoveBlocksTo={handleMoveBlocksTo}
-            inUForm={isUForm}
+            toggleListOpen={toggleListOpen}
+            openToggleParent={openToggleParent}
+            isToggleOpen={info?.isOpen}
           />
         )
       })}
@@ -301,6 +331,38 @@ export function useUBlocks<T extends UBlocks, D>(id: str) {
       setUBlock({ data: JSON.stringify(d) })
     },
   }
+}
+
+function getIsOpen(ids: strs, idAndInfo: Map<str, BlockInfo>, i: num): bool | undefined {
+  let parentId = findToggleParentId(ids[i], ids, idAndInfo)
+  if (!parentId) return undefined
+
+  while (parentId) {
+    if (!idAndInfo.get(parentId)?.isOpen) return false
+    parentId = findToggleParentId(parentId, ids, idAndInfo)
+  }
+
+  // all parents are open
+  return true
+}
+
+function findToggleParentId(id: str, ids: strs, idAndInfo: Map<str, BlockInfo>): str | undefined {
+  let i = ids.indexOf(id)
+  const info = idAndInfo.get(id)
+  if (!info) return undefined
+  const offset = info.offset || 1
+  i--
+  let siblingInfo = idAndInfo.get(ids[i])
+  while (siblingInfo?.type === 'toggle-list' && siblingInfo?.offset && siblingInfo.offset >= offset) {
+    i--
+    siblingInfo = idAndInfo.get(ids[i])
+  }
+
+  if (siblingInfo?.type === 'toggle-list' && siblingInfo.offset && siblingInfo.offset < offset) {
+    return ids[i]
+  }
+
+  return undefined
 }
 
 class ActiveBlock {

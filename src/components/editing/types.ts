@@ -1,6 +1,6 @@
 import { bool, Fn, num, str } from '../../utils/types'
 
-export type UListBlock = 'list' | 'bullet-list' | 'numbered-list'
+export type UListBlock = 'list' | 'bullet-list' | 'numbered-list' | 'toggle-list'
 export type AdvancedTextBlock = 'code' | 'quote' | 'callout'
 export type HeadingBlock = 'heading-1' | 'heading-2' | 'heading-3' | 'heading-0'
 export type UTextBlock = 'text' | HeadingBlock | UListBlock | AdvancedTextBlock
@@ -24,6 +24,7 @@ export function isUTextBlock(t?: UBlockType): bool {
     'list',
     'bullet-list',
     'numbered-list',
+    'toggle-list',
     'callout',
     'quote',
     'code',
@@ -61,7 +62,7 @@ export function isIndexableBLock(t?: UBlockType): bool {
 
 export function isUListBlock(t?: UBlockType): bool {
   if (!t) return false
-  const types: UBlockTypes = ['list', 'bullet-list', 'numbered-list']
+  const types: UBlockTypes = ['list', 'bullet-list', 'numbered-list', 'toggle-list']
   return types.includes(t)
 }
 
@@ -106,7 +107,15 @@ export type AddNewBlockUText = (
   offset?: num,
 ) => void
 export type InitialData = { data: str; type: UBlockType }
-export type BlockInfo = { type: UBlockType; data: str; i: num; scrollTo?: Fn; offset?: num; typesStrike?: num }
+export type BlockInfo = {
+  type: UBlockType
+  data: str
+  i: num
+  scrollTo?: Fn
+  offset?: num
+  typesStrike?: num
+  isOpen?: bool
+}
 
 export type SetUBlockType = (type: UBlockType, data?: str, focus?: FocusType) => void
 export type ArrowNavigationFn = (id: str, xOffset?: num) => void

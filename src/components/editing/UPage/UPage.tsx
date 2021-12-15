@@ -1,15 +1,11 @@
 import { Box, Button, Stack, styled } from '@mui/material'
-import randomColor from 'randomcolor'
-import { bool, fn, Fn, str, strs } from '../../../utils/types'
 import { useIsSM, useReactive } from '../../utils/hooks/hooks'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { useShowAppBar } from '../../application/navigation/AppBar/AppBar'
-import { isIndexableBLock, UBlockDTO, UBlockType } from '../types'
-import { UBlocksSet, useUBlocks } from './UBlocksSet/UBlocksSet'
+import { isIndexableBLock, UBlockType } from '../types'
+import { UBlocksSet, useUBlocks } from './UBlockSet/UBlockSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
-import { uuid } from '../../../utils/uuid'
 import { WS } from '../../application/navigation/workspace'
-import { useFirestoreData } from '../../../fb/useData'
 import { useEffect, useRef, useState } from 'react'
 import { TOCItems } from './TableOfContents/types'
 import { TableOfContents } from './TableOfContents/TableOfContents'
@@ -17,6 +13,8 @@ import { useMap } from '../../utils/hooks/useMap'
 import { safe } from '../../../utils/utils'
 import { setUPageScroll, useSelection } from '../UBlock/useSelection'
 import { useDeleteUPage } from './useDeleteUPage'
+import { bool, fn, Fn, str, strs } from '../../../utils/types'
+import { useNewUPage } from './useNewUPage'
 
 export interface UPageDataDTO {
   color: str
@@ -119,26 +117,6 @@ export function UPage({ workspace, setOpenTOC, setToggleFullWidth }: UPage) {
       <TableOfContents data={tocMap.get(id) || []} isOpenS={isTOCOpenS} />
     </UPage_>
   )
-}
-
-export function useNewUPage(workspace: WS) {
-  const { history } = useRouter()
-  const { setData, addData } = useFirestoreData()
-
-  function addNewUPage(newId?: str, parentId?: str, underId?: str, parentColor?: str) {
-    const id = newId || uuid.v4()
-    const newPageData: UPageDataDTO = { color: parentColor || randomColor({ luminosity: 'bright' }), ids: [], name: '' }
-    const newPage: UBlockDTO = { type: 'page', data: JSON.stringify(newPageData) }
-
-    if (newId) setData<UBlockDTO>('ublocks', id, newPage)
-    else addData<UBlockDTO>('ublocks', id, newPage)
-
-    history.push('/' + id)
-
-    workspace.insert(id, parentId, underId)
-  }
-
-  return addNewUPage
 }
 
 function useSelectablePage() {

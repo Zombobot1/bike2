@@ -9,19 +9,20 @@ import { UText as UTextP } from './types' // P for easier navigation
 import { UList } from './UList/UList'
 import { UText_ } from './UText_'
 
-export function UText(props: UTextP) {
-  const { type } = props
+export function UText(ps: UTextP) {
+  const { type } = ps
+
   return (
     <>
-      {type === 'text' && <UParagraph {...props} />}
-      {type === 'heading-0' && <UHeading1 {...props} />}
-      {type === 'heading-1' && <UHeading1 {...props} />}
-      {type === 'heading-2' && <UHeading2 {...props} />}
-      {type === 'heading-3' && <UHeading3 {...props} />}
-      {type === 'quote' && <Quote {...props} />}
-      {type === 'callout' && <Callout {...props} />}
-      {type === 'code' && <Code {...props} />}
-      {isUListBlock(type) && <UList {...props} />}
+      {type === 'text' && <UParagraph {...ps} />}
+      {type === 'heading-0' && <UHeading1 {...ps} />}
+      {type === 'heading-1' && <UHeading1 {...ps} />}
+      {type === 'heading-2' && <UHeading2 {...ps} />}
+      {type === 'heading-3' && <UHeading3 {...ps} />}
+      {type === 'quote' && <Quote {...ps} />}
+      {type === 'callout' && <Callout {...ps} />}
+      {type === 'code' && <Code {...ps} />}
+      {isUListBlock(type) && <UList {...ps} />}
     </>
   )
 }

@@ -23,9 +23,12 @@ export interface UText extends UBlockComponent {
   goDown?: ArrowNavigationFn
   clearFocus?: Fn
   hideMenus?: bool
+  toggleListOpen?: SetStr
+  openToggleParent?: SetStr
+  isToggleOpen?: bool
 }
 
 export class UListDTO {
   text = ''
-  offset = 1
+  offset = 1 // to use !offset
 }

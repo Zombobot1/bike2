@@ -1,12 +1,12 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
-import { UBlock } from '../../UBlock/UBlock'
-import { UBlocksSet } from '../UBlocksSet/UBlocksSet'
+import { UBlock, mockUblock } from '../../UBlock/UBlock'
+import { UBlocksSet } from '../UBlockSet/UBlockSet'
 
 const T = () => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock id="how-pets-changed-humanity" />
+      <UBlock {...mockUblock} id="how-pets-changed-humanity" />
     </Box>
   )
 }

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+// import React, { ReactNode } from 'react'
 
 export type num = number
 export type str = string
@@ -40,7 +40,7 @@ export type State<T> = [T, SetState<T>]
 export type NumState = State<number>
 export type StrState = State<string>
 export type BoolState = State<boolean>
-export type Children = ReactNode
+export type Children = React.ReactNode
 export type DivRef = React.RefObject<HTMLDivElement>
 export type Subset<T, U extends T> = Extract<T, U>
 

@@ -1,6 +1,6 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useState } from 'react'
-import { UBlock } from '../../editing/UBlock/UBlock'
+import { mockUblock, UBlock } from '../../editing/UBlock/UBlock'
 import { useUForm } from '../useUForm'
 
 const T = (props: UBlock) => () => {
@@ -34,21 +34,25 @@ const T = (props: UBlock) => () => {
 }
 
 const input1: UBlock = {
+  ...mockUblock,
   id: 'input1',
   initialData: { data: '', type: 'short-answer' },
 }
 
 const text1: UBlock = {
+  ...mockUblock,
   id: 'textarea1',
   initialData: { data: '', type: 'long-answer' },
 }
 
 const checks1: UBlock = {
+  ...mockUblock,
   id: 'checks1',
   initialData: { data: '', type: 'multiple-choice' },
 }
 
 const radio1: UBlock = {
+  ...mockUblock,
   id: 'radio1',
   initialData: { data: '', type: 'single-choice' },
 }

@@ -1,5 +1,5 @@
 import { Box } from '@mui/system'
-import { UBlock } from '../../UBlock/UBlock'
+import { UBlock, mockUblock } from '../../UBlock/UBlock'
 
 const T = (props: UBlock) => () => {
   return (
@@ -10,6 +10,7 @@ const T = (props: UBlock) => () => {
 }
 
 const data: UBlock = {
+  ...mockUblock,
   id: 'catQuote',
 }
 

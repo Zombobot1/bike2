@@ -4,7 +4,7 @@ import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { str, bool } from '../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'
 import { useInteractiveSubmit } from '../../studying/training/hooks'
-import { UBlock } from '../../editing/UBlock/UBlock'
+import { UBlock, mockUblock } from '../../editing/UBlock/UBlock'
 
 export interface UCard {
   readonly: bool
@@ -106,6 +106,13 @@ const UCardField = ({ _id, data, type: _, isMediaActive, readonly }: UCardField)
   if (!data) return null
 
   return (
-    <UBlock id={_id} autoplay={isMediaActive} onAnswer={interactiveSubmit} readonly={readonly} isCardField={true} />
+    <UBlock
+      {...mockUblock}
+      id={_id}
+      autoplay={isMediaActive}
+      onAnswer={interactiveSubmit}
+      readonly={readonly}
+      isCardField={true}
+    />
   )
 }

@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { str } from '../../../../utils/types'
-import { UBlock } from '../../UBlock/UBlock'
+import { UBlock, mockUblock } from '../../UBlock/UBlock'
 
 const T = () => {
   return (
@@ -32,26 +32,31 @@ const d = (type: str) =>
   })
 
 const data1: UBlock = {
+  ...mockUblock,
   id: 'callout1',
   initialData: { data: d('info'), type: 'callout' },
 }
 
 const data2: UBlock = {
+  ...mockUblock,
   id: 'callout2',
   initialData: { data: d('success'), type: 'callout' },
 }
 
 const data3: UBlock = {
+  ...mockUblock,
   id: 'callout3',
   initialData: { data: d('warning'), type: 'callout' },
 }
 
 const data4: UBlock = {
+  ...mockUblock,
   id: 'callout4',
   initialData: { data: d('error'), type: 'callout' },
 }
 
 const readonly: UBlock = {
+  ...mockUblock,
   id: 'readonly-callout1',
   initialData: { data: d('info'), type: 'callout' },
   readonly: true,

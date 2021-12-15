@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
-import { UBlocksSet } from '../UPage/UBlocksSet/UBlocksSet'
+import { UBlocksSet } from '../UPage/UBlockSet/UBlockSet'
 
 const T = () => {
   const s = useState(['kittens', 'divider', 'kittens2'])

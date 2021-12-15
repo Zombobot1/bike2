@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { UBlock } from '../UBlock/UBlock'
+import { UBlock, mockUblock } from '../UBlock/UBlock'
 
 const T = (props: UBlock) => () => {
   return (
@@ -10,11 +10,13 @@ const T = (props: UBlock) => () => {
 }
 
 const data1: UBlock = {
+  ...mockUblock,
   id: 'newFile',
   initialData: { data: '', type: 'file' },
 }
 
 const data2: UBlock = {
+  ...mockUblock,
   id: 'catPdf',
 }
 

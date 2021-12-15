@@ -5,7 +5,7 @@ import { fn } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
 import { useMenuB } from '../../../utils/UMenu/useMenuB'
-import { UBlocksSet } from '../../UPage/UBlocksSet/UBlocksSet'
+import { UBlocksSet } from '../../UPage/UBlockSet/UBlockSet'
 import { BlockAutocomplete } from './BlockAutocomplete'
 import { BlockTurner } from './BlockTurner'
 

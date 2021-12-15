@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { UBlock } from '../../UBlock/UBlock'
+import { UBlock, mockUblock } from '../../UBlock/UBlock'
 
 function T(props: UBlock) {
   return (
@@ -10,10 +10,12 @@ function T(props: UBlock) {
 }
 
 const data1: UBlock = {
+  ...mockUblock,
   id: 'fluffyJpg',
 }
 
 const data2: UBlock = {
+  ...mockUblock,
   id: 'newImage',
   initialData: { data: '', type: 'image' },
 }

@@ -7,34 +7,45 @@ import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { ucast } from '../../../../utils/utils'
 import { num, str } from '../../../../utils/types'
 import { KeyboardEvent, ReactNode } from 'react'
+import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 
-export function UList(props: UText) {
-  const [data] = useReactiveObject(ucast(props.data, new UListDTO()))
-  const setText = (d: str) => props.setData(JSON.stringify({ ...data, text: d }))
-  const setOffset = (o: num) => props.setData(JSON.stringify({ ...data, offset: o }))
+export function UList(ps: UText) {
+  const [data] = useReactiveObject(ucast(ps.data, new UListDTO()))
+  const setText = (d: str) => ps.setData(JSON.stringify({ ...data, text: d }))
+  const setOffset = (o: num) => ps.setData(JSON.stringify({ ...data, offset: o }))
 
   function handleTab(e: KeyboardEvent<HTMLInputElement>, atStart = false) {
     if (!atStart || e.key !== 'Tab') return
     e.preventDefault()
     if (e.shiftKey) {
-      if (data.offset === 1) props.setType('text', data.text, 'start')
+      if (data.offset === 1) ps.setType('text', data.text, 'start')
       else if (data.offset > 1) setOffset(data.offset - 1)
     } else setOffset(data.offset + 1)
+    ps.openToggleParent?.(ps.id)
   }
 
   let leftPart = <Box sx={{ minWidth: 2 * data.offset + 'rem' }} />
-  if (props.type === 'bullet-list') {
+  if (ps.type === 'bullet-list') {
     leftPart = (
       <LeftPartContainer offset={data.offset}>
         <FiberManualRecordRounded />
       </LeftPartContainer>
     )
-  } else if (props.type === 'numbered-list') {
+  } else if (ps.type === 'numbered-list') {
     let index = 1
-    if (props.previousBlockInfo?.offset === data.offset) index += props.previousBlockInfo?.typesStrike || 0
+    if (ps.previousBlockInfo?.offset === data.offset) index += ps.previousBlockInfo?.typesStrike || 0
     leftPart = (
       <LeftPartContainer offset={data.offset}>
         <Number>{index + '.'}</Number>
+      </LeftPartContainer>
+    )
+  } else if (ps.type === 'toggle-list') {
+    leftPart = (
+      <LeftPartContainer offset={data.offset}>
+        <IconBox onClick={() => ps.toggleListOpen?.(ps.id)}>
+          {ps.isToggleOpen ? <ArrowDropDownRoundedIcon /> : <ArrowRightRoundedIcon />}
+        </IconBox>
       </LeftPartContainer>
     )
   }
@@ -43,7 +54,7 @@ export function UList(props: UText) {
     <Stack direction="row" sx={{ flex: 1 }}>
       {leftPart}
       <UText_
-        {...props}
+        {...ps}
         data={data.text}
         offset={data.offset}
         setData={setText}
@@ -76,4 +87,24 @@ const FiberManualRecordRounded = styled(FiberManualRecordRoundedIcon)(({ theme }
 const Number = styled(Typography)(({ theme }) => ({
   fontSize: '1rem',
   [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.35rem' },
+}))
+
+const IconBox = styled(Box)(({ theme }) => ({
+  width: '23px',
+  height: '23px',
+  borderRadius: '4px',
+  transition: 'background-color 0.1s ease-in-out',
+  color: theme.apm('secondary'),
+  cursor: 'pointer',
+
+  ':hover': {
+    backgroundColor: theme.apm('200'),
+  },
+
+  '.MuiSvgIcon-root': {
+    width: '23px',
+    height: '23px',
+    transform: 'scale(1.3)',
+    transition: 'transform 0.2s ease-in-out',
+  },
 }))

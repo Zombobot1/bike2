@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { UBlock } from '../UBlock/UBlock'
+import { UBlock, mockUblock } from '../UBlock/UBlock'
 
 const T = () => {
   return (
@@ -10,6 +10,7 @@ const T = () => {
 }
 
 const data: UBlock = {
+  ...mockUblock,
   id: 'catTable',
 }
 
