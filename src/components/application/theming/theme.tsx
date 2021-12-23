@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { alpha, createTheme, Theme, ThemeOptions, useMediaQuery } from '@mui/material'
-import { atom, useAtom } from 'jotai'
 import _ from 'lodash'
 import { bool, JSObject, num, str } from '../../../utils/types'
+import { useLocalStorage } from '../../utils/hooks/useLocalStorage'
 
 export const COLORS = {
   white: '#fff',
@@ -13,7 +13,7 @@ export const COLORS = {
   primaryLight10: '#081d5e',
   primaryLight15: '#0a2576',
   primaryLightM5: '#020718', // - 5% lightness
-  secondary: '#FF7A00',
+  secondary: '#FF9A40',
   tertiary: '#1b998b',
   info: '#0948b3',
   success: '#05a677',
@@ -58,7 +58,7 @@ function isMac() {
 
 type Scroll = 'v' | 'h'
 
-const theme = {
+const baseTheme = {
   typography: {
     fontFamily: 'Nunito, Helvetica, sans-serif',
     fontSize: 16,
@@ -119,7 +119,7 @@ const theme = {
 }
 
 const themeDark: ThemeOptions = {
-  ...theme,
+  ...baseTheme,
   palette: {
     primary: { main: COLORS.secondary },
     secondary: { main: COLORS.primary, light: COLORS.primaryLight5, dark: COLORS.primaryLightM5 },
@@ -140,10 +140,9 @@ const duration = {
   leavingScreen: 0,
 }
 
-const lightTheme = createTheme(theme)
+const lightTheme = createTheme(baseTheme)
 const darkTheme = createTheme(themeDark)
-
-const lightCypress = createTheme({ ...theme, transitions: { duration } })
+const lightCypress = createTheme({ ...baseTheme, transitions: { duration } })
 const darkCypress = createTheme({ ...themeDark, transitions: { duration } })
 
 declare module '@mui/material/styles' {
@@ -165,36 +164,27 @@ declare module '@mui/material/styles' {
 }
 
 export type ThemeType = 'light' | 'dark'
-type ThemeTypeO = ThemeType | null
+type ThemeTypeO = ThemeType | ''
 
-const THEME_KEY = 'themeType'
-const getThemeType = () => localStorage.getItem(THEME_KEY) as ThemeTypeO
-const setThemeType = (type: ThemeType) => localStorage.setItem(THEME_KEY, type)
-const themeA = atom<ThemeTypeO>(getThemeType())
-
-export const uthemeOptions = { isCypress: true } // for cypress only
+export const uthemeOptions = { isCypress: false } // for cypress only
 
 export function useUTheme() {
-  const [overriddenThemeType, setOverriddenThemeType] = useAtom(themeA)
+  const [overriddenThemeType, setOverriddenThemeType] = useLocalStorage<ThemeTypeO>('themeType', '')
+
   let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
   if (uthemeOptions.isCypress) prefersDarkMode = false
 
-  let currentThemeType: ThemeType = prefersDarkMode ? 'dark' : 'light'
-  if (overriddenThemeType) currentThemeType = overriddenThemeType
+  const currentThemeType: ThemeType = overriddenThemeType || (prefersDarkMode ? 'dark' : 'light')
 
   let theme = currentThemeType === 'dark' ? darkTheme : lightTheme
   if (uthemeOptions.isCypress) theme = currentThemeType === 'dark' ? darkCypress : lightCypress
 
-  function setTheme(type: ThemeType) {
-    setThemeType(type)
-    setOverriddenThemeType(type)
+  function toggleTheme() {
+    setOverriddenThemeType((old) => {
+      if (old === 'dark') return 'light'
+      return 'dark'
+    })
   }
 
-  function toggleTheme() {
-    const oldType = getThemeType()
-    let newType: ThemeType = 'dark'
-    if (oldType && oldType === 'dark') newType = 'light'
-    setTheme(newType)
-  }
   return { theme, toggleTheme, themeType: currentThemeType }
 }

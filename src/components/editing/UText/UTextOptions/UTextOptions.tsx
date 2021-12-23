@@ -373,7 +373,7 @@ const RedD = '#ea878c'
 const RedB = RedD
 const RedBD = '#520105'
 
-const Green = '#448361'
+export const UTextGreen = '#448361'
 const GreenD = '#71b283'
 const GreenB = GreenD
 const GreenBD = '#073822'
@@ -396,7 +396,7 @@ const PinkBD = '#5a024c'
 const scale = 1.3
 
 const ARed = SVGIC(AI, { scale, color: Red, colorDark: RedD })
-const AGreen = SVGIC(AI, { scale, color: Green, colorDark: GreenD })
+const AGreen = SVGIC(AI, { scale, color: UTextGreen, colorDark: GreenD })
 const ABlue = SVGIC(AI, { scale, color: Blue, colorDark: BlueD })
 const APurple = SVGIC(AI, { scale, color: Purple, colorDark: PurpleD })
 const APink = SVGIC(AI, { scale, color: Pink, colorDark: PinkD })
@@ -462,7 +462,7 @@ export function coloredTextSX(isDark: bool) {
 
   return {
     '.red': { color: Red },
-    '.green': { color: Green },
+    '.green': { color: UTextGreen },
     '.blue': { color: Blue },
     '.purple': { color: Purple },
     '.pink': { color: Pink },

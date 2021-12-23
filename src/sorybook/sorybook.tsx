@@ -281,7 +281,7 @@ const NavBox = styled(Box)(({ theme }) => ({
   zIndex: 1000,
   overflowY: 'auto',
   backgroundColor: theme.palette.background.default,
-  borderRight: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
+  borderLeft: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
 }))
 
 const Down = styled(ArrowDropDownRoundedIcon)(({ theme }) => ({
@@ -349,7 +349,6 @@ interface Pane_ {
 // provider is used to suppress warning when switching e.g. from upage to fetch with initial data (upage will be updated because it is not unmounted yet?!)
 function Pane({ Sory, outline, soryId }: Pane_) {
   const theme = useTheme()
-
   return (
     <ComponentWrapper
       alignItems="center"
@@ -360,11 +359,11 @@ function Pane({ Sory, outline, soryId }: Pane_) {
       }
     >
       <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
-        <FSProvider key={soryId}>
-          <Provider>
+        <Provider key={soryId}>
+          <FSProvider>
             <Sory />
-          </Provider>
-        </FSProvider>
+          </FSProvider>
+        </Provider>
       </ErrorBoundary>
     </ComponentWrapper>
   )
@@ -409,8 +408,8 @@ function SoryBook_({ trees, sories }: SoryBook_) {
 
   return (
     <Stack sx={{ height: '100%' }} direction="row">
-      <NavBar trees={trees} toggleOutline={toggleOutline} rerenderStory={rerenderStory} />
       <Pane key={counter} Sory={sories.get(activeId) || SORY} outline={isOutlined} soryId={activeId} />
+      <NavBar trees={trees} toggleOutline={toggleOutline} rerenderStory={rerenderStory} />
     </Stack>
   )
 }

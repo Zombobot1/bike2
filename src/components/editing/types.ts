@@ -1,4 +1,4 @@
-import { bool, Fn, num, str } from '../../utils/types'
+import { bool, Fn, num, str, strs } from '../../utils/types'
 
 export type UListBlock = 'list' | 'bullet-list' | 'numbered-list' | 'toggle-list'
 export type AdvancedTextBlock = 'code' | 'quote' | 'callout'
@@ -7,7 +7,7 @@ export type UTextBlock = 'text' | HeadingBlock | UListBlock | AdvancedTextBlock
 export type UFileBlock = 'file' | 'image' | 'audio' | 'video'
 export type UQuestionBlock = 'single-choice' | 'short-answer' | 'multiple-choice' | 'long-answer' | 'inline-exercise'
 export type UFormBlock = 'test' | 'exercise' | 'question'
-export type UProjectionBlock = 'page' | UFormBlock
+export type UProjectionBlock = 'grid' | 'page' | UFormBlock
 type PseudoUBlock = 'inline-equation'
 type UBlocks = 'block-equation' | 'divider' | 'table' | 'cards' | PseudoUBlock
 export type UBlockType = UTextBlock | UFileBlock | UQuestionBlock | UProjectionBlock | UBlocks
@@ -95,6 +95,7 @@ export interface UBlockComponentB {
 }
 
 export interface UBlockComponent extends UBlockComponentB {
+  id: str
   type: UBlockType
 }
 
@@ -143,3 +144,9 @@ export const regexAndType = new Map<str, UBlockType>([
   ['*', 'bullet-list'],
   ['1.', 'numbered-list'],
 ])
+
+export class UGridDTO {
+  columns: strs[] = []
+  ids: strs = []
+  widths: strs = []
+}

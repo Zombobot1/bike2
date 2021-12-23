@@ -34,7 +34,9 @@ function T3() {
   return (
     <Box sx={{ backgroundColor: 'black', width: '50%', height: 300 }}>
       <ResizableColumns widths={widths} updateWidths={setWidths}>
-        <Rec stretch={true} height={300} color={colors[0]} />
+        <Rec stretch={true} height={300} color={colors[0]}>
+          Try to decrease space that this text occupies
+        </Rec>
         <Rec stretch={true} height={300} color={colors[1]} />
         <Rec stretch={true} height={300} color={colors[2]} />
       </ResizableColumns>

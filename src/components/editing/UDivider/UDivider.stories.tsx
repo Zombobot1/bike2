@@ -7,7 +7,7 @@ const T = () => {
   const t = useState('Pets & Animals')
   return (
     <Box sx={{ width: 500 }}>
-      <UBlocksSet ids={s[0]} setIds={s[1]} readonly={false} title={t[0]} setTitle={t[1]} />
+      <UBlocksSet id="d" ids={s[0]} setIds={s[1]} readonly={false} title={t[0]} setTitle={t[1]} />
     </Box>
   )
 }

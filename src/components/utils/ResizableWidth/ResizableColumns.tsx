@@ -22,6 +22,7 @@ export function ResizableColumns({ widths: initialWidths, updateWidths, children
         return w
       }),
     )
+  const isConsistent = widths.length === initialWidths.length
 
   return (
     <Stack direction="row" style={{ height: '100%' }}>
@@ -34,8 +35,8 @@ export function ResizableColumns({ widths: initialWidths, updateWidths, children
           }}
           onWidthChange={onWidthChange(i)}
           onResizeStart={() => setResizingI(i)}
-          width={widths[i]}
-          maxWidth={getMaxWidth(widths, i)}
+          width={isConsistent ? widths[i] : initialWidths[i]}
+          maxWidth={getMaxWidth(isConsistent ? widths : initialWidths, i)}
           readonly={i === widths.length - 1}
           stretch={i === resizingI + 1}
         >

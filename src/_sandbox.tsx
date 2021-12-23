@@ -11,6 +11,7 @@ const Sandbox = () => {
     <OuterShell>
       <SoryBook
         sories={[
+          UGrid,
           UPageBlock,
           UTable,
           TableOfContents,
@@ -59,6 +60,7 @@ const Sandbox = () => {
 
 import * as UTextOptions from './components/editing/UText/UTextOptions/UTextOptions.stories'
 import * as UDivider from './components/editing/UDivider/UDivider.stories'
+import * as UGrid from './components/editing/UGrid/UGrid.stories'
 import * as Equation from './components/editing/Equation/Equation.stories'
 import * as CodeEditor from './components/utils/CodeEditor/CodeEditor.stories'
 import * as UVideoFile from './components/editing/UFile/UVideoFile/UVideoFile.stories'

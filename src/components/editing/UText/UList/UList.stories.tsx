@@ -7,7 +7,7 @@ function T() {
   const idsS = useState(_kittensForListsPage.ids)
   return (
     <Box sx={{ width: 700 }}>
-      <UBlocksSet ids={idsS[0]} setIds={idsS[1]} />
+      <UBlocksSet id="l" ids={idsS[0]} setIds={idsS[1]} />
     </Box>
   )
 }

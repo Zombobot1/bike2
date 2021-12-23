@@ -122,14 +122,14 @@ describe('UBlockSet', () => {
 
     type('utext', '{movetostart}' + '{rightarrow}'.repeat(2))
     type(d, d2, d, d2, d2, d, d, d, ['1'])
-    saw('h1ighly')
+    saw('high1ly')
 
     type(d)
     got('utext', 8).should('have.focus')
 
     type(u, ['{movetostart}' + '{rightarrow}'.repeat(8)])
     type(u, u, u, u, u2, u2, u, u, ['2'])
-    saw('K2ittens')
+    saw('Ki2ttens')
 
     type(u)
     got('utext').should('have.focus')

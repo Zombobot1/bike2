@@ -209,7 +209,7 @@ function useKeyDown(
       } else if (e.key === 'Backspace' && !offset) {
         e.preventDefault()
         if (ps.isFactory) ps.onFactoryBackspace?.()
-        else ps.deleteBlock?.(text)
+        else ps.deleteBlock?.(ps.id, text)
       } else if (e.key === 'Backspace' && offset - 1 === symbolLength(text)) {
         // - 1 due to &nbsp;
         // if tex goes at the end of a block it causes issues with focus

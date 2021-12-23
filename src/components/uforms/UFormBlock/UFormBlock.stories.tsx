@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { mockUblock, UBlock } from '../../editing/UBlock/UBlock'
 import { useUForm } from '../useUForm'
 
-const T = (props: UBlock) => () => {
+const T = (props: UBlock) => {
   const { validateNew, submit, wasSubmitted, retry } = useUForm(true)
   const [canSubmit, setCanSubmit] = useState(false)
   const [score, setScore] = useState(0)
@@ -57,10 +57,10 @@ const radio1: UBlock = {
   initialData: { data: '', type: 'single-choice' },
 }
 
-export const InputEditing = T(input1)
-export const TextAreaEditing = T(text1)
-export const RadioEditing = T(radio1)
-export const ChecksEditing = T(checks1)
+export const InputEditing = () => T(input1)
+export const TextAreaEditing = () => T(text1)
+export const RadioEditing = () => T(radio1)
+export const ChecksEditing = () => T(checks1)
 
 export default {
   title: 'UForms/UFormBlock',

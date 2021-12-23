@@ -15,7 +15,7 @@ const T2 = () => {
   const [ids, si] = useState(['how-pets-changed-humanity', 'kittensS', 'kittensH2L'])
   return (
     <Box sx={{ width: 500 }}>
-      <UBlocksSet ids={ids} setIds={si} />
+      <UBlocksSet id="b" ids={ids} setIds={si} />
     </Box>
   )
 }

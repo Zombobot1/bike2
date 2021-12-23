@@ -1,11 +1,11 @@
-import { Box, styled, Tooltip } from '@mui/material'
+import { Box, styled, Tooltip, useTheme } from '@mui/material'
 import { useCallback, useRef } from 'react'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
 import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
-import { bool, fn, Fn, num, SetStr, str, strs } from '../../../utils/types'
+import { bool, fn, Fn, JSObject, num, SetStr, str, strs } from '../../../utils/types'
 import {
   AddNewBlockUText,
   ArrowNavigationFn,
@@ -40,13 +40,16 @@ import { utextPaddings } from '../UText/utextStyles'
 import { UTable } from '../UTable/UTable'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { UPageBlock } from '../UPage/UPageBlock/UPageBlock'
+import { UGrid } from '../UGrid/UGrid'
 
 export interface BlocksManagement {
   rearrangeBlocks: SetStr
   handleMoveBlocksTo: SetStr
   addNewBlock: AddNewBlockUText
   deleteBlock: (id: str, data?: str) => void
-  deleteBlocks: (ids: strs) => void
+  deleteBlocks: Fn
+  handleGridCreation: (id: str, side: 'right' | 'left') => void
+  deleteGrid: (id: str, idsLeft: strs) => void
 }
 
 export interface FocusManagement {
@@ -58,6 +61,7 @@ export interface FocusManagement {
 }
 
 export interface UBlock extends BlocksManagement, FocusManagement, UBlockB {
+  parentId: str
   initialData?: InitialData
   appendedData?: str
   previousBlockInfo?: BlockInfo // doesn't exist on first render
@@ -77,6 +81,7 @@ export interface UBlock extends BlocksManagement, FocusManagement, UBlockB {
 export const mockUblock: UBlock = {
   i: 0,
   id: '404',
+  parentId: '',
   addInfo: fn,
   addNewBlock: fn,
   deleteBlock: fn,
@@ -86,6 +91,8 @@ export const mockUblock: UBlock = {
   handleMoveBlocksTo: fn,
   rearrangeBlocks: fn,
   resetActiveBlock: fn,
+  handleGridCreation: fn,
+  deleteGrid: fn,
 }
 
 interface UBlockDTO {
@@ -96,11 +103,12 @@ interface UBlockDTO {
 
 export function UBlock({
   id,
+  parentId,
   initialData,
   addNewBlock = fn,
   readonly = false,
   focus: initialFocus,
-  deleteBlock: deleteUBlock = fn,
+  deleteBlock = fn,
   autoplay: _,
   onAnswer,
   isCardField,
@@ -109,7 +117,7 @@ export function UBlock({
   goUp,
   goDown,
   resetActiveBlock = fn,
-  deleteBlocks: deleteUBlocks = fn,
+  deleteBlocks = fn,
   rearrangeBlocks = fn,
   handleMoveBlocksTo = fn,
   i = 100,
@@ -118,9 +126,10 @@ export function UBlock({
   openToggleParent,
   isToggleOpen,
   appendedData,
+  handleGridCreation,
+  deleteGrid,
 }: UBlock) {
   const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
-  const { deleteExternalUBlocks } = useDeleteUBlocks()
   const { selection, dispatch } = useSelection()
   const isSM = useIsSM()
   const [focus, setFocus] = useReactiveObject(initialFocus)
@@ -167,20 +176,6 @@ export function UBlock({
 
   const tryToChangeFieldType = useCallback(getTryToChangeBlockType(id, setType), [setType])
 
-  const deleteBlock = useCallback(
-    (data?: str) => {
-      setUBlock({ isDeleted: true })
-      deleteUBlock(id, data)
-    },
-    [deleteUBlock, setUBlock],
-  )
-
-  const deleteBlocks = useCallback(() => {
-    deleteUBlocks(selection.ids)
-    deleteExternalUBlocks(selection.ids)
-    dispatch({ a: 'clear' })
-  }, [deleteUBlocks, selection.ids])
-
   const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16, addInfo }
 
   const utextProps = {
@@ -201,8 +196,11 @@ export function UBlock({
     openToggleParent,
     isToggleOpen,
   }
-  const RStack_ = isSM ? RStack : Box
 
+  const RStack_ = isSM ? RStack : Box
+  const notShallow = ublock.type !== 'grid'
+  const isSomethingDragging = selection.draggingIds.length > 0
+  const isSideDroppable = isSomethingDragging && !selection.draggingIds.includes(id) && notShallow
   return (
     <Container
       onMouseDown={() => {
@@ -210,22 +208,24 @@ export function UBlock({
         // it is possible to trigger setCursor if special flag "fromCode" is introduced in focus but it doesn't help
         if (ublock.type !== 'code') resetActiveBlock()
       }}
-      onMouseEnter={isSM ? (e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id }) : fn}
-      onMouseLeave={isSM ? (e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id }) : fn}
+      onMouseEnter={
+        isSM && notShallow ? (e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id, setId: parentId }) : fn
+      }
+      onMouseLeave={isSM && notShallow ? (e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id }) : fn}
       tabIndex={i + 100}
       data-cy="ublock"
       ref={ref}
     >
       <RStack_>
         <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }} ref={drop}>
-          {isSM && (
+          {isSM && notShallow && (
             <BlockMenu
               data={ublock.data}
               type={ublock.type}
               setType={setType}
               deleteBlock={deleteBlocks}
               onAddClick={() => addNewBlock(id, 'focus-start')}
-              onMenuClick={() => dispatch({ a: 'select-by-click', id })}
+              onMenuClick={() => dispatch({ a: 'select-by-click', id, setId: parentId })}
               clearSelection={() => {
                 dispatch({ a: 'clear', force: true })
               }}
@@ -233,14 +233,22 @@ export function UBlock({
               readonly={readonly}
               pt={utextPaddings.get(ublock.type.toLowerCase())}
               drag={drag}
-              startDrag={selection.ids ? () => dispatch({ a: 'start-drag', id }) : fn}
+              startDrag={selection.ids ? () => dispatch({ a: 'start-drag', id, setId: parentId }) : fn}
             />
           )}
           {selection.ids.includes(id) && <Selection data-cy="selection" />}
           {isOver && !selection.draggingIds.includes(id) && <Dropbox />}
+          {isSideDroppable && (
+            <>
+              <SideDrop onDrop={() => handleGridCreation(id, 'left')} />
+              <SideDrop isRight={true} onDrop={() => handleGridCreation(id, 'right')} />
+            </>
+          )}
           <div
             ref={preview}
-            onClick={isSM && isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id }) : fn}
+            onClick={
+              isSM && isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id, setId: parentId }) : fn
+            }
           >
             {isUTextBlock(ublock.type) && <UText {...utextProps} />}
             {isUFileBlock(ublock.type) && <UFile {...commonProps} />}
@@ -248,6 +256,7 @@ export function UBlock({
             {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
             {ublock.type === 'block-equation' && <Equation {...commonProps} />}
             {ublock.type === 'divider' && <UDivider />}
+            {ublock.type === 'grid' && <UGrid {...commonProps} deleteGrid={deleteGrid} />}
             {ublock.type === 'table' && <UTable {...commonProps} />}
             {ublock.type === 'page' && <UPageBlock {...commonProps} handleMoveBlocksTo={handleMoveBlocksTo} />}
           </div>
@@ -262,6 +271,33 @@ export function useDeleteUBlocks() {
   return {
     deleteExternalUBlocks: (ids: strs) => ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true })),
   }
+}
+
+interface SideDrop_ {
+  isRight?: bool
+  onDrop: SetStr
+}
+
+function SideDrop({ isRight, onDrop }: SideDrop_) {
+  const [{ isOver }, drop] = useDrop(
+    () => ({
+      accept: DragType.ublock,
+      drop: (_, monitor) => {
+        if (!monitor.didDrop()) onDrop('')
+      },
+      collect: (monitor) => ({
+        isOver: !!monitor.isOver({ shallow: true }),
+      }),
+    }),
+    [onDrop],
+  )
+
+  const theme = useTheme()
+
+  let sx: JSObject = { transform: 'translateX(-100%)' }
+  if (isRight) sx = { right: 0 }
+  if (isOver) sx = { ...sx, backgroundColor: theme.apm('info') }
+  return <SideDropbox ref={drop} sx={sx} />
 }
 
 const Container = styled('div', { label: 'UBlock' })({
@@ -301,6 +337,14 @@ const Dropbox = styled('div')(({ theme }) => ({
   backgroundColor: theme.apm('info'),
   marginTop: '0.25rem',
 }))
+
+const SideDropbox = styled('div', { label: 'SideDropbox' })({
+  position: 'absolute',
+  zIndex: 2,
+  top: 0,
+  bottom: 0,
+  width: '0.5rem',
+})
 
 const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void) => (newData: str) => {
   if (!newData.includes(' ')) return
@@ -407,13 +451,13 @@ const MiniBtn = styled('button')(({ theme }) => ({
 const DragI = styled(DragIndicatorRoundedIcon)(({ theme }) => ({
   width: '2rem',
   height: '2rem',
-  color: theme.apm('800'),
+  color: theme.apm('400'),
 }))
 
 const AddI = styled(AddRoundedIcon)(({ theme }) => ({
   width: '2rem',
   height: '2rem',
-  color: theme.apm('800'),
+  color: theme.apm('400'),
 }))
 
 const LeftButtons = styled(RStack, { label: 'BlockMenu' })(({ theme }) => ({

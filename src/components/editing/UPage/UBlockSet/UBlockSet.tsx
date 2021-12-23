@@ -1,33 +1,41 @@
-import { Stack } from '@mui/material'
-import { useCallback, useEffect, useState } from 'react'
+import { Stack, styled } from '@mui/material'
+import { memo, useCallback, useEffect, useState } from 'react'
 import { bool, fn, num, SetStr, SetStrs, str, strs } from '../../../../utils/types'
 import { ucast, safe } from '../../../../utils/utils'
 import { uuid } from '../../../../utils/uuid'
-import { BlockInfo, isUTextBlock, UBlockType, UTextFocus } from '../../types'
+import { BlockInfo, isUTextBlock, UBlockType, UGridDTO, UTextFocus } from '../../types'
 import { UBlock, useDeleteUBlocks } from '../../UBlock/UBlock'
 import { useData } from '../../../../fb/useData'
 import { UPageTitle, UParagraph } from '../../UText/UText'
 import { useMap } from '../../../utils/hooks/useMap'
-import { reverse, safeSplit } from '../../../../utils/algorithms'
+import { replace, reverse, safeSplit } from '../../../../utils/algorithms'
 import { useArray } from '../../../utils/hooks/useArray'
 import { useSelection } from '../../UBlock/useSelection'
 import { TOCItems } from '../TableOfContents/types'
 
 export interface UBlocksSet {
-  updateTOC?: (items: TOCItems) => void
-  deleteUPage?: SetStr
-  readonly?: bool
+  id: str
   ids: strs
   setIds: SetStrs
   title?: str
   setTitle?: SetStr
-  inner?: bool
+  readonly?: bool
 
+  updateTOC?: (items: TOCItems) => void
   addNewUPage?: (id: str, underId?: str) => void
+  deleteUPage?: SetStr
+
+  hideFactory?: bool
+  createColumn?: (id: str, ids: strs, side: 'right' | 'left') => void
   factoryPlaceholder?: str
 }
 
-export function UBlocksSet({
+export const UBlocksSet = memo(UBlocksSet_, (old, new_) => {
+  return JSON.stringify(old) === JSON.stringify(new_)
+})
+
+function UBlocksSet_({
+  id,
   ids,
   setIds,
   readonly,
@@ -35,8 +43,10 @@ export function UBlocksSet({
   setTitle,
   addNewUPage = fn,
   deleteUPage = fn,
+  createColumn,
   updateTOC,
   factoryPlaceholder,
+  hideFactory,
 }: UBlocksSet) {
   const [activeBlock, setActiveBlock] = useState(new ActiveBlock())
   const addedBlocks = useArray<AddedBlock>()
@@ -61,6 +71,13 @@ export function UBlocksSet({
     },
     [_infos],
   )
+
+  useEffect(() => {
+    if (!selection.setIdAndBlocksToDelete.has(id)) return
+    const idsToRemove = selection.setIdAndBlocksToDelete.get(id)
+    setIds(ids.filter((id) => !idsToRemove?.includes(id)))
+    dispatch({ a: 'updated', setId: id })
+  }, [JSON.stringify(selection.draggingIds)])
 
   const _addNewUPage = useCallback(
     (id: str) =>
@@ -87,7 +104,7 @@ export function UBlocksSet({
 
       if (type === 'image') {
         setActiveBlock({ id: '' })
-        dispatch({ a: 'select', id: newBlocks[0].id })
+        dispatch({ a: 'select', id: newBlocks[0].id, setId: id })
       } else {
         setActiveBlock((old) =>
           focus !== 'no-focus'
@@ -109,6 +126,7 @@ export function UBlocksSet({
 
   const deleteBlock = useCallback(
     (id: str, data = '') => {
+      deleteExternalUBlocks([id])
       setBlockAboveDeleted({ id: ids[ids.indexOf(id) - 1] || '', data })
       const blockBefore = ids.indexOf(id) - 1
       setActiveBlock({
@@ -127,8 +145,42 @@ export function UBlocksSet({
       const underI = newIds.indexOf(underId)
       if (underI === -1) setIds([...selection.draggingIds, ...newIds.slice()]) // drop on title
       setIds([...newIds.slice(0, underI + 1), ...selection.draggingIds, ...newIds.slice(underI + 1)])
+      dispatch({ a: 'droppedIn', setId: id })
     },
     [ids, selection.draggingIds],
+  )
+
+  const handleColumnsCreation = useCallback(
+    (underId: str, side: 'right' | 'left') => {
+      if (selection.draggingIds.includes(underId)) return
+      const isRight = side === 'right'
+      if (createColumn) {
+        createColumn(id, selection.draggingIds, side)
+        dispatch({ a: 'droppedInColumn', setId: id })
+        return
+      }
+      const newColumnIds = selection.draggingIds
+      const newSetIds = ids.filter((oldId) => !newColumnIds.includes(oldId) && oldId !== underId)
+      const underI = newSetIds.indexOf(underId)
+      const newColumns: UGridDTO = {
+        widths: ['50%', '50%'],
+        columns: isRight ? [[underId], newColumnIds] : [newColumnIds, [underId]],
+        ids: [uuid.v4(), uuid.v4()],
+      }
+      const newId = uuid.v4()
+      addedBlocks.reset([{ id: newId, data: JSON.stringify(newColumns), type: 'grid' }])
+      setIds([...newSetIds.slice(0, underI + 1), newId, ...newSetIds.slice(underI + 1)])
+      dispatch({ a: 'droppedInColumn', setId: id })
+    },
+    [ids, selection.draggingIds],
+  )
+
+  const deleteColumns = useCallback(
+    (id: str, idsLeft: strs) => {
+      setIds(replace(ids, id, ...idsLeft))
+      deleteExternalUBlocks([id])
+    },
+    [ids],
   )
 
   const handleMoveBlocksTo = useCallback(
@@ -139,13 +191,13 @@ export function UBlocksSet({
     [ids, selection.draggingIds],
   )
 
-  const deleteBlocks = useCallback(
-    (idsToRemove: strs) => {
-      idsToRemove.filter((id) => idAndInfo.get(id)?.type === 'page').forEach((id) => deleteUPage(id))
-      setIds(ids.filter((oldId) => !idsToRemove.includes(oldId)))
-    },
-    [ids, _infos],
-  )
+  const deleteBlocks = useCallback(() => {
+    const idsToRemove = selection.ids
+    idsToRemove.filter((id) => idAndInfo.get(id)?.type === 'page').forEach((id) => deleteUPage(id))
+    setIds(ids.filter((oldId) => !idsToRemove.includes(oldId)))
+    deleteExternalUBlocks(idsToRemove)
+    dispatch({ a: 'clear' })
+  }, [ids, _infos, selection.ids])
 
   const toggleListOpen = useCallback(
     (id: str) => {
@@ -234,7 +286,7 @@ export function UBlocksSet({
   }, [selection, ids, _infos])
 
   return (
-    <Stack>
+    <Root>
       {setTitle && (
         <UPageTitle
           id={'title'}
@@ -257,9 +309,10 @@ export function UBlocksSet({
       {ids.map((_id, i) => {
         const info = idAndInfo.get(_id)
         const currentType = info?.type
-        const typesStrike = currentType
+        let typesStrike = currentType
           ? reverse(ids.slice(0, i)).findIndex((id) => idAndInfo.get(id)?.type !== currentType)
           : 0
+        if (typesStrike === -1) typesStrike = i // when no blocks except list are in set
         const prev = idAndInfo.get(ids[i - 1])
         const previousBlockInfo = prev ? { ...prev, typesStrike } : undefined
 
@@ -273,6 +326,7 @@ export function UBlocksSet({
           <UBlock
             key={_id}
             id={_id}
+            parentId={id}
             readonly={readonly}
             focus={_id === activeBlock.id ? activeBlock.focus : undefined}
             goUp={focusUp}
@@ -288,6 +342,8 @@ export function UBlocksSet({
             i={i}
             previousBlockInfo={previousBlockInfo}
             rearrangeBlocks={rearrangeBlocks}
+            handleGridCreation={handleColumnsCreation}
+            deleteGrid={deleteColumns}
             handleMoveBlocksTo={handleMoveBlocksTo}
             toggleListOpen={toggleListOpen}
             openToggleParent={openToggleParent}
@@ -295,7 +351,7 @@ export function UBlocksSet({
           />
         )
       })}
-      {!readonly && (
+      {!readonly && !hideFactory && (
         <UParagraph
           i={-1}
           key={`factory-${activeBlock.id}`}
@@ -315,9 +371,11 @@ export function UBlocksSet({
           hideMenus={true}
         />
       )}
-    </Stack>
+    </Root>
   )
 }
+
+const Root = styled(Stack, { label: 'UBlocksSet_' })({})
 
 type UBlocks = { data: { ids: strs } }
 export function useUBlocks<T extends UBlocks, D>(id: str) {

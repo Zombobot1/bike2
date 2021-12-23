@@ -18,7 +18,7 @@ export const CodeRoot = styled(Box)(({ theme }) => ({
     lineHeight: '1.5',
     hyphens: 'none',
 
-    [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.25rem' },
+    [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.15rem' },
   },
 
   ...(theme.isDark() ? dark : light),

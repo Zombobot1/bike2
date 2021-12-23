@@ -41,6 +41,7 @@ export type NumState = State<number>
 export type StrState = State<string>
 export type BoolState = State<boolean>
 export type Children = React.ReactNode
+export type WithChildren = React.FC<{ children: Children }>
 export type DivRef = React.RefObject<HTMLDivElement>
 export type Subset<T, U extends T> = Extract<T, U>
 

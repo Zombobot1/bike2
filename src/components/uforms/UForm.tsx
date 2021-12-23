@@ -24,7 +24,7 @@ export interface UFormDTO {
 
 // tests have an intermediate state: waiting for feedback if there are some manually assessable questions -> student is transferred to a page where teacher can leave feedback
 // exercises & tests can be redone when feedback was provided, all feedback errors are automatically turned into cards and placed in individual decks
-export function UForm({ data, setData, readonly }: UBlockComponent) {
+export function UForm({ data, setData, readonly, id }: UBlockComponent) {
   const { ids, name } = ucast<UFormDataDTO>(data, { ids: [], name: '' })
   const rename = (name: str) => setData(JSON.stringify({ ids, name }))
   const setIds = (ids: strs) => setData(JSON.stringify({ name, ids }))
@@ -58,7 +58,13 @@ export function UForm({ data, setData, readonly }: UBlockComponent) {
         </RStack>
       </RStack>
       <Hr sx={{ marginTop: '0.5rem', marginBottom: '1rem' }} />
-      <UBlocksSet ids={ids} setIds={setIds} factoryPlaceholder="Type /checks or /input etc." readonly={!isEditing} />
+      <UBlocksSet
+        id={id}
+        ids={ids}
+        setIds={setIds}
+        factoryPlaceholder="Type /checks or /input etc."
+        readonly={!isEditing}
+      />
       {!isEditing && (
         <>
           {!error && <Hr sx={{ marginBottom: '0.5rem' }} />}

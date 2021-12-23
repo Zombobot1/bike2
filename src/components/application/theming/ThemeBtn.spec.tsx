@@ -1,8 +1,9 @@
 import { got, saw, show } from '../../../utils/testUtils'
+import { COLORS } from './theme'
 import * as ThemeBtn from './ThemeBtn.stories'
 
-const light = 'rgb(255, 122, 0)'
-const dark = 'rgb(4, 15, 48)'
+const orange = COLORS.secondary
+const darkBlue = COLORS.primary
 
 describe('ThemeBtn', () => {
   // eslint-disable-next-line mocha/no-hooks-for-single-case
@@ -13,8 +14,8 @@ describe('ThemeBtn', () => {
     show(ThemeBtn.ChangesTheme)
 
     got('theme-btn-l').click()
-    saw(['Press me', light, 'bg'])
+    saw(['Press me', orange, 'bg'])
     got('theme-btn-d').click()
-    saw(['Press me', dark, 'bg'])
+    saw(['Press me', darkBlue, 'bg'])
   })
 })

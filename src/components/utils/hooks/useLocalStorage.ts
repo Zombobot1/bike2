@@ -1,5 +1,7 @@
+import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { State, str } from '../../../utils/types'
+import { useGlobalEventListener } from './useGlobalEventListener'
 
 type V<T> = T | (() => T)
 
@@ -12,21 +14,30 @@ export function useSessionStorage<T>(key: str, defaultValue: V<T>) {
 }
 
 function useStorage<T>(key: str, defaultValue: V<T>, storageObject: Storage): State<T> {
-  const [value, setValue] = useState<T>(() => {
-    const jsonValue = storageObject.getItem(key)
-    if (jsonValue != null) return JSON.parse(jsonValue)
-
-    if (typeof defaultValue === 'function') {
-      return (defaultValue as () => T)()
-    } else {
-      return defaultValue
-    }
-  })
+  const [value, setValue] = useState<T>(() => readValue(key, defaultValue, storageObject))
 
   useEffect(() => {
     if (value === undefined) return storageObject.removeItem(key)
     storageObject.setItem(key, JSON.stringify(value))
+    window.dispatchEvent(new Event('storage-changed')) // We dispatch a custom event so every useLocalStorage hook are notified
   }, [key, value, storageObject])
 
+  useGlobalEventListener('storage-changed', () => setValue(readValue(key, defaultValue, storageObject)))
+
   return [value, setValue]
+}
+
+function readValue<T>(key: str, defaultValue: V<T>, storageObject: Storage): T {
+  const default_ = typeof defaultValue === 'function' ? (defaultValue as () => T)() : defaultValue
+  const jsonValue = storageObject.getItem(key)
+  if (jsonValue != null) {
+    try {
+      return JSON.parse(jsonValue)
+    } catch (e) {
+      if (_.isString(default_)) return jsonValue as unknown as T
+      throw e
+    }
+  }
+
+  return default_
 }

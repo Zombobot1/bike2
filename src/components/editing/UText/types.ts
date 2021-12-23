@@ -14,7 +14,7 @@ export interface UText extends UBlockComponent {
   focus?: UTextFocus
   addNewBlock: AddNewBlockUText
   placeholder?: str
-  deleteBlock?: (data?: str) => void
+  deleteBlock?: (id: str, data?: str) => void
   isFactory?: bool
   onFactoryBackspace?: Fn
   onTitleEnter?: Fn

@@ -106,10 +106,13 @@ describe('UText', () => {
 
     got('tex-box')
       .should('have.css', 'top')
-      .then((height) => +String(height).replace('px', '')) // convert
+      .then((height) => +String(height).replace('px', ''))
       .should('be.closeTo', 88, 10)
 
-    got('tex-box').should('have.css', 'left', '158.125px')
+    got('tex-box')
+      .should('have.css', 'left')
+      .then((height) => +String(height).replace('px', ''))
+      .should('be.closeTo', 43, 2)
     type(['{esc}'], ['!'])
 
     saw('!cat')

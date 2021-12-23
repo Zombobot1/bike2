@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { UBlock, mockUblock } from '../../UBlock/UBlock'
 
-const T = (props: UBlock) => () => {
+const T = (props: UBlock) => {
   return (
     <Box sx={{ width: 500 }}>
       <UBlock {...props} />
@@ -24,9 +24,9 @@ const readonly: UBlock = {
 
 const resizable: UBlock = { ...mockUblock, id: 'catVideo' }
 
-export const AwaitsLink = T(data)
-export const NewAndReadonly = T(readonly)
-export const Resizable = T(resizable)
+export const AwaitsLink = () => T(data)
+export const NewAndReadonly = () => T(readonly)
+export const Resizable = () => T(resizable)
 
 export default {
   title: 'Editing/UVideoFile',

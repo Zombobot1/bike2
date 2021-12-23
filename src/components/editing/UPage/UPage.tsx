@@ -69,6 +69,7 @@ export function UPage({ workspace, setOpenTOC, setToggleFullWidth }: UPage) {
   }
   const setIds = (ids: strs) => setUBlockData({ ...ublock.data, ids })
   const blockSetProps = {
+    id,
     ids: ids,
     setIds: setIds,
     readonly: false,

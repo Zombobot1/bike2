@@ -1,7 +1,7 @@
 import { Box } from '@mui/material'
 import { UBlock, mockUblock } from '../UBlock/UBlock'
 
-const T = (props: UBlock) => () => {
+const T = (props: UBlock) => {
   return (
     <Box sx={{ width: 500 }}>
       <UBlock {...props} />
@@ -22,9 +22,9 @@ const readonly: UBlock = {
   readonly: true,
 }
 
-export const Empty = T(data1)
-export const Readonly = T(readonly)
-export const Complex = T({ ...mockUblock, id: 'waveEquation' })
+export const Empty = () => T(data1)
+export const Readonly = () => T(readonly)
+export const Complex = () => T({ ...mockUblock, id: 'waveEquation' })
 
 export default {
   title: 'Editing/Equation',

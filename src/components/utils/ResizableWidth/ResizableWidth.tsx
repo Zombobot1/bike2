@@ -184,21 +184,22 @@ export function ResizableFluidWidth({
     }
 
   return (
-    <ResizableWidth_
+    <ResizableFluidWidth_
       ref={ref}
       sx={{
         minWidth: stretch ? undefined : width.width,
+        maxWidth: isResizing ? width.width : undefined,
         flexGrow: stretch ? 1 : undefined,
         cursor: isResizing ? 'col-resize' : 'default',
       }}
     >
       {isSM && !readonly && (
         <Right onMouseDown={onMouseDown()}>
-          <Handler sx={{ height: '70%' }} />
+          <Handler sx={{ height: '70%', opacity: isResizing ? 1 : undefined }} />
         </Right>
       )}
       {children}
-    </ResizableWidth_>
+    </ResizableFluidWidth_>
   )
 }
 
@@ -211,6 +212,15 @@ function getNewWidth(currentWidth: str, widthBeforeResize: num, newWidth: num): 
   const delta = (newWidth - widthBeforeResize) / widthBeforeResize
   return currentWidthNum * (1 + delta) + '%'
 }
+
+const ResizableFluidWidth_ = styled('div', { label: 'ResizableFluidWidth' })({
+  position: 'relative',
+  height: '100%',
+
+  'span:hover': {
+    opacity: 1,
+  },
+})
 
 const ResizableWidth_ = styled('div', { label: 'ResizableWidth' })({
   position: 'relative',
@@ -254,6 +264,7 @@ const Handler = styled('span')(({ theme }) => ({
   borderRadius: '10px',
   backgroundColor: alpha(theme.palette.grey[800], 0.6),
   userSelect: 'none',
+  zIndex: 2, // for UGrid
 }))
 
 class Width {

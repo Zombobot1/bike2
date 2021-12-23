@@ -15,7 +15,7 @@ const T = (props: UBlock) => () => {
 const T2 = () => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlocksSet setIds={fn} ids={_idsForCodeFocus} />
+      <UBlocksSet id="c" setIds={fn} ids={_idsForCodeFocus} />
     </Box>
   )
 }

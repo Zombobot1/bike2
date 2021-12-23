@@ -6,7 +6,7 @@ import { IdAndBlocks } from './types'
 import fluffyJpg from './fluffy.jpg'
 import fluffyMp3 from './fluffy.mp3'
 import { Question } from '../components/studying/training/types'
-import { UBlockDTO } from '../components/editing/types'
+import { UBlockDTO, UGridDTO } from '../components/editing/types'
 import { imageFromSrc } from '../utils/filesManipulation'
 import { CalloutDTO } from '../components/editing/UText/Callout/Callout'
 import { CodeDTO } from '../components/editing/UText/Code/Code'
@@ -28,6 +28,29 @@ const fallingCats = `Journal Of The American Veterinary Medical Association look
 const fallingCatsShort1 = `cats <code data-id="2" contenteditable="false">h_{total} \\approx 5.5 * 2.5 = 13.77m</code> and`
 const fallingCatsShort2 = `cats reach their terminal velocity <code data-id="1" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> after falling about seven storeys (21m), <code data-id="2" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> which means they stop accelerating`
 const fallingCatsShort3 = `nice <code data-id="666" contenteditable="false">E=mc^2</code> small <code data-id="2" contenteditable="false">E=mc^2</code> cat`
+
+const catsGridData: UGridDTO = {
+  columns: [
+    [
+      'bath-your-cat',
+      'bath-your-cat-step1',
+      'bath-your-cat-step2',
+      'bath-your-cat-step3',
+      'bath-your-cat-step4',
+      'bath-your-cat-step5',
+    ],
+    [
+      'why-own-cat',
+      'why-own-cat-point1',
+      'why-own-cat-point2',
+      'why-own-cat-point3',
+      'why-own-cat-point4',
+      'why-own-cat-point5',
+    ],
+  ],
+  widths: ['40%', '60%'],
+  ids: ['c-g-1', 'c-g-2'],
+}
 
 const page: UPageDataDTO = {
   color: '#0066FF',
@@ -54,18 +77,7 @@ const page: UPageDataDTO = {
     'fluffyMp3',
     'newCatFile',
     'kittensInfo',
-    'bath-your-cat',
-    'bath-your-cat-step1',
-    'bath-your-cat-step2',
-    'bath-your-cat-step3',
-    'bath-your-cat-step4',
-    'bath-your-cat-step5',
-    'why-own-cat',
-    'why-own-cat-point1',
-    'why-own-cat-point2',
-    'why-own-cat-point3',
-    'why-own-cat-point4',
-    'why-own-cat-point5',
+    'cats-grid',
     'hypoallergenic-cat',
     'hypoallergenic-cat1',
     'hypoallergenic-cat2',
@@ -79,7 +91,7 @@ const page: UPageDataDTO = {
 }
 
 const mp3: UAudioFileDTO = { src: fluffyMp3 }
-const img: UImageFileDTO = { src: fluffyJpg, width: 900 }
+const img: UImageFileDTO = { src: fluffyJpg, width: 450 }
 const video: UImageFileDTO = { src: 'y8kTYCex8RU', width: 600 }
 
 const newCatFile = { name: '', src: '' }
@@ -88,7 +100,7 @@ const pdf = {
   src: '/src/content/catneeds.pdf',
 }
 const quote = `<b>“As anyone who has ever been around a cat for any length of time well knows, cats have enormous patience with the limitations of the humankind.”</b>
-– <i>Cleveland Amory</i>`
+- <i>Cleveland Amory</i>`
 const _calt =
   'Kittens are vulnerable because they like to find dark places to hide, sometimes with fatal results if they are not watched carefully.'
 const callout: CalloutDTO = { text: _calt, type: 'warning' }
@@ -141,6 +153,15 @@ const catP2: UPageDataDTO = { name: 'Cats vs Dogs', color: '#0066FF', ids: [] }
 const catP3: UPageDataDTO = { name: 'Research papers about evolution of pets', color: '#0066FF', ids: [] }
 const catP4: UPageDataDTO = { name: 'How pets changed humanity', color: '#0066FF', ids: [] }
 
+const listsInColumns: UGridDTO = {
+  widths: ['50%', '50%'],
+  columns: [
+    ['bath-your-cat', 'bath-your-cat-step1', 'bath-your-cat-step2'],
+    ['why-own-cat', 'why-own-cat-point1', 'why-own-cat-point2'],
+  ],
+  ids: ['g-1', 'g-2'],
+}
+
 export const _kittensBlocks: IdAndBlocks = [
   ['catVideoText', { type: 'text', data: 'Watch a short documentary about a small cat' }],
   ['catVideo', { type: 'video', data: $(video) }],
@@ -170,6 +191,8 @@ export const _kittensBlocks: IdAndBlocks = [
   ['cats-vs-dogs', { type: 'page', data: $(catP2) }],
   ['pets-research', { type: 'page', data: $(catP3) }],
   ['how-pets-changed-humanity', { type: 'page', data: $(catP4) }],
+  ['cat-lists-columns', { type: 'grid', data: $(listsInColumns) }],
+  ['cats-grid', { type: 'grid', data: $(catsGridData) }],
 ]
 
 const _kittensS = `A <b><i>kitten</i></b> is a juvenile cat. After being born`
@@ -226,22 +249,30 @@ export const _kittensForListsPage: UPageDataDTO = {
   name: 'Pets',
   ids: [
     'bath-your-cat',
-    // 'bath-your-cat-step1',
-    // 'bath-your-cat-step2',
-    // 'why-own-cat',
-    // 'why-own-cat-point1',
-    // 'why-own-cat-point2',
+    'bath-your-cat-step1',
+    'bath-your-cat-step2',
+    'why-own-cat',
+    'why-own-cat-point1',
+    'why-own-cat-point2',
     'healthy-cat1',
     'healthy-cat11',
     'healthy-cat12',
     'healthy-cat13',
-    // 'hypoallergenic-cat',
-    // 'hypoallergenic-cat1',
-    // 'hypoallergenic-cat2',
+    'hypoallergenic-cat',
+    'hypoallergenic-cat1',
+    'hypoallergenic-cat2',
   ],
 }
 
 export const _idsForCodeFocus = ['hypoallergenic-cat', 'catCode', 'why-own-cat']
+export const _idsForBuildColumns = [
+  'bath-your-cat',
+  'bath-your-cat-step1',
+  'bath-your-cat-step2',
+  'why-own-cat',
+  'why-own-cat-point1',
+  'why-own-cat-point2',
+]
 
 const l = (t: str, o = 1): str => $({ text: t, offset: o })
 export const _kittensForLists: IdAndBlocks = [

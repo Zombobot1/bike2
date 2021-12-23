@@ -81,17 +81,17 @@ function LeftPartContainer({ children, offset }: { children: ReactNode; offset: 
 const FiberManualRecordRounded = styled(FiberManualRecordRoundedIcon)(({ theme }) => ({
   width: '0.5rem',
   height: '0.5rem',
-  [`${theme.breakpoints.up('sm')}`]: { width: '0.75rem', height: '0.75rem' },
+  [`${theme.breakpoints.up('sm')}`]: { width: '0.65rem', height: '0.65rem' },
 }))
 
 const Number = styled(Typography)(({ theme }) => ({
   fontSize: '1rem',
-  [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.35rem' },
+  [`${theme.breakpoints.up('sm')}`]: { fontSize: '1.25rem' },
 }))
 
 const IconBox = styled(Box)(({ theme }) => ({
-  width: '23px',
-  height: '23px',
+  width: '17px',
+  height: '17px',
   borderRadius: '4px',
   transition: 'background-color 0.1s ease-in-out',
   color: theme.apm('secondary'),

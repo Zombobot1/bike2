@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { num, str } from './types'
+import { safe } from './utils'
 
 export const transformedMax = <T>(arr: T[], f: (v: T) => number): number => Math.max(...arr.map(f))
 export const min = <T>(arr: T[], f: (v: T) => number): T => arr.reduce((p, c) => (f(p) - f(c) < 0 ? p : c))
@@ -41,6 +42,20 @@ export const zip2 = <T, D>(arr1: T[], arr2: D[]): [T, D][] => {
 }
 
 export const reverse = <T>(array: T[]): T[] => array.map((_, idx) => array[array.length - 1 - idx])
+export const replace = <T>(array: T[], replaceData: T, ...newData: T[]): T[] => {
+  const i = array.indexOf(replaceData)
+  return [...array.slice(0, i), ...newData, ...array.slice(i + 1)]
+}
+export const insertAt = <T>(array: T[], data: T, atI: num): T[] => [...array.slice(0, atI), data, ...array.slice(atI)]
+export const replaceAt = <T>(array: T[], data: T, atI: num): T[] => array.map((e, i) => (i === atI ? data : e))
+export const removeAt = <T>(array: T[], atI: num): T[] => array.filter((_, i) => i !== atI)
+
+export function mapAppend<K, V>(map: Map<K, V[]>, key: K, data: V): Map<K, V[]> {
+  if (!map.has(key)) map.set(key, [data])
+  else safe(map.get(key)).push(data)
+  return map
+}
+
 export const insert = (s: str, i: num, data: str): str => s.slice(0, i) + data + s.slice(i)
 export function cutData(s: str, start: num, dataOrEnd: str | num): str {
   if (_.isString(dataOrEnd)) return s.slice(0, start) + s.slice(start + dataOrEnd.length)

@@ -71,7 +71,7 @@ const tex: UBlock = { ...mockUblock, id: 'tex', initialData: { data: _eq, type: 
 const twoTex: UBlock = {
   ...mockUblock,
   id: 'twoTex',
-  initialData: { data: `${'nice '.repeat(10)} ${_eq} small ${_eq2} cat`, type: 'text' },
+  initialData: { data: `${'nice '.repeat(10)} ${_eq} small cute ${_eq2} cat`, type: 'text' },
 }
 
 export const Empty = () => <T {...empty} />

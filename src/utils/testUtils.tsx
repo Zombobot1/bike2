@@ -1,10 +1,11 @@
 import { mount } from '@cypress/react'
-import { Box } from '@mui/material'
+import { Box, hexToRgb } from '@mui/material'
 import _ from 'lodash'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { OuterShell } from '../components/application/Shell'
-import { uthemeOptions } from '../components/application/theming/theme'
+import { COLORS, uthemeOptions } from '../components/application/theming/theme'
+import { UTextGreen } from '../components/editing/UText/UTextOptions/UTextOptions'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { FSProvider } from '../fb/fs'
 import { Fn, num, str } from './types'
@@ -82,8 +83,8 @@ function sawColored([el, color, type = 'c']: Colored) {
   const element = (_.isString(el) ? () => cy.contains(el as str) : el) as () => CYChain
   if (color === 'disabled') disabled(element())
   else {
-    if (type === 'c') element().should('have.css', 'color', color)
-    else element().should('have.css', 'background-color', color)
+    if (type === 'c') element().should('have.css', 'color', hexToRgb(color as str))
+    else element().should('have.css', 'background-color', hexToRgb(color as str))
   }
 }
 
@@ -127,7 +128,7 @@ export function expectCSSPlaceholder(target: str) {
 
 export const disabled = (e: CYChain) => e.should('have.attr', 'disabled')
 
-export const _red = 'rgb(250, 82, 82)'
-export const _green = 'rgb(5, 166, 119)'
-export const _greenUText = 'rgb(68, 131, 97)'
+export const _red = COLORS.error
+export const _green = COLORS.success
+export const _greenUText = UTextGreen
 export const _disabled = 'disabled'
