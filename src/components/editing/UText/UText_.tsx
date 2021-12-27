@@ -7,7 +7,7 @@ import { srcfy } from '../../../utils/filesManipulation'
 import { bool, DivRef, fn, Fn, JSObject, num, SetNum, SetStr, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { _apm } from '../../application/theming/theme'
-import { unhighlight } from '../../utils/CodeEditor/highlight'
+import { unhighlight } from '../../../utils/unhighlight'
 import { useMount, useReactive, useReactiveObject } from '../../utils/hooks/hooks'
 import { useRefCallback } from '../../utils/hooks/useRefCallback'
 import { sliceHtml, replaceAllCodeToNothing } from '../../utils/Selection/htmlAsStr'
@@ -54,7 +54,7 @@ function UText__(ps: UText_) {
   let html = text.replaceAll('&', '&amp;')
   if (html.trim().endsWith('</code>')) html += '&nbsp;'
   return (
-    <Styles sx={{ position: 'relative' }} onClick={ps.clearFocus}>
+    <Styles sx={{ position: 'relative' }} onClick={ps.resetActiveBlock}>
       {!ps.hideMenus && <UTextOptions textRef={ref} linkEditorPs={linkProps} texEditorPs={texProps} />}
       {!ps.hideMenus && <BlockAutocomplete {...autocompletePs} context={ps.inUForm ? 'uform' : 'general'} />}
       <Editable
@@ -88,8 +88,17 @@ function useText(ps: UText_, ref: DivRef, mapRef: TexMapRef) {
 
   useEffect(() => {
     if (!text) return
-    if (ps.isFactory) ps.addNewBlock(ps.id, 'focus-end', text)
-    else ps.tryToChangeFieldType(text)
+    if (ps.isFactory) {
+      ps.addNewBlock(ps.id, 'focus-end', text)
+    } else {
+      if (!text.includes(' ')) return
+
+      const firstElement = text.split(' ')
+      const newType = regexAndType.get(firstElement[0])
+      if (!newType) return
+
+      ps.setType(newType)
+    }
   }, [text])
 
   const onTextChange = useRefCallback((e) => setText(e.target.value.replaceAll('&amp;', '&').replaceAll('&nbsp;', ' ')))
@@ -426,6 +435,18 @@ class Coordinates {
   x = 0
   b = 0
 }
+
+const regexAndType = new Map<str, UBlockType>([
+  ['#', 'heading-1'],
+  ['##', 'heading-2'],
+  ['###', 'heading-3'],
+  ['{}', 'short-answer'],
+  ['[]', 'multiple-choice'],
+  ['()', 'single-choice'],
+  ['{ }', 'long-answer'],
+  ['*', 'bullet-list'],
+  ['1.', 'numbered-list'],
+])
 
 // DEBUG MOUSE
 // document.onmousemove = function (e) { var x = e.pageX; var y = e.pageY; e.target.title = "X is " + x + " and Y is " + y; };

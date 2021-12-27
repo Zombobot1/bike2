@@ -54,10 +54,18 @@ export function TextInput(props: TextFieldProps) {
 // <TextFieldProps> - https://github.com/mui-org/material-ui/issues/28844
 const Text = styled(TextField)<TextFieldProps>(({ theme }) => ({
   '.MuiInput-root:before, .MuiFilledInput-root:before': {
-    borderBottom: `1px solid ${_apm(theme, '400')}`,
+    borderBottom: `1px solid ${theme.apm('400')}`,
   },
   fieldset: {
-    borderColor: _apm(theme, '400'),
+    borderColor: theme.apm('400'),
+  },
+
+  '.Mui-disabled': {
+    color: `${theme.apm('400')}`,
+    WebkitTextFillColor: 'unset !important',
+    'fieldset.MuiOutlinedInput-notchedOutline': {
+      borderColor: `${theme.apm('200')}`,
+    },
   },
 }))
 

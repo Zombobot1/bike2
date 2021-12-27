@@ -27,8 +27,8 @@ export function UText(ps: UTextP) {
   )
 }
 
-export function UParagraph(props: UTextP) {
-  return <UText_ {...props} component="pre" placeholder="Type '/' for commands" hidePlaceholder={true} />
+export function UParagraph(ps: UTextP) {
+  return <UText_ {...ps} component="pre" placeholder="Type '/' for commands" hidePlaceholder={true} />
 }
 
 export interface UPageTitle extends UTextP {
@@ -51,6 +51,10 @@ export function UPageTitle(ps: UPageTitle) {
       {isOver && <Dropbox />}
     </Box>
   )
+}
+
+export function UBlockSetFactory(ps: UTextP) {
+  return <UText_ {...ps} component="pre" placeholder={ps.placeholder} hidePlaceholder={!ps.placeholder} />
 }
 
 const Dropbox = styled('div')(({ theme }) => ({

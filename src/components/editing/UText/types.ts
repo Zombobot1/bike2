@@ -1,31 +1,45 @@
-import { bool, Fn, num, SetStr, str } from '../../../utils/types'
-import { AddNewBlockUText, ArrowNavigationFn, BlockInfo, SetUBlockType, UBlockComponent, UTextFocus } from '../types'
+import { bool, Fn, SetStr, str } from '../../../utils/types'
+import {
+  AddNewBlockUText,
+  ArrowNavigationFn,
+  BlockInfo,
+  SetUBlockType,
+  UBlockImplementation,
+  UTextFocus,
+} from '../types'
 
-export interface UText extends UBlockComponent {
-  id: str
-  setType: SetUBlockType
-  tryToChangeFieldType: SetStr
-  i: num
-  inUForm?: bool
-  addInfo?: (id: str, i: BlockInfo) => void
-  appendedData?: str
-  initialData?: str
-  previousBlockInfo?: BlockInfo
+export interface FocusManagement {
   focus?: UTextFocus
-  addNewBlock: AddNewBlockUText
-  placeholder?: str
-  deleteBlock?: (id: str, data?: str) => void
-  isFactory?: bool
-  onFactoryBackspace?: Fn
-  onTitleEnter?: Fn
-  isCardField?: bool
-  goUp?: ArrowNavigationFn
-  goDown?: ArrowNavigationFn
-  clearFocus?: Fn
-  hideMenus?: bool
+
+  goUp: ArrowNavigationFn
+  goDown: ArrowNavigationFn
+  resetActiveBlock: Fn
+}
+
+export interface ToggleableText {
   toggleListOpen?: SetStr
   openToggleParent?: SetStr
   isToggleOpen?: bool
+}
+
+export interface AuxiliaryText {
+  isFactory?: bool
+  onFactoryBackspace?: Fn
+  onTitleEnter?: Fn
+  hideMenus?: bool
+}
+
+export interface UText extends AuxiliaryText, FocusManagement, ToggleableText, UBlockImplementation {
+  setType: SetUBlockType
+  inUForm?: bool
+  appendedData?: str
+  initialData?: str
+  previousBlockInfo?: BlockInfo
+
+  placeholder?: str
+  addNewBlock: AddNewBlockUText
+  deleteBlock?: (id: str, data?: str) => void
+  isCardField?: bool
 }
 
 export class UListDTO {

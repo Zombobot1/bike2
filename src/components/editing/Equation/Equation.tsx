@@ -1,6 +1,6 @@
 import { Box, Popper, styled, Typography, useTheme } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
-import { UBlockComponentB } from '../types'
+import { UBlockImplementation } from '../types'
 import katex from 'katex'
 import 'katex/dist/katex.css'
 
@@ -12,7 +12,7 @@ import { RStack, SVGI } from '../../utils/MuiUtils'
 import { TeXEditor } from '../../utils/CodeEditor/TeXEditor'
 import { PaddedBox } from '../UBlock/PaddedBox'
 
-export function Equation({ data, setData, readonly }: UBlockComponentB) {
+export function Equation({ data, setData, readonly }: UBlockImplementation) {
   const [eq, setEq] = useReactive(data)
   const [isOpen, setIsOpen] = useState(false)
   const ref = useRef(null)

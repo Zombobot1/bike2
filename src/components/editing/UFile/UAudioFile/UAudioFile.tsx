@@ -1,6 +1,6 @@
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 import AudiotrackRoundedIcon from '@mui/icons-material/AudiotrackRounded'
-import { UBlockComponentB } from '../../types'
+import { UBlockImplementation } from '../../types'
 import { useUFile } from '../useUFile'
 import { UAudio } from '../../../utils/UAudio/UAudio'
 import { ucast } from '../../../../utils/utils'
@@ -10,7 +10,7 @@ export class UAudioFileDTO {
   src = ''
 }
 
-export function UAudioFile({ data, setData, readonly }: UBlockComponentB) {
+export function UAudioFile({ data, setData, readonly }: UBlockImplementation) {
   const [fileData] = useReactiveObject(ucast(data, new UAudioFileDTO()))
   const { fileS, deleteFile } = useUFile((src) => setData(JSON.stringify({ src })))
 

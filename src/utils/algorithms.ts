@@ -1,13 +1,19 @@
 import _ from 'lodash'
+import { isCypress } from '../components/utils/hooks/isCypress'
 import { num, str } from './types'
 import { safe } from './utils'
 
-export const transformedMax = <T>(arr: T[], f: (v: T) => number): number => Math.max(...arr.map(f))
-export const min = <T>(arr: T[], f: (v: T) => number): T => arr.reduce((p, c) => (f(p) - f(c) < 0 ? p : c))
-export const max = <T>(arr: T[], f: (v: T) => number): T => arr.reduce((p, c) => (f(p) - f(c) > 0 ? p : c))
+export const transformedMax = <T>(arr: T[], f: (v: T) => num): num => Math.max(...arr.map(f))
+export const min = <T>(arr: T[], f: (v: T) => num): T => arr.reduce((p, c) => (f(p) - f(c) < 0 ? p : c))
+export const max = <T>(arr: T[], f: (v: T) => num): T => arr.reduce((p, c) => (f(p) - f(c) > 0 ? p : c))
 
-export const sum = <T>(arr: T[], f: (p: number, v: T) => number): number => arr.reduce(f, 0)
-export const avg = <T>(arr: T[], f: (p: number, v: T) => number): number => arr.reduce(f, 0) / arr.length
+export const sum = <T>(arr: T[], f: (p: num, v: T) => num = _sum): num => arr.reduce(f, 0)
+export const avg = <T>(arr: T[], f: (p: num, v: T) => num = _sum): num => arr.reduce(f, 0) / arr.length
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const _sum = (p: num, v: any): num => p + v
+
+export const uclamp = (value: num, min: num, max: num) => Math.min(Math.max(value, min), max)
 
 export const safeSplit = (str: string, sep: string | RegExp) => {
   const parts = str.split(sep)
@@ -26,12 +32,13 @@ export const findAll = (str: string, regex: RegExp): string[] => {
   return result
 }
 
-export const shuffle = <T>(arr: T[]): T[] => {
+export const ushuffle = <T>(arr: T[]): T[] => {
+  if (isCypress.isCypress) return [...arr]
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[arr[i], arr[j]] = [arr[j], arr[i]]
   }
-  return arr
+  return [...arr]
 }
 
 export const zip2 = <T, D>(arr1: T[], arr2: D[]): [T, D][] => {

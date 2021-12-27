@@ -8,7 +8,6 @@ import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
 import { bool, fn, Fn, JSObject, num, SetStr, str, strs } from '../../../utils/types'
 import {
   AddNewBlockUText,
-  ArrowNavigationFn,
   BlockInfo,
   FocusType,
   InitialData,
@@ -18,11 +17,9 @@ import {
   isUQuestionBlock,
   isUFormBlock,
   isUTextBlock,
-  regexAndType,
-  UBlockB,
   UBlockType,
-  UTextFocus,
   DragType,
+  UBlockImplementation,
 } from '../types'
 import { UText } from '../UText/UText'
 import { UFile } from '../UFile/UFile'
@@ -41,6 +38,9 @@ import { UTable } from '../UTable/UTable'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { UPageBlock } from '../UPage/UPageBlock/UPageBlock'
 import { UGrid } from '../UGrid/UGrid'
+import { FocusManagement, ToggleableText } from '../UText/types'
+import { UFormFieldInfo } from '../../uforms/types'
+import { safe } from '../../../utils/utils'
 
 export interface BlocksManagement {
   rearrangeBlocks: SetStr
@@ -52,30 +52,21 @@ export interface BlocksManagement {
   deleteGrid: (id: str, idsLeft: strs) => void
 }
 
-export interface FocusManagement {
-  focus?: UTextFocus
-
-  goUp: ArrowNavigationFn
-  goDown: ArrowNavigationFn
-  resetActiveBlock: Fn
-}
-
-export interface UBlock extends BlocksManagement, FocusManagement, UBlockB {
+export interface UBlock extends BlocksManagement, FocusManagement, ToggleableText {
+  id: str
   parentId: str
+  i: num
+  readonly?: bool
   initialData?: InitialData
   appendedData?: str
   previousBlockInfo?: BlockInfo // doesn't exist on first render
-  i: num
 
   addNewUPage?: SetStr // not in UForm
-  toggleListOpen?: SetStr // only for toggle list
-  isToggleOpen?: bool
-  openToggleParent?: SetStr
   addInfo: (id: str, i: BlockInfo) => void
 
   autoplay?: bool
   isCardField?: bool
-  onAnswer?: Fn
+  uformPs?: UFormFieldInfo
 }
 
 export const mockUblock: UBlock = {
@@ -110,7 +101,7 @@ export function UBlock({
   focus: initialFocus,
   deleteBlock = fn,
   autoplay: _,
-  onAnswer,
+  uformPs,
   isCardField,
   addInfo = fn,
   addNewUPage = fn,
@@ -174,14 +165,21 @@ export function UBlock({
     [JSON.stringify(ublock), JSON.stringify(focus)],
   )
 
-  const tryToChangeFieldType = useCallback(getTryToChangeBlockType(id, setType), [setType])
-
-  const commonProps = { id, data: ublock.data, setData, readonly, type: ublock.type, maxWidth: width - 16, addInfo }
+  const commonProps: UBlockImplementation = {
+    id,
+    data: ublock.data,
+    setData,
+    readonly,
+    type: ublock.type,
+    maxWidth: width - 16,
+    addInfo,
+    i,
+  }
 
   const utextProps = {
     ...commonProps,
-    tryToChangeFieldType,
-    i,
+    inUForm: !!uformPs,
+    resetActiveBlock,
     setType,
     focus,
     addNewBlock,
@@ -252,7 +250,7 @@ export function UBlock({
           >
             {isUTextBlock(ublock.type) && <UText {...utextProps} />}
             {isUFileBlock(ublock.type) && <UFile {...commonProps} />}
-            {isUQuestionBlock(ublock.type) && <UFormBlock {...commonProps} onAnswer={onAnswer} />}
+            {isUQuestionBlock(ublock.type) && <UFormBlock {...commonProps} {...safe(uformPs)} />}
             {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
             {ublock.type === 'block-equation' && <Equation {...commonProps} />}
             {ublock.type === 'divider' && <UDivider />}
@@ -345,16 +343,6 @@ const SideDropbox = styled('div', { label: 'SideDropbox' })({
   bottom: 0,
   width: '0.5rem',
 })
-
-const getTryToChangeBlockType = (id: str, setType: (v: UBlockType) => void) => (newData: str) => {
-  if (!newData.includes(' ')) return
-
-  const firstElement = newData.split(' ')
-  const newType = regexAndType.get(firstElement[0])
-  if (!newType) return
-
-  setType(newType)
-}
 
 interface BlockMenu {
   data: str

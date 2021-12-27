@@ -6,12 +6,13 @@ import { uuid } from '../../../../utils/uuid'
 import { BlockInfo, isUTextBlock, UBlockType, UGridDTO, UTextFocus } from '../../types'
 import { UBlock, useDeleteUBlocks } from '../../UBlock/UBlock'
 import { useData } from '../../../../fb/useData'
-import { UPageTitle, UParagraph } from '../../UText/UText'
+import { UBlockSetFactory, UPageTitle } from '../../UText/UText'
 import { useMap } from '../../../utils/hooks/useMap'
 import { replace, reverse, safeSplit } from '../../../../utils/algorithms'
 import { useArray } from '../../../utils/hooks/useArray'
 import { useSelection } from '../../UBlock/useSelection'
 import { TOCItems } from '../TableOfContents/types'
+import { UFormFieldInfo } from '../../../uforms/types'
 
 export interface UBlocksSet {
   id: str
@@ -28,6 +29,7 @@ export interface UBlocksSet {
   hideFactory?: bool
   createColumn?: (id: str, ids: strs, side: 'right' | 'left') => void
   factoryPlaceholder?: str
+  uformPs?: UFormFieldInfo
 }
 
 export const UBlocksSet = memo(UBlocksSet_, (old, new_) => {
@@ -47,6 +49,7 @@ function UBlocksSet_({
   updateTOC,
   factoryPlaceholder,
   hideFactory,
+  uformPs,
 }: UBlocksSet) {
   const [activeBlock, setActiveBlock] = useState(new ActiveBlock())
   const addedBlocks = useArray<AddedBlock>()
@@ -255,7 +258,7 @@ function UBlocksSet_({
     [findUTextId],
   )
 
-  const clearFocus = useCallback(() => setActiveBlock(new ActiveBlock()), [])
+  const resetActiveBlock = useCallback(() => setActiveBlock(new ActiveBlock()), [])
   const { deleteExternalUBlocks } = useDeleteUBlocks()
 
   useEffect(() => {
@@ -291,11 +294,10 @@ function UBlocksSet_({
         <UPageTitle
           id={'title'}
           i={-1}
-          tryToChangeFieldType={fn}
           focus={activeBlock.id === 'title' ? activeBlock.focus : undefined}
           goUp={fn}
           goDown={onTitleEnter}
-          clearFocus={clearFocus}
+          resetActiveBlock={resetActiveBlock}
           onTitleEnter={onTitleEnter}
           data={title || ''}
           setData={fn}
@@ -304,6 +306,8 @@ function UBlocksSet_({
           type="text"
           hideMenus={true}
           onDrop={() => rearrangeBlocks('title')}
+          addInfo={fn}
+          maxWidth={0}
         />
       )}
       {ids.map((_id, i) => {
@@ -338,8 +342,9 @@ function UBlocksSet_({
             deleteBlock={deleteBlock}
             deleteBlocks={deleteBlocks}
             appendedData={_id === blockAboveDeleted.id ? blockAboveDeleted.data : undefined}
-            resetActiveBlock={clearFocus}
+            resetActiveBlock={resetActiveBlock}
             i={i}
+            uformPs={uformPs}
             previousBlockInfo={previousBlockInfo}
             rearrangeBlocks={rearrangeBlocks}
             handleGridCreation={handleColumnsCreation}
@@ -352,7 +357,7 @@ function UBlocksSet_({
         )
       })}
       {!readonly && !hideFactory && (
-        <UParagraph
+        <UBlockSetFactory
           i={-1}
           key={`factory-${activeBlock.id}`}
           id="factory"
@@ -360,7 +365,6 @@ function UBlocksSet_({
           onFactoryBackspace={onFactoryBackspace}
           goUp={onFactoryBackspace}
           goDown={fn}
-          tryToChangeFieldType={fn}
           addNewBlock={addNewBlocks}
           isFactory={true}
           placeholder={factoryPlaceholder}
@@ -369,6 +373,9 @@ function UBlocksSet_({
           setType={fn}
           type="text"
           hideMenus={true}
+          addInfo={fn}
+          maxWidth={0}
+          resetActiveBlock={resetActiveBlock}
         />
       )}
     </Root>

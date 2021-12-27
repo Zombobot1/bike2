@@ -1,4 +1,4 @@
-import { bool, Fn, num, str, strs } from '../../utils/types'
+import { bool, Fn, num, SetStr, str, strs } from '../../utils/types'
 
 export type UListBlock = 'list' | 'bullet-list' | 'numbered-list' | 'toggle-list'
 export type AdvancedTextBlock = 'code' | 'quote' | 'callout'
@@ -81,25 +81,20 @@ export function isUFileBlock(t: UBlockType): bool {
   return types.includes(t)
 }
 
-export interface UBlockB {
-  id: str
-  readonly?: bool
-}
-
 export type UBlockDTO = { type: UBlockType; data: str; isDeleted?: bool }
 
-export interface UBlockComponentB {
-  data: str
-  setData: (d: str) => void
-  readonly?: bool
-}
-
-export interface UBlockComponent extends UBlockComponentB {
+export interface UBlockImplementation {
   id: str
   type: UBlockType
+  data: str
+  setData: SetStr
+  readonly?: bool
+  maxWidth: num
+  addInfo: (id: str, i: BlockInfo) => void
+  i: num
 }
 
-export type NewBlockFocus = 'focus-start' | 'focus-end' | 'no-focus'
+export type NewBlockFocus = 'focus-start' | 'focus-end' | 'no-focus' | '/'
 export type AddNewBlockUText = (
   underId: str,
   focus?: NewBlockFocus,
@@ -132,18 +127,6 @@ export enum DragType {
 }
 export type TeX = { tex: str; html: str; wasUpdated?: bool }
 export type TexMapRef = React.MutableRefObject<Map<str, TeX>>
-
-export const regexAndType = new Map<str, UBlockType>([
-  ['#', 'heading-1'],
-  ['##', 'heading-2'],
-  ['###', 'heading-3'],
-  ['{}', 'short-answer'],
-  ['[]', 'multiple-choice'],
-  ['()', 'single-choice'],
-  ['{ }', 'long-answer'],
-  ['*', 'bullet-list'],
-  ['1.', 'numbered-list'],
-])
 
 export class UGridDTO {
   columns: strs[] = []

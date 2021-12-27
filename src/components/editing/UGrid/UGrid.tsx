@@ -4,12 +4,12 @@ import { ucast } from '../../../utils/utils'
 import { useReactiveObject } from '../../utils/hooks/hooks'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { ResizableColumns } from '../../utils/ResizableWidth/ResizableColumns'
-import { UBlockComponent, UGridDTO } from '../types'
+import { UBlockImplementation, UGridDTO } from '../types'
 import { PaddedBox } from '../UBlock/PaddedBox'
 import { UBlocksSet } from '../UPage/UBlockSet/UBlockSet'
 import { uuid } from '../../../utils/uuid'
 
-export interface UGrid extends UBlockComponent {
+export interface UGrid extends UBlockImplementation {
   deleteGrid: (id: str, idsLeft: strs) => void
 }
 

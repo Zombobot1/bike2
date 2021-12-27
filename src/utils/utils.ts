@@ -32,7 +32,8 @@ export function ucast<T>(data: str, default_: T): T {
   if (!data) return default_
 
   try {
-    return { ...default_, ...JSON.parse(data) } as T
+    if (Array.isArray(default_)) return JSON.parse(data) as T
+    else return { ...default_, ...JSON.parse(data) } as T
   } catch (error) {
     console.error(error)
   }
@@ -115,3 +116,11 @@ export const mod = (n: num, m: num) => ((n % m) + m) % m
 
 export const filterProps = (props: JSObject, excessive: strs) =>
   Object.fromEntries(Object.entries(props).filter(([k]) => !excessive.includes(k)))
+
+export function log<State, Action>(f: (s: State, a: Action) => State): (s: State, a: Action) => State {
+  return (old: State, a: Action) => {
+    const new_ = f(old, a)
+    console.info({ old, action: a, new: new_ })
+    return new_
+  }
+}

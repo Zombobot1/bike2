@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { insertAt, replaceAt } from '../../../utils/algorithms'
 import { bool, num, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 
@@ -14,6 +15,7 @@ export interface UArray<T> {
 
   push: (e: T) => void
   insert: (e: T, i: num) => void
+  replace: (e: T, i: num) => void
 
   delete: (i: num) => void
   deleteElement: (e: T) => void
@@ -37,7 +39,9 @@ export function useArray<T = str>(init: T[] = []): UArray<T> {
     reset: (newData: T[]) => setArray(newData),
 
     push: (e: T) => setArray((a) => [...a, e]),
-    insert: (e: T, i: num) => setArray((a) => [...a.slice(0, i), e, ...a.slice(i + 1, a.length - 1)]),
+    insert: (e: T, i: num) => setArray((a) => insertAt(a, e, i)),
+    replace: (e: T, i: num) => setArray((a) => replaceAt(a, e, i)),
+
     delete: (i: num) => setArray((a) => [...a.slice(0, i), ...a.slice(i + 1, a.length - 1)]),
     deleteElement: (e: T) => setArray((a) => a.filter((element) => element !== e)),
     clear: () => setArray([]),

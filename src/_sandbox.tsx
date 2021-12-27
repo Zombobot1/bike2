@@ -11,32 +11,36 @@ const Sandbox = () => {
     <OuterShell>
       <SoryBook
         sories={[
-          UGrid,
-          UPageBlock,
-          UTable,
-          TableOfContents,
-          UTextOptions,
-          UDivider,
-          Equation,
-          UVideoFile,
-          UAutocomplete,
-          CodeEditor,
+          UPage,
+          UBlocksSet,
+          UText,
           Code,
           Callout,
           Quote,
-          BlockAutocomplete,
-          EditableText,
-          InlineQuestion,
-          Selection,
-          ResizableWidth,
           UList,
-          Dropzone,
-          UBlocksSet,
+          UGrid,
+          UPageBlock,
+          UTable,
+          UDivider,
+          Equation,
+          UVideoFile,
           UFile,
           UAudioFile,
           UImageFile,
+          BlockAutocomplete,
+          TableOfContents,
+          UTextOptions,
+          UForm,
+          InlineExercise,
+          UChecks,
+          UInput,
+          UAutocomplete,
+          CodeEditor,
+          EditableText,
+          Selection,
+          ResizableWidth,
+          Dropzone,
           UAudio,
-          UPage,
           AppBar,
           NavBar,
           App,
@@ -46,13 +50,9 @@ const Sandbox = () => {
           ThemeBtn,
           LoginPage,
           UCard,
-          UForm,
-          UFormBlock,
-          UChecks,
-          UInput,
-          UText,
           SB,
         ]}
+        sections={['Editing', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
       />
     </OuterShell>
   )
@@ -88,8 +88,7 @@ import * as UCard from './components/decks/UCard/UCard.stories'
 import * as UForm from './components/uforms/UForm.stories'
 import * as UChecks from './components/uforms/UFormBlock/UChecks/UChecks.stories'
 import * as UInput from './components/uforms/UFormBlock/UInput/UInput.stories'
-import * as InlineQuestion from './components/uforms/UFormBlock/InlineQuestion/InlineQuestion.stories'
-import * as UFormBlock from './components/uforms/UFormBlock/UFormBlock.stories'
+import * as InlineExercise from './components/uforms/UFormBlock/InlineExercise/InlineExercise.stories'
 import * as Code from './components/editing/UText/Code/Code.stories'
 import * as Callout from './components/editing/UText/Callout/Callout.stories'
 import * as Quote from './components/editing/UText/Quote/Quote.stories'

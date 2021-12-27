@@ -136,6 +136,7 @@ function OptionedMenu_(ps: LongMenu) {
           variant="standard"
           placeholder={`Search for a ${ps.placeholder}`}
           sx={{ padding: '1rem' }}
+          inputProps={{ 'data-cy': 'long-menu-search' }}
         />
         <MenuList
           {...filterProps(ps, uOptionedMenu)}

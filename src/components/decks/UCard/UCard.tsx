@@ -3,7 +3,6 @@ import { Collapse, Stack, styled } from '@mui/material'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { str, bool } from '../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'
-import { useInteractiveSubmit } from '../../studying/training/hooks'
 import { UBlock, mockUblock } from '../../editing/UBlock/UBlock'
 
 export interface UCard {
@@ -101,18 +100,6 @@ export interface UCardField extends FieldDTO {
 }
 
 const UCardField = ({ _id, data, type: _, isMediaActive, readonly }: UCardField) => {
-  const { interactiveSubmit } = useInteractiveSubmit()
-
   if (!data) return null
-
-  return (
-    <UBlock
-      {...mockUblock}
-      id={_id}
-      autoplay={isMediaActive}
-      onAnswer={interactiveSubmit}
-      readonly={readonly}
-      isCardField={true}
-    />
-  )
+  return <UBlock {...mockUblock} id={_id} autoplay={isMediaActive} readonly={readonly} isCardField={true} />
 }

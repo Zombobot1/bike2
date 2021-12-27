@@ -16,6 +16,7 @@ export function BlockAutocomplete({ coordinates, menu, context, createBlock }: B
   const ps = useControlledLongMenu(menu, ublocksFor(context), '', (t) => createBlock(ublockTypeFrom(t)), {
     doNotMemorizeSelection: true,
   })
+
   return (
     <Box
       sx={{

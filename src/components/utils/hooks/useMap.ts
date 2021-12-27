@@ -19,5 +19,6 @@ export function useMap<K, V>(init: [K, V][] = []) {
         old.delete(key)
         return new Map([...old.entries()])
       }),
+    reset: () => setMap(new Map()),
   }
 }

@@ -1,10 +1,9 @@
-import { Button, Chip, Stack, styled } from '@mui/material'
+import { Box, Button, Chip, Stack, styled } from '@mui/material'
 import { str, strs } from '../../utils/types'
 import { ucast } from '../../utils/utils'
-import { UBlockComponent } from '../editing/types'
+import { UBlockImplementation } from '../editing/types'
 import { UBlocksSet } from '../editing/UPage/UBlockSet/UBlockSet'
 import { EditableText } from '../utils/EditableText/EditableText'
-import { useReactive, useToggle } from '../utils/hooks/hooks'
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded'
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded'
 import ReplayRoundedIcon from '@mui/icons-material/ReplayRounded'
@@ -24,34 +23,29 @@ export interface UFormDTO {
 
 // tests have an intermediate state: waiting for feedback if there are some manually assessable questions -> student is transferred to a page where teacher can leave feedback
 // exercises & tests can be redone when feedback was provided, all feedback errors are automatically turned into cards and placed in individual decks
-export function UForm({ data, setData, readonly, id }: UBlockComponent) {
+export function UForm({ data, setData, readonly, id }: UBlockImplementation) {
   const { ids, name } = ucast<UFormDataDTO>(data, { ids: [], name: '' })
+  const [lastClickedOn, setLastClickedOn] = useState<'top' | 'bottom'>('bottom')
   const rename = (name: str) => setData(JSON.stringify({ ids, name }))
   const setIds = (ids: strs) => setData(JSON.stringify({ name, ids }))
 
-  const [score, setScore] = useState(0)
-  const [isEditing, toggleIsEditing, setIsEditing] = useToggle(name.length === 0)
-  const { submit, retry, wasSubmitted, validateNew, error: formError } = useUForm(isEditing)
-  const [error, setError] = useReactive(formError)
-
-  const onPenClick = () => {
-    const error = validateNew()
-    if (isEditing) setIsEditing(!!error)
-    else toggleIsEditing()
-    setError(error)
-  }
+  const uformPs = useUForm({ isEditing: ids.length === 0 && !readonly, ids })
+  const { d, score, isEditing, validationError, wasSubmitted } = uformPs
 
   return (
     <Stack>
       <RStack justifyContent="space-between">
         <EditableText text={name} setText={rename} tag="h4" focusIfEmpty={true} placeholder="Untitled" />
         <RStack spacing={1}>
-          {error && <Chip size="small" color="error" label={error} />}
+          {lastClickedOn === 'top' && validationError && <Chip size="small" color="error" label={validationError} />}
           {!readonly && (
             <IBtn
               icon={isEditing ? RemoveRedEyeRoundedIcon : CreateRoundedIcon}
-              onClick={onPenClick}
-              color={!error ? 'default' : 'error'}
+              onClick={() => {
+                d({ a: 'toggle-edit' })
+                setLastClickedOn('top')
+              }}
+              color={!validationError ? 'default' : 'error'}
               data-cy={isEditing ? 'view' : 'edit'}
             />
           )}
@@ -64,46 +58,95 @@ export function UForm({ data, setData, readonly, id }: UBlockComponent) {
         setIds={setIds}
         factoryPlaceholder="Type /checks or /input etc."
         readonly={!isEditing}
+        uformPs={uformPs}
       />
+      {isEditing && (
+        <Box sx={{ position: 'relative' }}>
+          {lastClickedOn === 'bottom' && validationError && (
+            <CenteredChip size="small" color="error" label={validationError} />
+          )}
+          <SubmitBtn
+            size="large"
+            color={validationError ? 'error' : undefined}
+            onClick={() => {
+              d({ a: 'toggle-edit' })
+              setLastClickedOn('bottom')
+            }}
+            data-cy="save"
+          >
+            Save
+          </SubmitBtn>
+        </Box>
+      )}
       {!isEditing && (
         <>
-          {!error && <Hr sx={{ marginBottom: '0.5rem' }} />}
-          {!error && !wasSubmitted && (
-            <Btn size="large" endIcon={<SendRoundedIcon />} onClick={() => submit(setScore)} data-cy="submit">
-              Submit
-            </Btn>
-          )}
-          {wasSubmitted && (
-            <RStack justifyContent="space-between">
-              <Btn2 size="large" endIcon={<ReplayRoundedIcon />} sx={{ opacity: 0 }}>
-                Retry
-              </Btn2>
-              <Chip
-                color="info"
-                variant="filled"
-                label={`Score: ${score}%`}
-                sx={{ fontWeight: 'bold', fontSize: '1rem' }}
-              />
-              <Btn2 size="large" endIcon={<ReplayRoundedIcon />} onClick={retry} data-cy="retry">
-                Retry
-              </Btn2>
-            </RStack>
-          )}
+          <Hr sx={{ marginBottom: '0.5rem' }} />
+          <Box sx={{ position: 'relative' }}>
+            {!wasSubmitted && (
+              <>
+                {lastClickedOn === 'bottom' && validationError && (
+                  <CenteredChip size="small" color="error" label={validationError} />
+                )}
+                <SubmitBtn
+                  size="large"
+                  color={validationError ? 'error' : undefined}
+                  endIcon={<SendRoundedIcon />}
+                  onClick={() => {
+                    d({ a: 'submit' })
+                    setLastClickedOn('bottom')
+                  }}
+                  data-cy="submit"
+                >
+                  Submit
+                </SubmitBtn>
+              </>
+            )}
+            {wasSubmitted && (
+              <>
+                <CenteredChip
+                  color="info"
+                  variant="filled"
+                  label={`Score: ${score}%`}
+                  sx={{ fontWeight: 'bold', fontSize: '1rem' }}
+                />
+                <RetryBtn
+                  size="large"
+                  endIcon={<ReplayRoundedIcon />}
+                  onClick={() => d({ a: 'retry' })}
+                  data-cy="retry"
+                >
+                  Retry
+                </RetryBtn>
+              </>
+            )}
+          </Box>
         </>
       )}
     </Stack>
   )
 }
 
-const Btn = styled(Button)({
-  alignSelf: 'flex-end',
+const SubmitBtn = styled(Button)({
+  position: 'absolute',
+  right: 0,
+  top: 0,
   '.MuiButton-endIcon': {
     transform: 'translateY(-1px)',
   },
 })
 
-const Btn2 = styled(Button)({
+const RetryBtn = styled(Button)({
+  position: 'absolute',
+  right: 0,
+  top: 0,
   '.MuiButton-endIcon': {
     transform: 'translateX(-3px)',
   },
+})
+
+const CenteredChip = styled(Chip)({
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, 35%)',
 })

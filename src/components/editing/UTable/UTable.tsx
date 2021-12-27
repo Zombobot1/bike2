@@ -3,7 +3,7 @@ import { useIsSM, useReactiveObject, useToggle } from '../../utils/hooks/hooks'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { useState } from 'react'
 import { bool, num, SetNum, SetStr, str, strs } from '../../../utils/types'
-import { UBlockComponentB } from '../types'
+import { UBlockImplementation } from '../types'
 import { ucast, getEmptyStrings, prevented } from '../../../utils/utils'
 import _ from 'lodash'
 import { EditableText } from '../../utils/EditableText/EditableText'
@@ -18,7 +18,7 @@ export class UTableDTO {
   widths = [190, 190]
 }
 
-export function UTable(ps: UBlockComponentB) {
+export function UTable(ps: UBlockImplementation) {
   const data = ucast<UTableDTO>(ps.data, new UTableDTO())
   const [widths, setWidths] = useReactiveObject(data.widths)
   const [rows, setRows_] = useReactiveObject(data.rows)

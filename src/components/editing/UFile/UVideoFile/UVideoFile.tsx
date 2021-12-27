@@ -5,11 +5,12 @@ import AddLinkRoundedIcon from '@mui/icons-material/AddLinkRounded'
 import { str } from '../../../../utils/types'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 
-import { UImageFile, UImageFileDTO } from '../UImageFile/UImageFile'
+import { UImageFileDTO } from '../UImageFile/UImageFile'
 import { ucast as turn } from '../../../../utils/utils'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
+import { UBlockImplementation } from '../../types'
 
-export function UVideoFile({ data, setData, readonly, maxWidth }: UImageFile) {
+export function UVideoFile({ data, setData, readonly, maxWidth }: UBlockImplementation) {
   const [videoData] = useReactiveObject(turn(data, new UImageFileDTO()))
   const [link, setLink] = useState('')
   const [hasError, setHasError] = useState(false)

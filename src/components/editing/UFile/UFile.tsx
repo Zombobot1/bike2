@@ -1,7 +1,6 @@
 import { Stack, styled, Typography, IconButton } from '@mui/material'
-import { num } from '../../../utils/types'
 import { ucast, prevented } from '../../../utils/utils'
-import { UBlockComponent, UBlockComponentB } from '../types'
+import { UBlockImplementation } from '../types'
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { useUFile } from './useUFile'
@@ -18,7 +17,7 @@ export class UFileDTO {
   name = ''
 }
 
-export function UFile_({ data, setData, readonly }: UBlockComponentB) {
+export function UFile_({ data, setData, readonly }: UBlockImplementation) {
   const [fileData] = useReactiveObject(ucast(data, new UFileDTO()))
   const { fileS, isUploading, deleteFile } = useUFile((src, name) => setData(JSON.stringify({ name, src })))
   if (!fileData.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
@@ -36,11 +35,7 @@ export function UFile_({ data, setData, readonly }: UBlockComponentB) {
   )
 }
 
-export interface UFile extends UBlockComponent {
-  maxWidth: num
-}
-
-export function UFile(props: UFile) {
+export function UFile(props: UBlockImplementation) {
   return (
     <PaddedBox sx={{ width: props.type !== 'image' ? '100%' : 'auto' }}>
       {props.type === 'file' && <UFile_ {...props} />}

@@ -1,5 +1,5 @@
 import { COLORS } from '../../application/theming/theme'
-import { num, str, strs } from '../../../utils/types'
+import { num, str } from '../../../utils/types'
 import { UBlockType } from '../../editing/types'
 
 export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY'
@@ -22,13 +22,6 @@ export const estimationColor = (e: CardEstimation) => {
     case 'EASY':
       return COLORS.info
   }
-}
-
-export interface Question {
-  question: str
-  correctAnswer: strs
-  explanation: str
-  options: strs
 }
 
 export interface FieldDTO {

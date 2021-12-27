@@ -1,74 +1,101 @@
-import { useState, KeyboardEvent } from 'react'
-import { bool, Fn, str, strs } from '../../../../utils/types'
+import { useState } from 'react'
+import { bool, fn, JSObject, num, SetStr, str } from '../../../../utils/types'
+import { useReactive } from '../../../utils/hooks/hooks'
 import { TextInput } from '../../../utils/MuiUtils'
-import { Validity } from '../../types'
-import { isAnswerCorrect } from '../../useUForm'
+import { Correctness } from '../../types'
+import { FeedbackIndex } from '../Feedback'
 import { useValidationColor } from '../useValidationColor'
 
 export interface UInputField {
-  showTipOnMobile: bool
-  answer: strs
-  onAnswerChange: (s: strs) => void
-  onAnswer: Fn
-  validity: Validity
+  answer: str
+  setAnswer: SetStr
+  correctAnswer: str
+  validationError: str
   wasSubmitted: bool
-  autoFocus: bool
-  multiline: bool
+  onChange?: SetStr
+  multiline?: bool
+  autoFocus?: bool
+  hideTipOnMobile?: bool
+  inline?: bool
+  i?: num
 }
 
 export function UInputField({
-  answer,
-  onAnswer,
-  onAnswerChange,
-  showTipOnMobile,
-  validity,
+  answer: initialAnswer,
+  setAnswer: setOuterAnswer,
+  correctAnswer,
+  hideTipOnMobile,
   autoFocus,
+  validationError,
   multiline,
   wasSubmitted,
+  onChange = fn,
+  inline,
+  i,
 }: UInputField) {
-  const [type, setType] = useState(showTipOnMobile ? 'text' : 'password')
+  const [answer, setAnswer] = useReactive(initialAnswer)
+  const [type, setType] = useState(hideTipOnMobile ? 'password' : 'text')
 
-  const color = useValidationColor(validity)
-  const sx =
-    validity === 'none'
-      ? undefined
+  let correctness: Correctness = 'none'
+  const ignoreValidationError = inline && answer.length
+  if (validationError && !ignoreValidationError) correctness = 'incorrect'
+  else if (wasSubmitted) correctness = correctAnswer.toLowerCase() === answer.toLowerCase() ? 'correct' : 'incorrect'
+  if (wasSubmitted && multiline) correctness = 'none'
+
+  const color = useValidationColor(correctness)
+
+  let sx: JSObject =
+    correctness === 'none'
+      ? {}
       : {
-          '& .MuiOutlinedInput-notchedOutline': { borderColor: `${color} !important` },
-          '& .MuiInputBase-input.Mui-disabled': {
+          '.MuiOutlinedInput-notchedOutline': { borderColor: `${color} !important` },
+          '.MuiInput-underline::before': { borderColor: `${color}`, borderBottomStyle: 'dotted' },
+          '.MuiInputBase-input.Mui-disabled': {
             color,
             WebkitTextFillColor: 'unset',
           },
         }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') onAnswer()
-  }
+  if (inline)
+    sx = {
+      ...sx,
+      maxWidth: Math.max(answer.length * 1.2, 5) + 'ch',
+      paddingLeft: '0.2rem',
+      paddingRight: '0.1rem',
+      input: {
+        padding: 0,
+      },
+    }
 
   return (
-    <TextInput
-      fullWidth
-      variant="outlined"
-      placeholder="Your answer"
-      type={type}
-      value={answer[0] || ''}
-      onChange={(e) => {
-        setType('text') // anomaly: if it is put onMount or onFocus it breaks slide animation
-        onAnswerChange([e.target.value])
-      }}
-      disabled={wasSubmitted}
-      onKeyPress={handleKeyDown}
-      autoFocus={autoFocus}
-      autoComplete="one-time-code"
-      multiline={multiline}
-      minRows={2}
-      sx={sx}
-      inputProps={{ 'data-cy': 'answer' }}
-    />
+    <>
+      {inline && <FeedbackIndex i={i} validity={correctness} wasSubmitted={wasSubmitted} space={true} />}
+      <TextInput
+        size="small"
+        fullWidth={!inline}
+        variant={inline ? 'standard' : 'outlined'}
+        placeholder={inline ? '' : 'Your answer'}
+        type={type}
+        value={answer}
+        onChange={(e) => {
+          setType('text') // anomaly: if it is put onMount or onFocus it breaks slide animation
+          setAnswer(e.target.value)
+          onChange(e.target.value)
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' && !multiline) setOuterAnswer(answer)
+        }}
+        onBlur={() => {
+          if (answer !== initialAnswer) setOuterAnswer(answer)
+        }}
+        disabled={wasSubmitted}
+        autoFocus={autoFocus}
+        autoComplete="off" // https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
+        multiline={multiline}
+        minRows={2}
+        sx={sx}
+        inputProps={{ 'data-cy': 'answer' }}
+      />
+    </>
   )
-}
-
-export function isUInputValid(answer: strs, correctAnswer: strs, validationError: str, wasSubmitted: bool): Validity {
-  if (validationError) return 'invalid'
-  else if (wasSubmitted) return isAnswerCorrect(answer, correctAnswer) ? 'valid' : 'invalid'
-  return 'none'
 }

@@ -1,21 +1,17 @@
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded'
 import { imageFromSrc, srcfy } from '../../../../utils/filesManipulation'
-import { UBlockComponentB } from '../../types'
+import { UBlockImplementation } from '../../types'
 import { useUImageFile } from '../useUFile'
 import { alpha, IconButton, styled } from '@mui/material'
-import { bool, num } from '../../../../utils/types'
+import { bool } from '../../../../utils/types'
 import { ucast } from '../../../../utils/utils'
 import { useEffect, useState } from 'react'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
-export interface UImageFile extends UBlockComponentB {
-  maxWidth: num
-}
-
-export function UImageFile({ data, setData, readonly, maxWidth }: UImageFile) {
+export function UImageFile({ data, setData, readonly, maxWidth }: UBlockImplementation) {
   const [imageData, setImageData] = useReactiveObject(ucast(data, new UImageFileDTO()))
   const [newSrc, setNewSrc] = useState('') // user can change width before image is uploaded
   const props = useUImageFile(setNewSrc, (f) => setImageData(() => ({ width: 900, src: srcfy(f) })))

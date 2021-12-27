@@ -105,7 +105,3 @@ export const programmingLanguages = [
 export const highlight = (code: str, language: str): str => {
   return toHtml(refractor.highlight(code, language.toLowerCase()))
 }
-
-export const unhighlight = (html: str) => {
-  return new DOMParser().parseFromString(html, 'text/html').documentElement.textContent || ''
-}

@@ -1,12 +1,13 @@
 import { FC } from 'react'
+import { sort } from '../utils/algorithms'
 import { sslugify } from '../utils/sslugify'
-import { JSObjects, str } from '../utils/types'
+import { JSObjects, str, strs } from '../utils/types'
 import { IdAndSory, SoryBook_, SoryTree } from './sorybook'
 
 type Storieble = { [p: string]: FC }
 type SoryBookPart = { tree: SoryTree; sories: IdAndSory }
 
-function _storify(useCaseId: str, componentName: str, obj: Storieble): SoryBookPart {
+function _storify(useCaseId: str, componentName: str, obj: Storieble, order: strs = []): SoryBookPart {
   const idAndStory = new Map<str, FC>()
 
   function getStoryName(name: str) {
@@ -14,7 +15,8 @@ function _storify(useCaseId: str, componentName: str, obj: Storieble): SoryBookP
   }
 
   const componentId = `${useCaseId}--${sslugify(componentName)}`
-  const stories = Object.entries(obj).map(([k, s]) => {
+
+  const stories = sort(Object.entries(obj), ([name]) => order.indexOf(name)).map(([k, s]) => {
     const storyName = getStoryName(k)
     const id = `${componentId}--${sslugify(storyName)}`
     idAndStory.set(id, s)
@@ -31,8 +33,8 @@ function _storify(useCaseId: str, componentName: str, obj: Storieble): SoryBookP
   }
 }
 
-type WithTitle = { title: str }
-export function storify(storiesWithDefaults: JSObjects): SoryBook_ {
+type WithTitle = { title: str; order?: strs }
+export function storify(storiesWithDefaults: JSObjects, sections: strs): SoryBook_ {
   const useCaseAndComponents = new Map<str, SoryTree[]>()
   let idsAndStories = new Map<str, FC>()
 
@@ -45,18 +47,20 @@ export function storify(storiesWithDefaults: JSObjects): SoryBook_ {
     const [useCaseName, componentName] = title.title.split('/')
     const useCaseId = sslugify(useCaseName)
     const stories = Object.fromEntries(entires.filter(([k]) => k !== 'default')) as Storieble
-    const { tree: component, sories: newIdsAndStories } = _storify(useCaseId, componentName, stories)
+    const { tree: component, sories: newIdsAndStories } = _storify(useCaseId, componentName, stories, title.order)
 
     idsAndStories = new Map([...idsAndStories, ...newIdsAndStories])
     if (!useCaseAndComponents.has(useCaseName)) useCaseAndComponents.set(useCaseName, [])
     useCaseAndComponents.get(useCaseName)?.push(component)
   })
 
-  const tree = Array.from(useCaseAndComponents.entries()).map(([name, components]) => ({
-    id: sslugify(name),
-    name,
-    children: components,
-  }))
+  const tree = sort(Array.from(useCaseAndComponents.entries()), ([name]) => sections.indexOf(name)).map(
+    ([name, components]) => ({
+      id: sslugify(name),
+      name,
+      children: components,
+    }),
+  )
 
   return { trees: tree, sories: idsAndStories }
 }

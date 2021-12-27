@@ -151,6 +151,12 @@ describe('UBlockSet', () => {
     saw('cat')
   })
 
+  it('focuses autocomplete when / is typed in factory', () => {
+    show(UBlocksSet.BlocksCreation)
+    utext(1).type('/')
+    got('long-menu-search').should('have.focus')
+  })
+
   // it was before inline latex separation and caused it to fail -> keep it on the bottom of spec
   it('pastes image', () => {
     show(UBlocksSet.OneEmptyBlock)

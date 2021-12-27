@@ -5,12 +5,12 @@ import { str } from '../utils/types'
 import { IdAndBlocks } from './types'
 import fluffyJpg from './fluffy.jpg'
 import fluffyMp3 from './fluffy.mp3'
-import { Question } from '../components/studying/training/types'
 import { UBlockDTO, UGridDTO } from '../components/editing/types'
 import { imageFromSrc } from '../utils/filesManipulation'
 import { CalloutDTO } from '../components/editing/UText/Callout/Callout'
 import { CodeDTO } from '../components/editing/UText/Code/Code'
 import { UTableDTO } from '../components/editing/UTable/UTable'
+import { ComplexQuestion, UChecksQuestion, UInputQuestion } from '../components/uforms/types'
 
 const $ = JSON.stringify
 
@@ -301,33 +301,64 @@ export const _kittensForLists: IdAndBlocks = [
   ['petsForFocus', { type: 'page', data: $(_kittensForListsPage) }],
 ]
 
-const q_ = (qe = '', ca = [''], o = [''], e = ''): Question => ({
-  question: qe,
-  correctAnswer: ca,
-  options: o,
-  explanation: e,
-})
-
-const q = (qe = '', ca = [''], o = [''], e = ''): str => $(q_(qe, ca, o, e))
+const qc = (qe = '', ca = [''], o = [''], e = ''): str => {
+  const q: UChecksQuestion = { question: qe, options: o, correctAnswer: ca, explanation: e }
+  return $(q)
+}
+const qi = (qe = '', ca = '', e = ''): str => {
+  const q: UInputQuestion = { question: qe, correctAnswer: ca, explanation: e }
+  return $(q)
+}
 
 export const _fuzzyQuiz: UBlockDTO = {
   type: 'exercise',
   data: $({ name: 'Fuzzy quiz', ids: ['fq-q1', 'fq-q2', 'fq-q3'] }),
 }
 
-const inlineQ1 = `If a male cat is both orange and black, he is probably {sterile} or just nice?
-In {() USA (*) New Zealand () Denmark} there are more cats per person than any other country in the world
-The {[*] Puma [] Bay cat [*] Catamount} is another name for the cougar?`
-const inlineQ1E = `1. Sterile. Both of these colors are carried on the female X chromosome that cats receive from their mother. As a result a male cat is born with an extra X
-2. New Zealand leads the world with an average of 1.8 cats per household
-3. Other names for the cougar include puma, mountain lion, Florida panther, red tiger and catamount.`
+const _quizWith1InlineExercise: UBlockDTO = {
+  type: 'exercise',
+  data: $({ name: 'Test', ids: ['fq-inline-exercise'] }),
+}
+
+const _quizWith1InputField: UBlockDTO = {
+  type: 'exercise',
+  data: $({ name: 'Test', ids: ['fq-q3'] }),
+}
+
+const inlineExercise: ComplexQuestion = [
+  'A male cat is probably ',
+  {
+    i: 0,
+    correctAnswer: ['sterile'],
+    explanation: 'He is born with an extra X chromosome that cats receive from their mother} or just nice',
+    options: [],
+    type: 'short-answer',
+  },
+  ', if he is both orange and black\n\nIn ',
+  {
+    i: 1,
+    correctAnswer: ['New Zealand'],
+    explanation: 'New Zealand leads the world with an average of 1.8 cats per household',
+    options: ['USA ', 'Denmark', 'New Zealand'],
+    type: 'single-choice',
+  },
+  'there are more cats per person than any other country in the world\nThe ',
+  {
+    i: 2,
+    correctAnswer: ['Puma', 'Catamount'],
+    explanation: '',
+    options: ['Puma ', 'Bay cat', 'Catamount'],
+    type: 'multiple-choice',
+  },
+  ' is another name for the cougar?',
+]
 
 export const _kittensQuiz: IdAndBlocks = [
   [
     'fq-q1',
     {
       type: 'single-choice',
-      data: q(
+      data: qc(
         'What is the proper term for a group of kittens?',
         ['kindle'],
         ['kaboodle', 'kine', 'kindle', 'kettle'],
@@ -339,7 +370,7 @@ export const _kittensQuiz: IdAndBlocks = [
     'fq-q2',
     {
       type: 'multiple-choice',
-      data: q(
+      data: qc(
         'Why do cats rub against you?',
         ['To say hello', 'To show affiliation'],
         ['To say hello', 'They are itched', 'To show affiliation', 'They are stressed'],
@@ -351,15 +382,11 @@ export const _kittensQuiz: IdAndBlocks = [
     'fq-q3',
     {
       type: 'short-answer',
-      data: q('What breed of domestic cat has the longest fur?', ['Persian'], [], ''),
-    },
-  ],
-  [
-    'fq-q4',
-    {
-      type: 'inline-exercise',
-      data: q(inlineQ1, [], [], inlineQ1E),
+      data: qi('What breed of domestic cat has the longest fur?', 'Persian'),
     },
   ],
   ['fq', _fuzzyQuiz],
+  ['fq-inline-exercise', { type: 'inline-exercise', data: $(inlineExercise) }],
+  ['qw1e', _quizWith1InlineExercise],
+  ['qw1i', _quizWith1InputField],
 ]

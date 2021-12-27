@@ -2,6 +2,7 @@
 import { alpha, createTheme, Theme, ThemeOptions, useMediaQuery } from '@mui/material'
 import _ from 'lodash'
 import { bool, JSObject, num, str } from '../../../utils/types'
+import { isCypress } from '../../utils/hooks/isCypress'
 import { useLocalStorage } from '../../utils/hooks/useLocalStorage'
 
 export const COLORS = {
@@ -23,7 +24,7 @@ export const COLORS = {
   light: '#eaedf2',
 }
 
-type APMType = 'bg' | 'bg-hover' | '100' | '200' | '400' | '800' | 'border' | 'secondary' | 'btn' | 'info'
+type APMType = 'bg' | 'bg-hover' | '100' | '200' | '300' | '400' | '800' | 'border' | 'secondary' | 'btn' | 'info'
 
 export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = '100', lightAlpha?: num) {
   if (typeOrDarkAlpha === 'info') return alpha(theme.palette.info.main, 0.25)
@@ -41,6 +42,7 @@ export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = '100', light
   else if (type === 'btn') return isDark ? theme.palette.primary.main : theme.palette.text.secondary
   else if (type === '100' || type === 'bg') return alpha(primary, isDark ? 0.15 : 0.05)
   else if (type === '200' || type === 'bg-hover') return alpha(primary, isDark ? 0.2 : 0.1)
+  else if (type === '300') return alpha(primary, isDark ? 0.3 : 0.15)
   else if (type === '400') return alpha(primary, isDark ? 0.4 : 0.2)
   else if (type === '800') return alpha(primary, isDark ? 0.8 : 0.5)
 
@@ -98,7 +100,9 @@ const baseTheme = {
   },
 
   tra: (property: str, speed: Speed = '.2') => `${property} 0${speed}s  ease-in-out`,
-  bd: function () {
+  bd: function (color: 'p' | 's' | 'e' = 'p') {
+    if (color === 's') return `1px solid ${this.palette.success.main}`
+    if (color === 'e') return `1px solid ${this.palette.error.main}`
     return `1px solid ${_apm(this as any, 'border')}`
   },
 
@@ -149,7 +153,7 @@ declare module '@mui/material/styles' {
   interface Theme {
     apm: (typeOrDarkAlpha?: APMType | num, lightAlpha?: num) => str
     tra: (property: str, speed?: Speed) => str
-    bd: () => str
+    bd: (color?: 'p' | 's' | 'e') => str
     scroll: (type: Scroll) => JSObject
     isDark: () => bool
   }
@@ -157,7 +161,7 @@ declare module '@mui/material/styles' {
   interface ThemeOptions {
     apm?: (typeOrDarkAlpha?: APMType | num, lightAlpha?: num) => str
     tra?: (property: str, speed?: Speed) => str
-    bd?: () => str
+    bd?: (color?: 'p' | 's' | 'e') => str
     scroll?: (type: Scroll) => JSObject
     isDark?: () => bool
   }
@@ -166,18 +170,16 @@ declare module '@mui/material/styles' {
 export type ThemeType = 'light' | 'dark'
 type ThemeTypeO = ThemeType | ''
 
-export const uthemeOptions = { isCypress: false } // for cypress only
-
 export function useUTheme() {
   const [overriddenThemeType, setOverriddenThemeType] = useLocalStorage<ThemeTypeO>('themeType', '')
 
   let prefersDarkMode = useMediaQuery('(prefers-color-scheme: dark)')
-  if (uthemeOptions.isCypress) prefersDarkMode = false
+  if (isCypress.isCypress) prefersDarkMode = false
 
   const currentThemeType: ThemeType = overriddenThemeType || (prefersDarkMode ? 'dark' : 'light')
 
   let theme = currentThemeType === 'dark' ? darkTheme : lightTheme
-  if (uthemeOptions.isCypress) theme = currentThemeType === 'dark' ? darkCypress : lightCypress
+  if (isCypress.isCypress) theme = currentThemeType === 'dark' ? darkCypress : lightCypress
 
   function toggleTheme() {
     setOverriddenThemeType((old) => {

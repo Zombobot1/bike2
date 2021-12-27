@@ -3,7 +3,8 @@ import { safe } from '../../../utils/utils'
 import { useRefCallback } from '../hooks/useRefCallback'
 import { cursorOffset, getCaretRelativeCoordinates, setCursor } from '../Selection/selection'
 import { CodeRoot } from './CodeRoot'
-import { highlight, programmingLanguages, unhighlight } from './highlight'
+import { highlight, programmingLanguages } from './highlight'
+import { unhighlight } from '../../../utils/unhighlight'
 import { bool, Fn, fn, num, SetStr, str, strs } from '../../../utils/types'
 import { Box, Button, styled, Typography } from '@mui/material'
 import ContentEditable from 'react-contenteditable'
@@ -64,6 +65,20 @@ export function CodeEditor({
     if (mini) saveCode(newCode)
     setCursorPosition(cp)
   })
+
+  const onPaste = useRefCallback(
+    (e: React.ClipboardEvent<HTMLDivElement>) => {
+      e.preventDefault()
+      const cp = cursorOffset(safe(ref.current))
+      const newData = e.nativeEvent.clipboardData?.getData('Text') || ''
+      const newCode = insert(unhighlight(code), cp, newData)
+      setCode(highlight(newCode, language))
+      if (mini) saveCode(newCode)
+      setCursorPosition(cp + newData.length)
+    },
+    [code],
+  )
+
   const onBlur = useRefCallback(() => {
     const newCode = unhighlight(code)
     if (newCode !== initialCode) saveCode(newCode)
@@ -153,6 +168,7 @@ export function CodeEditor({
           sx={mini ? { width: 400 / 16 + 'rem' } : {}}
           onBlur={onBlur}
           onChange={onChange}
+          onPaste={onPaste}
           role="textbox"
           onKeyDown={onKeyDown}
           spellCheck={false}

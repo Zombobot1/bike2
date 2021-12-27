@@ -1,4 +1,5 @@
-import { got, type, show, saw, click, _red } from '../../utils/testUtils'
+import { type, show, saw, click } from '../../utils/testUtils'
+import { ANSWER_REQUIRED, SELECT_CORRECT } from './types'
 import * as UForm from './UForm.stories'
 
 describe('UForm', () => {
@@ -6,7 +7,7 @@ describe('UForm', () => {
     show(UForm.Submit)
 
     click('submit')
-    saw('Answer required!')
+    saw(ANSWER_REQUIRED)
 
     click(['rtick'], ['ctick', 1]).type('answer', 'c').click('submit')
     saw('Score: 0%')
@@ -32,28 +33,12 @@ describe('UForm', () => {
     saw('Score: 50%')
   })
 
-  it('validates empty | without answer', () => {
+  it('validates without answer', () => {
     show(UForm.Empty)
-
-    click('view')
-    saw('Add questions!', [() => got('view'), _red])
 
     type(['utext', '['], ['] '])
     click('view')
-    saw('Select correct answer!')
-
-    click(['ctick'], ['view'], ['ctick'], ['submit'])
-  })
-
-  it('shows error when empty and readonly | when does not contains correct answer', () => {
-    show(UForm.EmptyWithName)
-
-    saw('Missing questions!')
-    click(['edit'], ['view'])
-    saw('Add questions!')
-
-    type(['utext', '['], ['] ']).click('view')
-    saw('Select correct answer!')
+    saw(SELECT_CORRECT)
 
     click(['ctick'], ['view'], ['ctick'], ['submit'])
   })

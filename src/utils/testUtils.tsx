@@ -4,9 +4,10 @@ import _ from 'lodash'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { OuterShell } from '../components/application/Shell'
-import { COLORS, uthemeOptions } from '../components/application/theming/theme'
+import { COLORS } from '../components/application/theming/theme'
 import { UTextGreen } from '../components/editing/UText/UTextOptions/UTextOptions'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
+import { isCypress } from '../components/utils/hooks/isCypress'
 import { FSProvider } from '../fb/fs'
 import { Fn, num, str } from './types'
 import { uuid, uuidS } from './uuid'
@@ -104,7 +105,7 @@ export const doNotFret = () => cy.on('uncaught:exception', () => false)
 export const fakedId = () => cy.stub(uuid, 'v4').callsFake(uuidS())
 
 export const show = (Component: React.FC, pd = '') => {
-  uthemeOptions.isCypress = true
+  isCypress.isCypress = true
 
   mount(
     <OuterShell>

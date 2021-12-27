@@ -28,9 +28,21 @@ const submit: UBlock = {
   initialData: _fuzzyQuiz,
 }
 
+const qw1e: UBlock = {
+  ...mockUblock,
+  id: 'qw1e',
+}
+
+const qw1i: UBlock = {
+  ...mockUblock,
+  id: 'qw1i',
+}
+
 export const Empty = () => T(empty)
 export const EmptyWithName = () => T(emptyWithName)
 export const Submit = () => T(submit)
+export const SubmitExercise = () => T(qw1e)
+export const Submit1Input = () => T(qw1i)
 
 export default {
   title: 'UForms/UForm',

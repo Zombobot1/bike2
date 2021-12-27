@@ -66,6 +66,7 @@ export function useTex(
     })
 
     setText(replaceAllCodeToHTML(ps.data, mapRef.current))
+    if (ps.data === '/') return // otherwise forces focus update on newly created component with / - breaks autocomplete focus
     refocus()
   }, [ps.data])
 

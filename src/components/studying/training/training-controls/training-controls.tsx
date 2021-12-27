@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { TrainingTimer, useTrainingTimer } from '../training-timer/training-timer'
 import { CardType } from '../types'
 import { bool, Fn, num } from '../../../../utils/types'
-import { useUForm } from '../../../uforms/useUForm'
 import { EstimateCard } from '../training/hooks'
 import { useInteractiveSubmit } from '../hooks'
 import { Button, ButtonGroup, ButtonProps, Stack, styled } from '@mui/material'
@@ -35,15 +34,13 @@ export const TrainingControls = ({
   isAtEnd,
   onTrainingEnd,
 }: TrainingControlsP) => {
-  const { submit } = useUForm()
-
   const [goToNextCardFn, setGoToNextCardFn] = useState<GoToNextCard | null>(null)
 
-  const onSubmit = (estimation: num) => {
-    const finalMark = estimation === 1 ? 'GOOD' : 'BAD'
-    const gtnc = estimate(finalMark, 'no-transition')
-    if (gtnc) setGoToNextCardFn({ go: gtnc })
-  }
+  // const onSubmit = (estimation: num) => {
+  //   const finalMark = estimation === 1 ? 'GOOD' : 'BAD'
+  //   const gtnc = estimate(finalMark, 'no-transition')
+  //   if (gtnc) setGoToNextCardFn({ go: gtnc })
+  // }
 
   const goToNextCard = () => {
     if (!goToNextCardFn) return
@@ -51,11 +48,11 @@ export const TrainingControls = ({
     setGoToNextCardFn(null)
   }
 
-  const { interactiveSubmit, setInteractiveSubmit } = useInteractiveSubmit()
+  const { interactiveSubmit } = useInteractiveSubmit()
 
-  useEffect(() => {
-    setInteractiveSubmit(() => submit(onSubmit))
-  }, [submit])
+  // useEffect(() => {
+  //   setInteractiveSubmit(() => submit(onSubmit))
+  // }, [submit])
 
   const { setOnTimeout } = useTrainingTimer()
   const fail = () => estimate('BAD')

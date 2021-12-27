@@ -1,4 +1,4 @@
-import { all } from '../utils/utils'
+import { all, safe } from '../utils/utils'
 import { FC, useEffect, useRef, useState } from 'react'
 import { useRouter } from '../components/utils/hooks/useRouter'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
@@ -9,6 +9,7 @@ import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
 import {
+  Alert,
   alpha,
   Box,
   ClickAwayListener,
@@ -20,6 +21,7 @@ import {
   MenuList,
   Paper,
   Popper,
+  Snackbar,
   Stack,
   styled,
   SwipeableDrawer,
@@ -41,6 +43,7 @@ import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingS
 import { FSProvider } from '../fb/fs'
 import { useLocalStorage } from '../components/utils/hooks/useLocalStorage'
 import { Provider } from 'jotai'
+import useUpdateEffect from '../components/utils/hooks/useUpdateEffect'
 
 export const _SORYBOOK = '/_stories'
 const SORY: FC = () => null
@@ -253,6 +256,7 @@ function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
         defaultExpandIcon={<Right />}
         expanded={expanded}
         selected={selected}
+        // disableSelection={true} anomaly: doesn't work. replace whole tree by your own
         onNodeToggle={(_, nodeIds) => setExpanded(nodeIds)}
       >
         {trees.map((t) => (
@@ -396,27 +400,91 @@ function SoryBook_({ trees, sories }: SoryBook_) {
   const [counter, setCounter] = useState(0)
   const rerenderStory = () => setCounter((old) => old + 1)
   const [isOutlined, setIsOutlined] = useLocalStorage('sorybook-outlined', false)
+  const [lastUsedStory, setLastUsedStory] = useLocalStorage('sorybook-last-used-story', '')
   const toggleOutline = () => setIsOutlined((o) => !o)
   const { location, history } = useRouter()
   const activeId = location.pathname.replace(_SORYBOOK + '/', '')
+  const ids = treesToChildrenIds(trees)
+  const [openSnack, setOpenSnack] = useState(false)
+
+  useUpdateEffect(() => setOpenSnack(true), [counter])
+
+  useEffect(() => {
+    if (activeId === '/') return
+    setLastUsedStory(activeId)
+  }, [activeId])
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((!e.ctrlKey && !e.metaKey) || !e.altKey) return
+      let activated = true
+      if (['ArrowDown', 'ArrowRight'].includes(e.key)) history.push(_SORYBOOK + '/' + getNextStory(activeId, ids))
+      else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) history.push(_SORYBOOK + '/' + getPrevStory(activeId, ids))
+      else activated = false
+
+      if (activated) e.preventDefault()
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [JSON.stringify(ids), activeId])
 
   useMount(() => {
     if (activeId !== '/') return
+    if (lastUsedStory) return history.push(_SORYBOOK + '/' + lastUsedStory)
     const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
-    history.push(_SORYBOOK + '/' + firstStoryId)
+    if (firstStoryId) history.push(_SORYBOOK + '/' + firstStoryId)
   })
 
   return (
     <Stack sx={{ height: '100%' }} direction="row">
       <Pane key={counter} Sory={sories.get(activeId) || SORY} outline={isOutlined} soryId={activeId} />
       <NavBar trees={trees} toggleOutline={toggleOutline} rerenderStory={rerenderStory} />
+      <Snackbar open={openSnack} autoHideDuration={1000} onClose={() => setOpenSnack(false)}>
+        <Alert severity="info" sx={{ width: '100%' }}>
+          Rerendered!
+        </Alert>
+      </Snackbar>
     </Stack>
   )
 }
 
 interface SoryBook {
   sories: JSObjects
+  sections: strs
 }
-export function SoryBook({ sories }: SoryBook) {
-  return <SoryBook_ {...storify(sories)} />
+export function SoryBook({ sories, sections }: SoryBook) {
+  return <SoryBook_ {...storify(sories, sections)} />
+}
+
+function bfs(node: SoryTree): strs {
+  const queue = [...(node.children ? node.children : [])]
+  const r: strs = [node.id]
+
+  while (queue.length) {
+    const node = safe(queue.shift())
+    if (node?.children) queue.push(...node.children)
+    r.push(node.id)
+  }
+
+  return r
+}
+
+function treesToChildrenIds(nodes: SoryTrees): strs {
+  return nodes
+    .map(bfs)
+    .flat()
+    .filter((id) => id.match(/--/gm)?.length === 2)
+}
+
+function getNextStory(id: str, ids: strs): str {
+  const i = ids.indexOf(id)
+  if (i === ids.length || i === -1) return id
+  return ids[i + 1]
+}
+
+function getPrevStory(id: str, ids: strs): str {
+  const i = ids.indexOf(id)
+  if (i < 1) return id
+  return ids[i - 1]
 }

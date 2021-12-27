@@ -21,13 +21,16 @@
     "ublock",
     "ublocks",
     "ucast",
+    "uclamp",
     "ucomponent",
     "ucomponents",
     "uelements",
     "uform",
     "umenu",
+    "unhighlight",
     "Unmount",
     "upage",
+    "ushuffle",
     "utext"
   ],
   "jestrunner.jestCommand": "npm run test --"

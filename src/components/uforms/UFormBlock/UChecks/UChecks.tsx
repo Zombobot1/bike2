@@ -1,56 +1,81 @@
-import { UFormFieldData } from '../../types'
-import { fn } from '../../../../utils/types'
+import { ANSWER_REQUIRED, UChecksQuestion as UChecksQuestion, UFormFieldData } from '../../types'
+import { bool, strs } from '../../../../utils/types'
 import { InteractiveQuestion } from '../interactive-question'
-import { RadioGroup } from '@mui/material'
+import { Box } from '@mui/material'
 import { Feedback } from '../Feedback'
-import { UChecksOptions, useUChecksOptions } from './UChecksOptions'
+import { UChecksOptions } from './UChecksOptions'
+import { useReactiveObject } from '../../../utils/hooks/hooks'
+import { ucast } from '../../../../utils/utils'
+import { useState, useEffect } from 'react'
+import useUpdateEffect from '../../../utils/hooks/useUpdateEffect'
+import { getUChecksScore } from '../scoring'
+import { UChecksEditor } from './UChecksEditor'
+import { usePrevious } from '../../../utils/hooks/usePrevious'
 
 export interface UChecks extends UFormFieldData {
-  selectMultiple?: boolean
-  submitOnSelect?: boolean
-  shuffleOptions?: boolean
+  selectMultiple?: bool
+  _answer?: strs // for storybook only
 }
 
-export const UChecks = ({
-  answer,
-  onAnswerChange,
-  onAnswer = fn,
-  validationError,
-  question,
+export function UChecks(ps: UChecks) {
+  if (ps.isEditing) return <UChecksEditor {...ps} />
+  return <UChecks_ {...ps} />
+}
+
+const UChecks_ = ({
+  id,
+  data,
+  submissionAttempt,
+  onSubmissionAttempt,
+  resolveError,
   wasSubmitted,
-  selectMultiple = false,
-  submitOnSelect = true,
-  shuffleOptions = false,
+  submitOnAnswer,
+  selectMultiple,
+  _answer = [],
 }: UChecks) => {
-  const { onOptionClick, options, overallValidity } = useUChecksOptions(
-    question,
-    answer,
-    onAnswerChange,
-    onAnswer,
-    shuffleOptions,
-    selectMultiple,
-    submitOnSelect,
-  )
+  const [question] = useReactiveObject(ucast(data, new UChecksQuestion()))
+  const [answer, setAnswer] = useState<strs>(_answer)
+  const [validationError, setValidationError] = useState('')
+
+  useUpdateEffect(() => {
+    if (!submissionAttempt) return
+    if (!answer.length) {
+      setValidationError(ANSWER_REQUIRED)
+      onSubmissionAttempt(id, -1, ANSWER_REQUIRED)
+    } else onSubmissionAttempt(id, getUChecksScore(question, answer))
+  }, [submissionAttempt])
+
+  useUpdateEffect(() => {
+    if (submitOnAnswer && !selectMultiple && answer.length) onSubmissionAttempt(id, getUChecksScore(question, answer))
+    else if (answer.length && validationError) {
+      resolveError(id)
+      setValidationError('')
+    }
+  }, [answer])
+
+  const prevWasSubmitted = usePrevious(wasSubmitted)
+  useEffect(() => {
+    if (prevWasSubmitted && !wasSubmitted) setAnswer([])
+  }, [prevWasSubmitted])
+
   return (
-    <div>
+    <Box>
       <InteractiveQuestion question={question.question} />
-      <RadioGroup>
-        <UChecksOptions
-          answer={answer}
-          correctAnswer={question.correctAnswer}
-          onOptionClick={onOptionClick}
-          options={options}
-          selectMultiple={selectMultiple}
-          validationError={validationError}
-          wasSubmitted={wasSubmitted}
-        />
-      </RadioGroup>
+      <UChecksOptions
+        answer={answer}
+        correctAnswer={question.correctAnswer}
+        setAnswer={setAnswer}
+        options={question.options}
+        selectMultiple={selectMultiple}
+        validationError={validationError}
+        wasSubmitted={wasSubmitted}
+      />
       <Feedback
-        validity={overallValidity}
+        isCorrect={getUChecksScore(question, answer) === 1}
         explanation={question.explanation}
         validationError={validationError}
         wasSubmitted={wasSubmitted}
       />
-    </div>
+    </Box>
   )
 }
