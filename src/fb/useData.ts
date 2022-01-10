@@ -5,7 +5,7 @@ import { str } from '../utils/types'
 import { useFS } from './fs'
 import { _MOCK_FB } from './utils'
 
-function useData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
+function useFSData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
   const { setDoc, getDoc } = useFS()
   const data = getDoc(col, id, initialData)
   const setData_ = useCallback(
@@ -20,7 +20,7 @@ function useData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) =>
 }
 
 export function useData<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
-  if (process.env.NODE_ENV === 'development' && _MOCK_FB) return useData_(col, id, initialData)
+  if (process.env.NODE_ENV === 'development' && _MOCK_FB) return useFSData_(col, id, initialData)
 
   const setData_ = useCallback((data: Partial<T>) => setData(col, id, data), [])
   const data = useFirestoreDocData(doc(useFirestore(), col, id), { initialData }).data
@@ -39,7 +39,7 @@ export function useFirestoreData() {
   return {
     setData: setDoc,
     addData: setDoc,
-    getData: <T>(col: str, id: str) => Promise.resolve(getDoc(col, id)) as Promise<T>,
+    getData: <T>(col: str, id: str) => Promise.resolve(getDoc(col, id)) as Promise<T>, // technically in useC will be an old version...
   }
 }
 

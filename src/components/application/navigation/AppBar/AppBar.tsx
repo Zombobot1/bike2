@@ -28,15 +28,43 @@ import { useRouter } from '../../../utils/hooks/useRouter'
 import { safeSplit } from '../../../../utils/algorithms'
 import { all, cut } from '../../../../utils/utils'
 import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
-import { useDeleteUPage } from '../../../editing/UPage/useDeleteUPage'
+import { useDeleteUPage } from '../../../editing/UPage/hooks/useDeleteUPage'
 import { UMenu, UOption, useMenu } from '../../../utils/UMenu/UMenu'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
+import { useUPageInfo } from '../../../editing/UPage/hooks/useUPageInfo'
 
 export interface AppBar {
   workspace: WS
   openNavBar: Fn
   openTOC?: Fn
-  toggleFullWidth: Fn
+}
+
+export function AppBar({ workspace, openNavBar }: AppBar) {
+  const isSM = useIsSM()
+  const [showAppBar] = useAtom(showAppBarA)
+  const { location, history } = useRouter()
+  const showUPageOptions = !location.pathname.includes('/study')
+  const { triggerOpenTOC, triggerTurnOffTOC, triggerFullWidth } = useUPageInfo()
+  return (
+    <AppBar_ direction="row" alignItems="center" sx={showAppBar ? { opacity: '1 !important' } : {}}>
+      {!isSM && (
+        <IconButton color="primary" onClick={openNavBar}>
+          <MenuRoundedIcon />
+        </IconButton>
+      )}
+      <Crumbs workspace={workspace} />
+      {showUPageOptions && (
+        <UPageOptions
+          history={history}
+          path={location.pathname}
+          workspace={workspace}
+          openTOC={triggerOpenTOC}
+          toggleFullWidth={triggerFullWidth}
+          toggleTOC={triggerTurnOffTOC}
+        />
+      )}
+    </AppBar_>
+  )
 }
 
 const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
@@ -56,32 +84,6 @@ const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
     },
   },
 }))
-
-export function AppBar({ workspace, openNavBar, openTOC, toggleFullWidth }: AppBar) {
-  const isSM = useIsSM()
-  const [showAppBar] = useAtom(showAppBarA)
-  const { location, history } = useRouter()
-  const showUPageOptions = !location.pathname.includes('/study')
-  return (
-    <AppBar_ direction="row" alignItems="center" sx={showAppBar ? { opacity: '1 !important' } : {}}>
-      {!isSM && (
-        <IconButton color="primary" onClick={openNavBar}>
-          <MenuRoundedIcon />
-        </IconButton>
-      )}
-      <Crumbs workspace={workspace} />
-      {showUPageOptions && (
-        <UPageOptions
-          history={history}
-          path={location.pathname}
-          workspace={workspace}
-          openTOC={openTOC}
-          toggleFullWidth={toggleFullWidth}
-        />
-      )}
-    </AppBar_>
-  )
-}
 
 const showAppBarA = atom(false)
 export function useShowAppBar() {
@@ -217,10 +219,11 @@ interface UPageOptions_ {
   path: str
   history: { push: SetStr }
   toggleFullWidth: Fn
+  toggleTOC: Fn
   openTOC?: Fn
 }
 
-function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth }: UPageOptions_) {
+function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth, toggleTOC }: UPageOptions_) {
   const id = safeSplit(path, '/')[0]
   const deleteUPage = useDeleteUPage(workspace)
   const delete_ = () => history.push(deleteUPage(id))
@@ -254,6 +257,7 @@ function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth }: UP
         {!isSM && openTOC && (
           <UOption icon={FormatAlignRightRoundedIcon} text="Show Table Of Contents" onClick={openTOC} />
         )}
+        <UOption icon={FormatAlignRightRoundedIcon} text="Toggle Table Of Contents on / off" onClick={toggleTOC} />
       </UMenu>
     </Stack>
   )

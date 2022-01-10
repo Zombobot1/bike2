@@ -1,5 +1,6 @@
 import { mount } from '@cypress/react'
 import { Box, hexToRgb } from '@mui/material'
+import { Provider } from 'jotai'
 import _ from 'lodash'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -76,7 +77,7 @@ export const tick = (cy: str, eq = 0): { type: TypeFn } => {
 }
 
 const _saw = (text: str, strict = false) =>
-  text.endsWith('-cy') ? got(text.slice(0, -3)).should('exist') : cy.contains(strict ? RegExp(`^${text}$`) : text) // RegExp(`^${text}$`) doesn't detect text correctly
+  text.endsWith('-cy') ? got(text.slice(0, -3)).should('be.visible') : cy.contains(strict ? RegExp(`^${text}$`) : text) // RegExp(`^${text}$`) doesn't detect text correctly
 
 type Color = 'c' | 'bg' | undefined
 type Colored = Array<str | (() => CYChain) | Color>
@@ -110,11 +111,14 @@ export const show = (Component: React.FC, pd = '') => {
   mount(
     <OuterShell>
       <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
-        <FSProvider>
-          <Box sx={{ paddingLeft: pd || 0 }}>
-            <Component />
-          </Box>
-        </FSProvider>
+        {/* Without provider atoms don't clean up */}
+        <Provider>
+          <FSProvider>
+            <Box sx={{ paddingLeft: pd || 0 }}>
+              <Component />
+            </Box>
+          </FSProvider>
+        </Provider>
       </ErrorBoundary>
     </OuterShell>,
   )

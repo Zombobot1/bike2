@@ -1,32 +1,35 @@
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../../../../cypress/support/index.d.ts" />
+/// <reference path="../../../../cypress/support/index.d.ts" />
 import * as UBlocksSet from './UBlockSet.stories'
-import { got, saw, type, show, click, lost } from '../../../../utils/testUtils'
-import { num } from '../../../../utils/types'
-import { _fluffyBlob } from '../../../../content/content'
+import { got, saw, type, show, click, lost } from '../../../utils/testUtils'
+import { num } from '../../../utils/types'
+import { _fluffyBlob } from '../../../content/content'
 
 const utext = (n?: num) => got('utext', n)
+const factory = () => got('ublock-f')
+const title = () => got('upage-title')
 const ublock = (n?: num) => got('ublock', n)
 
 describe('UBlockSet', () => {
-  it('focus moves from title to factory & factory preserves focus when adding empty blocks', () => {
+  it('focuses if title is empty | focus moves from title to factory & factory preserves focus when adding empty blocks', () => {
     show(UBlocksSet.BlocksCreation)
-    utext().type('Title{enter}')
+    type('Title{enter}')
     type('{enter}')
-    utext(2).should('have.focus')
+    factory().should('have.focus')
     saw('Title')
   })
 
-  it('Focus moves from title with content second time', () => {
+  it('focus moves from title with click', () => {
     show(UBlocksSet.BlocksCreation)
-    utext().type('{enter}')
-    utext().type('{enter}')
-    utext(1).should('have.focus')
+    title().should('have.focus')
+    type('{enter}')
+    title().click().type('{enter}')
+    factory().should('have.focus')
   })
 
   it('Focus moves through empty block', () => {
     show(UBlocksSet.BlocksDeletion)
-    utext(2).type('{uparrow}')
+    utext(1).type('{uparrow}')
     type('1')
     saw('cat1')
 
@@ -36,11 +39,11 @@ describe('UBlockSet', () => {
     saw('2d')
   })
 
-  it('Factory loses focus on another block click', () => {
+  it('factory loses focus on another block click', () => {
     show(UBlocksSet.BlocksCreation)
-    utext().type('{enter}')
     type('{enter}')
-    utext(1).click().should('be.focused')
+    type('{enter}')
+    utext().click().should('be.focused')
   })
 
   it('inserts block by add button', () => {
@@ -49,35 +52,35 @@ describe('UBlockSet', () => {
     saw('1')
   })
 
-  it('Inserts block under active image', () => {
+  it('inserts block under active image', () => {
     show(UBlocksSet.BlocksDeletion)
     ublock(3).click().type('{enter}')
     type('1')
     saw('1')
   })
 
-  it('Factory loses focus when adding not empty blocks | block adds new block', () => {
+  it('factory loses focus when adding not empty blocks | block adds new block', () => {
     show(UBlocksSet.BlocksCreation)
-    utext(1).type('1')
-    utext(1).should('have.focus').type('p').contains('1p')
+    factory().type('1')
+    utext().should('have.focus').type('p').contains('1p')
 
     type('{enter}')
-    utext(2).should('have.focus')
+    utext(1).should('have.focus')
   })
 
-  it('Factory loses focus on backspace | focus moves on block deletion', () => {
+  it('factory loses focus on backspace | focus moves on block deletion', () => {
     show(UBlocksSet.BlocksDeletion)
 
-    utext(-1).type('{Backspace}')
+    factory().type('{Backspace}')
 
-    utext(3).should('have.focus').type('{Backspace}{Backspace}')
-    utext(2).should('have.focus').type('{Backspace}')
+    utext(2).should('have.focus').type('{Backspace}{Backspace}')
+    utext(1).should('have.focus').type('{Backspace}')
   })
 
   it('Separate block on enter', () => {
     show(UBlocksSet.BlocksDeletion)
 
-    utext(1).type('{leftarrow}{enter}')
+    utext().type('{leftarrow}{enter}')
     type('1')
     saw('1t')
   })
@@ -85,7 +88,7 @@ describe('UBlockSet', () => {
   it('Separate block on paste', () => {
     show(UBlocksSet.BlocksDeletion)
 
-    utext(1).type('{leftarrow}').paste({ pasteType: 'text/plain', pastePayload: 'r \n\n1\n\n2\n\nthird block' })
+    utext().type('{leftarrow}').paste({ pasteType: 'text/plain', pastePayload: 'r \n\n1\n\n2\n\nthird block' })
     type('3')
     saw('car')
     saw('third blockt3')
@@ -93,16 +96,19 @@ describe('UBlockSet', () => {
 
   it('handles block separation with inline latex', () => {
     show(UBlocksSet.WihLatex)
-    utext(1).focus()
+    utext().focus()
     type(['{rightarrow}'.repeat(8)], ['{enter}'], ['!'])
     saw('!nd')
   })
 
-  it('handles block separation between 2 latex', () => {
+  it('handles block separation between 2 latex | handles merge back', () => {
     show(UBlocksSet.WihLatex)
-    utext(3).focus()
-    type(['{rightarrow}'.repeat(8)], ['{enter}'], ['!'])
-    saw('!mall')
+    utext(1).focus()
+    type(['{rightarrow}'.repeat(8)], ['{enter}'], ['1'])
+    saw('1mall')
+
+    type(['{leftarrow}{backspace}'], ['2'])
+    saw('21mall')
   })
 
   it('preserves cursor position when tex is changed', () => {
@@ -120,19 +126,19 @@ describe('UBlockSet', () => {
     const u2 = ['{uparrow}'.repeat(2)]
     const d2 = ['{downarrow}'.repeat(2)]
 
-    type('utext', '{movetostart}' + '{rightarrow}'.repeat(2))
-    type(d, d2, d, d2, d2, d, d, d, ['1'])
-    saw('high1ly')
+    type('upage-title', '{downarrow}')
+    type(['{leftarrow}'.repeat(4)], d, d, d2, d2, d, d, d, ['1'])
+    saw('are1')
 
     type(d)
-    got('utext', 8).should('have.focus')
+    factory().should('have.focus')
 
     type(u, ['{movetostart}' + '{rightarrow}'.repeat(8)])
-    type(u, u, u, u, u2, u2, u, u, ['2'])
+    type(u, u, u, u2, u2, u, u2, ['2'])
     saw('Ki2ttens')
 
     type(u)
-    got('utext').should('have.focus')
+    title().should('have.focus')
   })
 
   it('deletes selected blocks', () => {
@@ -145,22 +151,22 @@ describe('UBlockSet', () => {
 
   it('separates and merges text blocks', () => {
     show(UBlocksSet.BlocksDeletion)
-    utext(1).type('{leftarrow}{enter}')
+    utext().type('{leftarrow}{enter}')
     saw(['t', 'strict'])
     type(['{backspace}'], ['{enter}'], ['{backspace}'])
-    saw('cat')
+    saw(['cat', 'strict'])
   })
 
   it('focuses autocomplete when / is typed in factory', () => {
     show(UBlocksSet.BlocksCreation)
-    utext(1).type('/')
+    factory().type('/')
     got('long-menu-search').should('have.focus')
   })
 
   // it was before inline latex separation and caused it to fail -> keep it on the bottom of spec
   it('pastes image', () => {
     show(UBlocksSet.OneEmptyBlock)
-    cy.then(_fluffyBlob).then((b) => utext(1).paste({ pasteType: 'image/png', pastePayload: b }))
+    cy.then(_fluffyBlob).then((b) => utext().paste({ pasteType: 'image/png', pastePayload: b }))
     saw('img-cy', 'selection-cy')
   })
 

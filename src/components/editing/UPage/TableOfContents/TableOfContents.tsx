@@ -1,24 +1,32 @@
 import { useTheme, Box, Paper, Stack, styled, Typography, Drawer } from '@mui/material'
 import { BoolState, num } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
+import { useHover } from '../../../utils/hooks/useHover'
+import { getBlocksForTOC } from '../blockIdAndInfo'
 import { _treefy } from './blocksInfoToTree'
-import { TOCItems, TOCItems_, TOCItem_ } from './types'
+import { TOCItems_, TOCItem_ } from './types'
 
 export interface TableOfContents {
-  data: TOCItems
   isOpenS: BoolState
 }
 
 export function TableOfContents(ps: TableOfContents) {
   const [open, setOpen] = ps.isOpenS
   const theme = useTheme()
-  const data = _treefy(ps.data)
+  const data = _treefy(getBlocksForTOC())
   const isSM = useIsSM()
+  const { ref, hovered } = useHover()
+
+  const sx = hovered
+    ? {
+        '.MuiPaper-root': { transform: 'translateX(-17rem)' },
+      }
+    : { '.MuiPaper-root': {} }
 
   return (
     <>
       {isSM && (
-        <TOCWrapper justifyContent="center">
+        <TOCWrapper ref={ref} justifyContent="center" sx={sx}>
           <Paper sx={{ position: 'relative' }} elevation={theme.palette.mode === 'dark' ? 1 : 6}>
             <Section color="text.secondary">Table Of Contents</Section>
             <TOCTree data={data} />
@@ -59,10 +67,6 @@ const TOCWrapper = styled(Stack, { label: 'TOC' })({
   position: 'fixed',
   right: 0,
   top: 0,
-
-  ':hover .MuiPaper-root': {
-    transform: 'translateX(-17rem)',
-  },
 
   '.MuiPaper-root': {
     height: '80vh',

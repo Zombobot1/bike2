@@ -1,9 +1,8 @@
-import { styled } from '@mui/material'
+import { styled, useTheme } from '@mui/material'
 import { useRef, KeyboardEvent, useEffect } from 'react'
-import ContentEditable from 'react-contenteditable'
 import { bool, fn, Fn, num, SetStr, str } from '../../../utils/types'
-import { _apm } from '../../application/theming/theme'
-import { useMount, useReactive } from '../hooks/hooks'
+import { Editable, getUTextStyles } from '../../editing/UText/utextStyles'
+import { useReactive } from '../hooks/hooks'
 import { useRefCallback } from '../hooks/useRefCallback'
 
 export interface EditableText {
@@ -12,7 +11,6 @@ export interface EditableText {
   focusIfEmpty?: bool
   tag?: 'h3' | 'h4' | 'pre' | 'p'
   placeholder?: str
-  pd?: str
   onBlur?: Fn
   onFocus?: Fn
   focus?: num
@@ -23,7 +21,6 @@ export function EditableText({
   setText: setTextOnBlur,
   tag = 'pre',
   placeholder = '',
-  pd = '0',
   focusIfEmpty,
   focus = 0,
   onBlur: onBlurFn = fn,
@@ -31,7 +28,9 @@ export function EditableText({
 }: EditableText) {
   const [text, setText] = useReactive(initialText)
   const ref = useRef<HTMLDivElement>(null)
+
   const onChange = useRefCallback((e) => setText(e.target.value))
+
   const onBlur = useRefCallback(() => {
     if (text !== initialText) setTextOnBlur(text)
     onBlurFn()
@@ -53,12 +52,22 @@ export function EditableText({
     if (focus) ref.current?.focus()
   }, [focus])
 
-  useMount(() => {
+  useEffect(() => {
     if (!text && focusIfEmpty) ref.current?.focus()
-  })
+  }, [text])
+
+  const theme = useTheme()
+
+  const sx = {
+    ':empty:before': {
+      content: 'attr(placeholder)',
+      color: theme.palette.text.secondary,
+      cursor: 'text',
+    },
+  }
 
   return (
-    <Styles sx={{ paddingBottom: pd }}>
+    <Styles sx={sx}>
       <Editable
         innerRef={ref}
         html={text}
@@ -75,26 +84,6 @@ export function EditableText({
   )
 }
 
-const Styles = styled('div', { label: 'EditableText ' })(({ theme }) => ({
-  h4: { fontSize: '0.875rem' },
-  pre: { fontSize: '1rem' },
-
-  [`${theme.breakpoints.up('sm')}`]: {
-    h4: { fontSize: '1.75rem' },
-    pre: { fontSize: '1.5rem' },
-  },
-}))
-
-const Editable = styled(ContentEditable)(({ theme }) => ({
-  outline: 'none',
-  margin: 0,
-  fontFamily: theme.typography.fontFamily,
-  overflowWrap: 'break-word',
-  whiteSpace: 'pre-line',
-
-  ':empty:before': {
-    content: 'attr(placeholder)',
-    color: _apm(theme, 'secondary'),
-    cursor: 'text',
-  },
+export const Styles = styled('div', { label: 'EditableText ' })(({ theme }) => ({
+  ...getUTextStyles(theme.breakpoints.up('sm')),
 }))

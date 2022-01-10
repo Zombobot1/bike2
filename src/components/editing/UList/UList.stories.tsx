@@ -1,13 +1,13 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
-import { _kittensForListsPage } from '../../../../content/content'
-import { UBlocksSet } from '../../UPage/UBlockSet/UBlockSet'
+import { _kittensForListsPage } from '../../../content/content'
+import { SetForStories } from '../UBlockSet/SetForStories'
 
 function T() {
   const idsS = useState(_kittensForListsPage.ids)
   return (
     <Box sx={{ width: 700 }}>
-      <UBlocksSet id="l" ids={idsS[0]} setIds={idsS[1]} />
+      <SetForStories id="l" ids={idsS[0]} />
     </Box>
   )
 }

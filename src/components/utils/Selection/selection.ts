@@ -48,6 +48,7 @@ export function selectionCoordinates(relativeTo: HTMLElement): { x: num; b: num 
 
   if (!relativeTo.innerHTML) return { x: 0, b: fontSize + 16 } // + 16 for tex editor
   if (!selectedText()) {
+    if (!range.getClientRects().length) return { x: 0, b: fontSize + 16 } // occurs when / is typed in factory
     const { x: rX, bottom: b } = range.getClientRects()[0]
     return { x: rX - x, b: b - y + fontSize }
   }

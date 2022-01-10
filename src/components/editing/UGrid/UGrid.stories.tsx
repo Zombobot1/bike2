@@ -1,30 +1,23 @@
-import { Box, ClickAwayListener } from '@mui/material'
+import { Box } from '@mui/material'
 import { useState } from 'react'
 import { _idsForBuildColumns } from '../../../content/content'
 import { mockUblock, UBlock } from '../UBlock/UBlock'
-import { useSelection } from '../UBlock/useSelection'
-import { UBlocksSet } from '../UPage/UBlockSet/UBlockSet'
+import { SetForStories } from '../UBlockSet/SetForStories'
 
 function T() {
-  const { dispatch } = useSelection()
   return (
-    <ClickAwayListener onClickAway={() => dispatch({ a: 'clear' })}>
-      <Box sx={{ width: '70%' }}>
-        <UBlock {...mockUblock} id="cat-lists-columns" />
-      </Box>
-    </ClickAwayListener>
+    <Box sx={{ width: '70%' }}>
+      <UBlock {...mockUblock} id="cat-lists-columns" />
+    </Box>
   )
 }
 
 function T2() {
-  const { dispatch } = useSelection()
-  const [ids, setIds] = useState(_idsForBuildColumns)
+  const [ids] = useState(_idsForBuildColumns)
   return (
-    <ClickAwayListener onClickAway={() => dispatch({ a: 'clear' })}>
-      <Box sx={{ width: '70%' }}>
-        <UBlocksSet id="" ids={ids} setIds={setIds} />
-      </Box>
-    </ClickAwayListener>
+    <Box sx={{ width: '70%' }}>
+      <SetForStories id="g" ids={ids} />
+    </Box>
   )
 }
 

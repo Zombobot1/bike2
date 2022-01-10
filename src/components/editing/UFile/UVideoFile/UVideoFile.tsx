@@ -5,13 +5,13 @@ import AddLinkRoundedIcon from '@mui/icons-material/AddLinkRounded'
 import { str } from '../../../../utils/types'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 
-import { UImageFileDTO } from '../UImageFile/UImageFile'
+import { UMediaFileDTO } from '../UImageFile/UImageFile'
 import { ucast as turn } from '../../../../utils/utils'
-import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 import { UBlockImplementation } from '../../types'
+import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
-export function UVideoFile({ data, setData, readonly, maxWidth }: UBlockImplementation) {
-  const [videoData] = useReactiveObject(turn(data, new UImageFileDTO()))
+export function UVideoFile({ data, setData, readonly }: UBlockImplementation) {
+  const [videoData] = useReactiveObject(turn(data, new UMediaFileDTO()))
   const [link, setLink] = useState('')
   const [hasError, setHasError] = useState(false)
   const onClick = () => {
@@ -43,8 +43,8 @@ export function UVideoFile({ data, setData, readonly, maxWidth }: UBlockImplemen
     <ResizableWidth
       readonly={readonly}
       width={videoData.width}
-      maxWidth={maxWidth}
       updateWidth={(w) => setData(JSON.stringify({ ...videoData, width: w }))}
+      maxWidth={900}
     >
       <Video
         src={`https://www.youtube.com/embed/${videoData.src}`}

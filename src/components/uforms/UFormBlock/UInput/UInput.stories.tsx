@@ -1,8 +1,9 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useState } from 'react'
-import { fn } from '../../../../utils/types'
+import { bool, fn } from '../../../../utils/types'
+import { deleteUBlockInfo, setUBlockInfo } from '../../../editing/UPage/blockIdAndInfo'
 import { useMount } from '../../../utils/hooks/hooks'
-import { UInputQuestion } from '../../types'
+import { UInputDTO } from '../../types'
 import { useUForm } from '../../useUForm'
 import { UInput } from './UInput'
 
@@ -19,11 +20,17 @@ const T = (ps: UInput) => {
     </div>
   )
 }
-
-const T2 = (ps: UInput) => {
-  const formPs = useUForm({ isEditing: true, ids: ['1'] })
+type T2 = UInput & { isLong?: bool }
+const T2 = (ps: T2) => {
+  const formPs = useUForm({ isEditing: true, id: 'f' })
   const { d, score } = formPs
   const [data, setData] = useState(ps.data)
+
+  useMount(() => {
+    setUBlockInfo(ps.id, { setId: 'f', type: ps.isLong ? 'long-answer' : 'short-answer' })
+    return () => deleteUBlockInfo(ps.id)
+  })
+
   return (
     <Box sx={{ width: 500 }}>
       <Stack spacing={2}>
@@ -48,7 +55,7 @@ const T2 = (ps: UInput) => {
   )
 }
 
-const q1: UInputQuestion = { question: 'Type abc', correctAnswer: 'abc', explanation: 'It is easy' }
+const q1: UInputDTO = { question: 'Type abc', correctAnswer: 'abc', explanation: 'It is easy' }
 
 const defaultI: UInput = {
   id: 'defaultI',
@@ -88,14 +95,15 @@ const textSubmitted: UInput = {
   wasSubmitted: true,
 }
 
-const shortEditing: UInput = {
+const shortEditing: T2 = {
   ...defaultI,
   data: '',
 }
 
-const textEditing: UInput = {
+const textEditing: T2 = {
   ...text,
   data: '',
+  isLong: true,
 }
 
 export const ShortAnswer = () => T(defaultI)

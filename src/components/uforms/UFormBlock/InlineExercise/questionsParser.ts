@@ -4,7 +4,7 @@ import { num, str, strs } from '../../../../utils/types'
 import { unhighlight } from '../../../../utils/unhighlight'
 import { safe } from '../../../../utils/utils'
 import { UBlockType } from '../../../editing/types'
-import { ComplexQuestion, SubQuestion } from '../../types'
+import { InlineExerciseDTO, SubQuestion } from '../../types'
 
 export function highlight(html: str): str {
   const raw = unhighlight(html)
@@ -27,7 +27,7 @@ function getMatchType(match: str): str {
   return 'short-answer'
 }
 
-export function extractQuestions(rawHtml: str): ComplexQuestion {
+export function extractQuestions(rawHtml: str): InlineExerciseDTO {
   const html = rawHtml.trim()
   const questions = html.match(formBlockRe)
   if (!questions) return []
@@ -36,7 +36,7 @@ export function extractQuestions(rawHtml: str): ComplexQuestion {
   const startsWithQuestion = !!html.match(startsWithFormBlockRe)
   const endsWithQuestion = !!html.match(endsWithFormBlockRe)
 
-  const r: ComplexQuestion = []
+  const r: InlineExerciseDTO = []
   let questionIndex = 0
   for (let i = 0; i < questions.length; i++) {
     const parsedBlock = parseFormBlockStr(questions[i], questionIndex++)
@@ -89,7 +89,7 @@ function parseFormBlockStr(formBlockStr: str, questionIndex: num): SubQuestion {
   return { correctAnswer: correctAnswer, explanation, options, type, i: questionIndex }
 }
 
-export function inlineQuestions(questions: ComplexQuestion): str {
+export function inlineQuestions(questions: InlineExerciseDTO): str {
   if (!questions.length) return ''
   const serializedQuestions = questions.map((q, i): str => {
     if (_.isString(q)) return q

@@ -1,8 +1,7 @@
 import { Box } from '@mui/system'
 import { UBlock, mockUblock } from '../../UBlock/UBlock'
-import { UBlocksSet } from '../../UPage/UBlockSet/UBlockSet'
 import { _idsForCodeFocus } from '../../../../content/content'
-import { fn } from '../../../../utils/types'
+import { SetForStories } from '../../UBlockSet/SetForStories'
 
 const T = (props: UBlock) => () => {
   return (
@@ -15,7 +14,7 @@ const T = (props: UBlock) => () => {
 const T2 = () => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlocksSet id="c" setIds={fn} ids={_idsForCodeFocus} />
+      <SetForStories id="c" ids={_idsForCodeFocus} />
     </Box>
   )
 }

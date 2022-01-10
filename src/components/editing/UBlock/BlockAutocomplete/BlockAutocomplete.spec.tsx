@@ -7,7 +7,7 @@ const utext = (n?: num) => got('utext', n)
 describe('BlockAutocomplete', () => {
   it('opens | saves focus on exit | filters suggestions and creates new block', () => {
     show(BlockAutocomplete.AutocompleteCompletes)
-    utext(1).type('{leftarrow}/')
+    utext().type('{leftarrow}/')
     saw('block-autocomplete-cy')
 
     type(['{esc}'], ['/'])
@@ -20,15 +20,15 @@ describe('BlockAutocomplete', () => {
 
   it('turns block if it is empty', () => {
     show(BlockAutocomplete.AutocompleteCompletes)
-    utext(2).type('/')
+    utext(1).type('/')
     click('heading-1')
-    utext(5).should('not.exist') // 3 + 2 (title, factory)
+    utext(3).should('not.exist')
     cy.get('h2').should('exist')
   })
 
   it('creates inline tex', () => {
     show(BlockAutocomplete.AutocompleteCompletes)
-    utext(1).type('{leftarrow}/')
+    utext().type('{leftarrow}/')
     type(['eq{downarrow}{downarrow}{enter}'], ['+{enter}'])
     saw('+')
     lost('cat')

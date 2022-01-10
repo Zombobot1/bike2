@@ -1,16 +1,13 @@
-import { Box, styled, Tooltip, useTheme } from '@mui/material'
-import { useCallback, useRef } from 'react'
+import { styled, Tooltip, useTheme } from '@mui/material'
+import { memo, useEffect, useRef, useState } from 'react'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
-import { useIsSM, useReactiveObject } from '../../utils/hooks/hooks'
-import { bool, fn, Fn, JSObject, num, SetStr, str, strs } from '../../../utils/types'
+import { useC, useIsSM, useMount } from '../../utils/hooks/hooks'
+import { bool, Children, fn, Fn, JSObject, num, SetStr, str, strs } from '../../../utils/types'
 import {
-  AddNewBlockUText,
-  BlockInfo,
   FocusType,
-  InitialData,
   isSelectableByClickBlock,
   isNotFullWidthBlock,
   isUFileBlock,
@@ -20,17 +17,22 @@ import {
   UBlockType,
   DragType,
   UBlockImplementation,
+  UBlockDTO,
+  UTextFocus,
+  ActiveBlock,
+  isUListBlock,
+  isFlat,
+  SplitList,
 } from '../types'
 import { UText } from '../UText/UText'
 import { UFile } from '../UFile/UFile'
 import { UFormBlock } from '../../uforms/UFormBlock/UFormBlock'
 import { useData, useFirestoreData } from '../../../fb/useData'
-import { useSelection } from './useSelection'
+import { currentSelection, UPageSelectionD, useUPageSelection } from '../UPage/hooks/useUpageSelection'
 import { UForm } from '../../uforms/UForm'
 import { RStack } from '../../utils/MuiUtils'
 import { UMenu, UOption, useMenu } from '../../utils/UMenu/UMenu'
-import { useElementSize } from '../../utils/hooks/useElementSize'
-import { Equation } from '../Equation/Equation'
+import { UEquation } from '../UEquation/UEquation'
 import { UDivider } from '../UDivider/UDivider'
 import { BlockTurner } from './BlockAutocomplete/BlockTurner'
 import { utextPaddings } from '../UText/utextStyles'
@@ -38,32 +40,25 @@ import { UTable } from '../UTable/UTable'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { UPageBlock } from '../UPage/UPageBlock/UPageBlock'
 import { UGrid } from '../UGrid/UGrid'
-import { FocusManagement, ToggleableText } from '../UText/types'
+import { TextInUList, UText as UTextP } from '../UText/types'
 import { UFormFieldInfo } from '../../uforms/types'
 import { safe } from '../../../utils/utils'
+import { deleteUBlockInfo, mergeListsAround, setUBlockInfo } from '../UPage/blockIdAndInfo'
+import { BlockManagement } from '../UBlockSet/useUBlockSet'
+import { UPageFocusD } from '../UPage/hooks/useUPageFocus'
+import { actions } from '../UPage/hooks/useUpageActions'
+import { UList } from '../UList/UList'
 
-export interface BlocksManagement {
-  rearrangeBlocks: SetStr
-  handleMoveBlocksTo: SetStr
-  addNewBlock: AddNewBlockUText
-  deleteBlock: (id: str, data?: str) => void
-  deleteBlocks: Fn
-  handleGridCreation: (id: str, side: 'right' | 'left') => void
-  deleteGrid: (id: str, idsLeft: strs) => void
-}
-
-export interface UBlock extends BlocksManagement, FocusManagement, ToggleableText {
+export interface UBlock extends TextInUList {
   id: str
   parentId: str
   i: num
   readonly?: bool
-  initialData?: InitialData
-  appendedData?: str
-  previousBlockInfo?: BlockInfo // doesn't exist on first render
+  initialData?: UBlockDTO
+  previousBlockInfo?: { offset?: num; typesStrike?: num } // doesn't exist on first render
 
-  addNewUPage?: SetStr // not in UForm
-  addInfo: (id: str, i: BlockInfo) => void
-
+  blockManagement: BlockManagement
+  // splitList?: (listId: str, splitOnId: str, newListId: str, newListData: str) => void // overrides in UListNode
   autoplay?: bool
   isCardField?: bool
   uformPs?: UFormFieldInfo
@@ -73,57 +68,167 @@ export const mockUblock: UBlock = {
   i: 0,
   id: '404',
   parentId: '',
-  addInfo: fn,
-  addNewBlock: fn,
-  deleteBlock: fn,
-  deleteBlocks: fn,
-  goDown: fn,
-  goUp: fn,
-  handleMoveBlocksTo: fn,
-  rearrangeBlocks: fn,
-  resetActiveBlock: fn,
-  handleGridCreation: fn,
-  deleteGrid: fn,
+  blockManagement: {
+    addNewBlocks: fn,
+    deleteBlock: fn,
+    deleteBlocks: fn,
+    deleteGrid: fn,
+    mergeLists: fn,
+    splitList: fn,
+    handleGridCreation: fn,
+    handleMoveBlocksTo: fn,
+    handleUpdate: fn,
+    rearrangeBlocks: fn,
+  },
 }
 
-interface UBlockDTO {
-  data: str
+export function UBlock(ps: UBlock) {
+  const { activeBlock, selection, focusD, selectionD } = useUPageSelection()
+  const { ublock, setData, setType, focus, setFocus, appendedData } = useUBlock(ps, activeBlock)
+
+  const goUp = useC((id: str, xOffset?: num) => focusD({ a: 'up', id, xOffset }))
+  const goDown = useC((id: str, xOffset?: num) => focusD({ a: 'down', id, xOffset }))
+  const resetActiveBlock = useC(() => focusD({ a: 'reset' }))
+
+  const isSM = useIsSM() // WARNING: IF SSR IS TURNED ON IT WILL UNMOUNT COMPONENT (critical for images)
+
+  // when upage is deleted it still should be inside its parent to get restored
+  if (ublock.isDeleted) return null
+
+  const commonPs: UBlockImplementation = {
+    id: ps.id,
+    data: ublock.data,
+    setData,
+    readonly: ps.readonly,
+    type: ublock.type,
+  }
+
+  const utextPs: UTextP = {
+    ...commonPs,
+    inUForm: !!ps.uformPs,
+    goUp,
+    goDown,
+    resetActiveBlock,
+    setType,
+    focus,
+    setFocus,
+    appendedData,
+    addNewBlocks: ps.blockManagement.addNewBlocks,
+    deleteBlock: ps.blockManagement.deleteBlock,
+    mergeLists: ps.blockManagement.mergeLists,
+    isCardField: ps.isCardField,
+    initialData: ps.initialData?.data,
+    openToggleParent: ps.openToggleParent,
+    moveIdInList: ps.moveIdInList,
+  }
+
+  return (
+    <>
+      {isSM && (
+        <ContentWrapper
+          id={ps.id}
+          parentId={ps.parentId}
+          i={ps.i}
+          data={ublock.data}
+          type={ublock.type}
+          setType={setType}
+          isSelected={selection.ids.includes(ps.id)}
+          readonly={ps.readonly}
+          blockManagement={ps.blockManagement}
+          focusD={focusD}
+          selectionD={selectionD}
+          isInList={!!ps.openToggleParent}
+        >
+          <Content
+            type={ublock.type}
+            commonPs={commonPs}
+            utextPs={utextPs}
+            uformPs={ps.uformPs}
+            deleteGrid={ps.blockManagement.deleteGrid}
+            handleMoveBlocksTo={ps.blockManagement.handleMoveBlocksTo}
+            splitList={ps.blockManagement.splitList}
+            activeUList={activeBlock.ulistId === ps.id ? activeBlock : undefined}
+          />
+        </ContentWrapper>
+      )}
+      {!isSM && (
+        <Content
+          type={ublock.type}
+          commonPs={commonPs}
+          utextPs={utextPs}
+          uformPs={ps.uformPs}
+          deleteGrid={ps.blockManagement.deleteGrid}
+          handleMoveBlocksTo={ps.blockManagement.handleMoveBlocksTo}
+          splitList={ps.blockManagement.splitList}
+          activeUList={activeBlock.ulistId === ps.id ? activeBlock : undefined}
+        />
+      )}
+    </>
+  )
+}
+
+export function useDeleteUBlocks() {
+  const { setData: setExternalData } = useFirestoreData()
+  return {
+    deleteExternalUBlocks: (ids: strs) => ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true })),
+  }
+}
+
+function useUBlock(ps: UBlock, activeBlock?: ActiveBlock) {
+  const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', ps.id, ps.initialData)
+  const [focus, setFocus] = useState<UTextFocus | undefined>()
+  useEffect(() => {
+    if (activeBlock?.id === ps.id && ublock.data !== '/') setFocus(activeBlock.focus)
+    else setFocus(undefined)
+  }, [JSON.stringify(activeBlock)])
+
+  const [newType, setNewType] = useState<{ type: UBlockType; data?: str; focus?: FocusType } | undefined>()
+
+  useEffect(() => {
+    if (!newType) return
+
+    if (isUListBlock(newType.type))
+      return ps.blockManagement.mergeLists(mergeListsAround(ps.id, ublock.data, 'changed-type', newType.type))
+
+    if (newType.data !== undefined) setUBlock({ data: newType.data, type: newType.type })
+    else setUBlock({ type: newType.type })
+    setFocus({ type: newType.focus || 'end' })
+
+    if (newType.type === 'page') actions.createPage(ps.id)
+  }, [newType])
+
+  const setType = useC((type: UBlockType, data?: str, focus?: FocusType) => setNewType({ type, data, focus }))
+  const setData = useC((data: str) => setUBlock({ data }))
+
+  useEffect(() => {
+    setUBlockInfo(ps.id, { data: ublock.data, i: ps.i, setId: ps.parentId, type: ublock.type })
+  }, [ublock, ps.id, ps.i, ps.parentId])
+  useMount(() => () => deleteUBlockInfo(ps.id))
+
+  const appendedData = activeBlock?.id === ps.id && !activeBlock.ulistId ? activeBlock.appendedData : undefined
+  return { ublock, setData, setType, focus, setFocus, appendedData }
+}
+
+interface ContentWrapper_ {
+  id: str
+  parentId: str
+  i: num
   type: UBlockType
-  isDeleted?: bool
+  setType: (t: UBlockType) => void
+  data: str
+  readonly?: bool
+  isSelected: bool
+  children: Children
+  blockManagement: BlockManagement
+  focusD: UPageFocusD
+  selectionD: UPageSelectionD
+  isInList?: bool
 }
 
-export function UBlock({
-  id,
-  parentId,
-  initialData,
-  addNewBlock = fn,
-  readonly = false,
-  focus: initialFocus,
-  deleteBlock = fn,
-  autoplay: _,
-  uformPs,
-  isCardField,
-  addInfo = fn,
-  addNewUPage = fn,
-  goUp,
-  goDown,
-  resetActiveBlock = fn,
-  deleteBlocks = fn,
-  rearrangeBlocks = fn,
-  handleMoveBlocksTo = fn,
-  i = 100,
-  previousBlockInfo,
-  toggleListOpen,
-  openToggleParent,
-  isToggleOpen,
-  appendedData,
-  handleGridCreation,
-  deleteGrid,
-}: UBlock) {
-  const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id, initialData)
-  const { selection, dispatch } = useSelection()
-  const isSM = useIsSM()
-  const [focus, setFocus] = useReactiveObject(initialFocus)
+function ContentWrapper(ps: ContentWrapper_) {
+  const ref = useRef<HTMLDivElement>(null)
+  const notFullWidth = isNotFullWidthBlock(ps.type)
+  // when uimage / uvideo change parents resize them back to 100%
 
   const [{ isDragging }, drag, preview] = useDrag(() => ({
     type: DragType.ublock,
@@ -136,140 +241,110 @@ export function UBlock({
     () => ({
       accept: DragType.ublock,
       drop: (_, monitor) => {
-        if (!monitor.didDrop()) rearrangeBlocks(id)
+        if (!monitor.didDrop()) ps.blockManagement.rearrangeBlocks(ps.id)
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver({ shallow: true }),
       }),
     }),
-    [rearrangeBlocks],
+    [],
   )
 
   useUpdateEffect(() => {
-    if (!isDragging) dispatch({ a: 'end-drag' })
+    if (!isDragging) ps.selectionD({ a: 'end-drag' })
   }, [isDragging])
 
-  useUpdateEffect(() => {
-    if (ublock.type === 'page') addNewUPage(id)
-  }, [ublock.type])
+  const flat = isFlat(ps.type)
+  const isSomethingDragging = currentSelection.draggingIds.length > 0 // recalculated on isOver
+  const isSideDroppable = isSomethingDragging && !currentSelection.draggingIds.includes(ps.id) && flat
 
-  const notFullWidth = isNotFullWidthBlock(ublock.type)
-  const { ref, width } = useElementSize({ passive: !notFullWidth })
-
-  const setData = useCallback((data: str) => setUBlock({ ...ublock, data }), [JSON.stringify(ublock)])
-  const setType = useCallback(
-    (type: UBlockType, data = '', focus: FocusType = 'end') => {
-      setUBlock({ data, type })
-      setFocus({ type: focus })
-    },
-    [JSON.stringify(ublock), JSON.stringify(focus)],
-  )
-
-  const commonProps: UBlockImplementation = {
-    id,
-    data: ublock.data,
-    setData,
-    readonly,
-    type: ublock.type,
-    maxWidth: width - 16,
-    addInfo,
-    i,
-  }
-
-  const utextProps = {
-    ...commonProps,
-    inUForm: !!uformPs,
-    resetActiveBlock,
-    setType,
-    focus,
-    addNewBlock,
-    deleteBlock,
-    isCardField,
-    goUp,
-    goDown,
-    previousBlockInfo,
-    appendedData,
-    initialData: initialData?.data,
-    toggleListOpen,
-    openToggleParent,
-    isToggleOpen,
-  }
-
-  const RStack_ = isSM ? RStack : Box
-  const notShallow = ublock.type !== 'grid'
-  const isSomethingDragging = selection.draggingIds.length > 0
-  const isSideDroppable = isSomethingDragging && !selection.draggingIds.includes(id) && notShallow
   return (
     <Container
+      ref={ref}
       onMouseDown={() => {
         // if you click on code and then move back to previous focused block focus will be lost: setCursor is not called
         // it is possible to trigger setCursor if special flag "fromCode" is introduced in focus but it doesn't help
-        if (ublock.type !== 'code') resetActiveBlock()
+        if (ps.type !== 'code') ps.focusD({ a: 'reset' })
       }}
       onMouseEnter={
-        isSM && notShallow ? (e) => dispatch({ a: 'mouse-enter', atY: e.clientY, id, setId: parentId }) : fn
+        flat ? (e) => ps.selectionD({ a: 'mouse-enter', atY: e.clientY, id: ps.id, setId: ps.parentId }) : fn
       }
-      onMouseLeave={isSM && notShallow ? (e) => dispatch({ a: 'mouse-leave', atY: e.clientY, id }) : fn}
-      tabIndex={i + 100}
+      onMouseLeave={flat ? (e) => ps.selectionD({ a: 'mouse-leave', atY: e.clientY, id: ps.id }) : fn}
+      tabIndex={ps.i + 100}
       data-cy="ublock"
-      ref={ref}
     >
-      <RStack_>
-        <InnerContainer sx={{ width: notFullWidth ? 'default' : '100%' }} ref={drop}>
-          {isSM && notShallow && (
+      <RStack>
+        <InnerContainer sx={{ width: notFullWidth ? 'auto' : '100%' }} ref={drop}>
+          {flat && (
             <BlockMenu
-              data={ublock.data}
-              type={ublock.type}
-              setType={setType}
-              deleteBlock={deleteBlocks}
-              onAddClick={() => addNewBlock(id, 'focus-start')}
-              onMenuClick={() => dispatch({ a: 'select-by-click', id, setId: parentId })}
-              clearSelection={() => {
-                dispatch({ a: 'clear', force: true })
-              }}
-              selectedMany={selection.ids.length > 1}
-              readonly={readonly}
-              pt={utextPaddings.get(ublock.type.toLowerCase())}
+              data={ps.data}
+              type={ps.type}
+              setType={ps.setType}
+              deleteBlock={() => ps.blockManagement.deleteBlocks()}
+              onAddClick={() => ps.blockManagement.addNewBlocks(ps.id, 'focus-start')}
+              onMenuClick={() => ps.selectionD({ a: 'select-by-click', id: ps.id, setId: ps.parentId })}
+              clearSelection={() => ps.selectionD({ a: 'clear', force: true })}
+              readonly={ps.readonly}
               drag={drag}
-              startDrag={selection.ids ? () => dispatch({ a: 'start-drag', id, setId: parentId }) : fn}
+              startDrag={() => ps.selectionD({ a: 'start-drag', id: ps.id, setId: ps.parentId })}
+              isInList={ps.isInList}
             />
           )}
-          {selection.ids.includes(id) && <Selection data-cy="selection" />}
-          {isOver && !selection.draggingIds.includes(id) && <Dropbox />}
+          {ps.isSelected && <Selection data-cy="selection" />}
+          {isOver && !currentSelection.draggingIds.includes(ps.id) && <Dropbox />}
           {isSideDroppable && (
             <>
-              <SideDrop onDrop={() => handleGridCreation(id, 'left')} />
-              <SideDrop isRight={true} onDrop={() => handleGridCreation(id, 'right')} />
+              <SideDrop onDrop={() => ps.blockManagement.handleGridCreation(ps.id, 'left')} />
+              <SideDrop isRight={true} onDrop={() => ps.blockManagement.handleGridCreation(ps.id, 'right')} />
             </>
           )}
           <div
             ref={preview}
             onClick={
-              isSM && isSelectableByClickBlock(ublock.type) ? () => dispatch({ a: 'select', id, setId: parentId }) : fn
+              isSelectableByClickBlock(ps.type)
+                ? () => ps.selectionD({ a: 'select', id: ps.id, setId: ps.parentId })
+                : fn
             }
           >
-            {isUTextBlock(ublock.type) && <UText {...utextProps} />}
-            {isUFileBlock(ublock.type) && <UFile {...commonProps} />}
-            {isUQuestionBlock(ublock.type) && <UFormBlock {...commonProps} {...safe(uformPs)} />}
-            {isUFormBlock(ublock.type) && <UForm {...commonProps} />}
-            {ublock.type === 'block-equation' && <Equation {...commonProps} />}
-            {ublock.type === 'divider' && <UDivider />}
-            {ublock.type === 'grid' && <UGrid {...commonProps} deleteGrid={deleteGrid} />}
-            {ublock.type === 'table' && <UTable {...commonProps} />}
-            {ublock.type === 'page' && <UPageBlock {...commonProps} handleMoveBlocksTo={handleMoveBlocksTo} />}
+            {ps.children}
           </div>
         </InnerContainer>
-      </RStack_>
+      </RStack>
     </Container>
   )
 }
 
-export function useDeleteUBlocks() {
-  const { setData: setExternalData } = useFirestoreData()
-  return {
-    deleteExternalUBlocks: (ids: strs) => ids.forEach((id) => setExternalData('ublocks', id, { isDeleted: true })),
-  }
+interface ContentP {
+  type: UBlockType
+  commonPs: UBlockImplementation
+  utextPs: UTextP
+  uformPs?: UFormFieldInfo
+  activeUList?: ActiveBlock
+  splitList: SplitList
+  deleteGrid: (id: str, ids: strs) => void
+  handleMoveBlocksTo: (id: str) => void
 }
+
+function Content_(ps: ContentP) {
+  return (
+    <>
+      {isUTextBlock(ps.type) && <UText {...ps.utextPs} />}
+      {isUFileBlock(ps.type) && <UFile {...ps.commonPs} />}
+      {isUQuestionBlock(ps.type) && <UFormBlock {...ps.commonPs} {...safe(ps.uformPs)} />}
+      {isUFormBlock(ps.type) && <UForm {...ps.commonPs} />}
+      {isUListBlock(ps.type) && <UList {...ps.commonPs} activeBlock={ps.activeUList} splitList={ps.splitList} />}
+      {ps.type === 'block-equation' && <UEquation {...ps.commonPs} />}
+      {ps.type === 'divider' && <UDivider />}
+      {ps.type === 'grid' && <UGrid {...ps.commonPs} deleteGrid={ps.deleteGrid} />}
+      {ps.type === 'table' && <UTable {...ps.commonPs} />}
+      {ps.type === 'page' && <UPageBlock {...ps.commonPs} handleMoveBlocksTo={ps.handleMoveBlocksTo} />}
+    </>
+  )
+}
+
+const Content = memo(Content_, (prev, next) => {
+  return JSON.stringify(prev) === JSON.stringify(next)
+})
 
 interface SideDrop_ {
   isRight?: bool
@@ -350,20 +425,18 @@ interface BlockMenu {
   clearSelection: Fn
   deleteBlock: Fn
   setType: (t: UBlockType, data?: str) => void
-  selectedMany: bool
   onAddClick: Fn
   onMenuClick: Fn
   drag: ConnectDragSource
   startDrag: Fn
   readonly?: bool
-  pt?: str
+  isInList?: bool
 }
 
 function BlockMenu({
   data,
   type,
   deleteBlock,
-  selectedMany,
   setType,
   onAddClick,
   onMenuClick,
@@ -371,12 +444,15 @@ function BlockMenu({
   clearSelection,
   startDrag,
   drag,
-  pt = '0',
+  isInList,
 }: BlockMenu) {
   const ref = useRef<HTMLButtonElement>(null)
   const { close, isOpen, toggleOpen } = useMenu(onMenuClick)
+  const pt = utextPaddings.get(type.toLowerCase()) || '0'
+  const transform = isInList ? 'translateX(-130%)' : 'translateX(-100%)'
+
   return (
-    <LeftButtons className={readonly ? '' : 'ublock--block-menu-container'} sx={{ paddingTop: pt }}>
+    <LeftButtons className={readonly ? '' : 'ublock--block-menu-container'} sx={{ paddingTop: pt, transform }}>
       <MiniBtn onClick={onAddClick} ref={ref} data-cy="add-block-h">
         <AddI />
       </MiniBtn>
@@ -401,7 +477,7 @@ function BlockMenu({
       <UMenu btnRef={ref} close={close} isOpen={isOpen && !readonly} hasNested={true} offset={[85, 0]} elevation={4}>
         {/* Maybe user can add comments */}
         <UOption icon={DeleteRoundedIcon} text="Delete" shortcut="Del" close={close} onClick={deleteBlock} />
-        {!selectedMany && isUTextBlock(type) && (
+        {isUTextBlock(type) && (
           <BlockTurner
             turnInto={(t) => {
               clearSelection()
@@ -450,7 +526,6 @@ const AddI = styled(AddRoundedIcon)(({ theme }) => ({
 
 const LeftButtons = styled(RStack, { label: 'BlockMenu' })(({ theme }) => ({
   position: 'absolute',
-  transform: 'translateX(-100%)',
   paddingRight: '0.5rem',
   transition: theme.tra('opacity'),
   opacity: 0,

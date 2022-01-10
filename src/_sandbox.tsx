@@ -8,66 +8,68 @@ const Sandbox = () => {
   init.read()
 
   return (
-    <OuterShell>
-      <SoryBook
-        sories={[
-          UPage,
-          UBlocksSet,
-          UText,
-          Code,
-          Callout,
-          Quote,
-          UList,
-          UGrid,
-          UPageBlock,
-          UTable,
-          UDivider,
-          Equation,
-          UVideoFile,
-          UFile,
-          UAudioFile,
-          UImageFile,
-          BlockAutocomplete,
-          TableOfContents,
-          UTextOptions,
-          UForm,
-          InlineExercise,
-          UChecks,
-          UInput,
-          UAutocomplete,
-          CodeEditor,
-          EditableText,
-          Selection,
-          ResizableWidth,
-          Dropzone,
-          UAudio,
-          AppBar,
-          NavBar,
-          App,
-          Fetch,
-          FetchingStateS,
-          Page404,
-          ThemeBtn,
-          LoginPage,
-          UCard,
-          SB,
-        ]}
-        sections={['Editing', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
-      />
-    </OuterShell>
+    <ErrorBoundary fallbackRender={({ error }) => <p>{error.message}</p>}>
+      <OuterShell>
+        <SoryBook
+          sories={[
+            UPage,
+            UBlocksSet,
+            UText,
+            Code,
+            Callout,
+            Quote,
+            UList,
+            UGrid,
+            UPageBlock,
+            UTable,
+            UDivider,
+            Equation,
+            UVideoFile,
+            UFile,
+            UAudioFile,
+            UImageFile,
+            BlockAutocomplete,
+            TableOfContents,
+            UTextOptions,
+            UForm,
+            InlineExercise,
+            UChecks,
+            UInput,
+            UAutocomplete,
+            CodeEditor,
+            EditableText,
+            Selection,
+            ResizableWidth,
+            Dropzone,
+            UAudio,
+            AppBar,
+            NavBar,
+            App,
+            Fetch,
+            FetchingStateS,
+            Page404,
+            ThemeBtn,
+            LoginPage,
+            UCard,
+            SB,
+          ]}
+          sections={['Editing', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
+        />
+      </OuterShell>
+    </ErrorBoundary>
   )
 }
 
 import * as UTextOptions from './components/editing/UText/UTextOptions/UTextOptions.stories'
 import * as UDivider from './components/editing/UDivider/UDivider.stories'
 import * as UGrid from './components/editing/UGrid/UGrid.stories'
-import * as Equation from './components/editing/Equation/Equation.stories'
+import * as Equation from './components/editing/UEquation/UEquation.stories'
 import * as CodeEditor from './components/utils/CodeEditor/CodeEditor.stories'
 import * as UVideoFile from './components/editing/UFile/UVideoFile/UVideoFile.stories'
 import * as UFile from './components/editing/UFile/UFile.stories'
 import * as UAudio from './components/utils/UAudio/UAudio.stories'
 import * as UAutocomplete from './components/utils/UAutocomplete/UAutocomplete.stories'
-import * as UBlocksSet from './components/editing/UPage/UBlockSet/UBlockSet.stories'
+import * as UBlocksSet from './components/editing/UBlockSet/UBlockSet.stories'
 import * as UTable from './components/editing/UTable/UTable.stories'
 import * as TableOfContents from './components/editing/UPage/TableOfContents/TableOfContents.stories'
 import * as UPageBlock from './components/editing/UPage/UPageBlock/UPageBlock.stories'
@@ -92,7 +94,7 @@ import * as InlineExercise from './components/uforms/UFormBlock/InlineExercise/I
 import * as Code from './components/editing/UText/Code/Code.stories'
 import * as Callout from './components/editing/UText/Callout/Callout.stories'
 import * as Quote from './components/editing/UText/Quote/Quote.stories'
-import * as UList from './components/editing/UText/UList/UList.stories'
+import * as UList from './components/editing/UList/UList.stories'
 import * as UText from './components/editing/UText/UText.stories'
 import * as BlockAutocomplete from './components/editing/UBlock/BlockAutocomplete/BlockAutocomplete.stories'
 import * as UAudioFile from './components/editing/UFile/UAudioFile/UAudioFile.stories'
@@ -105,6 +107,14 @@ import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingSt
 
 import { _MOCK_FB } from './fb/utils'
 import { fn } from './utils/types'
+import { ErrorBoundary } from 'react-error-boundary'
+
+if (![].at) {
+  Array.prototype.at = function (i) {
+    const arr = this as unknown as unknown[]
+    return i < 0 ? arr[arr.length - -i] : arr[i]
+  }
+}
 
 ReactDOM.render(
   <Suspense fallback={<FetchingState />}>

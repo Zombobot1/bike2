@@ -29,12 +29,12 @@ export class QuestionBase {
   explanation = ''
 }
 
-export class UChecksQuestion extends QuestionBase {
+export class UChecksDTO extends QuestionBase {
   correctAnswer: strs = []
   options: strs = []
 }
 
-export class UInputQuestion extends QuestionBase {
+export class UInputDTO extends QuestionBase {
   correctAnswer = ''
 }
 
@@ -47,4 +47,4 @@ export interface SubQuestion {
 }
 export type SubQuestions = SubQuestion[]
 
-export type ComplexQuestion = Array<str | SubQuestion>
+export type InlineExerciseDTO = Array<str | SubQuestion>

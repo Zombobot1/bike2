@@ -174,7 +174,7 @@ export function CodeEditor({
           spellCheck={false}
           disabled={readonly}
           placeholder={placeholder}
-          data-cy="etext"
+          data-cy="code-editor"
         />
       </Root>
     </Container>

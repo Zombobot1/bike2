@@ -82,9 +82,9 @@ export const queryfy = (route: string, args: JSObject) => {
   return result
 }
 
-export const safe = <T>(o?: T, error = 'Object is not safe'): Exclude<T, null> => {
-  if (o === undefined || o === null) throw Error(error)
-  return o as Exclude<T, null>
+export const safe = <T>(o?: T, hint = ''): Exclude<T, null | undefined> => {
+  if (o === undefined || o === null) throw Error(`Object is not safe ${hint}`)
+  return o as Exclude<T, null | undefined>
 }
 
 export const getIds = () => {
@@ -120,6 +120,7 @@ export const filterProps = (props: JSObject, excessive: strs) =>
 export function log<State, Action>(f: (s: State, a: Action) => State): (s: State, a: Action) => State {
   return (old: State, a: Action) => {
     const new_ = f(old, a)
+    // if (!a.a.includes('mouse')) console.info({ old, action: a, new: new_ })
     console.info({ old, action: a, new: new_ })
     return new_
   }

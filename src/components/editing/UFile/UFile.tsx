@@ -1,6 +1,6 @@
 import { Stack, styled, Typography, IconButton } from '@mui/material'
 import { ucast, prevented } from '../../../utils/utils'
-import { UBlockImplementation } from '../types'
+import { isNotFullWidthBlock, UBlockImplementation } from '../types'
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { useUFile } from './useUFile'
@@ -35,13 +35,14 @@ export function UFile_({ data, setData, readonly }: UBlockImplementation) {
   )
 }
 
-export function UFile(props: UBlockImplementation) {
+export function UFile(ps: UBlockImplementation) {
+  const nfw = isNotFullWidthBlock(ps.type)
   return (
-    <PaddedBox sx={{ width: props.type !== 'image' ? '100%' : 'auto' }}>
-      {props.type === 'file' && <UFile_ {...props} />}
-      {props.type === 'image' && <UImageFile {...props} />}
-      {props.type === 'audio' && <UAudioFile {...props} />}
-      {props.type === 'video' && <UVideoFile {...props} />}
+    <PaddedBox sx={{ width: nfw ? 'auto' : '100%' }}>
+      {ps.type === 'file' && <UFile_ {...ps} />}
+      {ps.type === 'image' && <UImageFile {...ps} />}
+      {ps.type === 'audio' && <UAudioFile {...ps} />}
+      {ps.type === 'video' && <UVideoFile {...ps} />}
     </PaddedBox>
   )
 }

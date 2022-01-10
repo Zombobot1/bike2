@@ -1,9 +1,9 @@
-import { str } from '../../../utils/types'
-import { UBlockDTO } from '../types'
-import { useFirestoreData } from '../../../fb/useData'
-import { WS } from '../../application/navigation/workspace'
-import { UPageDataDTO } from './UPage'
-import { ucast as ucast } from '../../../utils/utils'
+import { str } from '../../../../utils/types'
+import { UBlockDTO } from '../../types'
+import { useFirestoreData } from '../../../../fb/useData'
+import { WS } from '../../../application/navigation/workspace'
+import { ucast as ucast } from '../../../../utils/utils'
+import { UPageDTO } from '../UPage'
 
 export function useDeleteUPage(workspace: WS, { skipRootDeletion = false } = {}) {
   const { setData, getData } = useFirestoreData()
@@ -14,7 +14,7 @@ export function useDeleteUPage(workspace: WS, { skipRootDeletion = false } = {})
       id,
       (id) =>
         getData<UBlockDTO>('ublocks', id).then(
-          (page) => ucast<UPageDataDTO>(page.data, { ids: [], color: '', name: '' }).ids,
+          (page) => ucast<UPageDTO>(page.data, { ids: [], color: '', name: '' }).ids,
         ),
       deleteBlock,
     )

@@ -1,4 +1,4 @@
-import { ANSWER_REQUIRED, UInputQuestion as UInputQuestion, UFormFieldData } from '../../types'
+import { ANSWER_REQUIRED, UInputDTO as UInputDTO, UFormFieldData } from '../../types'
 import { bool, str } from '../../../../utils/types'
 import { InteractiveQuestion } from '../interactive-question'
 import { Feedback } from '../Feedback'
@@ -38,7 +38,7 @@ const UInput_ = ({
   multiline,
   _answer = '',
 }: UInput) => {
-  const [question] = useReactiveObject(ucast(data, new UInputQuestion()))
+  const [question] = useReactiveObject(ucast(data, new UInputDTO()))
   const [answer, setAnswer] = useState(_answer)
   const [validationError, setValidationError] = useState('')
 
@@ -46,7 +46,7 @@ const UInput_ = ({
     if (!submissionAttempt) return
     if (!multiline && !answer.length) {
       setValidationError(ANSWER_REQUIRED)
-      onSubmissionAttempt(id, -1)
+      onSubmissionAttempt(id, -1, ANSWER_REQUIRED)
     } else onSubmissionAttempt(id, !multiline ? getUInputScore(question, answer) : 1)
   }, [submissionAttempt])
 
@@ -61,7 +61,7 @@ const UInput_ = ({
 
   return (
     <form onSubmit={(e) => e.preventDefault()}>
-      <InteractiveQuestion question={question.question} />
+      <InteractiveQuestion question={question.question} needsBigMargin={true} />
       <UInputField
         answer={answer}
         correctAnswer={question.correctAnswer}
@@ -89,10 +89,10 @@ const UInput_ = ({
 }
 
 function UInputEditor(ps: UInput) {
-  const [question, setQuestion] = useReactiveObject(ucast(ps.data, new UInputQuestion()))
+  const [question, setQuestion] = useReactiveObject(ucast(ps.data, new UInputDTO()))
   const [validationError, setValidationError] = useState('')
 
-  const updateQuestion = (q: Partial<UInputQuestion>) => setQuestion({ ...question, ...q })
+  const updateQuestion = (q: Partial<UInputDTO>) => setQuestion({ ...question, ...q })
 
   useUpdateEffect(() => {
     const newQuestion = JSON.stringify(question)

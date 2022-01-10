@@ -39,7 +39,7 @@ export function useArray<T = str>(init: T[] = []): UArray<T> {
     reset: (newData: T[]) => setArray(newData),
 
     push: (e: T) => setArray((a) => [...a, e]),
-    insert: (e: T, i: num) => setArray((a) => insertAt(a, e, i)),
+    insert: (e: T, i: num) => setArray((a) => insertAt(a, i, e)),
     replace: (e: T, i: num) => setArray((a) => replaceAt(a, e, i)),
 
     delete: (i: num) => setArray((a) => [...a.slice(0, i), ...a.slice(i + 1, a.length - 1)]),

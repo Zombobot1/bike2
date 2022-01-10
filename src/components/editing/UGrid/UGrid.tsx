@@ -1,20 +1,22 @@
 import { insertAt, removeAt, replaceAt } from '../../../utils/algorithms'
-import { num, str, strs } from '../../../utils/types'
+import { SetState, str, strs } from '../../../utils/types'
 import { ucast } from '../../../utils/utils'
-import { useReactiveObject } from '../../utils/hooks/hooks'
+import { useC, useReactiveObject } from '../../utils/hooks/hooks'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { ResizableColumns } from '../../utils/ResizableWidth/ResizableColumns'
-import { UBlockImplementation, UGridDTO } from '../types'
+import { AddedBlocks, UBlockImplementation, UGridDTO } from '../types'
 import { PaddedBox } from '../UBlock/PaddedBox'
-import { UBlocksSet } from '../UPage/UBlockSet/UBlockSet'
+import { UBlocksSet } from '../UBlockSet/UBlockSet'
 import { uuid } from '../../../utils/uuid'
+import { useState } from 'react'
 
 export interface UGrid extends UBlockImplementation {
   deleteGrid: (id: str, idsLeft: strs) => void
 }
 
 export function UGrid({ data, setData, id, deleteGrid }: UGrid) {
-  const [grid, setGrid_] = useReactiveObject(ucast<UGridDTO>(data, new UGridDTO()))
+  const [grid, setGrid] = useReactiveObject(ucast<UGridDTO>(data, new UGridDTO()))
+  const [addedBlocks, setAddedBlocks] = useState<AddedBlocks>([])
 
   useUpdateEffect(() => {
     if (grid.ids.length === 1) {
@@ -22,40 +24,68 @@ export function UGrid({ data, setData, id, deleteGrid }: UGrid) {
     } else setData(JSON.stringify(grid))
   }, [JSON.stringify(grid)])
 
-  const setColumns = (i: num) => (newColumn: strs) => {
-    if (!newColumn.length)
-      setGrid_((old) => {
-        const columns = removeAt(old.columns, i)
-        const widths = Array(columns.length).fill(100 / columns.length + '%')
-        return { columns, widths, ids: removeAt(old.ids, i) }
-      })
-    else setGrid_((old) => ({ ...old, columns: replaceAt(old.columns, newColumn, i) }))
-  }
-
-  const addColumn = (id: str, newColumn: strs, side: 'right' | 'left') => {
-    setGrid_((old) => {
-      const droppedI = +old.ids.indexOf(id)
-      const newI = droppedI + (side === 'right' ? 1 : 0)
-      const columns = insertAt(old.columns, newColumn, newI)
-      const widths = Array(columns.length).fill(100 / columns.length + '%')
-      return { columns, widths, ids: insertAt(old.ids, uuid.v4(), newI) }
-    })
-  }
-
   return (
     <PaddedBox>
       <ResizableColumns widths={grid.widths} updateWidths={(widths) => setData(JSON.stringify({ ...grid, widths }))}>
         {grid.columns.map((column, i) => (
-          <UBlocksSet
+          <Column
+            key={grid.ids[i]}
             id={grid.ids[i]}
-            key={i}
             ids={column}
-            setIds={setColumns(i)}
-            hideFactory={true}
-            createColumn={addColumn}
+            setGrid={setGrid}
+            addedBlocks={addedBlocks}
+            setAddedBlocks={setAddedBlocks}
           />
         ))}
       </ResizableColumns>
     </PaddedBox>
+  )
+}
+
+interface Column_ {
+  id: str
+  ids: strs
+  setGrid: SetState<UGridDTO>
+  addedBlocks: AddedBlocks
+  setAddedBlocks: (b: AddedBlocks) => void
+}
+
+function Column({ id, ids, setGrid, addedBlocks, setAddedBlocks }: Column_) {
+  const setColumns = useC((f: (old: strs) => strs) => {
+    setGrid((old) => {
+      const i = old.ids.indexOf(id)
+      const newColumn = f(old.columns[i])
+
+      if (!newColumn.length) {
+        const columns = removeAt(old.columns, i)
+        const widths = Array(columns.length).fill(100 / columns.length + '%')
+        return { columns, widths, ids: removeAt(old.ids, i) }
+      }
+
+      return { ...old, columns: replaceAt(old.columns, newColumn, old.ids.indexOf(id)) }
+    })
+  })
+
+  const addColumn = useC((id: str, newColumn: strs, side: 'right' | 'left') => {
+    const newId = uuid.v4()
+    setGrid((old) => {
+      const droppedI = +old.ids.indexOf(id)
+      const newI = droppedI + (side === 'right' ? 1 : 0)
+      const columns = insertAt(old.columns, newI, newColumn)
+      const widths = Array(columns.length).fill(100 / columns.length + '%')
+      return { columns, widths, ids: insertAt(old.ids, newI, newId) }
+    })
+  })
+
+  return (
+    <UBlocksSet
+      id={id}
+      ids={ids}
+      setIds={setColumns}
+      addedBlocks={addedBlocks}
+      setAddedBlocks={setAddedBlocks}
+      createColumn={addColumn}
+      hideFactory={true}
+    />
   )
 }

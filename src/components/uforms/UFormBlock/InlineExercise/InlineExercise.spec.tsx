@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { str, strs } from '../../../../utils/types'
-import { ComplexQuestion, INVALID_EXERCISE, SubQuestion } from '../../types'
+import { InlineExerciseDTO, INVALID_EXERCISE, SubQuestion } from '../../types'
 import { extractQuestions, inlineQuestions } from './questionsParser'
 import { got, saw, show, type, click, _green, _red } from '../../../../utils/testUtils'
 import * as InlineExercise from './InlineExercise.stories'
@@ -77,7 +77,7 @@ function questionToStr(q: SubQuestion | str): str {
   return r.trim()
 }
 
-function compareQuestions(qs: ComplexQuestion, targets: strs) {
+function compareQuestions(qs: InlineExerciseDTO, targets: strs) {
   qs.forEach((q, i) => {
     const actual = questionToStr(q)
     const expected = targets[i]

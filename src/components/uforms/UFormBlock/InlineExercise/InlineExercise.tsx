@@ -1,4 +1,4 @@
-import { styled } from '@mui/material'
+import { Box, styled } from '@mui/material'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { bool, num, str, strs } from '../../../../utils/types'
@@ -8,8 +8,9 @@ import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { useMap } from '../../../utils/hooks/useMap'
 import { usePrevious } from '../../../utils/hooks/usePrevious'
 import useUpdateEffect from '../../../utils/hooks/useUpdateEffect'
-import { ANSWER_REQUIRED, ComplexQuestion, SubQuestion, SubQuestions, UFormFieldData } from '../../types'
+import { ANSWER_REQUIRED, InlineExerciseDTO, SubQuestion, SubQuestions, UFormFieldData } from '../../types'
 import { Feedback } from '../Feedback'
+import { InteractiveQuestion } from '../interactive-question'
 import { getComplexScore, isAnswerCorrect } from '../scoring'
 import { UChecksOptions } from '../UChecks/UChecksOptions'
 import { UInputField } from '../UInput/UInputField'
@@ -38,7 +39,7 @@ function InlineExercise_({
   showTipOnMobile,
   _answer = [],
 }: InlineExercise) {
-  const [complexQuestion] = useReactiveObject(ucast<ComplexQuestion>(data, []))
+  const [complexQuestion] = useReactiveObject(ucast<InlineExerciseDTO>(data, []))
   const questions = complexQuestion.filter((q) => !_.isString(q)) as SubQuestions
   const answers = useMap<num, strs>(_answer)
   const [validationError, setValidationError] = useState('')
@@ -76,59 +77,62 @@ function InlineExercise_({
   }, [prevWasSubmitted])
 
   return (
-    <Root onSubmit={(e) => e.preventDefault()}>
-      {complexQuestion.map((q, i) => {
-        if (_.isString(q)) return <span key={i}>{q}</span>
-        if (q.type === 'short-answer')
+    <Box>
+      <InteractiveQuestion question="Complete exercise:" needsBigMargin={true} isExercise={true} />
+      <Form onSubmit={(e) => e.preventDefault()}>
+        {complexQuestion.map((q, i) => {
+          if (_.isString(q)) return <span key={i}>{q}</span>
+          if (q.type === 'short-answer')
+            return (
+              <UInputField
+                key={i}
+                answer={answers.get(q.i)?.at(0) || ''}
+                setAnswer={(a) => answers.set(q.i, [a])}
+                correctAnswer={q.correctAnswer[0]}
+                validationError={validationError}
+                wasSubmitted={wasSubmitted}
+                autoFocus={autoFocus}
+                hideTipOnMobile={showTipOnMobile}
+                inline={true}
+                i={questions.length > 1 ? q.i : undefined}
+              />
+            )
           return (
-            <UInputField
+            <UChecksOptions
               key={i}
-              answer={answers.get(q.i)?.at(0) || ''}
-              setAnswer={(a) => answers.set(q.i, [a])}
-              correctAnswer={q.correctAnswer[0]}
+              options={q.options}
+              answer={answers.get(q.i) || []}
+              setAnswer={(a) => answers.set(q.i, a)}
+              correctAnswer={q.correctAnswer}
               validationError={validationError}
               wasSubmitted={wasSubmitted}
-              autoFocus={autoFocus}
-              hideTipOnMobile={showTipOnMobile}
+              selectMultiple={q.type === 'multiple-choice'}
               inline={true}
               i={questions.length > 1 ? q.i : undefined}
             />
           )
-        return (
-          <UChecksOptions
-            key={i}
-            options={q.options}
-            answer={answers.get(q.i) || []}
-            setAnswer={(a) => answers.set(q.i, a)}
-            correctAnswer={q.correctAnswer}
-            validationError={validationError}
-            wasSubmitted={wasSubmitted}
-            selectMultiple={q.type === 'multiple-choice'}
-            inline={true}
-            i={questions.length > 1 ? q.i : undefined}
-          />
-        )
-      })}
-      {wasSubmitted &&
-        questions.map((q, i) => {
-          return (
-            <Feedback
-              key={i}
-              explanation={getExplanation(q, questions.length, i, safe(q.type))}
-              validationError=""
-              isCorrect={isAnswerCorrect(answers.get(i) || [], q.correctAnswer)}
-              wasSubmitted={true}
-            />
-          )
         })}
-      {validationError && (
-        <Feedback explanation="" validationError={validationError} isCorrect={false} wasSubmitted={false} />
-      )}
-    </Root>
+        {wasSubmitted &&
+          questions.map((q, i) => {
+            return (
+              <Feedback
+                key={i}
+                explanation={getExplanation(q, questions.length, i, safe(q.type))}
+                validationError=""
+                isCorrect={isAnswerCorrect(answers.get(i) || [], q.correctAnswer)}
+                wasSubmitted={true}
+              />
+            )
+          })}
+        {validationError && (
+          <Feedback explanation="" validationError={validationError} isCorrect={false} wasSubmitted={false} />
+        )}
+      </Form>
+    </Box>
   )
 }
 
-const Root = styled('form')({
+const Form = styled('form')({
   whiteSpace: 'pre-wrap',
   lineHeight: 1.6,
   fontSize: '1.25rem',

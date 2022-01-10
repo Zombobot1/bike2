@@ -18,7 +18,7 @@ export interface UAudio {
 
 export function UAudio({ src, onDelete, readonly }: UAudio) {
   const [audio] = useState(new Audio(src))
-  const [isPlaying, togglePlay] = useToggle()
+  const [isPlaying, togglePlay, setPlay] = useToggle()
   const [isReady, toggleReady] = useToggle()
   const [isMuted, toggleMute] = useToggle()
   const [specifiedTime, setSpecifiedTime] = useState(-1)
@@ -43,9 +43,14 @@ export function UAudio({ src, onDelete, readonly }: UAudio) {
     audio.addEventListener('loadedmetadata', ready)
     const cleanReady = () => audio.removeEventListener('loadedmetadata', ready)
 
+    const onEnd = () => setPlay(false)
+    audio.addEventListener('ended', onEnd)
+    const cleanOnEnd = () => audio.removeEventListener('ended', onEnd)
+
     return () => {
       cleanTime()
       cleanReady()
+      cleanOnEnd()
     }
   })
 

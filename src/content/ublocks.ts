@@ -1,7 +1,8 @@
+import { generate } from '../utils/algorithms'
 import { str, strs } from '../utils/types'
 import { _pages } from './application'
 import { _kittensBlocks, _kittensForFocus, _kittensForLists, _kittensQuiz } from './content'
-import { IdAndBlocks } from './types'
+import { IdAndBlock, IdAndBlocks } from './types'
 
 export function qS(correctAnswer: strs, explanation: str, options: strs, question: str): str {
   return JSON.stringify({
@@ -32,6 +33,5 @@ export const blocksS: IdAndBlocks = [
   ..._kittensQuiz,
   ['empty-page', { type: 'page', data: $({ color: '#39c6a5', name: '', ids: [] }) }],
   ['removal', { type: 'page', data: $(_removalPage) }],
-  ['emptyQ', { type: 'question', data: '' }],
-  ['withoutAnswer', { type: 'question', data: $(['checks2']) }],
+  ...generate(10, (i): IdAndBlock => [`e_s-${i}`, { type: 'text', data: '' }]),
 ]

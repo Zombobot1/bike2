@@ -3,24 +3,22 @@ import { styled, Typography, useTheme } from '@mui/material'
 import { useDrop } from 'react-dnd'
 import { SetStr, str } from '../../../../utils/types'
 import { ucast } from '../../../../utils/utils'
-import { useMount, useReactiveObject } from '../../../utils/hooks/hooks'
+import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { RStack } from '../../../utils/MuiUtils'
-import { BlockInfo, DragType } from '../../types'
-import { useSelection } from '../../UBlock/useSelection'
-import { UPageDataDTO } from '../UPage'
+import { DragType } from '../../types'
+import { currentSelection } from '../hooks/useUpageSelection'
+import { UPageDTO } from '../UPage'
 
 export interface UPageBlock {
   id: str
   data: str
   setData: SetStr
   handleMoveBlocksTo: SetStr
-  addInfo?: (id: str, i: BlockInfo) => void
 }
 
-export function UPageBlock({ id, data, setData, handleMoveBlocksTo, addInfo }: UPageBlock) {
-  const [page] = useReactiveObject(ucast<UPageDataDTO>(data, { ids: [], name: '', color: '' }))
-  const { selection, dispatch } = useSelection()
+export function UPageBlock({ id, data, setData, handleMoveBlocksTo }: UPageBlock) {
+  const [page] = useReactiveObject(ucast<UPageDTO>(data, { ids: [], name: '', color: '' }))
   const { history } = useRouter()
 
   const theme = useTheme()
@@ -29,20 +27,15 @@ export function UPageBlock({ id, data, setData, handleMoveBlocksTo, addInfo }: U
     () => ({
       accept: DragType.ublock,
       drop: () => {
-        setData(JSON.stringify({ ...page, ids: [...page.ids, ...selection.draggingIds] }))
+        setData(JSON.stringify({ ...page, ids: [...page.ids, ...currentSelection.draggingIds] }))
         handleMoveBlocksTo(id)
-        dispatch({ a: 'clear' })
       },
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
     }),
-    [handleMoveBlocksTo, selection.draggingIds],
+    [page],
   )
-
-  useMount(() => {
-    addInfo?.(id, { type: 'page', data: '', i: -1 })
-  })
 
   return (
     <Container onClick={() => history.push(id)}>

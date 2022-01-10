@@ -6,14 +6,14 @@ import { EditableText } from '../../../utils/EditableText/EditableText'
 import { useReactiveObject } from '../../../utils/hooks/hooks'
 import useUpdateEffect from '../../../utils/hooks/useUpdateEffect'
 import { CTick, RTick, TextInput } from '../../../utils/MuiUtils'
-import { SELECT_CORRECT, UChecksQuestion, UFormFieldData } from '../../types'
+import { SELECT_CORRECT, UChecksDTO, UFormFieldData } from '../../types'
 import ReplyRoundedIcon from '@mui/icons-material/ReplyRounded'
 
 export function UChecksEditor(ps: UFormFieldData & { selectMultiple?: bool }) {
-  const [question, setQuestion] = useReactiveObject(ucast(ps.data, { ...new UChecksQuestion(), options: ['Option 1'] }))
+  const [question, setQuestion] = useReactiveObject(ucast(ps.data, { ...new UChecksDTO(), options: ['Option 1'] }))
   const [validationError, setValidationError] = useState('')
 
-  const updateQuestion = (q: Partial<UChecksQuestion>) => setQuestion({ ...question, ...q })
+  const updateQuestion = (q: Partial<UChecksDTO>) => setQuestion({ ...question, ...q })
 
   useUpdateEffect(() => {
     const newQuestion = JSON.stringify(question)
@@ -58,8 +58,8 @@ export function UChecksEditor(ps: UFormFieldData & { selectMultiple?: bool }) {
 }
 
 interface Options_ {
-  question: UChecksQuestion
-  updateQuestion: (q: Partial<UChecksQuestion>) => void
+  question: UChecksDTO
+  updateQuestion: (q: Partial<UChecksDTO>) => void
   selectMultiple?: bool
   validationError: str
 }

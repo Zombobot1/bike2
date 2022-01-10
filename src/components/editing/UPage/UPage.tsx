@@ -1,84 +1,74 @@
 import { Box, Button, Stack, styled } from '@mui/material'
-import { useIsSM, useReactive } from '../../utils/hooks/hooks'
+import { useC, useIsSM, useMount, useReactive } from '../../utils/hooks/hooks'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { useShowAppBar } from '../../application/navigation/AppBar/AppBar'
-import { isIndexableBLock, UBlockType } from '../types'
-import { UBlocksSet, useUBlocks } from './UBlockSet/UBlockSet'
+import { UBlockDTO } from '../types'
+import { UBlocksSet } from '../UBlockSet/UBlockSet'
 import { ReactComponent as WaveSVG } from './wave.svg'
 import { WS } from '../../application/navigation/workspace'
 import { useEffect, useRef, useState } from 'react'
-import { TOCItems } from './TableOfContents/types'
 import { TableOfContents } from './TableOfContents/TableOfContents'
-import { useMap } from '../../utils/hooks/useMap'
 import { safe } from '../../../utils/utils'
-import { setUPageScroll, useSelection } from '../UBlock/useSelection'
-import { useDeleteUPage } from './useDeleteUPage'
-import { bool, fn, Fn, str, strs } from '../../../utils/types'
-import { useNewUPage } from './useNewUPage'
+import { setUPageScroll, useUPageSelection } from './hooks/useUpageSelection'
+import { useDeleteUPage } from './hooks/useDeleteUPage'
+import { bool, Children, DivRef, fn, str, strs } from '../../../utils/types'
+import { useNewUPage } from './hooks/useNewUPage'
+import { useUPageInfo } from './hooks/useUPageInfo'
+import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
+import { useData } from '../../../fb/useData'
+import { deletePagesIn, findUpage, setRoot } from './blockIdAndInfo'
+import { useNestedUBlockData } from '../UBlockSet/useNestedUBlockData'
+import { setActions } from './hooks/useUpageActions'
 
-export interface UPageDataDTO {
-  color: str
-  name: str
-  ids: strs
+export class UPageDTO {
+  color = 'black'
+  name = ''
+  ids = [] as strs
   fullWidth?: bool
-}
-
-export interface UPageDTO {
-  type: UBlockType
-  data: UPageDataDTO
-  isDeleted?: bool
-  readonly?: bool
+  turnOffTOC?: bool
 }
 
 export interface UPage {
   workspace: WS
-  setOpenTOC: (f?: Fn) => void
-  setToggleFullWidth: (f: Fn) => void
 }
-// readOnly fullWidth showToC (default true)
-export function UPage({ workspace, setOpenTOC, setToggleFullWidth }: UPage) {
+
+export function UPage({ workspace }: UPage) {
   const { location } = useRouter()
   const id = location.pathname.replace('/', '')
-  const { ids, ublock, setUBlockData } = useUBlocks<UPageDTO, UPageDataDTO>(id)
-  const { upageRef, onMouseDown, pageRef, selectionRef, setIsSelectionActive } = useSelectablePage()
-  const addNewUPage = useNewUPage(workspace)
-  const deleteUPage = useDeleteUPage(workspace, { skipRootDeletion: true })
+  useEffect(() => setRoot(id), [id])
 
-  const [color, setColor] = useReactive(ublock.data.color)
-  const [name] = useReactive(ublock.data.name)
+  const [ublock, setUBlock] = useData<UBlockDTO>('ublocks', id)
+
+  const setDataAsStr = useC((d: str) => setUBlock({ data: d }))
+  const [data, setData, addedBlocksS] = useNestedUBlockData(ublock.data, setDataAsStr, new UPageDTO())
+
+  const [color, setColor] = useReactive(data.color)
+  const [name] = useReactive(data.name)
+  const setIds = useC((f: (old: strs) => strs) => setData((old) => ({ ...old, ids: f(old.ids) })))
+  const rename = useC((name: str) => setData((old) => ({ ...old, name })))
+  useCreateAndDeletePages(workspace, id, color)
+  useUpdateEffect(() => workspace.rename(id, name), [name])
+
+  const { upageRef, onMouseDown, pageRef, selectionRef, setIsSelectionActive } = useSelectablePage()
+
   const { showAppBar, hideAppBar } = useShowAppBar()
-  const tocMap = useMap<str, TOCItems>()
-  const isSM = useIsSM()
   const isTOCOpenS = useState(false)
 
-  useEffect(() => {
-    setToggleFullWidth(() => () => setUBlockData({ ...ublock.data, fullWidth: !ublock.data.fullWidth }))
-  }, [JSON.stringify(ublock.data)])
+  const { fullWidthTrigger, openTOCTrigger, turnOffTOCTrigger } = useUPageInfo()
 
-  useEffect(() => {
-    if (!isSM && tocMap.has(id) && safe(tocMap.get(id)).find((t) => isIndexableBLock(t.type))) {
-      setOpenTOC(() => () => isTOCOpenS[1](true))
-    } else {
-      setOpenTOC(undefined)
-    }
-  }, [tocMap.get(id), isSM])
+  useUpdateEffect(() => {
+    if (data.turnOffTOC) return
+    if (openTOCTrigger) isTOCOpenS[1](true)
+  }, [openTOCTrigger])
 
-  const rename = (name: str) => {
-    setUBlockData({ ...ublock.data, name })
-    workspace.rename(id, name)
-  }
-  const setIds = (ids: strs) => setUBlockData({ ...ublock.data, ids })
-  const blockSetProps = {
-    id,
-    ids: ids,
-    setIds: setIds,
-    readonly: false,
-    addNewUPage: (newId: str, underId?: str) => addNewUPage(newId, id, underId, color),
-    title: name,
-    setTitle: rename,
-    updateTOC: (toc: TOCItems) => tocMap.set(id, toc),
-    deleteUPage,
-  }
+  useUpdateEffect(() => {
+    if (fullWidthTrigger) setData((old) => ({ ...old, fullWidth: !old.fullWidth }))
+  }, [fullWidthTrigger])
+
+  useUpdateEffect(() => {
+    if (turnOffTOCTrigger) setData((old) => ({ ...old, turnOffTOC: !data.turnOffTOC }))
+  }, [turnOffTOCTrigger])
+
   return (
     <UPage_ ref={upageRef} onMouseUp={() => setIsSelectionActive(false)}>
       <ColoredBox sx={{ path: { fill: color } }} onMouseEnter={showAppBar} onMouseLeave={hideAppBar}>
@@ -88,49 +78,90 @@ export function UPage({ workspace, setOpenTOC, setToggleFullWidth }: UPage) {
             type="color"
             value={color}
             onChange={(e) => setColor(e.target.value)}
-            onBlur={(e) => setUBlockData({ ...ublock.data, color: e.target.value })}
+            onBlur={(e) => setData((old) => ({ ...old, color: e.target.value }))}
           />
           Set color
         </ColorPicker>
       </ColoredBox>
-      {isSM && (
-        <Stack direction="row" alignItems="stretch" sx={{ minHeight: '100%' }}>
-          <Side onMouseDown={onMouseDown} className="upage--side" />
-          <Page
-            ref={pageRef}
-            sx={!ublock.data.fullWidth ? { maxWidth: 900 } : { maxWidth: '80%' }}
-            className="upage--page"
-          >
-            <UBlocksSet {...blockSetProps} />
-          </Page>
-          <Side onMouseDown={onMouseDown} className="upage--side" />
-        </Stack>
-      )}
-      {!isSM && (
-        <Box sx={{ paddingLeft: '1rem', paddingRight: '1rem' }}>
-          <UBlocksSet {...blockSetProps} />
-        </Box>
-      )}
+      <PageWrapper onMouseDown={onMouseDown} pageRef={pageRef} fullWidth={data.fullWidth}>
+        <UBlocksSet
+          id={id}
+          ids={data.ids}
+          setIds={setIds}
+          addedBlocks={addedBlocksS[0]}
+          setAddedBlocks={addedBlocksS[1]}
+          title={name}
+          setTitle={rename}
+        />
+      </PageWrapper>
       <SelectionBox
         ref={selectionRef}
-        sx={{ top: selection.y, left: selection.x, width: selection.width, height: selection.height }}
+        sx={{ top: selectionBox.y, left: selectionBox.x, width: selectionBox.width, height: selectionBox.height }}
       />
-      <TableOfContents data={tocMap.get(id) || []} isOpenS={isTOCOpenS} />
+      <TableOfContents isOpenS={isTOCOpenS} />
     </UPage_>
   )
 }
 
+interface PageWrapper_ {
+  pageRef: DivRef
+  onMouseDown: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  fullWidth?: bool
+  children: Children
+}
+
+function PageWrapper({ onMouseDown, pageRef, fullWidth, children }: PageWrapper_) {
+  const isSM = useIsSM()
+  return (
+    <>
+      {isSM && (
+        <Stack direction="row" alignItems="stretch" sx={{ minHeight: '100%' }}>
+          <Side onMouseDown={onMouseDown} className="upage--side" />
+          <Page ref={pageRef} sx={!fullWidth ? { maxWidth: 900 } : { maxWidth: '80%' }} className="upage--page">
+            {children}
+          </Page>
+          <Side onMouseDown={onMouseDown} className="upage--side" />
+        </Stack>
+      )}
+      {!isSM && <Box sx={{ paddingLeft: '1rem', paddingRight: '1rem' }}>{children}</Box>}
+    </>
+  )
+}
+
+function useCreateAndDeletePages(workspace: WS, id: str, color: str) {
+  const deleteUPage = useDeleteUPage(workspace, { skipRootDeletion: true })
+  const [pagesToDelete, setPagesToDelete] = useState<strs>([])
+  useUpdateEffect(() => {
+    if (pagesToDelete.length) {
+      deletePagesIn(pagesToDelete, deleteUPage)
+      setPagesToDelete([])
+    }
+  }, [pagesToDelete])
+  const addNewUPage = useNewUPage(workspace)
+  const [pageToCreate, setPageToCreate] = useState('')
+  useUpdateEffect(() => {
+    if (pageToCreate) {
+      addNewUPage(pageToCreate, id, findUpage(pageToCreate), color)
+      setPageToCreate('')
+    }
+  }, [pageToCreate]) // to current get id and color
+
+  useMount(() => {
+    setActions({ deletePages: setPagesToDelete, createPage: setPageToCreate })
+  })
+}
+
 function useSelectablePage() {
+  const { selectionD } = useUPageSelection()
   const ref = useRef<HTMLDivElement>(null)
   const ref2 = useRef<HTMLDivElement>(null)
   const selectionRef = useRef<HTMLDivElement>(null)
-  const { dispatch } = useSelection()
   const [isSelectionActive, setIsSelectionActive] = useState(false)
 
   useEffect(() => {
     if (isSelectionActive) {
       const onMove = (e: MouseEvent) => {
-        const old = selection
+        const old = selectionBox
 
         let x = old.x
         let width = old.width
@@ -176,7 +207,7 @@ function useSelectablePage() {
           setUPageScroll(safe(ref.current).scrollTop)
         }
 
-        selection = { ...old, x, y, width, height, pageX: e.pageX, pageY }
+        selectionBox = { ...old, x, y, width, height, pageX: e.pageX, pageY }
         const style = safe(selectionRef.current).style
         style.height = height + 'px'
         style.width = width + 'px'
@@ -185,21 +216,21 @@ function useSelectablePage() {
       }
 
       window.addEventListener('mousemove', onMove)
-      selection.cleanUp = () => {
+      selectionBox.cleanUp = () => {
         safe(selectionRef.current).style.height = '0'
-        selection = new Selection()
+        selectionBox = new Selection()
         window.removeEventListener('mousemove', onMove)
       }
     } else {
-      dispatch({ a: 'mouse-up' })
-      selection.cleanUp()
+      selectionD({ a: 'mouse-up' })
+      selectionBox.cleanUp()
     }
   }, [isSelectionActive])
 
   const onMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const scrollTop = safe(ref.current).scrollTop
-    dispatch({ a: 'mouse-down' })
-    selection = {
+    selectionD({ a: 'mouse-down' })
+    selectionBox = {
       ...new Selection(),
       x: e.pageX,
       y: e.pageY + scrollTop,
@@ -211,7 +242,14 @@ function useSelectablePage() {
     setIsSelectionActive(true)
   }
 
-  return { upageRef: ref, pageRef: ref2, onMouseDown, selection, setIsSelectionActive, isSelectionActive, selectionRef }
+  return {
+    upageRef: ref,
+    pageRef: ref2,
+    onMouseDown,
+    setIsSelectionActive,
+    isSelectionActive,
+    selectionRef,
+  }
 }
 
 const SelectionBox = styled(Box)(({ theme }) => ({
@@ -231,10 +269,11 @@ class Selection {
   cleanUp = fn
 }
 
-let selection = new Selection()
+let selectionBox = new Selection()
 
 const UPage_ = styled(Box, { label: 'UPage' })({
-  overflow: 'auto',
+  overflowY: 'auto',
+  overflowX: 'hidden',
   position: 'relative',
   minHeight: '100%',
   width: '100%',

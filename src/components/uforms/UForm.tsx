@@ -1,8 +1,7 @@
 import { Box, Button, Chip, Stack, styled } from '@mui/material'
-import { str, strs } from '../../utils/types'
-import { ucast } from '../../utils/utils'
+import { bool, Fn, num, str, strs } from '../../utils/types'
 import { UBlockImplementation } from '../editing/types'
-import { UBlocksSet } from '../editing/UPage/UBlockSet/UBlockSet'
+import { UBlocksSet } from '../editing/UBlockSet/UBlockSet'
 import { EditableText } from '../utils/EditableText/EditableText'
 import CreateRoundedIcon from '@mui/icons-material/CreateRounded'
 import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded'
@@ -11,33 +10,37 @@ import { Hr, IBtn, RStack } from '../utils/MuiUtils'
 import SendRoundedIcon from '@mui/icons-material/SendRounded'
 import { useUForm } from './useUForm'
 import { useState } from 'react'
+import { useC, useIsSM } from '../utils/hooks/hooks'
+import { useNestedUBlockData } from '../editing/UBlockSet/useNestedUBlockData'
 
-export interface UFormDataDTO {
-  name: str
-  ids: strs
+export class UFormDTO {
+  name = ''
+  ids = [] as strs
 }
 
-export interface UFormDTO {
-  data: UFormDataDTO
-}
-
-// tests have an intermediate state: waiting for feedback if there are some manually assessable questions -> student is transferred to a page where teacher can leave feedback
+// tests have an intermediate state: waiting for feedback if there are some manually assessable questions ->
+// student is transferred to a page where teacher can leave feedback
 // exercises & tests can be redone when feedback was provided, all feedback errors are automatically turned into cards and placed in individual decks
 export function UForm({ data, setData, readonly, id }: UBlockImplementation) {
-  const { ids, name } = ucast<UFormDataDTO>(data, { ids: [], name: '' })
+  const [uform, setUForm, addedBlocksS] = useNestedUBlockData(data, setData, new UFormDTO())
+  const { name, ids } = uform
   const [lastClickedOn, setLastClickedOn] = useState<'top' | 'bottom'>('bottom')
-  const rename = (name: str) => setData(JSON.stringify({ ids, name }))
-  const setIds = (ids: strs) => setData(JSON.stringify({ name, ids }))
 
-  const uformPs = useUForm({ isEditing: ids.length === 0 && !readonly, ids })
+  const rename = useC((name: str) => setUForm((old) => ({ ...old, name })))
+  const setIds = useC((f: (old: strs) => strs) => setUForm((old) => ({ ...old, ids: f(old.ids) })))
+
+  const uformPs = useUForm({ isEditing: ids.length === 0 && !readonly, id })
   const { d, score, isEditing, validationError, wasSubmitted } = uformPs
 
+  const showTopChip = lastClickedOn === 'top' && validationError
+  const showBottomChip = lastClickedOn === 'bottom' && !!validationError
+  const isSM = useIsSM()
   return (
     <Stack>
       <RStack justifyContent="space-between">
-        <EditableText text={name} setText={rename} tag="h4" focusIfEmpty={true} placeholder="Untitled" />
+        <EditableText text={name} setText={rename} tag="h3" focusIfEmpty={true} placeholder="Untitled" />
         <RStack spacing={1}>
-          {lastClickedOn === 'top' && validationError && <Chip size="small" color="error" label={validationError} />}
+          {showTopChip && <Chip size="small" color="error" label={validationError} />}
           {!readonly && (
             <IBtn
               icon={isEditing ? RemoveRedEyeRoundedIcon : CreateRoundedIcon}
@@ -51,52 +54,71 @@ export function UForm({ data, setData, readonly, id }: UBlockImplementation) {
           )}
         </RStack>
       </RStack>
-      <Hr sx={{ marginTop: '0.5rem', marginBottom: '1rem' }} />
+      <Hr sx={{ marginTop: isSM ? '0.5rem' : 0, marginBottom: '1rem' }} />
       <UBlocksSet
         id={id}
         ids={ids}
         setIds={setIds}
+        addedBlocks={addedBlocksS[0]}
+        setAddedBlocks={addedBlocksS[1]}
         factoryPlaceholder="Type /checks or /input etc."
-        readonly={!isEditing}
         uformPs={uformPs}
+        readonly={!isEditing || readonly}
       />
+      <Bottom
+        isEditing={isEditing}
+        showError={showBottomChip}
+        wasSubmitted={wasSubmitted}
+        validationError={validationError}
+        score={score}
+        save={() => {
+          d({ a: 'toggle-edit' })
+          setLastClickedOn('bottom')
+        }}
+        retry={() => d({ a: 'retry' })}
+        submit={() => {
+          d({ a: 'submit' })
+          setLastClickedOn('bottom')
+        }}
+      />
+    </Stack>
+  )
+}
+
+interface Bottom_ {
+  isEditing: bool
+  showError: bool
+  wasSubmitted: bool
+  score: num
+  validationError: str
+  retry: Fn
+  submit: Fn
+  save: Fn
+}
+
+function Bottom({ isEditing, showError, score, validationError, wasSubmitted, retry, submit, save }: Bottom_) {
+  const color = validationError ? 'error' : undefined
+  const gridSx = validationError || wasSubmitted ? { gridTemplateColumns: '1fr auto 1fr' } : {}
+  const isSM = useIsSM()
+  const size = isSM ? 'large' : 'medium'
+  return (
+    <>
       {isEditing && (
-        <Box sx={{ position: 'relative' }}>
-          {lastClickedOn === 'bottom' && validationError && (
-            <CenteredChip size="small" color="error" label={validationError} />
-          )}
-          <SubmitBtn
-            size="large"
-            color={validationError ? 'error' : undefined}
-            onClick={() => {
-              d({ a: 'toggle-edit' })
-              setLastClickedOn('bottom')
-            }}
-            data-cy="save"
-          >
+        <BottomGrid sx={gridSx}>
+          {showError && <CenteredChip size="small" color="error" label={validationError} />}
+          <SubmitBtn size="large" color={color} onClick={save} data-cy="save">
             Save
           </SubmitBtn>
-        </Box>
+        </BottomGrid>
       )}
       {!isEditing && (
         <>
           <Hr sx={{ marginBottom: '0.5rem' }} />
-          <Box sx={{ position: 'relative' }}>
+          <BottomGrid sx={gridSx}>
             {!wasSubmitted && (
               <>
-                {lastClickedOn === 'bottom' && validationError && (
-                  <CenteredChip size="small" color="error" label={validationError} />
-                )}
-                <SubmitBtn
-                  size="large"
-                  color={validationError ? 'error' : undefined}
-                  endIcon={<SendRoundedIcon />}
-                  onClick={() => {
-                    d({ a: 'submit' })
-                    setLastClickedOn('bottom')
-                  }}
-                  data-cy="submit"
-                >
+                {showError && <CenteredChip size="small" color="error" label={validationError} />}
+                <SubmitBtn size={size} color={color} endIcon={<SendRoundedIcon />} onClick={submit} data-cy="submit">
                   Submit
                 </SubmitBtn>
               </>
@@ -109,44 +131,38 @@ export function UForm({ data, setData, readonly, id }: UBlockImplementation) {
                   label={`Score: ${score}%`}
                   sx={{ fontWeight: 'bold', fontSize: '1rem' }}
                 />
-                <RetryBtn
-                  size="large"
-                  endIcon={<ReplayRoundedIcon />}
-                  onClick={() => d({ a: 'retry' })}
-                  data-cy="retry"
-                >
+                <RetryBtn size={size} endIcon={<ReplayRoundedIcon />} onClick={retry} data-cy="retry">
                   Retry
                 </RetryBtn>
               </>
             )}
-          </Box>
+          </BottomGrid>
         </>
       )}
-    </Stack>
+    </>
   )
 }
 
 const SubmitBtn = styled(Button)({
-  position: 'absolute',
-  right: 0,
-  top: 0,
+  marginLeft: 'auto',
   '.MuiButton-endIcon': {
     transform: 'translateY(-1px)',
   },
 })
 
+const CenteredChip = styled(Chip)({
+  gridColumnStart: 2,
+  placeSelf: 'center',
+})
+
+const BottomGrid = styled(Box)({
+  display: 'grid',
+  justifyContent: 'right',
+})
+
 const RetryBtn = styled(Button)({
-  position: 'absolute',
-  right: 0,
-  top: 0,
+  marginLeft: 'auto',
   '.MuiButton-endIcon': {
     transform: 'translateX(-3px)',
   },
-})
-
-const CenteredChip = styled(Chip)({
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, 35%)',
 })

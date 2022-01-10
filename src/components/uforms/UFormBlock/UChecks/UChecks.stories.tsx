@@ -1,10 +1,11 @@
 import { UChecks } from './UChecks'
 import { useState } from 'react'
-import { fn } from '../../../../utils/types'
+import { bool, fn } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
-import { UChecksQuestion } from '../../types'
+import { UChecksDTO } from '../../types'
 import { useUForm } from '../../useUForm'
 import { Box, Button, Stack } from '@mui/material'
+import { deleteUBlockInfo, setUBlockInfo } from '../../../editing/UPage/blockIdAndInfo'
 
 const T = (ps: UChecks) => {
   const [sa, ssa] = useState(ps.submissionAttempt)
@@ -19,11 +20,17 @@ const T = (ps: UChecks) => {
     </div>
   )
 }
-
-const T2 = (ps: UChecks) => {
-  const formPs = useUForm({ isEditing: true, ids: ['1'] })
+type T2 = UChecks & { isMultiple?: bool }
+const T2 = (ps: T2) => {
+  const formPs = useUForm({ isEditing: true, id: 'f' })
   const { d, score } = formPs
   const [data, setData] = useState(ps.data)
+
+  useMount(() => {
+    setUBlockInfo(ps.id, { setId: 'f', type: ps.isMultiple ? 'multiple-choice' : 'single-choice' })
+    return () => deleteUBlockInfo(ps.id)
+  })
+
   return (
     <Box sx={{ width: 500 }}>
       <Stack spacing={2}>
@@ -55,7 +62,7 @@ const selectOneOptions = [
 ]
 const selectOneCorrectAnswer = ['Option 1']
 
-const qr: UChecksQuestion = {
+const qr: UChecksDTO = {
   question: 'Please select',
   options: selectOneOptions,
   correctAnswer: selectOneCorrectAnswer,
@@ -76,7 +83,7 @@ const selectOne: UChecks = {
 const selectMultipleOptions = ['Right', 'Also right', 'Wrong', 'Option', 'Also wrong']
 const selectMultipleCorrectAnswer = ['Right', 'Also right']
 
-const qc: UChecksQuestion = {
+const qc: UChecksDTO = {
   question: 'Please select',
   options: selectMultipleOptions,
   correctAnswer: selectMultipleCorrectAnswer,
@@ -111,13 +118,14 @@ const wrongMultiple: UChecks = {
   _answer: ['Right', 'Also wrong', 'Wrong'],
 }
 
-const selectOneEditing: UChecks = {
+const selectOneEditing: T2 = {
   ...selectOne,
   data: '',
 }
-const selectManyEditing: UChecks = {
+const selectManyEditing: T2 = {
   ...selectMany,
   data: '',
+  isMultiple: true,
 }
 
 export const SingleChoice = () => T(selectOne)

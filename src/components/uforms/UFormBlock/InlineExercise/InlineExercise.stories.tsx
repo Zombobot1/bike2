@@ -1,8 +1,9 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useState } from 'react'
 import { bool, fn } from '../../../../utils/types'
+import { deleteUBlockInfo, setUBlockInfo } from '../../../editing/UPage/blockIdAndInfo'
 import { useMount } from '../../../utils/hooks/hooks'
-import { ComplexQuestion } from '../../types'
+import { InlineExerciseDTO } from '../../types'
 import { useUForm } from '../../useUForm'
 import { InlineExercise } from './InlineExercise'
 
@@ -43,7 +44,13 @@ function T2(ps: InlineExercise) {
 }
 type T3 = InlineExercise & { goToSubmit?: bool }
 const T3 = (ps: T3) => {
-  const formPs = useUForm({ isEditing: !ps.goToSubmit, ids: ['1'] })
+  const formPs = useUForm({ isEditing: !ps.goToSubmit, id: 'f' })
+
+  useMount(() => {
+    setUBlockInfo(ps.id, { setId: 'f', type: 'inline-exercise' })
+    return () => deleteUBlockInfo(ps.id)
+  })
+
   const { d, score } = formPs
   const [data, setData] = useState(ps.data)
   return (
@@ -70,7 +77,7 @@ const T3 = (ps: T3) => {
   )
 }
 
-const qs: ComplexQuestion = [
+const qs: InlineExerciseDTO = [
   'Some dummy text ',
   { i: 0, correctAnswer: ['a'], explanation: '', options: [], type: 'short-answer' },
   ' another text ',
@@ -119,13 +126,13 @@ const invalid: InlineExercise = {
   submissionAttempt: 1,
 }
 
-const selectOnly: ComplexQuestion = [
+const selectOnly: InlineExerciseDTO = [
   'Select right ',
   { i: 2, correctAnswer: ['right'], explanation: 'coz))', options: ['right', 'not right'], type: 'single-choice' },
   " it's easy.",
 ]
 
-const shortOnly: ComplexQuestion = [
+const shortOnly: InlineExerciseDTO = [
   'Type "a" ',
   { i: 2, correctAnswer: ['a'], explanation: '', options: [], type: 'short-answer' },
   " it's easy.",

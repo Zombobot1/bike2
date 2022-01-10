@@ -1,6 +1,6 @@
 import { Box } from '@mui/material'
 import { UBlock, mockUblock } from '../editing/UBlock/UBlock'
-import { _fuzzyQuiz } from '../../content/content'
+import { _fuzzyQuizShort } from '../../content/content'
 
 function T(props: UBlock) {
   return (
@@ -25,7 +25,7 @@ const emptyWithName: UBlock = {
 const submit: UBlock = {
   ...mockUblock,
   id: 'submit-exercise',
-  initialData: _fuzzyQuiz,
+  initialData: _fuzzyQuizShort,
 }
 
 const qw1e: UBlock = {

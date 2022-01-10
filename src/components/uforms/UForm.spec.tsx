@@ -20,8 +20,8 @@ describe('UForm', () => {
     show(UForm.Empty)
 
     type('New form')
-    type(['utext', '['], ['] '], ['etext', 1, 'Q1']).click('ctick')
-    type(['utext', '{'], ['} '], ['etext', 2, 'Q2'], ['correct answer', 'a'])
+    type(['ublock-f', '['], ['] '], ['etext', 1, 'Q1']).click('ctick')
+    type(['ublock-f', '{'], ['} '], ['etext', 2, 'Q2'], ['correct answer', 'a'])
     click('view')
     saw('Q1', 'Q2')
 
@@ -36,7 +36,7 @@ describe('UForm', () => {
   it('validates without answer', () => {
     show(UForm.Empty)
 
-    type(['utext', '['], ['] '])
+    type(['ublock-f', '['], ['] '])
     click('view')
     saw(SELECT_CORRECT)
 

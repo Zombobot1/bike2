@@ -1,26 +1,18 @@
-import { Box, Button } from '@mui/material'
-import { useState } from 'react'
+import { Box } from '@mui/material'
 import { UBlock, mockUblock } from '../UBlock/UBlock'
 
 function T(props: UBlock) {
-  const [f, sf] = useState(props.focus)
-
   return (
     <Box sx={{ width: 500 }}>
-      <Button onClick={() => sf((f) => ({ ...f, type: f?.type === 'end' ? 'start' : 'end' }))}>Focus</Button>
-      <UBlock {...props} focus={f} />
+      <UBlock {...props} />
     </Box>
   )
 }
 
-const data1: UBlock = {
-  ...mockUblock,
-  id: 'f-full',
-  focus: { type: 'start', xOffset: 20 },
-}
-
 const readonly: UBlock = {
-  ...data1,
+  ...mockUblock,
+  id: 'newEmptyText',
+  initialData: { data: 'Some data', type: 'text' },
   readonly: true,
 }
 
@@ -75,7 +67,6 @@ const twoTex: UBlock = {
 }
 
 export const Empty = () => <T {...empty} />
-export const SetsFocus = () => <T {...data1} />
 export const ReadOnlyText = () => <T {...readonly} />
 export const TransformedText = () => <T {...transformedText} />
 export const ChangesComponents = () => <T {...empty} />

@@ -13,7 +13,6 @@ import { renderTex } from '../../../../utils/CodeEditor/renderTex'
 import { safe } from '../../../../../utils/utils'
 import { insertCode, selectedText, selectionCoordinates } from '../../../../utils/Selection/selection'
 import { InlineEditorExit, SetFocus, TexMapRef } from '../../../types'
-import { sanitize } from '../../sanitazer'
 import { UText_ } from '../../UText_'
 
 export type ToggleTex = (offset: num, o?: { removeSlash: bool }) => void
@@ -115,11 +114,10 @@ export function useTex(
       }
 
       setText(newData)
-      ps.addInfo?.(ps.id, { data: sanitize(newData, mapRef), offset: ps.offset, i: ps.i, type: ps.type })
     }
 
     if (exitedBy === 'key') setFocus({ type: 'start-integer', xOffset: activeTex.offset })
-    if (exitedBy === 'click' && newData !== text) ps.setData(newData)
+    else if (exitedBy === 'click' && newData !== text) ps.setData(newData)
 
     setActiveTex(new ActiveTex())
   }

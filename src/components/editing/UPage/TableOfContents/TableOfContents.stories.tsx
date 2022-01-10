@@ -1,5 +1,7 @@
 import { Box } from '@mui/material'
 import { useState } from 'react'
+import { useMount } from '../../../utils/hooks/hooks'
+import { deleteUBlockInfo, setUBlockInfo } from '../blockIdAndInfo'
 import { TableOfContents } from './TableOfContents'
 import { TOCItems } from './types'
 
@@ -16,6 +18,12 @@ const data: TOCItems = [
 
 const T = () => {
   const s = useState(false)
+
+  useMount(() => {
+    data.forEach((d) => setUBlockInfo(d.id, { ...d }))
+    return data.forEach((d) => deleteUBlockInfo(d.id))
+  })
+
   return (
     <Box
       sx={{
@@ -25,13 +33,19 @@ const T = () => {
         },
       }}
     >
-      <TableOfContents data={data} isOpenS={s} />
+      <TableOfContents isOpenS={s} />
     </Box>
   )
 }
 
 const T2 = () => {
   const s = useState(false)
+
+  useMount(() => {
+    data.forEach((d) => setUBlockInfo(d.id, { ...d }))
+    return data.forEach((d) => deleteUBlockInfo(d.id))
+  })
+
   return (
     <Box
       sx={{
@@ -39,7 +53,7 @@ const T2 = () => {
         height: '100%',
       }}
     >
-      <TableOfContents data={data} isOpenS={s} />
+      <TableOfContents isOpenS={s} />
     </Box>
   )
 }

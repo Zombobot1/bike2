@@ -1,4 +1,4 @@
-import { Box } from '@mui/material'
+import { Box, styled } from '@mui/material'
 import { bool } from '../../../utils/types'
 import { UBlockImplementation } from '../../editing/types'
 import { UChecks } from './UChecks/UChecks'
@@ -13,12 +13,21 @@ export interface UFormBlock extends UBlockImplementation, UFormFieldInfo {
 
 export function UFormBlock(ps: UFormBlock) {
   return (
-    <Box sx={{ paddingBottom: '2rem' }}>
+    <Root>
       {ps.type === 'single-choice' && <UChecks {...ps} />}
       {ps.type === 'multiple-choice' && <UChecks {...ps} selectMultiple={true} />}
       {ps.type === 'short-answer' && <UInput {...ps} />}
       {ps.type === 'long-answer' && <UInput {...ps} multiline={true} />}
       {ps.type === 'inline-exercise' && <InlineExercise {...ps} />}
-    </Box>
+    </Root>
   )
 }
+
+const Root = styled(Box)(({ theme }) => ({
+  paddingBottom: '1rem',
+
+  [`${theme.breakpoints.up('md')}`]: {
+    paddingBottom: '2rem',
+    width: '30rem',
+  },
+}))

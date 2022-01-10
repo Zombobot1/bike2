@@ -9,11 +9,11 @@ import { safe, ucast } from '../../../../utils/utils'
 import { useRefCallback } from '../../../utils/hooks/useRefCallback'
 import useUpdateEffect from '../../../utils/hooks/useUpdateEffect'
 import { cursorOffset, setCursor } from '../../../utils/Selection/selection'
-import { ComplexQuestion, INVALID_EXERCISE, UFormFieldData } from '../../types'
+import { InlineExerciseDTO, INVALID_EXERCISE, UFormFieldData } from '../../types'
 import { extractQuestions, highlight, inlineQuestions } from './questionsParser'
 
 export function InlineExerciseEditor(ps: UFormFieldData) {
-  const [text, setText] = useState(() => highlight(inlineQuestions(ucast<ComplexQuestion>(ps.data, []))))
+  const [text, setText] = useState(() => highlight(inlineQuestions(ucast<InlineExerciseDTO>(ps.data, []))))
   const [cursorPosition, setCursorPosition] = useState<num | null>(null)
   const [validationError, setValidationError] = useState('')
   const ref = useRef<HTMLDivElement>(null)

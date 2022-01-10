@@ -12,7 +12,7 @@ import { RStack, SVGI } from '../../utils/MuiUtils'
 import { TeXEditor } from '../../utils/CodeEditor/TeXEditor'
 import { PaddedBox } from '../UBlock/PaddedBox'
 
-export function Equation({ data, setData, readonly }: UBlockImplementation) {
+export function UEquation({ data, setData, readonly }: UBlockImplementation) {
   const [eq, setEq] = useReactive(data)
   const [isOpen, setIsOpen] = useState(false)
   const ref = useRef(null)

@@ -94,7 +94,6 @@ const IconBox = styled(Box)(({ theme }: JSObject) => ({
     width: '23px',
     height: '23px',
     transform: 'scale(1.3)',
-    transition: 'transform 0.2s ease-in-out',
   },
 }))
 

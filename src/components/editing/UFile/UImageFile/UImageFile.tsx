@@ -11,10 +11,12 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 
-export function UImageFile({ data, setData, readonly, maxWidth }: UBlockImplementation) {
-  const [imageData, setImageData] = useReactiveObject(ucast(data, new UImageFileDTO()))
+export function UImageFile({ data, setData, readonly }: UBlockImplementation) {
+  const [imageData, setImageData] = useReactiveObject(ucast(data, new UMediaFileDTO()))
   const [newSrc, setNewSrc] = useState('') // user can change width before image is uploaded
-  const props = useUImageFile(setNewSrc, (f) => setImageData(() => ({ width: 900, src: srcfy(f) })))
+  const props = useUImageFile(setNewSrc, (f) => {
+    setImageData(() => ({ width: 900, src: srcfy(f) }))
+  })
 
   useEffect(() => {
     if (imageData.isNew) imageFromSrc(imageData.src).then((i) => props.uploadFile(i))
@@ -33,8 +35,8 @@ export function UImageFile({ data, setData, readonly, maxWidth }: UBlockImplemen
     <ResizableWidth
       readonly={readonly}
       width={imageData.width}
-      maxWidth={maxWidth}
       updateWidth={(w) => setData(JSON.stringify({ ...imageData, width: w }))}
+      maxWidth={900}
     >
       <Img src={imageData.src} data-cy="img" />
       {!readonly && (
@@ -67,7 +69,7 @@ const Delete = styled(IconButton)(({ theme }) => ({
   },
 }))
 
-export class UImageFileDTO {
+export class UMediaFileDTO {
   src = ''
   width = 900
   isNew?: bool

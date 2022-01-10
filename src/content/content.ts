@@ -1,6 +1,6 @@
 import { UAudioFileDTO } from '../components/editing/UFile/UAudioFile/UAudioFile'
-import { UImageFileDTO } from '../components/editing/UFile/UImageFile/UImageFile'
-import { UPageDataDTO } from '../components/editing/UPage/UPage'
+import { UMediaFileDTO } from '../components/editing/UFile/UImageFile/UImageFile'
+import { UPageDTO } from '../components/editing/UPage/UPage'
 import { str } from '../utils/types'
 import { IdAndBlocks } from './types'
 import fluffyJpg from './fluffy.jpg'
@@ -10,7 +10,8 @@ import { imageFromSrc } from '../utils/filesManipulation'
 import { CalloutDTO } from '../components/editing/UText/Callout/Callout'
 import { CodeDTO } from '../components/editing/UText/Code/Code'
 import { UTableDTO } from '../components/editing/UTable/UTable'
-import { ComplexQuestion, UChecksQuestion, UInputQuestion } from '../components/uforms/types'
+import { InlineExerciseDTO, UChecksDTO, UInputDTO } from '../components/uforms/types'
+import { UListDTO } from '../components/editing/UList/types'
 
 const $ = JSON.stringify
 
@@ -26,42 +27,42 @@ const _kittens4 = `Kittens are highly social animals and spend most of their wak
 const _equation = 'i\\hbar {\\frac {\\partial }{\\partial t}}|\\psi (t)\\rangle ={\\hat {H}}|\\psi (t)\\rangle'
 const fallingCats = `Journal Of The American Veterinary Medical Association looked at 132 cats that had fallen an average of 5.5 storeys <code data-id="2" contenteditable="false">h_{total} \\approx 5.5 * 2.5 = 13.77m</code> and survived. It found that a third of them would have died without emergency veterinary treatment. Interestingly, injuries were worse in falls less than seven storeys than in higher tumbles. The researchers think that this is because the cats reach their terminal velocity <code data-id="1" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> after falling about seven storeys (21m), which means they stop accelerating. They then relax, allowing better distribution of impact.`
 const fallingCatsShort1 = `cats <code data-id="2" contenteditable="false">h_{total} \\approx 5.5 * 2.5 = 13.77m</code> and`
-const fallingCatsShort2 = `cats reach their terminal velocity <code data-id="1" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> after falling about seven storeys (21m), <code data-id="2" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> which means they stop accelerating`
+// const fallingCatsShort2 = `cats reach their terminal velocity <code data-id="1" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> after falling about seven storeys (21m), <code data-id="2" contenteditable="false">V_{t}=\\sqrt{\\frac{2 m g}{\\rho A C_{d}}}</code> which means they stop accelerating`
 const fallingCatsShort3 = `nice <code data-id="666" contenteditable="false">E=mc^2</code> small <code data-id="2" contenteditable="false">E=mc^2</code> cat`
+const goodQuestion = `A good question: <i>Why are there no <em class="green-b">green</em> or <em class="blue-b">blue</em> colored cats?</i>`
+const goodQuestionAnswer = `<mark>Andrew's answer:</mark> It’s not just cats. Mammals, in general, have never really figured out how to make a good <em class="green">green</em> or <em class="blue">blue</em> colored fur. Actual green or blue pigments are surprisingly rare in animals. Most of the blue colors that we see in creatures like birds or butterflies are actually <u>structural colors</u>, microscopic structures which are just the right size to absorb non-blue wavelengths of lights while reflecting blue, but it appears that evolution has never figured out how to make that method compatible with hair. <a href="https://qr.ae/pG3XBt" target="_blank">Learn more</a>`
+
+const goodQuestionBlocks: IdAndBlocks = [
+  ['good-question-d1', { type: 'divider', data: '' }],
+  ['good-question', { type: 'text', data: goodQuestion }],
+  ['good-question-answer', { type: 'text', data: goodQuestionAnswer }],
+  ['good-question-d2', { type: 'divider', data: '' }],
+]
 
 const catsGridData: UGridDTO = {
   columns: [
-    [
-      'bath-your-cat',
-      'bath-your-cat-step1',
-      'bath-your-cat-step2',
-      'bath-your-cat-step3',
-      'bath-your-cat-step4',
-      'bath-your-cat-step5',
-    ],
-    [
-      'why-own-cat',
-      'why-own-cat-point1',
-      'why-own-cat-point2',
-      'why-own-cat-point3',
-      'why-own-cat-point4',
-      'why-own-cat-point5',
-    ],
+    ['bath-your-cat', 'bath-your-cat-list', 'e_s-0', 'healthy-cat', 'healthy-cat-list'],
+    ['why-own-cat', 'why-own-cat-list', 'e_s-1', 'hypoallergenic-cat', 'hypoallergenic-cat-list'],
   ],
-  widths: ['40%', '60%'],
+  widths: ['45%', '55%'],
   ids: ['c-g-1', 'c-g-2'],
 }
 
-const page: UPageDataDTO = {
+const catsLinksGridData: UGridDTO = {
+  columns: [
+    ['grow-kitten', 'cats-vs-dogs'],
+    ['how-pets-changed-humanity', 'pets-research'],
+  ],
+  widths: ['50%', '50%'],
+  ids: ['c-l-g-1', 'c-l-g-2'],
+}
+
+const page: UPageDTO = {
   color: '#0066FF',
   name: 'Pets & animals',
   ids: [
     'catQuote',
-    'grow-kitten',
-    'cats-vs-dogs',
-    'pets-research',
-    'how-pets-changed-humanity',
-    'fallingCats',
+    'cats-links-grid',
     'kittensH',
     'kittens',
     'fluffyJpg',
@@ -71,28 +72,28 @@ const page: UPageDataDTO = {
     'kittensH3',
     'kittens4',
     'catCallout',
+    'good-question-d1',
+    'good-question',
+    'good-question-answer',
+    'good-question-d2',
+    'fallingCats',
+    'emptyString',
     'catVideoText',
     'catVideo',
-    'catPdf',
-    'fluffyMp3',
-    'newCatFile',
+    'fuzzy-quiz',
     'kittensInfo',
+    'fluffyMp3',
+    'catPdf',
     'cats-grid',
-    'hypoallergenic-cat',
-    'hypoallergenic-cat1',
-    'hypoallergenic-cat2',
-    'hypoallergenic-cat3',
-    'hypoallergenic-cat4',
-    'hypoallergenic-cat5',
+    'catTable',
     'waveEquation',
     'catCode',
-    'catTable',
   ],
 }
 
 const mp3: UAudioFileDTO = { src: fluffyMp3 }
-const img: UImageFileDTO = { src: fluffyJpg, width: 450 }
-const video: UImageFileDTO = { src: 'y8kTYCex8RU', width: 600 }
+const img: UMediaFileDTO = { src: fluffyJpg, width: 450 }
+const video: UMediaFileDTO = { src: 'y8kTYCex8RU', width: 600 }
 
 const newCatFile = { name: '', src: '' }
 const pdf = {
@@ -148,10 +149,10 @@ const catTable: UTableDTO = {
 const catCode: CodeDTO = { code: _codeWithPaws, language: 'TypeScript' }
 const codeForFocus: CodeDTO = { code: 'I want to dance with a fat cat', language: 'Text' }
 
-const catP1: UPageDataDTO = { name: 'How to grow a kitten', color: '#0066FF', ids: [] }
-const catP2: UPageDataDTO = { name: 'Cats vs Dogs', color: '#0066FF', ids: [] }
-const catP3: UPageDataDTO = { name: 'Research papers about evolution of pets', color: '#0066FF', ids: [] }
-const catP4: UPageDataDTO = { name: 'How pets changed humanity', color: '#0066FF', ids: [] }
+const catP1: UPageDTO = { name: 'How to grow a kitten', color: '#0066FF', ids: [] }
+const catP2: UPageDTO = { name: 'Cats vs Dogs', color: '#0066FF', ids: [] }
+const catP3: UPageDTO = { name: 'Research papers about evolution of pets', color: '#0066FF', ids: [] }
+const catP4: UPageDTO = { name: 'How pets changed humanity', color: '#0066FF', ids: [] }
 
 const listsInColumns: UGridDTO = {
   widths: ['50%', '50%'],
@@ -163,6 +164,7 @@ const listsInColumns: UGridDTO = {
 }
 
 export const _kittensBlocks: IdAndBlocks = [
+  ...goodQuestionBlocks,
   ['catVideoText', { type: 'text', data: 'Watch a short documentary about a small cat' }],
   ['catVideo', { type: 'video', data: $(video) }],
   ['catTable', { type: 'table', data: $(catTable) }],
@@ -184,7 +186,6 @@ export const _kittensBlocks: IdAndBlocks = [
   ['waveEquation', { type: 'block-equation', data: _equation }],
   ['fallingCats', { type: 'text', data: fallingCats }],
   ['fallingCatsShort1', { type: 'text', data: fallingCatsShort1 }],
-  ['fallingCatsShort2', { type: 'text', data: fallingCatsShort2 }],
   ['fallingCatsShort3', { type: 'text', data: fallingCatsShort3 }],
   ['divider', { type: 'divider', data: '' }],
   ['grow-kitten', { type: 'page', data: $(catP1) }],
@@ -193,6 +194,7 @@ export const _kittensBlocks: IdAndBlocks = [
   ['how-pets-changed-humanity', { type: 'page', data: $(catP4) }],
   ['cat-lists-columns', { type: 'grid', data: $(listsInColumns) }],
   ['cats-grid', { type: 'grid', data: $(catsGridData) }],
+  ['cats-links-grid', { type: 'grid', data: $(catsLinksGridData) }],
 ]
 
 const _kittensS = `A <b><i>kitten</i></b> is a juvenile cat. After being born`
@@ -200,7 +202,7 @@ const _kittens2S = `A feline litter usually consists of two to five kittens born
 const _kittens3S = `Kittens develop very quickly from about two`
 const _kittens4S = `Kittens are highly social animals and spend`
 
-export const _kittensForFocusPage: UPageDataDTO = {
+export const _kittensForFocusPage: UPageDTO = {
   color: '',
   name: 'Pets',
   ids: [
@@ -217,13 +219,13 @@ export const _kittensForFocusPage: UPageDataDTO = {
   // ids: ['kittensHL', 'kittensS'],
 }
 
-const petsTestPage: UPageDataDTO = {
+const petsTestPage: UPageDTO = {
   color: '#0066FF',
   name: 'Pets & animals',
   ids: _kittensForFocusPage.ids,
 }
 
-const petsTestSmallPage: UPageDataDTO = {
+const petsTestSmallPage: UPageDTO = {
   color: '#0066FF',
   name: 'Pets & animals',
   ids: ['emptyString'],
@@ -244,23 +246,18 @@ export const _kittensForFocus: IdAndBlocks = [
   ['pets-test-small', { type: 'page', data: $(petsTestSmallPage) }],
 ]
 
-export const _kittensForListsPage: UPageDataDTO = {
+export const _kittensForListsPage: UPageDTO = {
   color: '',
   name: 'Pets',
   ids: [
     'bath-your-cat',
-    'bath-your-cat-step1',
-    'bath-your-cat-step2',
+    'bath-your-cat-list',
     'why-own-cat',
-    'why-own-cat-point1',
-    'why-own-cat-point2',
-    'healthy-cat1',
-    'healthy-cat11',
-    'healthy-cat12',
-    'healthy-cat13',
+    'why-own-cat-list',
+    'healthy-cat',
+    'healthy-cat-list',
     'hypoallergenic-cat',
-    'hypoallergenic-cat1',
-    'hypoallergenic-cat2',
+    'hypoallergenic-cat-list',
   ],
 }
 
@@ -274,43 +271,103 @@ export const _idsForBuildColumns = [
   'why-own-cat-point2',
 ]
 
-const l = (t: str, o = 1): str => $({ text: t, offset: o })
+const bathList: UListDTO = {
+  id: 'bath-your-cat-list',
+  children: [
+    { id: 'bath-your-cat-step1' },
+    { id: 'bath-your-cat-step2' },
+    { id: 'bath-your-cat-step3' },
+    { id: 'bath-your-cat-step4' },
+    { id: 'bath-your-cat-step5' },
+  ],
+}
+
+const whyOwnList: UListDTO = {
+  id: 'why-own-cat-point-list',
+  children: [
+    { id: 'why-own-cat-point1' },
+    { id: 'why-own-cat-point2' },
+    { id: 'why-own-cat-point3' },
+    { id: 'why-own-cat-point4' },
+    { id: 'why-own-cat-point5' },
+  ],
+}
+
+const healthyCatList: UListDTO = {
+  id: 'healthy-cat-list',
+  children: [
+    {
+      id: 'healthy-cat1',
+      children: [{ id: 'healthy-cat11' }, { id: 'healthy-cat12' }, { id: 'healthy-cat13' }],
+    },
+    {
+      id: 'unhealthy-cat1',
+      children: [{ id: 'unhealthy-cat11' }, { id: 'unhealthy-cat12' }, { id: 'unhealthy-cat13' }],
+    },
+  ],
+}
+
+const hypoallergenicList: UListDTO = {
+  id: 'hypoallergenic-cat-list',
+  children: [
+    { id: 'hypoallergenic-cat1', unmarked: true },
+    { id: 'hypoallergenic-cat2', unmarked: true },
+    { id: 'hypoallergenic-cat3', unmarked: true },
+    { id: 'hypoallergenic-cat4', unmarked: true },
+    { id: 'hypoallergenic-cat5', unmarked: true },
+  ],
+}
+
 export const _kittensForLists: IdAndBlocks = [
   ['bath-your-cat', { type: 'text', data: 'Bath your cat' }],
-  ['bath-your-cat-step1', { type: 'numbered-list', data: l('Gather your supplies') }],
-  ['bath-your-cat-step2', { type: 'numbered-list', data: l('Rinse your cat') }],
-  ['bath-your-cat-step3', { type: 'numbered-list', data: l('Lather your cat with shampoo') }],
-  ['bath-your-cat-step4', { type: 'numbered-list', data: l('Rinse your cat again') }],
-  ['bath-your-cat-step5', { type: 'numbered-list', data: l('Clean the face') }],
+  ['bath-your-cat-list', { type: 'numbered-list', data: $(bathList) }],
+  ['bath-your-cat-step1', { type: 'text', data: 'Gather your supplies' }],
+  ['bath-your-cat-step2', { type: 'text', data: 'Rinse your cat' }],
+  ['bath-your-cat-step3', { type: 'text', data: 'Lather your cat with shampoo' }],
+  ['bath-your-cat-step4', { type: 'text', data: 'Rinse your cat again' }],
+  ['bath-your-cat-step5', { type: 'text', data: 'Clean the face' }],
   ['why-own-cat', { type: 'text', data: 'Why you should own a cat' }],
-  ['why-own-cat-point1', { type: 'bullet-list', data: l('Cats can bathe themselves') }],
-  ['why-own-cat-point2', { type: 'bullet-list', data: l('Cats will keep your house and yard rodent-free') }],
-  ['why-own-cat-point3', { type: 'bullet-list', data: l('Cats are low-maintenance and independent') }],
-  ['why-own-cat-point4', { type: 'bullet-list', data: l('Cats are an eco-friendly pet choice') }],
-  ['why-own-cat-point5', { type: 'bullet-list', data: l('Cats can help reduce stress') }],
-  ['healthy-cat1', { type: 'toggle-list', data: l('How to keep your cat healthy') }],
-  ['healthy-cat11', { type: 'toggle-list', data: l('Brush your cat every day.', 2) }],
-  ['healthy-cat12', { type: 'toggle-list', data: l('Do not feed your cat too much dry food.', 2) }],
-  ['healthy-cat13', { type: 'toggle-list', data: l("Pay Attention to Your Pet's Thirst.", 2) }],
+  ['why-own-cat-list', { type: 'bullet-list', data: $(whyOwnList) }],
+  ['why-own-cat-point1', { type: 'text', data: 'Cats can bathe themselves' }],
+  ['why-own-cat-point2', { type: 'text', data: 'Cats will keep your house and yard rodent-free' }],
+  ['why-own-cat-point3', { type: 'text', data: 'Cats are low-maintenance and independent' }],
+  ['why-own-cat-point4', { type: 'text', data: 'Cats are an eco-friendly pet choice' }],
+  ['why-own-cat-point5', { type: 'text', data: 'Cats can help reduce stress' }],
+  ['healthy-cat', { type: 'text', data: 'Keep your cat healthy' }],
+  ['healthy-cat-list', { type: 'toggle-list', data: $(healthyCatList) }],
+  ['healthy-cat1', { type: 'text', data: 'How to keep your cat healthy' }],
+  ['healthy-cat11', { type: 'text', data: 'Brush your cat every day.' }],
+  ['healthy-cat12', { type: 'text', data: 'Do not feed your cat too much dry food.' }],
+  ['healthy-cat13', { type: 'text', data: "Pay Attention to Your Pet's Thirst." }],
+  ['unhealthy-cat1', { type: 'text', data: 'Signs & Symptoms of unhealthy cat' }],
+  ['unhealthy-cat11', { type: 'text', data: 'Sudden change in mood.' }],
+  ['unhealthy-cat12', { type: 'text', data: 'No inclination to play or appearing lethargic.' }],
+  ['unhealthy-cat13', { type: 'text', data: 'Much less or much more vocal than usual.' }],
   ['hypoallergenic-cat', { type: 'text', data: 'Best hypoallergenic cat breeds' }],
-  ['hypoallergenic-cat1', { type: 'list', data: l('Balinese') }],
-  ['hypoallergenic-cat2', { type: 'list', data: l('Oriental Short Hair') }],
-  ['hypoallergenic-cat3', { type: 'list', data: l('Devon Rex') }],
-  ['hypoallergenic-cat4', { type: 'list', data: l('Sphynx') }],
-  ['hypoallergenic-cat5', { type: 'list', data: l('Siberian') }],
+  ['hypoallergenic-cat-list', { type: 'bullet-list', data: $(hypoallergenicList) }],
+  ['hypoallergenic-cat1', { type: 'text', data: 'Balinese' }],
+  ['hypoallergenic-cat2', { type: 'text', data: 'Oriental Short Hair' }],
+  ['hypoallergenic-cat3', { type: 'text', data: 'Devon Rex' }],
+  ['hypoallergenic-cat4', { type: 'text', data: 'Sphynx' }],
+  ['hypoallergenic-cat5', { type: 'text', data: 'Siberian' }],
   ['petsForFocus', { type: 'page', data: $(_kittensForListsPage) }],
 ]
 
 const qc = (qe = '', ca = [''], o = [''], e = ''): str => {
-  const q: UChecksQuestion = { question: qe, options: o, correctAnswer: ca, explanation: e }
+  const q: UChecksDTO = { question: qe, options: o, correctAnswer: ca, explanation: e }
   return $(q)
 }
 const qi = (qe = '', ca = '', e = ''): str => {
-  const q: UInputQuestion = { question: qe, correctAnswer: ca, explanation: e }
+  const q: UInputDTO = { question: qe, correctAnswer: ca, explanation: e }
   return $(q)
 }
 
-export const _fuzzyQuiz: UBlockDTO = {
+const _fuzzyQuiz: UBlockDTO = {
+  type: 'exercise',
+  data: $({ name: 'Fuzzy quiz', ids: ['fq-q1', 'fq-q2', 'fq-q3', 'fq-inline-exercise'] }),
+}
+
+export const _fuzzyQuizShort: UBlockDTO = {
   type: 'exercise',
   data: $({ name: 'Fuzzy quiz', ids: ['fq-q1', 'fq-q2', 'fq-q3'] }),
 }
@@ -325,7 +382,7 @@ const _quizWith1InputField: UBlockDTO = {
   data: $({ name: 'Test', ids: ['fq-q3'] }),
 }
 
-const inlineExercise: ComplexQuestion = [
+const inlineExercise: InlineExerciseDTO = [
   'A male cat is probably ',
   {
     i: 0,
@@ -385,8 +442,9 @@ export const _kittensQuiz: IdAndBlocks = [
       data: qi('What breed of domestic cat has the longest fur?', 'Persian'),
     },
   ],
-  ['fq', _fuzzyQuiz],
+  ['fq', _fuzzyQuizShort],
   ['fq-inline-exercise', { type: 'inline-exercise', data: $(inlineExercise) }],
   ['qw1e', _quizWith1InlineExercise],
   ['qw1i', _quizWith1InputField],
+  ['fuzzy-quiz', _fuzzyQuiz],
 ]

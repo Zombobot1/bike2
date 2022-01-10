@@ -5,7 +5,7 @@ import { fn } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
 import { useMenuB } from '../../../utils/UMenu/useMenuB'
-import { UBlocksSet } from '../../UPage/UBlockSet/UBlockSet'
+import { SetForStories } from '../../UBlockSet/SetForStories'
 import { BlockAutocomplete } from './BlockAutocomplete'
 import { BlockTurner } from './BlockTurner'
 
@@ -44,7 +44,7 @@ const Blocks = () => {
   const t = useState('Pets & Animals')
   return (
     <Box sx={{ width: 500 }}>
-      <UBlocksSet id="" ids={s[0]} setIds={s[1]} readonly={false} title={t[0]} setTitle={t[1]} />
+      <SetForStories id="a" ids={s[0]} title={t[0]} setTitle={t[1]} />
     </Box>
   )
 }

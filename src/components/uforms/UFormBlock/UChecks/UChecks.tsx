@@ -1,4 +1,4 @@
-import { ANSWER_REQUIRED, UChecksQuestion as UChecksQuestion, UFormFieldData } from '../../types'
+import { ANSWER_REQUIRED, UChecksDTO as UChecksDTO, UFormFieldData } from '../../types'
 import { bool, strs } from '../../../../utils/types'
 import { InteractiveQuestion } from '../interactive-question'
 import { Box } from '@mui/material'
@@ -33,7 +33,7 @@ const UChecks_ = ({
   selectMultiple,
   _answer = [],
 }: UChecks) => {
-  const [question] = useReactiveObject(ucast(data, new UChecksQuestion()))
+  const [question] = useReactiveObject(ucast(data, new UChecksDTO()))
   const [answer, setAnswer] = useState<strs>(_answer)
   const [validationError, setValidationError] = useState('')
 
