@@ -51,7 +51,7 @@ export function UList(ps: UList) {
 
   useMount(() => {
     if (data.children) return
-    const id = uuid.v4()
+    const id = uuid()
     const newData: UListDTO = { id: data.id, children: [{ id }] }
     addedBlocksS[1]([{ id, data: '', type: 'text' }])
     ps.setData(JSON.stringify(newData))

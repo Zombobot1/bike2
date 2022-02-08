@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useInterval } from '../../../utils/hooks/useInterval'
 import { fancyTimerTime } from '../../../../utils/formatting'
-import { Fn, fn } from '../../../../utils/types'
+import { Fn, f } from '../../../../utils/types'
 import { atom, useAtom } from 'jotai'
 import { useMount } from '../../../utils/hooks/hooks'
 import { useIsPageVisible } from '../../../utils/hooks/useIsPageVisible'
@@ -10,7 +10,7 @@ import { IconButton, styled } from '@mui/material'
 
 const timeToAnswerA = atom(0)
 const isRunningA = atom(true)
-const onTimeoutA = atom({ on: fn })
+const onTimeoutA = atom({ on: f })
 const totalTimeA = atom(0)
 
 const useTrainingTimer_ = () => {

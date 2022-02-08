@@ -5,7 +5,7 @@ import DragIndicatorRoundedIcon from '@mui/icons-material/DragIndicatorRounded'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 import { ConnectDragSource, useDrag, useDrop } from 'react-dnd'
 import { useC, useIsSM, useMount } from '../../utils/hooks/hooks'
-import { bool, Children, fn, Fn, JSObject, num, SetStr, str, strs } from '../../../utils/types'
+import { bool, Children, f, Fn, JSObject, num, SetStr, str, strs } from '../../../utils/types'
 import {
   FocusType,
   isSelectableByClickBlock,
@@ -69,16 +69,16 @@ export const mockUblock: UBlock = {
   id: '404',
   parentId: '',
   blockManagement: {
-    addNewBlocks: fn,
-    deleteBlock: fn,
-    deleteBlocks: fn,
-    deleteGrid: fn,
-    mergeLists: fn,
-    splitList: fn,
-    handleGridCreation: fn,
-    handleMoveBlocksTo: fn,
-    handleUpdate: fn,
-    rearrangeBlocks: fn,
+    addNewBlocks: f,
+    deleteBlock: f,
+    deleteBlocks: f,
+    deleteGrid: f,
+    mergeLists: f,
+    splitList: f,
+    handleGridCreation: f,
+    handleMoveBlocksTo: f,
+    handleUpdate: f,
+    rearrangeBlocks: f,
   },
 }
 
@@ -267,9 +267,9 @@ function ContentWrapper(ps: ContentWrapper_) {
         if (ps.type !== 'code') ps.focusD({ a: 'reset' })
       }}
       onMouseEnter={
-        flat ? (e) => ps.selectionD({ a: 'mouse-enter', atY: e.clientY, id: ps.id, setId: ps.parentId }) : fn
+        flat ? (e) => ps.selectionD({ a: 'mouse-enter', atY: e.clientY, id: ps.id, setId: ps.parentId }) : f
       }
-      onMouseLeave={flat ? (e) => ps.selectionD({ a: 'mouse-leave', atY: e.clientY, id: ps.id }) : fn}
+      onMouseLeave={flat ? (e) => ps.selectionD({ a: 'mouse-leave', atY: e.clientY, id: ps.id }) : f}
       tabIndex={ps.i + 100}
       data-cy="ublock"
     >
@@ -303,7 +303,7 @@ function ContentWrapper(ps: ContentWrapper_) {
             onClick={
               isSelectableByClickBlock(ps.type)
                 ? () => ps.selectionD({ a: 'select', id: ps.id, setId: ps.parentId })
-                : fn
+                : f
             }
           >
             {ps.children}

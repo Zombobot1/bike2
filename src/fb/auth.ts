@@ -4,7 +4,7 @@ import { atom, useAtom } from 'jotai'
 import { useSigninCheck, useUser } from 'reactfire'
 import { sendEmailLink } from '../components/application/LoginPage/sendEmailLink'
 import { str } from '../utils/types'
-import { _MOCK_FB } from './utils'
+import { isInProduction } from './utils'
 
 export class UserDTO {
   uid = 'cat-lover'
@@ -17,7 +17,7 @@ const userA = atom(new UserDTO())
 
 export function useUserInfo(): UserDTO {
   let user: UserDTO
-  if (process.env.NODE_ENV === 'development' && _MOCK_FB) user = useAtom(userA)[0]
+  if (!isInProduction) user = useAtom(userA)[0]
   else {
     const { data } = useUser()
     user = {
@@ -33,7 +33,7 @@ export function useUserInfo(): UserDTO {
 const signInA = atom(true)
 
 export function useIsSignedIn() {
-  if (process.env.NODE_ENV === 'development' && _MOCK_FB) {
+  if (!isInProduction) {
     const [isSignedIn, setIsSignedIn] = useAtom(signInA)
     const signIn = (_: str) => {
       setIsSignedIn(true)

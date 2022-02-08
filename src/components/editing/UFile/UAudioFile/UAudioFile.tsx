@@ -6,10 +6,6 @@ import { UAudio } from '../../../utils/UAudio/UAudio'
 import { ucast } from '../../../../utils/utils'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
 
-export class UAudioFileDTO {
-  src = ''
-}
-
 export function UAudioFile({ data, setData, readonly }: UBlockImplementation) {
   const [fileData] = useReactiveObject(ucast(data, new UAudioFileDTO()))
   const { fileS, deleteFile } = useUFile((src) => setData(JSON.stringify({ src })))

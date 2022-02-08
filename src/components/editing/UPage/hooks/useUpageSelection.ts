@@ -3,11 +3,12 @@ import { mapAppend } from '../../../../utils/algorithms'
 import { bool, num, str, strs } from '../../../../utils/types'
 import { safe } from '../../../../utils/utils'
 import { useMount } from '../../../utils/hooks/hooks'
-import { isUTextBlock, UBlockSetUpdate } from '../../types'
+import { UBlockSetUpdate } from '../../types'
 import { getAllUBlocksForSelection, getSelectedData, getUBlockInfo } from '../blockIdAndInfo'
 import { useReducerAtom } from 'jotai/utils'
 import { atom } from 'jotai'
 import { useUPageFocus } from './useUPageFocus'
+import { isUTextBlock } from '../types'
 
 export function useUPageSelection() {
   const { activeBlock, focusD } = useUPageFocus()

@@ -5,10 +5,10 @@ export function srcfy(blob: Blob): str {
   return URL.createObjectURL(blob)
 }
 
-export function imageFromSrc(src: str): FileP {
-  return fetch(src)
-    .then((r) => r.blob())
-    .then((b) => new File([b], 'img.png', { type: 'image/png' }))
+export async function imageFromSrc(src: str): FileP {
+  const r = await fetch(src)
+  const b = await r.blob()
+  return new File([b], 'img.png', { type: 'image/png' })
 }
 
 async function retrieveImageFromClipboard(items: ClipboardItems): OBlobP {

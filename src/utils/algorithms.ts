@@ -67,6 +67,9 @@ export const insertAt = <T>(array: T[], atI: num, ...data: T[]): T[] => [
 export const replaceAt = <T>(array: T[], data: T, atI: num): T[] => array.map((e, i) => (i === atI ? data : e))
 export const removeAt = <T>(array: T[], atI: num): T[] => array.filter((_, i) => i !== atI)
 
+export const insertInStr = (s: str, atI: num, data: str): str => s.slice(0, atI) + data + s.slice(atI)
+export const deleteInStr = (s: str, atI: num, length: num): str => s.slice(0, atI) + s.slice(atI + length)
+
 export function mapAppend<K, V>(map: Map<K, V[]>, key: K, data: V): Map<K, V[]> {
   if (!map.has(key)) map.set(key, [data])
   else safe(map.get(key)).push(data)

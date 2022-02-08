@@ -200,7 +200,7 @@ interface Nav_ {
 
 function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
   const ref = useRef<HTMLElement>()
-  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', false)
+  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', true)
   const toggleFullscreen = () => setIsFullscreen((old) => !old)
   const { location } = useRouter()
   const pathIds = location.pathname.replace('/_stories/', '').split('--')

@@ -1,17 +1,8 @@
 import { reverse, sort } from '../../../utils/algorithms'
 import { bool, Fn, num, SetStr, str, strs } from '../../../utils/types'
 import { safe, ucast } from '../../../utils/utils'
-import { uuid } from '../../../utils/uuid'
-import {
-  AddedBlock,
-  BlockInfo,
-  isUListBlock,
-  isUQuestionBlock,
-  isUTextBlock,
-  mayContainPages,
-  UBlockType,
-} from '../types'
-import { UListDTO } from '../UList/types'
+import { AddedBlock, BlockInfo } from '../types'
+import { isUListBlock, isUQuestionBlock, isUTextBlock, mayContainPages, UBlockType } from './types'
 
 export function moveFocus(direction: 'up' | 'down' | 'first' | 'last', id = ''): str {
   const ids = sortedUTextIds()
@@ -77,7 +68,7 @@ export function mergeListsAround(
   mode: 'deleted' | 'changed-type',
   type: UBlockType,
   unmarked?: bool,
-): UListMerge {
+) {
   // debugger
   const ids = sortedSetIds(id)
   const i = ids.indexOf(id)
@@ -85,44 +76,44 @@ export function mergeListsAround(
   const listAboveId = isUListBlock(idAndInfo.get(ids[i - 1])?.type) ? ids[i - 1] : ''
   const listBelowId = isUListBlock(idAndInfo.get(ids[i + 1])?.type) ? ids[i + 1] : ''
   if (listAboveId && listBelowId && mode === 'deleted') {
-    const listAbove = ucast(safe(idAndInfo.get(listAboveId)).data, new UListDTO())
-    const listBelow = ucast(safe(idAndInfo.get(listBelowId)).data, new UListDTO())
-    listAbove.children?.push(...safe(listBelow.children))
-    return {
-      appendedData: { ulistId: listAboveId, id: listAbove.children?.at(-1)?.id || '', data: JSON.stringify(listAbove) },
-      deleteBlocks: [id, listBelowId],
-    }
+    // const listAbove = ucast(safe(idAndInfo.get(listAboveId)).data, new UListDTO())
+    // const listBelow = ucast(safe(idAndInfo.get(listBelowId)).data, new UListDTO())
+    // listAbove.children?.push(...safe(listBelow.children))
+    // return {
+    // appendedData: { ulistId: listAboveId, id: listAbove.children?.at(-1)?.id || '', data: JSON.stringify(listAbove) },
+    // deleteBlocks: [id, listBelowId],
+    // }
   }
 
   if (listAboveId) {
-    const listAbove = ucast(safe(idAndInfo.get(listAboveId)).data, new UListDTO())
-    listAbove.children?.push({ id, unmarked: listAbove.children.at(-1)?.unmarked })
-    if (!listBelowId) return { deleteId: id, appendedData: { id: listAboveId, data: JSON.stringify(listAbove) } }
-    const listBelow = ucast(safe(idAndInfo.get(listBelowId)).data, new UListDTO())
-    listAbove.children?.push(...safe(listBelow.children))
-    return {
-      deleteId: id,
-      appendedData: { ulistId: listAboveId, id, data: JSON.stringify(listAbove) },
-      deleteBlocks: [listBelowId],
-    }
+    // const listAbove = ucast(safe(idAndInfo.get(listAboveId)).data, new UListDTO())
+    // listAbove.children?.push({ id, unmarked: listAbove.children.at(-1)?.unmarked })
+    // if (!listBelowId) return { deleteId: id, appendedData: { id: listAboveId, data: JSON.stringify(listAbove) } }
+    // const listBelow = ucast(safe(idAndInfo.get(listBelowId)).data, new UListDTO())
+    // listAbove.children?.push(...safe(listBelow.children))
+    // return {
+    //   deleteId: id,
+    //   appendedData: { ulistId: listAboveId, id, data: JSON.stringify(listAbove) },
+    //   deleteBlocks: [listBelowId],
+    // }
   }
 
-  const newListId = uuid.v4() // avoid changing type in favor of more general approach
-  const newList: UListDTO = { id: newListId, unmarked, children: [{ id }] }
+  // const newListId = uuid() // avoid changing type in favor of more general approach
+  // const newList: UListDTO = { id: newListId, unmarked, children: [{ id }] }
 
   const canJoin = idAndInfo.get(listBelowId)?.type === type
   if (listBelowId && canJoin) {
-    const listBelow = ucast(safe(idAndInfo.get(listBelowId)).data, new UListDTO())
-    newList.children?.push(...safe(listBelow.children))
+    // const listBelow = ucast(safe(idAndInfo.get(listBelowId)).data, new UListDTO())
+    // newList.children?.push(...safe(listBelow.children))
   }
 
-  return {
-    addedListBlock: { id: newListId, data: JSON.stringify(newList), type },
-    deleteBlocks: canJoin ? [listBelowId] : [],
-    deleteId: id,
-    replaceId: id,
-    replaceBy: newListId,
-  }
+  // return {
+  //   addedListBlock: { id: newListId, data: JSON.stringify(newList), type },
+  //   deleteBlocks: canJoin ? [listBelowId] : [],
+  //   deleteId: id,
+  //   replaceId: id,
+  //   replaceBy: newListId,
+  // }
 }
 
 export function findUpage(aboveId: str): str {

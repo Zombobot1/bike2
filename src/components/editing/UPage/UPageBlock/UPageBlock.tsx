@@ -16,7 +16,7 @@ export interface UPageBlock {
   setData: SetStr
   handleMoveBlocksTo: SetStr
 }
-
+// TODO: Make shallow
 export function UPageBlock({ id, data, setData, handleMoveBlocksTo }: UPageBlock) {
   const [page] = useReactiveObject(ucast<UPageDTO>(data, { ids: [], name: '', color: '' }))
   const { history } = useRouter()

@@ -1,7 +1,7 @@
 import { useAtom, atom } from 'jotai'
 import { useMount } from '../../utils/hooks/hooks'
 import { sslugify } from '../../../utils/sslugify'
-import { Fn, fn, str } from '../../../utils/types'
+import { Fn, f, str } from '../../../utils/types'
 import { uuid } from '../../../utils/uuid'
 
 type FileOrStr = File | str
@@ -60,7 +60,7 @@ export function useNewCardData(previewName: str) {
 
 export function useNewCardDataField(_id: str, name: str) {
   const [newCardData, setNewCardData] = useAtom(newCardDataA)
-  const setNewValue = _id ? fn : (value: FileOrStr) => setNewCardData((fd) => setFieldValue(fd, name, value))
+  const setNewValue = _id ? f : (value: FileOrStr) => setNewCardData((fd) => setFieldValue(fd, name, value))
 
   useMount(() => {
     if (_id) return
@@ -75,7 +75,7 @@ export function useNewCardDataField(_id: str, name: str) {
 function renameFiles(data: NewCardData, previewName: str): NewCardData {
   const preview = data.find((d) => d.name === previewName)
   if (!preview || preview.value instanceof File) throw new Error('Preview not found in new data')
-  const name = (ext: str) => `${sslugify(preview.value as str)}-${uuid.v4()}.${ext}`
+  const name = (ext: str) => `${sslugify(preview.value as str)}-${uuid()}.${ext}`
 
   return data.map((d) => {
     if (d instanceof File) {
@@ -87,7 +87,7 @@ function renameFiles(data: NewCardData, previewName: str): NewCardData {
   })
 }
 
-const submitA = atom({ on: fn })
+const submitA = atom({ on: f })
 
 export function useSubmitNewCardData() {
   const [submit, setSubmit] = useAtom(submitA)

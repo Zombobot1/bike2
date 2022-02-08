@@ -1,9 +1,7 @@
 import randomColor from 'randomcolor'
 import { NavNodeDTOs } from '../components/application/navigation/NavBar/NavTree'
 import { _WSD } from '../components/application/navigation/workspace'
-import { UPageDTO } from '../components/editing/UPage/UPage'
 import { safe } from '../utils/utils'
-import { IdAndBlock } from './types'
 
 const $ = JSON.stringify
 
@@ -177,9 +175,9 @@ const exclude = [
   'pets-research',
   'how-pets-changed-humanity',
 ]
-export const _pages = bfs(ws.personal)
-  .filter((p) => !exclude.includes(p.id))
-  .map((n): IdAndBlock => {
-    const r: UPageDTO = { ids: [], name: n.name, color: randomColor({ luminosity: 'bright' }) }
-    return [n.id, { data: $(r), type: 'page' }]
-  })
+export const _pages = bfs(ws.personal).filter((p) => !exclude.includes(p.id))
+// TODO: generate pages
+// .map((n): IdAndBlock => {
+//   const r: UPageDTO = { ids: [], name: n.name, color: randomColor({ luminosity: 'bright' }) }
+//   return [n.id, { data: $(r), type: 'page' }]
+// })

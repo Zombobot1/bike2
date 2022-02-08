@@ -1,6 +1,6 @@
 import { UChecks } from './UChecks'
 import { useState } from 'react'
-import { bool, fn } from '../../../../utils/types'
+import { bool, f } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
 import { UChecksDTO } from '../../types'
 import { useUForm } from '../../useUForm'
@@ -73,11 +73,11 @@ const selectOne: UChecks = {
   id: 'radioData',
   data: JSON.stringify(qr),
   submissionAttempt: 0,
-  onSubmissionAttempt: fn,
-  resolveError: fn,
+  onSubmissionAttempt: f,
+  resolveError: f,
   submitOnAnswer: false,
   wasSubmitted: false,
-  setData: fn,
+  setData: f,
 }
 
 const selectMultipleOptions = ['Right', 'Also right', 'Wrong', 'Option', 'Also wrong']

@@ -18,11 +18,6 @@ import { ResizableWidth } from '../../utils/ResizableWidth/ResizableWidth'
 import { PaddedBox } from '../UBlock/PaddedBox'
 import { UMenu, UOption, useMenu } from '../../utils/UMenu/UMenu'
 
-export class UTableDTO {
-  rows = [getEmptyStrings(2), getEmptyStrings(2)]
-  widths = [190, 190]
-}
-
 export function UTable(ps: UBlockImplementation) {
   const data = ucast<UTableDTO>(ps.data, new UTableDTO())
   const [widths, setWidths] = useReactiveObject(data.widths)

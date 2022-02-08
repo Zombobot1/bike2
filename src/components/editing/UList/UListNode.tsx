@@ -50,7 +50,7 @@ export function UListNode({ id, type, dataS, addedBlocksS, readonly, moveIdInLis
                   <FiberManualRecordRounded />
                 </LeftPartContainer>
               )}
-              {type === 'numbered-list' && (
+              {type === 'numbered-list' && !c.unmarked && (
                 <LeftPartContainer depth={depth}>
                   <Number>{i + 1 + '.'}</Number>
                 </LeftPartContainer>
@@ -104,7 +104,7 @@ export function splitNode(rootId: str, splitOnId: str): { newListId: str; newLis
       .map((v) => v.id),
     splitOnId,
   ])
-  const newListId = uuid.v4()
+  const newListId = uuid()
   const newData: UListDTO = { id: newListId, children: newListChildren }
   const newRootData: UListDTO = { id: rootId, children: newChildren }
   return {

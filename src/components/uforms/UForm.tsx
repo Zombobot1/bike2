@@ -13,11 +13,6 @@ import { useState } from 'react'
 import { useC, useIsSM } from '../utils/hooks/hooks'
 import { useNestedUBlockData } from '../editing/UBlockSet/useNestedUBlockData'
 
-export class UFormDTO {
-  name = ''
-  ids = [] as strs
-}
-
 // tests have an intermediate state: waiting for feedback if there are some manually assessable questions ->
 // student is transferred to a page where teacher can leave feedback
 // exercises & tests can be redone when feedback was provided, all feedback errors are automatically turned into cards and placed in individual decks

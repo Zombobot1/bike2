@@ -1,7 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 import { CircularProgress, IconButton, Stack, styled, Typography } from '@mui/material'
 import { useDropzone } from 'react-dropzone'
-import { bool, Files, Fn, fn, State, str } from '../../../utils/types'
+import { bool, Files, Fn, f, State, str } from '../../../utils/types'
 import UploadFileRoundedIcon from '@mui/icons-material/UploadFileRounded'
 import ContentPasteRoundedIcon from '@mui/icons-material/ContentPasteRounded'
 import { prevented } from '../../../utils/utils'
@@ -51,7 +51,7 @@ export function Dropzone({ filesS, label = 'files', readFromKeyboard, icon, isUp
           {!isUploading && Boolean(readFromKeyboard) && (
             <>
               <Vr />
-              <IconButton color="primary" onClick={prevented(readFromKeyboard || fn)}>
+              <IconButton color="primary" onClick={prevented(readFromKeyboard || f)}>
                 <ContentPasteRoundedIcon />
               </IconButton>
             </>

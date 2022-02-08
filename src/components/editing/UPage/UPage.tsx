@@ -11,7 +11,7 @@ import { TableOfContents } from './TableOfContents/TableOfContents'
 import { safe } from '../../../utils/utils'
 import { setUPageScroll, useUPageSelection } from './hooks/useUpageSelection'
 import { useDeleteUPage } from './hooks/useDeleteUPage'
-import { bool, Children, DivRef, fn, str, strs } from '../../../utils/types'
+import { bool, Children, DivRef, f, str, strs } from '../../../utils/types'
 import { useNewUPage } from './hooks/useNewUPage'
 import { useUPageInfo } from './hooks/useUPageInfo'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
@@ -19,14 +19,6 @@ import { useData } from '../../../fb/useData'
 import { deletePagesIn, findUpage, setRoot } from './blockIdAndInfo'
 import { useNestedUBlockData } from '../UBlockSet/useNestedUBlockData'
 import { setActions } from './hooks/useUpageActions'
-
-export class UPageDTO {
-  color = 'black'
-  name = ''
-  ids = [] as strs
-  fullWidth?: bool
-  turnOffTOC?: bool
-}
 
 export interface UPage {
   workspace: WS
@@ -266,7 +258,7 @@ class Selection {
   initialY = -1
   pageX = -1
   pageY = -1
-  cleanUp = fn
+  cleanUp = f
 }
 
 let selectionBox = new Selection()

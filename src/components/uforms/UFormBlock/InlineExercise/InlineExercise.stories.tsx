@@ -1,6 +1,6 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useState } from 'react'
-import { bool, fn } from '../../../../utils/types'
+import { bool, f } from '../../../../utils/types'
 import { deleteUBlockInfo, setUBlockInfo } from '../../../editing/UPage/blockIdAndInfo'
 import { useMount } from '../../../utils/hooks/hooks'
 import { InlineExerciseDTO } from '../../types'
@@ -98,12 +98,12 @@ const qs: InlineExerciseDTO = [
 const data: InlineExercise = {
   id: 'InlineExercise',
   data: JSON.stringify(qs),
-  setData: fn,
+  setData: f,
   wasSubmitted: false,
   submitOnAnswer: false,
-  onSubmissionAttempt: fn,
+  onSubmissionAttempt: f,
   submissionAttempt: 0,
-  resolveError: fn,
+  resolveError: f,
 }
 
 const submitted: InlineExercise = {

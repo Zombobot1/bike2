@@ -1,4 +1,4 @@
-import { BoolState, Fn, fn, str } from '../../utils/types'
+import { BoolState, Fn, f, str } from '../../utils/types'
 import { Button, Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material'
 
 export interface AcceptRemovalDialog {
@@ -8,7 +8,7 @@ export interface AcceptRemovalDialog {
   onClose?: Fn
 }
 
-export function AcceptRemovalDialog({ text, isOpenS, onAccept, onClose = fn }: AcceptRemovalDialog) {
+export function AcceptRemovalDialog({ text, isOpenS, onAccept, onClose = f }: AcceptRemovalDialog) {
   const [isOpen, setIsOpen] = isOpenS
 
   const handleClose = () => {

@@ -3,7 +3,7 @@ import { createContext, useContext } from 'react'
 import { useC } from '../components/utils/hooks/hooks'
 import { useCurrentState } from '../components/utils/hooks/usePrevious'
 import { _fs } from '../content/fs'
-import { fn, JSObject, OJSObject, str } from '../utils/types'
+import { f, JSObject, OJSObject, str } from '../utils/types'
 import { safe } from '../utils/utils'
 
 type Doc = { id: str; data: JSObject }
@@ -12,7 +12,7 @@ export type _FSD = _Col[]
 const pendingInsertions = new Map<str, JSObject>()
 class State {
   getFS: () => _FSD = () => []
-  setFS: (n: _FSD) => void = fn
+  setFS: (n: _FSD) => void = f
 }
 
 const FSContext = createContext<State | null>(null)

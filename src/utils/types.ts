@@ -31,7 +31,7 @@ export type SetStrs = (s: strs) => void
 export type SetBool = (s: bool) => void
 export type SetNum = (s: num) => void
 
-export const fn: Fn = () => {}
+export const f: Fn = () => {}
 
 export type SVGIcon = React.FC<React.SVGProps<SVGSVGElement>> & { title?: string | undefined }
 

@@ -1,87 +1,10 @@
 import { bool, Fn, num, SetStr, SetStrs, str, strs } from '../../utils/types'
 import { UPageSelectionD } from './UPage/hooks/useUpageSelection'
 import { UPageFocusD } from './UPage/hooks/useUPageFocus'
-
-export type UListBlock = 'bullet-list' | 'numbered-list' | 'toggle-list'
-export type AdvancedTextBlock = 'code' | 'quote' | 'callout'
-export type HeadingBlock = 'heading-1' | 'heading-2' | 'heading-3' | 'heading-0'
-export type UTextBlock = 'text' | HeadingBlock | AdvancedTextBlock
-export type UFileBlock = 'file' | 'image' | 'audio' | 'video'
-export type UQuestionBlock = 'single-choice' | 'short-answer' | 'multiple-choice' | 'long-answer' | 'inline-exercise'
-export type UFormBlock = 'test' | 'exercise' | 'card'
-export type UProjectionBlock = 'grid' | 'page' | UFormBlock | UListBlock
-type PseudoUBlock = 'inline-equation'
-type UBlocks = 'block-equation' | 'divider' | 'table' | 'cards' | PseudoUBlock
-export type UBlockType = UTextBlock | UFileBlock | UQuestionBlock | UProjectionBlock | UBlocks
-export type UBlockTypes = UBlockType[]
-
-export function isUTextBlock(t?: UBlockType): bool {
-  if (!t) return false
-  const types: UBlockTypes = ['text', 'heading-1', 'heading-2', 'heading-3', 'heading-0', 'callout', 'quote', 'code']
-  return types.includes(t)
-}
-
-export function isNotFullWidthBlock(t?: UBlockType): bool {
-  if (!t) return false
-  const types: UBlockTypes = ['image', 'video', 'table']
-  return types.includes(t) || isUQuestionBlock(t)
-}
-
-export function isSelectableByClickBlock(t?: UBlockType): bool {
-  if (!t) return false
-  return t === 'image' || t === 'divider'
-}
-
-export function isAdvancedText(t?: UBlockType): bool {
-  if (!t) return false
-  const types: UBlockTypes = ['code', 'quote', 'callout']
-  return types.includes(t)
-}
-
-export function isPlainTextBlock(t?: UBlockType): bool {
-  if (!t) return false
-  return isUTextBlock(t) && !isAdvancedText(t)
-}
-
-export function isIndexableBLock(t?: UBlockType): bool {
-  if (!t) return false
-  const types: UBlockTypes = ['heading-1', 'heading-2', 'heading-3', 'cards', 'exercise']
-  return types.includes(t)
-}
-
-export function isUListBlock(t?: UBlockType): bool {
-  if (!t) return false
-  const types: UBlockTypes = ['bullet-list', 'numbered-list', 'toggle-list']
-  return types.includes(t)
-}
-
-export function isFlat(t?: UBlockType): bool {
-  if (!t) return false
-  return t !== 'grid' && !isUListBlock(t)
-}
-
-export function mayContainPages(t?: UBlockType): bool {
-  return !isFlat(t)
-}
-
-export function isUFormBlock(t: UBlockType): bool {
-  const types: UBlockTypes = ['test', 'exercise', 'card']
-  return types.includes(t)
-}
-
-export function isUQuestionBlock(t: UBlockType): bool {
-  const types: UBlockTypes = ['single-choice', 'short-answer', 'multiple-choice', 'long-answer', 'inline-exercise']
-  return types.includes(t)
-}
-
-export function isUFileBlock(t: UBlockType): bool {
-  const types: UBlockTypes = ['file', 'image', 'audio', 'video']
-  return types.includes(t)
-}
+import { UBlockType } from './UPage/types'
 
 export type UBlockSetUpdate = { id: str; toInsert?: strs; toDelete?: strs; deletePermanently?: bool }
 export type UBlockSetUpdates = UBlockSetUpdate[]
-export type UBlockDTO = { type: UBlockType; data: str; isDeleted?: bool }
 
 export class ActiveBlock {
   id = ''
@@ -135,12 +58,6 @@ export enum DragType {
 }
 export type TeX = { tex: str; html: str; wasUpdated?: bool }
 export type TexMapRef = React.MutableRefObject<Map<str, TeX>>
-
-export class UGridDTO {
-  columns: strs[] = []
-  ids: strs = []
-  widths: strs = []
-}
 
 export type SetIds = (f: (old: strs) => strs) => void
 

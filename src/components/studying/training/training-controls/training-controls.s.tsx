@@ -5,7 +5,7 @@ import { TrainingControls } from './training-controls'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { useMount } from '../../../utils/hooks/hooks'
 import { Button, Stack, Typography } from '@mui/material'
-import { bool, fn, num } from '../../../../utils/types'
+import { bool, f, num } from '../../../../utils/types'
 
 interface TrainingControlsTP {
   cardType: CardType
@@ -62,7 +62,7 @@ const TrainingControlsT = ({ cardType, areFieldsHidden, timeLeft, isAtEnd = fals
       {estimation && <h3 style={{ color: estimationColor(estimation) }}>{estimation}</h3>}
       <TrainingControls
         isAtEnd={isAtEnd}
-        onTrainingEnd={fn}
+        onTrainingEnd={f}
         cardType={cardType}
         showHiddenFields={() => setHidden(false)}
         areFieldsHidden={areHidden}

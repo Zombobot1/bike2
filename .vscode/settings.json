@@ -1,6 +1,8 @@
 {
   "cSpell.words": [
+    "Automerge",
     "axif",
+    "CRDT",
     "ctick",
     "Datas",
     "DTOO",
@@ -33,7 +35,8 @@
     "Unmount",
     "upage",
     "ushuffle",
-    "utext"
+    "utext",
+    "ydoc"
   ],
   "jestrunner.jestCommand": "npm run test --"
 }

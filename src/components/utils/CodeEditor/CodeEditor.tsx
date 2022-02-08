@@ -5,7 +5,7 @@ import { cursorOffset, getCaretRelativeCoordinates, setCursor } from '../Selecti
 import { CodeRoot } from './CodeRoot'
 import { highlight, programmingLanguages } from './highlight'
 import { unhighlight } from '../../../utils/unhighlight'
-import { bool, Fn, fn, num, SetStr, str, strs } from '../../../utils/types'
+import { bool, Fn, f, num, SetStr, str, strs } from '../../../utils/types'
 import { Box, Button, styled, Typography } from '@mui/material'
 import ContentEditable from 'react-contenteditable'
 import { insert } from '../../../utils/algorithms'
@@ -36,13 +36,13 @@ export function CodeEditor({
   code: initialCode,
   setCode: saveCode,
   language,
-  setLanguage = fn,
+  setLanguage = f,
   readonly,
   goUp,
   goDown,
   focus,
   mini,
-  onEnter = fn,
+  onEnter = f,
   placeholder,
   autoFocus,
 }: CodeEditor) {

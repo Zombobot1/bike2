@@ -103,8 +103,6 @@ export const saw = (...args: Array<str | Colored>) =>
 export const lost = (text: str) => cy.contains(text).should('not.exist')
 export const doNotFret = () => cy.on('uncaught:exception', () => false)
 
-export const fakedId = () => cy.stub(uuid, 'v4').callsFake(uuidS())
-
 export const show = (Component: React.FC, pd = '') => {
   isCypress.isCypress = true
 

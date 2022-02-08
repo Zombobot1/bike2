@@ -1,6 +1,6 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useState } from 'react'
-import { bool, fn } from '../../../../utils/types'
+import { bool, f } from '../../../../utils/types'
 import { deleteUBlockInfo, setUBlockInfo } from '../../../editing/UPage/blockIdAndInfo'
 import { useMount } from '../../../utils/hooks/hooks'
 import { UInputDTO } from '../../types'
@@ -63,9 +63,9 @@ const defaultI: UInput = {
   wasSubmitted: false,
   submitOnAnswer: false,
   submissionAttempt: 0,
-  onSubmissionAttempt: fn,
-  setData: fn,
-  resolveError: fn,
+  onSubmissionAttempt: f,
+  setData: f,
+  resolveError: f,
 }
 
 const rightI: UInput = {

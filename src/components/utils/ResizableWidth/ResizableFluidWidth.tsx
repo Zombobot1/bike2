@@ -1,6 +1,6 @@
 import { useIsSM } from '../hooks/hooks'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { bool, Fn, fn, num, SetStr, str } from '../../../utils/types'
+import { bool, Fn, f, num, SetStr, str } from '../../../utils/types'
 import { WidthStr, Left, Handler, Right } from './ResizableWidth'
 import { styled } from '@mui/material'
 
@@ -23,9 +23,9 @@ export function ResizableFluidWidth({
   children,
   readonly,
   maxWidth = '100%',
-  onWidthChange = fn,
+  onWidthChange = f,
   stretch,
-  onResizeStart = fn,
+  onResizeStart = f,
   rightOnly,
   hideHandlers,
 }: ResizableFluidWidth) {

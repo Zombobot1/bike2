@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { fn, Fn, str } from '../../../utils/types'
+import { f, Fn, str } from '../../../utils/types'
 import { EditableUtility } from '../../utils/EditableText/EditableUtility'
 import { useUPageFocus } from '../UPage/hooks/useUPageFocus'
 
@@ -21,7 +21,7 @@ export function UBlockSetFactory(ps: UBlockSetFactory) {
       placeholder={ps.placeholder || "Type '/' for commands"}
       hidePlaceholder={!ps.placeholder}
       text=""
-      setText={fn}
+      setText={f}
       onEnter={ps.addNewBlock}
       createBlock={ps.addNewBlock}
       onBackspace={ps.onBackspace}

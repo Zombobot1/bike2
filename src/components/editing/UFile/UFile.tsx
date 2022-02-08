@@ -12,11 +12,6 @@ import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
 import { UVideoFile } from './UVideoFile/UVideoFile'
 import { PaddedBox } from '../UBlock/PaddedBox'
 
-export class UFileDTO {
-  src = ''
-  name = ''
-}
-
 export function UFile_({ data, setData, readonly }: UBlockImplementation) {
   const [fileData] = useReactiveObject(ucast(data, new UFileDTO()))
   const { fileS, isUploading, deleteFile } = useUFile((src, name) => setData(JSON.stringify({ name, src })))

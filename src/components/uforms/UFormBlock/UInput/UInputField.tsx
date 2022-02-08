@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { bool, fn, JSObject, num, SetStr, str } from '../../../../utils/types'
+import { bool, f, JSObject, num, SetStr, str } from '../../../../utils/types'
 import { useReactive } from '../../../utils/hooks/hooks'
 import { TextInput } from '../../../utils/MuiUtils'
 import { Correctness } from '../../types'
@@ -29,7 +29,7 @@ export function UInputField({
   validationError,
   multiline,
   wasSubmitted,
-  onChange = fn,
+  onChange = f,
   inline,
   i,
 }: UInputField) {

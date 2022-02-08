@@ -23,28 +23,3 @@ export interface UFormFieldData extends UFormFieldInfo {
 export const ANSWER_REQUIRED = 'Answer required!'
 export const SELECT_CORRECT = 'Select correct answer!'
 export const INVALID_EXERCISE = 'Exercise contains mistakes!'
-
-export class QuestionBase {
-  question = ''
-  explanation = ''
-}
-
-export class UChecksDTO extends QuestionBase {
-  correctAnswer: strs = []
-  options: strs = []
-}
-
-export class UInputDTO extends QuestionBase {
-  correctAnswer = ''
-}
-
-export interface SubQuestion {
-  i: num
-  type: UBlockType
-  correctAnswer: strs
-  options: strs
-  explanation: str
-}
-export type SubQuestions = SubQuestion[]
-
-export type InlineExerciseDTO = Array<str | SubQuestion>

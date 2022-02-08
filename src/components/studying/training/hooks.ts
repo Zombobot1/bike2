@@ -1,7 +1,7 @@
 import { atom, useAtom } from 'jotai'
-import { Fn, fn } from '../../../utils/types'
+import { Fn, f } from '../../../utils/types'
 
-const interactiveSubmitAtom = atom({ on: fn })
+const interactiveSubmitAtom = atom({ on: f })
 
 export const useInteractiveSubmit = () => {
   const [_interactiveSubmit, _setInteractiveSubmit] = useAtom(interactiveSubmitAtom)

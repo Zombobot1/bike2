@@ -2,7 +2,7 @@ import { alpha, Box, styled, useTheme } from '@mui/material'
 import { useEffect, useRef, KeyboardEvent, useState } from 'react'
 import { safeSplit } from '../../../utils/algorithms'
 import { srcfy } from '../../../utils/filesManipulation'
-import { bool, DivRef, fn, Fn, JSObject, num, SetNum, SetStr, str } from '../../../utils/types'
+import { bool, DivRef, f, Fn, JSObject, num, SetNum, SetStr, str } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { _apm } from '../../application/theming/theme'
 import { unhighlight } from '../../../utils/unhighlight'
@@ -112,7 +112,7 @@ const symbolLength = (text: str) => unhighlight(replaceAllCodeToNothing(text)).l
 
 function useAutocomplete(ps: UText_, text: str, toggleTex: ToggleTex, ref: DivRef) {
   const [offsetBeforeOpen, setOffsetBeforeOpen] = useState(-1)
-  const menu = useMenuB(fn, (exit) => {
+  const menu = useMenuB(f, (exit) => {
     if (exit === 'esc') {
       setCursor(safe(ref.current), offsetBeforeOpen, 'forward', 'symbol')
     }

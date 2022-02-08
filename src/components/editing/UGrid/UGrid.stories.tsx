@@ -7,7 +7,7 @@ import { SetForStories } from '../UBlockSet/SetForStories'
 function T() {
   return (
     <Box sx={{ width: '70%' }}>
-      <UBlock {...mockUblock} id="cat-lists-columns" />
+      <UBlock {...mockUblock} id="_catListsColumns" />
     </Box>
   )
 }

@@ -67,7 +67,7 @@ function Column({ id, ids, setGrid, addedBlocks, setAddedBlocks }: Column_) {
   })
 
   const addColumn = useC((id: str, newColumn: strs, side: 'right' | 'left') => {
-    const newId = uuid.v4()
+    const newId = uuid()
     setGrid((old) => {
       const droppedI = +old.ids.indexOf(id)
       const newI = droppedI + (side === 'right' ? 1 : 0)

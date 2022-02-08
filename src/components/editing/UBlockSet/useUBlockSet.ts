@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { insertAt, remove, replace, safeSplit } from '../../../utils/algorithms'
-import { bool, Fn, fn, str, strs } from '../../../utils/types'
+import { bool, Fn, f, str, strs } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { uuid } from '../../../utils/uuid'
 import { useC } from '../../utils/hooks/hooks'
@@ -53,10 +53,10 @@ export function useUBlockSet(ps: Ps, setIds: SetIds) {
       if (type !== 'image') {
         const blocksData = safeSplit(data, '\n\n')
         newBlocks = blocksData.length
-          ? blocksData.map((d): AddedBlock => ({ id: uuid.v4(), data: d, type }))
-          : [{ id: uuid.v4(), data: '', type }]
+          ? blocksData.map((d): AddedBlock => ({ id: uuid(), data: d, type }))
+          : [{ id: uuid(), data: '', type }]
       } else {
-        newBlocks.push({ id: uuid.v4(), data, type: 'image' })
+        newBlocks.push({ id: uuid(), data, type: 'image' })
       }
 
       ps.setAddedBlocks(newBlocks)
@@ -122,8 +122,8 @@ export function useUBlockSet(ps: Ps, setIds: SetIds) {
   })
 
   const handleGridCreation = useC((underId: str, side: Side) => {
-    const newIds = [uuid.v4(), uuid.v4()]
-    const gridId = uuid.v4()
+    const newIds = [uuid(), uuid()]
+    const gridId = uuid()
     setIds((old) => {
       const draggingIds = currentSelection.draggingIds
       if (draggingIds.includes(underId)) return old
@@ -229,7 +229,7 @@ export function useUBlockSet(ps: Ps, setIds: SetIds) {
   })
 
   const handleUpdate = useC((update: UBlockSetUpdate) => {
-    const id = uuid.v4()
+    const id = uuid()
 
     setIds((old) => {
       let newIds = old
@@ -276,6 +276,6 @@ type Side = 'right' | 'left'
 export type CreateColumn = (id: str, ids: strs, side: Side) => void
 class Ps {
   id = ''
-  createColumn?: CreateColumn = fn
-  setAddedBlocks: (b: AddedBlocks) => void = fn
+  createColumn?: CreateColumn = f
+  setAddedBlocks: (b: AddedBlocks) => void = f
 }

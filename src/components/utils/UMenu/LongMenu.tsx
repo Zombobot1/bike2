@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import _ from 'lodash'
 import { FC, useEffect, useRef, useState } from 'react'
-import { fn, Fn, num, OptionIconP, SetStr, str, strs, UIcon } from '../../../utils/types'
+import { f, Fn, num, OptionIconP, SetStr, str, strs, UIcon } from '../../../utils/types'
 import { filterProps, mod } from '../../../utils/utils'
 import { useReactive } from '../hooks/hooks'
 import { useOnScreen } from '../hooks/useOnScreen'
@@ -76,7 +76,7 @@ export function LongMenu(ps: LongMenu) {
   )
 }
 
-export function useLongMenu(options: LongMenuOptions, selected: str, onSelect: SetStr, onOpen = fn, onClose = fn) {
+export function useLongMenu(options: LongMenuOptions, selected: str, onSelect: SetStr, onOpen = f, onClose = f) {
   const props = useMenu(onOpen, onClose)
   const [selectedOption, setSelectedOption] = useState(selected)
   const select = (new_: str) => {

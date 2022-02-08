@@ -1,6 +1,6 @@
 import { styled, useTheme } from '@mui/material'
 import { useRef, KeyboardEvent, useEffect } from 'react'
-import { bool, fn, Fn, num, SetStr, str } from '../../../utils/types'
+import { bool, f, Fn, num, SetStr, str } from '../../../utils/types'
 import { Editable, getUTextStyles } from '../../editing/UText/utextStyles'
 import { useReactive } from '../hooks/hooks'
 import { useRefCallback } from '../hooks/useRefCallback'
@@ -23,8 +23,8 @@ export function EditableText({
   placeholder = '',
   focusIfEmpty,
   focus = 0,
-  onBlur: onBlurFn = fn,
-  onFocus: onFocusFn = fn,
+  onBlur: onBlurFn = f,
+  onFocus: onFocusFn = f,
 }: EditableText) {
   const [text, setText] = useReactive(initialText)
   const ref = useRef<HTMLDivElement>(null)

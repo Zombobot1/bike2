@@ -1,7 +1,7 @@
 import { Box, Button } from '@mui/material'
 import { useRef, useState } from 'react'
 import { _removalPage } from '../../../../content/ublocks'
-import { fn } from '../../../../utils/types'
+import { f } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
 import { useMenuB } from '../../../utils/UMenu/useMenuB'
@@ -20,7 +20,7 @@ function TTurner() {
         Toggle
       </Button>
       <UMenu btnRef={ref} close={close} isOpen={isOpen} elevation={8} hasNested={true}>
-        <BlockTurner turnInto={fn} />
+        <BlockTurner turnInto={f} />
       </UMenu>
     </>
   )
@@ -34,7 +34,7 @@ const T = (context: 'general' | 'uform') => () => {
   return (
     <Box sx={{ position: 'relative' }}>
       <Button onClick={menu.toggleOpen}>Toggle</Button>
-      <BlockAutocomplete coordinates={{ x: 0, b: 0 }} context={context} menu={menu} createBlock={fn} />
+      <BlockAutocomplete coordinates={{ x: 0, b: 0 }} context={context} menu={menu} createBlock={f} />
     </Box>
   )
 }

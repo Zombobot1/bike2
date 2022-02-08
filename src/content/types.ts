@@ -1,5 +1,7 @@
-import { UBlockDTO } from '../components/editing/types'
+import { UBlock, UPageData } from '../components/editing/UPage/types'
 import { str } from '../utils/types'
+import { uuid } from '../utils/uuid'
 
-export type IdAndBlock = [str, UBlockDTO]
-export type IdAndBlocks = IdAndBlock[]
+export type IdAndPage = [str, UPageData]
+
+export const _es = (): UBlock => ({ id: uuid(), type: 'text', data: '' })

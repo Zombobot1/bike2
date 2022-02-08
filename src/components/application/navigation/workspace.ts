@@ -1,4 +1,4 @@
-import { bool, fn, str, strsP } from '../../../utils/types'
+import { bool, f, str, strsP } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { useData } from '../../../fb/useData'
 import { NavNodeDTO, NavNodeDTOO, NavNodeDTOs } from './NavBar/NavTree'
@@ -79,7 +79,7 @@ export class WS {
     public favorite: NavNodeDTOs,
     public personal: NavNodeDTOs,
     private _id: str,
-    private saveFn: SetWSD = fn,
+    private saveFn: SetWSD = f,
   ) {}
 
   _addToFavorite = (id: str) => {

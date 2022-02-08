@@ -15,7 +15,7 @@ import { getFirestore } from 'firebase/firestore'
 import { App } from './App/App'
 import { firebaseConfig } from '../../_seeding'
 import { registerServiceWorker } from '../../serviceWorkerRegistration'
-import { _MOCK_FB } from '../../fb/utils'
+import { isInProduction } from '../../fb/utils'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 
@@ -26,7 +26,6 @@ export interface OuterShell {
 export function OuterShell({ children }: OuterShell) {
   const { theme } = useUTheme()
 
-  const isProduction = process.env.NODE_ENV !== 'development' || !_MOCK_FB
   return (
     <StrictMode>
       <Router>
@@ -34,7 +33,7 @@ export function OuterShell({ children }: OuterShell) {
           <DndProvider backend={HTML5Backend}>
             <ThemeProvider theme={theme}>
               <CssBaseline />
-              {isProduction ? (
+              {isInProduction ? (
                 <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
                   <FB>{children}</FB>
                 </FirebaseAppProvider>

@@ -1,8 +1,8 @@
 import { SoryBook } from './sorybook/sorybook'
 import ReactDOM from 'react-dom'
 
-let init = { read: fn }
-if (process.env.NODE_ENV !== 'development' || !_MOCK_FB) init = wrapPromise(_initFB())
+let init = { read: f }
+if (isInProduction) init = wrapPromise(_initFB())
 
 const Sandbox = () => {
   init.read()
@@ -105,9 +105,9 @@ import { wrapPromise, _initFB } from './_seeding'
 import { Suspense } from 'react'
 import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingState'
 
-import { _MOCK_FB } from './fb/utils'
-import { fn } from './utils/types'
+import { f } from './utils/types'
 import { ErrorBoundary } from 'react-error-boundary'
+import { isInProduction } from './fb/utils'
 
 if (![].at) {
   Array.prototype.at = function (i) {

@@ -77,14 +77,7 @@ const AppContainer = styled('div', { label: 'App' })(({ theme }) => ({
   overflowX: 'hidden',
 
   [`${theme.breakpoints.up('sm')}`]: {
-    '::-webkit-scrollbar': {
-      width: '10px',
-    },
-
-    '::-webkit-scrollbar-thumb': {
-      borderRadius: '7.5px',
-      backgroundColor: _apm(theme, 0.15),
-    },
+    ...theme.scroll('v'),
   },
 }))
 

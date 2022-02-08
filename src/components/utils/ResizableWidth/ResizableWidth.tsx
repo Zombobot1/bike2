@@ -1,6 +1,6 @@
 import { useIsSM } from '../hooks/hooks'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { bool, fn, num, SetNum } from '../../../utils/types'
+import { bool, f, num, SetNum } from '../../../utils/types'
 import { alpha, styled } from '@mui/material'
 
 export interface ResizableWidth {
@@ -26,7 +26,7 @@ export function ResizableWidth({
   hiddenHandler,
   stretch,
   stretchHandler,
-  onWidthChange = fn,
+  onWidthChange = f,
 }: ResizableWidth) {
   const [isResizing, setIsResizing] = useState(false)
   const [width, setWidth] = useState({ ...new Width(), width: Math.min(initialWidth, maxWidth) })

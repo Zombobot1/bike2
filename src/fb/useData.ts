@@ -1,9 +1,9 @@
-import { doc, getFirestore, setDoc, getDoc } from '@firebase/firestore'
+import { doc, getFirestore, setDoc, getDoc, Bytes } from '@firebase/firestore'
 import { useCallback } from 'react'
 import { useFirestore, useFirestoreDocData } from 'reactfire'
-import { str } from '../utils/types'
+import { str, strs } from '../utils/types'
 import { useFS } from './fs'
-import { _MOCK_FB } from './utils'
+import { isInProduction } from './utils'
 
 function useFSData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
   const { setDoc, getDoc } = useFS()
@@ -20,7 +20,7 @@ function useFSData_<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) 
 }
 
 export function useData<T>(col: str, id: str, initialData?: T): [T, (d: Partial<T>) => void] {
-  if (process.env.NODE_ENV === 'development' && _MOCK_FB) return useFSData_(col, id, initialData)
+  if (!isInProduction) return useFSData_(col, id, initialData)
 
   const setData_ = useCallback((data: Partial<T>) => setData(col, id, data), [])
   const data = useFirestoreDocData(doc(useFirestore(), col, id), { initialData }).data
@@ -34,7 +34,7 @@ export function useData<T>(col: str, id: str, initialData?: T): [T, (d: Partial<
 }
 
 export function useFirestoreData() {
-  if (process.env.NODE_ENV !== 'development' || !_MOCK_FB) return { setData, addData, getData }
+  if (isInProduction) return { setData, addData, getData }
   const { setDoc, getDoc } = useFS()
   return {
     setData: setDoc,

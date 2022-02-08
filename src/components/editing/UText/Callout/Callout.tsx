@@ -39,11 +39,6 @@ const Container = styled(RStack)(({ theme }) => ({
   paddingBottom: '0.75rem',
 }))
 
-export class CalloutDTO {
-  text = ''
-  type: 'info' | 'success' | 'warning' | 'error' = 'info'
-}
-
 const icons: { [key: string]: JSX.Element } = {
   info: <InfoRoundedIcon color="info" fontSize="large" />,
   success: <CheckCircleRoundedIcon color="success" fontSize="large" />,

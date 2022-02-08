@@ -14,7 +14,7 @@ import {
   Fade,
 } from '@mui/material'
 import { FC, RefObject, useRef, useState } from 'react'
-import { bool, fn, Fn, num, nums, OptionIconP, str } from '../../../utils/types'
+import { bool, f, Fn, num, nums, OptionIconP, str } from '../../../utils/types'
 import { all as call } from '../../../utils/utils'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { useHover } from '../hooks/useHover'
@@ -81,7 +81,7 @@ export function UMenu(ps: UMenu) {
             sx={{ minWidth: ps.minWidth ? ps.minWidth : 'default', maxHeight: ps.maxHeight }}
           >
             {/* ClickAwayListener is inside paper due to Grow */}
-            <ClickAwayListener onClickAway={ps.isNested ? fn : () => ps.close('esc')}>
+            <ClickAwayListener onClickAway={ps.isNested ? f : () => ps.close('esc')}>
               <MenuList
                 {...filterProps(ps, uMenuFilter)}
                 onClick={() => ps.close('enter')}
@@ -106,7 +106,7 @@ export interface UMenuControls extends UMenuControlsB {
   btnRef: React.MutableRefObject<null>
 }
 
-export function useMenu(onOpen = fn, onClose = fn): UMenuControls {
+export function useMenu(onOpen = f, onClose = f): UMenuControls {
   const btnRef = useRef(null)
   const [isOpen, setOpen] = useState(false)
 
@@ -169,7 +169,7 @@ function NestedOption(props: UOption) {
         containerRef={ref}
         isOpen={hovered}
         btnRef={ref}
-        close={fn}
+        close={f}
         placement="right"
         elevation={16}
         minWidth="15rem"

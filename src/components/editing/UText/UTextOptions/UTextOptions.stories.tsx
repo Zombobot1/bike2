@@ -1,6 +1,6 @@
 import { Box } from '@mui/system'
 import { useRef } from 'react'
-import { fn } from '../../../../utils/types'
+import { f } from '../../../../utils/types'
 import { UTextOptions } from './UTextOptions'
 
 const T = (type: 'tex' | 'link' | 'options') => () => {
@@ -14,18 +14,18 @@ const T = (type: 'tex' | 'link' | 'options') => () => {
         linkEditorPs={{
           activeLink: { x: 0, b: 0, address: '' },
           isActive: type === 'link',
-          onLinkKeyDown: fn,
-          saveLink: fn,
-          toggleLink: fn,
-          updateLink: fn,
+          onLinkKeyDown: f,
+          saveLink: f,
+          toggleLink: f,
+          updateLink: f,
         }}
         texEditorPs={{
           activeTex: { x: 0, b: 0, id: '', tex: '' },
           isActive: type === 'tex',
           readonly: false,
-          saveTex: fn,
-          toggleTex: fn,
-          updateTex: fn,
+          saveTex: f,
+          toggleTex: f,
+          updateTex: f,
         }}
       />
     </Box>

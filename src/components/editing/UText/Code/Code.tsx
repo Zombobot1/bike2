@@ -25,8 +25,3 @@ export function Code(ps: UText) {
     </PaddedBox>
   )
 }
-
-export class CodeDTO {
-  language = 'TypeScript'
-  code = ''
-}

@@ -1,3 +1,5 @@
+/// <reference types="vitest" />
+
 import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import svgrPlugin from 'vite-plugin-svgr'
@@ -10,5 +12,8 @@ export default defineConfig({
   },
   esbuild: {
     jsxInject: `import React from 'react'`,
+  },
+  test: {
+    include: ['**/*.test.ts'],
   },
 })

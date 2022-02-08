@@ -1,8 +1,8 @@
-import { fn, str, strs } from '../../../../utils/types'
+import { f, str, strs } from '../../../../utils/types'
 
 class Actions {
-  deletePages: (ids: strs) => void = fn
-  createPage: (id: str) => void = fn
+  deletePages: (ids: strs) => void = f
+  createPage: (id: str) => void = f
 }
 
 export let actions = new Actions()

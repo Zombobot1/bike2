@@ -18,9 +18,10 @@ export function UImageFile({ data, setData, readonly }: UBlockImplementation) {
     setImageData(() => ({ width: 900, src: srcfy(f) }))
   })
 
-  useEffect(() => {
-    if (imageData.isNew) imageFromSrc(imageData.src).then((i) => props.uploadFile(i))
-  }, [imageData.isNew]) // image can be created inside UText
+  // TODO: handle upload in UPageState
+  // useEffect(() => {
+  //   if (imageData.isNew) imageFromSrc(imageData.src).then((i) => props.uploadFile(i))
+  // }, [imageData.isNew]) // image can be created inside UText
 
   useEffect(() => {
     if (newSrc && newSrc !== imageData.src) {
@@ -68,9 +69,3 @@ const Delete = styled(IconButton)(({ theme }) => ({
     backgroundColor: alpha(theme.palette.grey[800], 0.6),
   },
 }))
-
-export class UMediaFileDTO {
-  src = ''
-  width = 900
-  isNew?: bool
-}

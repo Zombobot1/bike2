@@ -1,5 +1,6 @@
 import { styled } from '@mui/material'
-import { fn, Fn, JSObject, num, str, strs } from './types'
+import _ from 'lodash'
+import { bool, f, Fn, JSObject, num, str, strs } from './types'
 
 type E = {
   preventDefault: Fn
@@ -24,7 +25,7 @@ export const prevent = (e: E) => {
 // eslint-disable-next-line @typescript-eslint/ban-types
 export function all(...fs: Array<Function | undefined>) {
   return (_?: unknown) => {
-    fs.forEach((f) => (f ? f() : fn()))
+    fs.forEach((_f) => (_f ? _f() : f()))
   }
 }
 
@@ -113,6 +114,10 @@ export function getEmptyStrings(len: number) {
 export const cut = (string: str, length: num) => (string.length <= length ? string : string.slice(0, length) + '...')
 
 export const mod = (n: num, m: num) => ((n % m) + m) % m
+
+export const isStr = (s: unknown): bool => _.isString(s)
+// considers arrays as objects
+export const isObjD = (o: unknown): bool => typeof o === 'object' && o !== null
 
 export const filterProps = (props: JSObject, excessive: strs) =>
   Object.fromEntries(Object.entries(props).filter(([k]) => !excessive.includes(k)))
