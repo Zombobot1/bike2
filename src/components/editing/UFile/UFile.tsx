@@ -1,28 +1,33 @@
 import { Stack, styled, Typography, IconButton } from '@mui/material'
-import { ucast, prevented } from '../../../utils/utils'
-import { isNotFullWidthBlock, UBlockImplementation } from '../types'
+import { prevented } from '../../../utils/utils'
+import { UBlockContent } from '../types'
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { useUFile } from './useUFile'
-import { useReactiveObject } from '../../utils/hooks/hooks'
 import { _apm } from '../../application/theming/theme'
 import { UImageFile } from './UImageFile/UImageFile'
 import { UAudioFile } from './UAudioFile/UAudioFile'
 import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
 import { UVideoFile } from './UVideoFile/UVideoFile'
-import { PaddedBox } from '../UBlock/PaddedBox'
+import { PaddedBox } from '../UPage/UBlock/PaddedBox'
+import { isNotFullWidthBlock, UFileData } from '../UPage/ublockTypes'
 
-export function UFile_({ data, setData, readonly }: UBlockImplementation) {
-  const [fileData] = useReactiveObject(ucast(data, new UFileDTO()))
-  const { fileS, isUploading, deleteFile } = useUFile((src, name) => setData(JSON.stringify({ name, src })))
-  if (!fileData.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
+export function UFile_({ id, data: d, setData, readonly }: UBlockContent) {
+  const data = d as UFileData
+  const { fileS, isUploading, deleteFile } = useUFile(id, (src, name) => setData(id, { name, src }))
+  if (!data.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
 
   return (
-    <FileContainer direction="row" alignItems="center" onClick={() => window?.open(fileData.src, '_blank')?.focus()}>
+    <FileContainer direction="row" alignItems="center" onClick={() => window?.open(data.src, '_blank')?.focus()}>
       <AttachFileRoundedIcon />
-      <FileName>{fileData.name}</FileName>
+      <FileName>{data.name}</FileName>
       {!readonly && (
-        <Delete onClick={prevented(deleteFile)}>
+        <Delete
+          onClick={prevented(() => {
+            setData(id, { src: '' })
+            deleteFile(id)
+          })}
+        >
           <DeleteRoundedIcon />
         </Delete>
       )}
@@ -30,7 +35,7 @@ export function UFile_({ data, setData, readonly }: UBlockImplementation) {
   )
 }
 
-export function UFile(ps: UBlockImplementation) {
+export function UFile(ps: UBlockContent) {
   const nfw = isNotFullWidthBlock(ps.type)
   return (
     <PaddedBox sx={{ width: nfw ? 'auto' : '100%' }}>

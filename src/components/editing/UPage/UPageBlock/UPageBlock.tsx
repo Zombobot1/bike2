@@ -1,48 +1,39 @@
 import InsertDriveFileRoundedIcon from '@mui/icons-material/InsertDriveFileRounded'
 import { styled, Typography, useTheme } from '@mui/material'
 import { useDrop } from 'react-dnd'
-import { SetStr, str } from '../../../../utils/types'
-import { ucast } from '../../../../utils/utils'
-import { useReactiveObject } from '../../../utils/hooks/hooks'
-import { useRouter } from '../../../utils/hooks/useRouter'
+import { useNavigate } from 'react-router'
+import { SetStr } from '../../../../utils/types'
 import { RStack } from '../../../utils/MuiUtils'
-import { DragType } from '../../types'
-import { currentSelection } from '../hooks/useUpageSelection'
-import { UPageDTO } from '../UPage'
+import { DragType, UBlockContent } from '../../types'
+import { UPageBlockData } from '../ublockTypes'
 
-export interface UPageBlock {
-  id: str
-  data: str
-  setData: SetStr
+export interface UPageBlock extends UBlockContent {
   handleMoveBlocksTo: SetStr
 }
-// TODO: Make shallow
-export function UPageBlock({ id, data, setData, handleMoveBlocksTo }: UPageBlock) {
-  const [page] = useReactiveObject(ucast<UPageDTO>(data, { ids: [], name: '', color: '' }))
-  const { history } = useRouter()
+
+export function UPageBlock({ data, handleMoveBlocksTo }: UPageBlock) {
+  const { id, $name: name = '' } = data as UPageBlockData
+  const navigate = useNavigate()
 
   const theme = useTheme()
 
   const [{ isOver }, drop] = useDrop(
     () => ({
       accept: DragType.ublock,
-      drop: () => {
-        setData(JSON.stringify({ ...page, ids: [...page.ids, ...currentSelection.draggingIds] }))
-        handleMoveBlocksTo(id)
-      },
+      drop: () => handleMoveBlocksTo(id),
       collect: (monitor) => ({
         isOver: !!monitor.isOver(),
       }),
     }),
-    [page],
+    [],
   )
 
   return (
-    <Container onClick={() => history.push(id)}>
+    <Container onClick={() => navigate('/' + id)}>
       <RStack spacing={1} justifyContent="start">
         <InsertDriveFileRoundedIcon />
         <PageName ref={drop} sx={isOver ? { backgroundColor: theme.apm('info') } : {}}>
-          {page.name}
+          {name}
         </PageName>
       </RStack>
     </Container>

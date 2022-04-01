@@ -1,12 +1,14 @@
 import { Box } from '@mui/material'
-import { useState } from 'react'
-import { SetForStories } from '../UBlockSet/SetForStories'
+import { _blocks } from '../../../content/blocks'
+import { SetForStories } from '../UPage/UBlockSet/SetForStories'
+import { _generators } from '../UPage/UPageState/crdtParser/_fakeUPage'
+
+const { div } = _generators
 
 const T = () => {
-  const s = useState(['kittens', 'divider', 'kittens2'])
   return (
     <Box sx={{ width: 500 }}>
-      <SetForStories id="d" ids={s[0]} />
+      <SetForStories blocks={[_blocks.pets.kittens1, div(), _blocks.pets.kittens2]} />
     </Box>
   )
 }
@@ -14,5 +16,5 @@ const T = () => {
 export const Divided = T
 
 export default {
-  title: 'Editing/UDivider',
+  title: 'Editing extras/UDivider',
 }

@@ -1,21 +1,18 @@
 import { Box } from '@mui/system'
-import { UBlock, mockUblock } from '../../UBlock/UBlock'
+import { _catQuote } from '../../../../content/blocks'
+import { _mockUTextP } from '../types'
+import { Quote } from './Quote'
 
-const T = (props: UBlock) => {
+const T = () => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...props} />
+      <Quote {..._mockUTextP} type={'quote'} data={_catQuote} />
     </Box>
   )
 }
 
-const data: UBlock = {
-  ...mockUblock,
-  id: 'catQuote',
-}
-
-export const RichQuote = () => T(data)
+export const RichQuote = () => T()
 
 export default {
-  title: 'Editing/Quote',
+  title: 'Editing extras/Quote',
 }

@@ -2,14 +2,12 @@ import { CardDTO, CardDTOs, CardEstimation, isMistake } from '../types'
 import { useEffect, useState } from 'react'
 import { useUnmount } from '../../../utils/hooks/hooks'
 import { Fn, num, State } from '../../../../utils/types'
-import { useRouter } from '../../../utils/hooks/useRouter'
 import { TrainingDTO } from './training'
 import { removeElement, safe } from '../../../../utils/utils'
 import { CardData, CardDatas } from './card-carousel'
 import { useTrainingTimer } from '../training-timer/training-timer'
 import { useSlides } from '../../../utils/Slides/Slides'
 import { atom, useAtom } from 'jotai'
-import { STUDY } from '../../../application/App/pages'
 
 const mistakesCountA = atom(0)
 
@@ -116,8 +114,8 @@ export const useCards = (trainingId: string, initialCards: CardDTOs) => {
 
 type OnLastCard = Fn
 export const usePagesPathUpdate = ({ _id }: TrainingDTO): OnLastCard => {
-  const { history } = useRouter()
+  // const { history } = useRouter()
   return () => {
-    history.push(STUDY)
+    // history.push(STUDY)
   }
 }

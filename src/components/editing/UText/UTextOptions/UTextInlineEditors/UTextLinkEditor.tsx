@@ -2,7 +2,7 @@ import { bool, Fn, num, SetStr, str } from '../../../../../utils/types'
 import { KeyboardEvent, useEffect, useState } from 'react'
 import { ClickAwayListener, Paper } from '@mui/material'
 import { TextInput } from '../../../../utils/MuiUtils'
-import { InlineEditorExit, SetFocus } from '../../../types'
+import { InlineEditorExit, UPageFocus } from '../../../types'
 import { safe } from '../../../../../utils/utils'
 import { removeTag, replaceTag } from '../../../../utils/Selection/htmlAsStr'
 import { cursorOffsetAndSelection, selectionCoordinates, toggleTags } from '../../../../utils/Selection/selection'
@@ -44,7 +44,14 @@ export function UTextLinkEditor({ activeLink, onLinkKeyDown, saveLink, updateLin
 }
 
 type Ref = React.RefObject<HTMLDivElement>
-export function useLinks(text: str, setText: SetStr, setFocus: SetFocus, setData: SetStr, ref: Ref): UTextLinkEditor {
+export function useLinks(
+  id: str,
+  text: str,
+  setText: SetStr,
+  setFocus: (f?: UPageFocus) => void,
+  setData: (id: str, d: str) => void,
+  ref: Ref,
+): UTextLinkEditor {
   const [activeLink, setActiveLink] = useState(new ActiveLink())
 
   useEffect(() => {
@@ -68,8 +75,8 @@ export function useLinks(text: str, setText: SetStr, setFocus: SetFocus, setData
       setText(newData)
     }
 
-    if (exitedBy === 'click' && newData !== text) setData(newData)
-    if (exitedBy === 'key') setFocus({ type: 'start-integer', xOffset: activeLink.text.length + activeLink.offset })
+    if (exitedBy === 'click' && newData !== text) setData(id, newData)
+    if (exitedBy === 'key') setFocus({ id, type: 'start-integer', xOffset: activeLink.text.length + activeLink.offset })
 
     setActiveLink(new ActiveLink())
   }

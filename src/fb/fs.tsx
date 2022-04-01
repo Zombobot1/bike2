@@ -1,14 +1,14 @@
-import _ from 'lodash'
 import { createContext, useContext } from 'react'
 import { useC } from '../components/utils/hooks/hooks'
 import { useCurrentState } from '../components/utils/hooks/usePrevious'
-import { _fs } from '../content/fs'
 import { f, JSObject, OJSObject, str } from '../utils/types'
 import { safe } from '../utils/utils'
+import { structuredClone } from '../utils/wrappers/clone'
+import { _FSD } from './types'
 
-type Doc = { id: str; data: JSObject }
-export type _Col = { name: str; docs: Doc[] }
-export type _FSD = _Col[]
+let _fsd: _FSD = []
+export const setFSD = (n: _FSD) => (_fsd = n)
+
 const pendingInsertions = new Map<str, JSObject>()
 class State {
   getFS: () => _FSD = () => []
@@ -23,8 +23,8 @@ function useFS_(): State {
 }
 
 export const FSProvider: React.FC = ({ children }) => {
-  const [getFS, setFS] = useCurrentState(_.cloneDeep(_fs))
-  return <FSContext.Provider value={{ getFS, setFS }}>{children}</FSContext.Provider>
+  const [getFS, setFS] = useCurrentState(structuredClone(_fsd))
+  return <FSContext.Provider value={{ getFS, setFS }}>{children}</FSContext.Provider> // React component -> .tsx
 }
 
 export function useFS() {
@@ -48,9 +48,8 @@ export function useFS() {
 
   const getDoc = useC((col: str, id: str, initialData?: JSObject) => {
     const get = (col: str, id: str): OJSObject => {
-      const existingData = getFS()
-        .find((c) => c.name === col)
-        ?.docs.find((d) => d.id === id)?.data
+      const fs = getFS()
+      const existingData = fs.find((c) => c.name === col)?.docs.find((d) => d.id === id)?.data
       return existingData ?? pendingInsertions.get(col + id)
     }
 
@@ -59,5 +58,12 @@ export function useFS() {
     return initialData
   })
 
-  return { setDoc, getDoc }
+  const appendToArray = useC((col: str, id: str, arrayName: str, data: unknown) => {
+    const doc = getDoc(col, id)
+    const newData = { ...doc }
+    newData[arrayName] = [...newData[arrayName], data]
+    setDoc(col, id, newData)
+  })
+
+  return { setDoc, getDoc, appendToArray }
 }

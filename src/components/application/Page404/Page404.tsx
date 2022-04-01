@@ -1,5 +1,5 @@
 import { Button, Stack, styled, Typography } from '@mui/material'
-import { useRouter } from '../../utils/hooks/useRouter'
+import { useNavigate } from 'react-router'
 import { ReactComponent as Image404SVG } from './404.svg'
 import { ReactComponent as LeftBlobSVG } from './leftBlob.svg'
 import { ReactComponent as RightBlobSVG } from './rightBlob.svg'
@@ -86,7 +86,7 @@ const Text = styled(Typography)({
 })
 
 export function Page404() {
-  const { history } = useRouter()
+  const navigate = useNavigate()
   return (
     <Page>
       <Wave />
@@ -95,7 +95,7 @@ export function Page404() {
         <Image404 />
         <Whooops>Whooops!</Whooops>
         <Text color="text.secondary">The page you are looking for is not found :(</Text>
-        <Button onClick={() => history.push('/')} variant="contained" size="large" data-cy="go-home">
+        <Button onClick={() => navigate('/')} variant="contained" size="large" data-cy="go-home">
           Go back home
         </Button>
       </Content>

@@ -1,10 +1,9 @@
 import { SmallDeckCard } from './types'
 import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
-import { useRouter } from '../../../../utils/hooks/useRouter'
 import { TrainingDTO } from '../../../training/training/training'
 import { styled, Typography } from '@mui/material'
 import { chop } from '../../../utils'
-import { STUDY } from '../../../../application/App/pages'
+import { f } from '../../../../../utils/types'
 
 export interface DeckCard extends SmallDeckCard {
   deckPath: string
@@ -17,10 +16,9 @@ export interface TrainingConceptInfo {
 
 export type TrainingCard = Omit<TrainingDTO, 'cards'>
 export const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConceptsInfo }: TrainingCard) => {
-  const { history } = useRouter()
-  const onClick = () => history.push(`${STUDY}/${_id}`)
+  // const onClick = () => history.push(`${STUDY}/${_id}`)
   return (
-    <Card onClick={onClick} sx={{ ':before': { backgroundColor: deckColor } }}>
+    <Card onClick={f} sx={{ ':before': { backgroundColor: deckColor } }}>
       <DeckPath fontSize="small" color="text.secondary">
         {deckPath}
       </DeckPath>

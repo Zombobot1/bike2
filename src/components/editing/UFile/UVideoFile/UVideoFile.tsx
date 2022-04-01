@@ -3,20 +3,18 @@ import { useState } from 'react'
 import { RStack, TextInput } from '../../../utils/MuiUtils'
 import AddLinkRoundedIcon from '@mui/icons-material/AddLinkRounded'
 import { str } from '../../../../utils/types'
-import { useReactiveObject } from '../../../utils/hooks/hooks'
 
-import { UMediaFileDTO } from '../UImageFile/UImageFile'
-import { ucast as turn } from '../../../../utils/utils'
-import { UBlockImplementation } from '../../types'
+import { UBlockContent } from '../../types'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
+import { UMediaFileData } from '../../UPage/ublockTypes'
 
-export function UVideoFile({ data, setData, readonly }: UBlockImplementation) {
-  const [videoData] = useReactiveObject(turn(data, new UMediaFileDTO()))
+export function UVideoFile({ id, data: d, setData, readonly }: UBlockContent) {
+  const data = d as UMediaFileData
   const [link, setLink] = useState('')
   const [hasError, setHasError] = useState(false)
   const onClick = () => {
     const isValid = validate(link)
-    if (isValid) setData(JSON.stringify({ ...videoData, src: idFromLink(link) }))
+    if (isValid) setData(id, { src: idFromLink(link) })
     setHasError(!isValid)
   }
 
@@ -42,12 +40,12 @@ export function UVideoFile({ data, setData, readonly }: UBlockImplementation) {
   return (
     <ResizableWidth
       readonly={readonly}
-      width={videoData.width}
-      updateWidth={(w) => setData(JSON.stringify({ ...videoData, width: w }))}
+      width={data.width}
+      updateWidth={(w) => setData(id, { width: w })}
       maxWidth={900}
     >
       <Video
-        src={`https://www.youtube.com/embed/${videoData.src}`}
+        src={`https://www.youtube.com/embed/${data.src}`}
         frameBorder="0"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen

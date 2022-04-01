@@ -28,11 +28,6 @@ function T_({ initialPosition, prepareForSignIn, showSignOut }: T_) {
   return (
     <>
       {showSignOut && isSignedIn && <Button onClick={signOut}>Sign Out</Button>}
-      {!isSignedIn && (
-        <Button onClick={() => signIn('')} data-cy="sign-in-oob">
-          Sign In
-        </Button>
-      )}
       <MemoryRouter key={initialPosition} initialEntries={[initialPosition]}>
         <App />
       </MemoryRouter>
@@ -60,14 +55,22 @@ const data2: T_ = {
 }
 
 const data3: T_ = {
-  initialPosition: '/pets',
+  initialPosition: '/pets-and-animals',
 }
 
+export const Application = () => T({ ...data1, showSignOut: false })
+export const OnPetsPage = () => T(data3)
 export const ShowsStudyAfterLogin = () => T(data1)
 export const Shows404AndLetsGoToStudy = () => T(data2)
 export const FavoriteAdditionAndDeletion = () => T(data3)
-export const Application = () => T(data3)
 
 export default {
   title: 'App/App',
+  order: [
+    'Application',
+    'OnPetsPage',
+    'ShowsStudyAfterLogin',
+    'Shows404AndLetsGoToStudy',
+    'FavoriteAdditionAndDeletion',
+  ],
 }

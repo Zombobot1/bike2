@@ -1,29 +1,33 @@
 import { Box } from '@mui/material'
-import { useState } from 'react'
-import { _idsForBuildColumns } from '../../../content/content'
-import { mockUblock, UBlock } from '../UBlock/UBlock'
-import { SetForStories } from '../UBlockSet/SetForStories'
+import { _blocks } from '../../../content/blocks'
+import { SetForStories } from '../UPage/UBlockSet/SetForStories'
+import { UBlocks } from '../UPage/ublockTypes'
+import { _generators } from '../UPage/UPageState/crdtParser/_fakeUPage'
 
-function T() {
+const { t, grid } = _generators
+
+const forBuilding = [
+  _blocks.test.bathYourCat,
+  t('Gather your supplies'),
+  t('Rinse your cat'),
+  _blocks.test.whyOwnCat,
+  t('Cats can bathe themselves'),
+  t('Cats will keep your house and yard rodent-free'),
+]
+
+const blocks = [grid([forBuilding.slice(0, 3), forBuilding.slice(3)], ['50%', '50%'])]
+
+const T = (blocks: UBlocks) => {
   return (
     <Box sx={{ width: '70%' }}>
-      <UBlock {...mockUblock} id="_catListsColumns" />
+      <SetForStories blocks={blocks} />
     </Box>
   )
 }
 
-function T2() {
-  const [ids] = useState(_idsForBuildColumns)
-  return (
-    <Box sx={{ width: '70%' }}>
-      <SetForStories id="g" ids={ids} />
-    </Box>
-  )
-}
-
-export const AddsAndDeletesBlocks = T
-export const BuildColumns = T2
+export const AddsAndDeletesBlocks = () => T(blocks)
+export const BuildColumns = () => T(forBuilding)
 
 export default {
-  title: 'Editing/UGrid',
+  title: 'Editing extras/UGrid',
 }

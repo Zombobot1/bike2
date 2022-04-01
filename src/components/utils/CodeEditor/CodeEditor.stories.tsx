@@ -1,7 +1,7 @@
 import { Button, Popper } from '@mui/material'
 import { Box } from '@mui/system'
 import { useRef, useState } from 'react'
-import { _codeWithPaws } from '../../../content/content'
+import { _codeWithPaws } from '../../../content/blocks'
 import { f, str } from '../../../utils/types'
 import { useMount } from '../hooks/hooks'
 import { CodeEditor } from './CodeEditor'

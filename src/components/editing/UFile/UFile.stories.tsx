@@ -1,34 +1,31 @@
 import { Box } from '@mui/material'
-import { UBlock, mockUblock } from '../UBlock/UBlock'
+import { _blocks } from '../../../content/blocks'
+import { f } from '../../../utils/types'
+import { UBlockContent } from '../types'
+import { _generators } from '../UPage/UPageState/crdtParser/_fakeUPage'
+import { UFile } from './UFile'
 
-const T = (props: UBlock) => {
+const { file } = _generators
+
+const T = (ps: UBlockContent) => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...props} />
+      <UFile {...ps} />
     </Box>
   )
 }
 
-const data1: UBlock = {
-  ...mockUblock,
-  id: 'newFile',
-  initialData: { data: '', type: 'file' },
+const base: UBlockContent = {
+  id: '',
+  data: '',
+  setData: f,
+  type: 'file',
 }
 
-const data2: UBlock = {
-  ...mockUblock,
-  id: 'catPdf',
-}
-
-const data3: UBlock = {
-  ...data2,
-  readonly: true,
-}
-
-export const ShowsFile = () => T(data2)
-export const ReadOnly = () => T(data3)
-export const UploadsFile = () => T(data1)
+export const ShowsFile = () => T({ ...base, ..._blocks.pets.fluffyPdf })
+export const ReadOnly = () => T({ ...base, ..._blocks.pets.fluffyPdf, readonly: true })
+export const UploadsFile = () => T({ ...base, ...file() })
 
 export default {
-  title: 'Editing/UFile',
+  title: 'Editing extras/UFile',
 }

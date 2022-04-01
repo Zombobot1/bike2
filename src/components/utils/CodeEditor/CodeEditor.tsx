@@ -14,15 +14,15 @@ import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import { LongMenu, useLongMenu } from '../UMenu/LongMenu'
 import { copyText } from '../../../utils/copyText'
-import { UTextFocus } from '../../editing/types'
 import { useMount } from '../hooks/hooks'
+import { UPageFocus } from '../../editing/types'
 
 export interface CodeEditor {
   language: str
   code: str
   setCode: SetStr
   setLanguage?: SetStr
-  focus?: UTextFocus
+  focus?: UPageFocus
   readonly?: bool
   goUp?: (x?: num) => void
   goDown?: (x?: num) => void

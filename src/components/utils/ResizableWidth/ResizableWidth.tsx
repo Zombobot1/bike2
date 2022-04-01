@@ -1,11 +1,11 @@
 import { useIsSM } from '../hooks/hooks'
 import { ReactNode, useEffect, useRef, useState } from 'react'
-import { bool, f, num, SetNum } from '../../../utils/types'
+import { bool, f, num, SetNum, str } from '../../../utils/types'
 import { alpha, styled } from '@mui/material'
 
 export interface ResizableWidth {
   updateWidth: SetNum
-  width: num
+  width?: num
   maxWidth: num
   children: ReactNode
   readonly?: bool
@@ -17,7 +17,7 @@ export interface ResizableWidth {
 }
 
 export function ResizableWidth({
-  width: initialWidth,
+  width: initialWidth = 0,
   updateWidth,
   children,
   readonly,
@@ -48,6 +48,7 @@ export function ResizableWidth({
   useEffect(() => {
     const scaleBy = rightOnly ? 1 : 2
     const newWidth = width.widthBeforeResize + width.needResize * scaleBy
+
     if (Math.abs(width.needResize - width.previousResize) > 1 && newWidth >= width.minWidth) {
       onWidthChange(Math.min(newWidth, maxWidth))
       setWidth((old) => ({
@@ -78,17 +79,22 @@ export function ResizableWidth({
       setIsResizing(true)
 
       setWidth((old) => {
-        const width = Math.min(ref.current?.offsetWidth || 9999, old.width)
+        const curWidth = ref.current?.offsetWidth || 9999
+        const width = old.width ? Math.min(curWidth, old.width) : curWidth
         return { ...old, width, widthBeforeResize: width, needResize: 0 }
       })
     }
 
   const sx = stretchHandler ? { height: '70%' } : {}
 
+  let w: str | num = 'auto'
+  if ((!isResizing && stretch) || !isSM) w = '100%'
+  else if (width.width) w = width.width
+
   return (
     <ResizableWidth_
       sx={{
-        width: (!isResizing && stretch) || !isSM ? '100%' : width.width,
+        width: w,
         cursor: isResizing ? 'col-resize' : 'default',
       }}
       ref={ref}
@@ -139,7 +145,7 @@ export const Handler = styled('span')(({ theme }) => ({
   inset: 0,
   margin: 'auto',
   width: '50%',
-  height: '70%',
+  height: '30%',
   opacity: 0,
   transition: 'opacity 0.1s ease-in-out',
   border: `1px solid ${alpha(theme.palette.common.white, 0.8)}`,
@@ -154,7 +160,7 @@ class Width {
   width = 100
   needResize = 0
   previousResize = 0
-  minWidth = 50
+  minWidth = 200
 }
 
 export class WidthStr {

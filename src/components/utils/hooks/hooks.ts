@@ -33,5 +33,5 @@ export const useReactiveObject = <T>(init: T): State<T> => {
 
 export function useIsSM() {
   const theme = useTheme()
-  return useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true })
+  return useMediaQuery(theme.breakpoints.up('sm'), { noSsr: true }) // WARNING: IF SSR IS TURNED ON IT WILL UNMOUNT UBLOCKS (critical for images)
 }

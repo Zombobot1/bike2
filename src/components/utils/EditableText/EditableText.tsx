@@ -67,8 +67,9 @@ export function EditableText({
   }
 
   return (
-    <Styles sx={sx}>
+    <Styles>
       <Editable
+        sx={sx}
         innerRef={ref}
         html={text}
         tagName={tag}

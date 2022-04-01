@@ -1,24 +1,28 @@
-import { MemoryRouter } from 'react-router'
-import { useUserInfo } from '../../../fb/auth'
-import { str } from '../../../utils/types'
-import { useWorkspace } from '../../application/navigation/workspace'
+import { MemoryRouter, useLocation } from 'react-router'
+import { useWorkspace } from '../../application/Workspace/Workspace'
 import { UPage } from './UPage'
 
-const T = (path: str) => () => {
-  const data = useUserInfo()
-  const workspace = useWorkspace(data.uid)
+const Inner = () => {
+  const l = useLocation()
+  const id = l.pathname.slice(1)
+  const workspace = useWorkspace(id)
+  return <UPage key={id} id={id} workspace={workspace.changer} />
+}
+
+const T = (id: 'pets-and-animals' | 'medium' | 'small') => () => {
   return (
-    <MemoryRouter initialEntries={[path]}>
-      <UPage workspace={workspace} />
+    <MemoryRouter initialEntries={['/' + id]}>
+      <Inner />
     </MemoryRouter>
   )
 }
 
 // export const Readonly = T('/pets')
-export const Full = T('/pets')
-export const Medium = T('/pets-test')
-export const Small = T('/pets-test-small')
+export const Pets = T('pets-and-animals')
+export const Medium = T('medium')
+export const Small = T('small')
+export const No = () => null
 
 export default {
-  title: 'Editing/UPage',
+  title: 'Editing core/UPage',
 }

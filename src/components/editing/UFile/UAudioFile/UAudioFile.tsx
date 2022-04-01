@@ -1,15 +1,23 @@
-import { useReactiveObject } from '../../../utils/hooks/hooks'
 import AudiotrackRoundedIcon from '@mui/icons-material/AudiotrackRounded'
-import { UBlockImplementation } from '../../types'
+import { UBlockContent } from '../../types'
 import { useUFile } from '../useUFile'
 import { UAudio } from '../../../utils/UAudio/UAudio'
-import { ucast } from '../../../../utils/utils'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
+import { UAudioFileData } from '../../UPage/ublockTypes'
 
-export function UAudioFile({ data, setData, readonly }: UBlockImplementation) {
-  const [fileData] = useReactiveObject(ucast(data, new UAudioFileDTO()))
-  const { fileS, deleteFile } = useUFile((src) => setData(JSON.stringify({ src })))
+export function UAudioFile({ id, data: d, setData, readonly }: UBlockContent) {
+  const data = d as UAudioFileData
+  const { fileS, deleteFile } = useUFile(id, (src) => setData(id, { src }))
 
-  if (!fileData.src) return <Drop1zone fileS={fileS} label="audio" icon={<AudiotrackRoundedIcon />} />
-  return <UAudio src={fileData.src} onDelete={deleteFile} readonly={readonly} />
+  if (!data.src) return <Drop1zone fileS={fileS} label="audio" icon={<AudiotrackRoundedIcon />} />
+  return (
+    <UAudio
+      src={data.src}
+      onDelete={() => {
+        setData(id, { src: '' })
+        deleteFile(id)
+      }}
+      readonly={readonly}
+    />
+  )
 }

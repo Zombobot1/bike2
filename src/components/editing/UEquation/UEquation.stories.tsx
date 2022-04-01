@@ -1,31 +1,28 @@
 import { Box } from '@mui/material'
-import { UBlock, mockUblock } from '../UBlock/UBlock'
+import { _blocks } from '../../../content/blocks'
+import { f } from '../../../utils/types'
+import { UBlockContent } from '../types'
+import { UEquation } from './UEquation'
 
-const T = (props: UBlock) => {
+const T = (ps: UBlockContent) => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...props} />
+      <UEquation {...ps} />
     </Box>
   )
 }
 
-const data1: UBlock = {
-  ...mockUblock,
-  id: 'newEquation',
-  initialData: { data: '', type: 'block-equation' },
+const base: UBlockContent = {
+  id: '',
+  data: '',
+  setData: f,
+  type: 'block-equation',
 }
 
-const readonly: UBlock = {
-  ...mockUblock,
-  id: 'readonlyEquation',
-  initialData: { data: 'A=\\frac{1}{2}', type: 'block-equation' },
-  readonly: true,
-}
-
-export const Empty = () => T(data1)
-export const Readonly = () => T(readonly)
-export const Complex = () => T({ ...mockUblock, id: 'waveEquation' })
+export const Empty = () => T(base)
+export const Readonly = () => T({ ...base, data: 'A=\\frac{1}{2}', readonly: true })
+export const Complex = () => T({ ...base, ..._blocks.pets.waveEquation })
 
 export default {
-  title: 'Editing/Equation',
+  title: 'Editing extras/Equation',
 }

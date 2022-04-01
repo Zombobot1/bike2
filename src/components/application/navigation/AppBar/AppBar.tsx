@@ -12,8 +12,6 @@ import {
   ListItemText,
 } from '@mui/material'
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded'
-import { WS } from '../workspace'
-import { NavNodeDTOs } from '../NavBar/NavTree'
 import { Fragment, useRef, useState } from 'react'
 import MoreHorizRoundedIcon from '@mui/icons-material/MoreHorizRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
@@ -28,13 +26,22 @@ import { useRouter } from '../../../utils/hooks/useRouter'
 import { safeSplit } from '../../../../utils/algorithms'
 import { all, cut } from '../../../../utils/utils'
 import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
-import { useDeleteUPage } from '../../../editing/UPage/hooks/useDeleteUPage'
 import { UMenu, UOption, useMenu } from '../../../utils/UMenu/UMenu'
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz'
-import { useUPageInfo } from '../../../editing/UPage/hooks/useUPageInfo'
+import { useUPageTriggers } from '../../../editing/UPage/useUPageInfo'
+import { WorkspacePath } from '../../Workspace/types'
+import useUpdateEffect from '../../../utils/hooks/useUpdateEffect'
+import { useNavigate } from 'react-router'
+
+interface Workspace {
+  path: (id: str) => WorkspacePath
+  isFavorite: (id: str) => bool
+  triggerFavorite: (id: str) => void
+  removeCurrent: (id: str, sgt: SetStr) => void
+}
 
 export interface AppBar {
-  workspace: WS
+  workspace: Workspace
   openNavBar: Fn
   openTOC?: Fn
 }
@@ -42,9 +49,9 @@ export interface AppBar {
 export function AppBar({ workspace, openNavBar }: AppBar) {
   const isSM = useIsSM()
   const [showAppBar] = useAtom(showAppBarA)
-  const { location, history } = useRouter()
+  const { location } = useRouter()
   const showUPageOptions = !location.pathname.includes('/study')
-  const { triggerOpenTOC, triggerTurnOffTOC, triggerFullWidth } = useUPageInfo()
+  const { triggerOpenTOC, triggerTurnOffTOC, triggerFullWidth } = useUPageTriggers()
   return (
     <AppBar_ direction="row" alignItems="center" sx={showAppBar ? { opacity: '1 !important' } : {}}>
       {!isSM && (
@@ -55,7 +62,6 @@ export function AppBar({ workspace, openNavBar }: AppBar) {
       <Crumbs workspace={workspace} />
       {showUPageOptions && (
         <UPageOptions
-          history={history}
           path={location.pathname}
           workspace={workspace}
           openTOC={triggerOpenTOC}
@@ -115,28 +121,24 @@ const CrumbsContainer = styled(Stack)(({ theme }) => ({
   },
 }))
 
-function crumbs(path: str, workspace: WS): NavNodeDTOs {
+function crumbs(path: str, workspace: Workspace): WorkspacePath {
   const pathParts = safeSplit(path, '/')
-  if (pathParts[0] === 'study') {
-    const r = [{ id: '/study', name: 'Study' }]
-    if (pathParts[1]) r.push(workspace.find(pathParts[1]))
-    return r
-  }
+  if (pathParts[0] === 'study') return [{ id: '/study', name: 'Study' }] // TODO: replace AppBar for study
   if (pathParts[0] === 'teach') return [{ id: '/teach', name: 'Teach' }]
   if (pathParts[0] === 'tune') return [{ id: '/tune', name: 'Tune' }]
 
   return workspace.path(pathParts[0])
 }
 
-function cutAt(path: NavNodeDTOs, isLast: bool, isSM: bool): num {
+function cutAt(path: WorkspacePath, isLast: bool, isSM: bool): num {
   if (path.length > 2 && !isSM) return isLast ? 12 : 7
   if (path.length > 1 && !isSM) return isLast ? 18 : 9
   return 20
 }
 
-export function Crumbs({ workspace }: { workspace: WS }) {
+export function Crumbs({ workspace }: { workspace: Workspace }) {
   const isSM = useIsSM()
-  const { location, history } = useRouter()
+  const { location, navigate } = useRouter()
 
   const path = crumbs(location.pathname, workspace)
   const overflow = !isSM && path.length > 2
@@ -146,7 +148,7 @@ export function Crumbs({ workspace }: { workspace: WS }) {
       {!overflow &&
         path.map((node, i) => (
           <Fragment key={node.id}>
-            <Btn onClick={() => history.push(node.id)} size="small" data-cy="ab-btn">
+            <Btn onClick={() => navigate('/' + node.id)} size="small" data-cy="ab-btn">
               {crop(node.name || 'Untitled', i)}
             </Btn>
             {i < path.length - 1 && <Separator>/</Separator>}
@@ -154,13 +156,13 @@ export function Crumbs({ workspace }: { workspace: WS }) {
         ))}
       {overflow && (
         <>
-          <Btn onClick={() => history.push(path[0].id)} size="small" data-cy="ab-btn">
+          <Btn onClick={() => navigate('/' + path[0].id)} size="small" data-cy="ab-btn">
             {crop(path[0].name || 'Untitled', 0)}
           </Btn>
           <Separator>/</Separator>
           <CollapsedLinks path={path} />
           <Separator>/</Separator>
-          <Btn onClick={() => history.push(path.slice(-1)[0].id)} size="small" data-cy="ab-btn">
+          <Btn onClick={() => navigate('/' + path.slice(-1)[0].id)} size="small" data-cy="ab-btn">
             {crop(path.slice(-1)[0].name || 'Untitled', path.length - 1)}
           </Btn>
         </>
@@ -169,7 +171,7 @@ export function Crumbs({ workspace }: { workspace: WS }) {
   )
 }
 
-function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
+function CollapsedLinks({ path }: { path: WorkspacePath }) {
   const [open, setOpen] = useState(false)
   const handleClose = () => setOpen(false)
   function handleListKeyDown(event: React.KeyboardEvent) {
@@ -177,7 +179,7 @@ function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
   }
   const anchorRef = useRef<HTMLButtonElement>(null)
   const handleToggle = () => setOpen((prevOpen) => !prevOpen)
-  const { history } = useRouter()
+  const navigate = useNavigate()
 
   return (
     <>
@@ -196,11 +198,7 @@ function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList autoFocusItem={open} onKeyDown={handleListKeyDown}>
                   {path.slice(1, -1).map((n) => (
-                    <MenuItem
-                      key={n.id}
-                      onClick={all(() => history.push('/' + n.id), handleClose)}
-                      data-cy="...-page-btn"
-                    >
+                    <MenuItem key={n.id} onClick={all(() => navigate('/' + n.id), handleClose)} data-cy="...-page-btn">
                       <ListItemText>{n.name || 'Untitled'}</ListItemText>
                     </MenuItem>
                   ))}
@@ -215,18 +213,18 @@ function CollapsedLinks({ path }: { path: NavNodeDTOs }) {
 }
 
 interface UPageOptions_ {
-  workspace: WS
+  workspace: Workspace
   path: str
-  history: { push: SetStr }
   toggleFullWidth: Fn
   toggleTOC: Fn
   openTOC?: Fn
 }
 
-function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth, toggleTOC }: UPageOptions_) {
+function UPageOptions({ workspace, path, openTOC, toggleFullWidth, toggleTOC }: UPageOptions_) {
   const id = safeSplit(path, '/')[0]
-  const deleteUPage = useDeleteUPage(workspace)
-  const delete_ = () => history.push(deleteUPage(id))
+  const navigate = useNavigate()
+  const [goTo, setGoTo] = useState('')
+  useUpdateEffect(() => navigate('/' + goTo), [goTo])
 
   const menuPs = useMenu()
   const isAlertOpenS = useState(false)
@@ -235,9 +233,13 @@ function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth, togg
 
   return (
     <Stack direction="row" sx={{ marginLeft: 'auto !important' }}>
-      <AcceptRemovalDialog text="Do you want to remove page?" isOpenS={isAlertOpenS} onAccept={delete_} />
+      <AcceptRemovalDialog
+        text="Do you want to remove page?"
+        isOpenS={isAlertOpenS}
+        onAccept={() => workspace.removeCurrent(id, setGoTo)}
+      />
       {isSM && (
-        <IconButton onClick={workspace.triggerFavorite(id)}>
+        <IconButton onClick={() => workspace.triggerFavorite(id)}>
           {workspace.isFavorite(id) ? <StarRoundedIcon color="primary" /> : <StarOutlineRoundedIcon color="primary" />}
         </IconButton>
       )}
@@ -251,7 +253,7 @@ function UPageOptions({ workspace, path, history, openTOC, toggleFullWidth, togg
           <UOption
             icon={workspace.isFavorite(id) ? StarRoundedIcon : StarOutlineRoundedIcon}
             text={workspace.isFavorite(id) ? 'Remove from favorite' : 'Make favorite'}
-            onClick={workspace.triggerFavorite(id)}
+            onClick={() => workspace.triggerFavorite(id)}
           />
         )}
         {!isSM && openTOC && (

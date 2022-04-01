@@ -28,7 +28,9 @@ export function useCurrentState<T>(init: T): [() => T, (n: T) => void] {
     ss(new_)
   })
 
-  const get = useC(() => ref.current as T)
+  const get = useC(() => {
+    return ref.current as T
+  })
 
   return [get, set]
 }

@@ -1,6 +1,6 @@
 import { COLORS } from '../../application/theming/theme'
 import { num, str } from '../../../utils/types'
-import { UBlockType } from '../../editing/types'
+import { UBlockType } from '../../editing/UPage/ublockTypes'
 
 export type CardEstimation = 'POOR' | 'BAD' | 'GOOD' | 'EASY'
 const WEIGHTS: { [K in CardEstimation]: number } = {

@@ -4,7 +4,7 @@ import { useDrop } from 'react-dnd'
 import { Fn, SetStr, str } from '../../../utils/types'
 import { EditableUtility } from '../../utils/EditableText/EditableUtility'
 import { DragType } from '../types'
-import { useUPageFocus } from './hooks/useUPageFocus'
+import { useUPageCursor } from './useUPageInfo'
 
 export interface UPageTitle {
   data: str
@@ -14,10 +14,9 @@ export interface UPageTitle {
   onClick: Fn
 }
 export function UPageTitle(ps: UPageTitle) {
-  const { activeBlock } = useUPageFocus()
+  const { cursor } = useUPageCursor()
   const [focus, setFocus] = useState(0)
-
-  useEffect(() => setFocus((old) => (activeBlock.id === 'title' ? old + 1 : old)), [activeBlock])
+  useEffect(() => setFocus((old) => (cursor.focus?.id === 'title' ? old + 1 : old)), [cursor.focus])
 
   const [{ isOver }, drop] = useDrop(
     () => ({

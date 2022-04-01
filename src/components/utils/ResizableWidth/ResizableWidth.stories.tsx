@@ -1,9 +1,9 @@
 import { Box, Button, Stack } from '@mui/material'
 import { useState } from 'react'
-import { Rec } from '../Rec'
 import { ResizableColumns } from './ResizableColumns'
 import { ResizableWidth } from './ResizableWidth'
 import { ResizableFluidWidth } from './ResizableFluidWidth'
+import { Rec } from '../rec'
 
 function T() {
   return (

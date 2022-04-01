@@ -9,14 +9,14 @@ import { COLORS } from '../components/application/theming/theme'
 import { UTextGreen } from '../components/editing/UText/UTextOptions/UTextOptions'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { isCypress } from '../components/utils/hooks/isCypress'
-import { FSProvider } from '../fb/fs'
+import { _fs } from '../content/fs'
+import { FSProvider, setFSD } from '../fb/fs'
 import { Fn, num, str } from './types'
-import { uuid, uuidS } from './uuid'
 
-type CYChain = Cypress.Chainable<JQuery<HTMLElement> | undefined>
+export type CYChain = Cypress.Chainable<JQuery<HTMLElement>>
 
 // sometimes it is not possible to assign data-* attribute (e.g. Checkbox)
-export const got = (selector: str, eq = 0) => {
+export const got = (selector: str, eq = 0): CYChain => {
   const r = cy.get(`[data-cy="${selector}"]`)
   if (eq === -1) return r.last()
   return r.eq(eq)
@@ -105,6 +105,7 @@ export const doNotFret = () => cy.on('uncaught:exception', () => false)
 
 export const show = (Component: React.FC, pd = '') => {
   isCypress.isCypress = true
+  setFSD(_fs)
 
   mount(
     <OuterShell>

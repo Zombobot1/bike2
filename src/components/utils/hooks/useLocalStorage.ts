@@ -20,9 +20,11 @@ function useStorage<T>(key: str, defaultValue: V<T>, storageObject: Storage): St
     if (value === undefined) return storageObject.removeItem(key)
     storageObject.setItem(key, JSON.stringify(value))
     window.dispatchEvent(new Event('storage-changed')) // We dispatch a custom event so every useLocalStorage hook are notified
-  }, [key, value, storageObject])
+  }, [key, JSON.stringify(value), storageObject]) // causes endless rerenders if value is object
 
-  useGlobalEventListener('storage-changed', () => setValue(readValue(key, defaultValue, storageObject)))
+  useGlobalEventListener('storage-changed', () => {
+    setValue(readValue(key, defaultValue, storageObject))
+  })
 
   return [value, setValue]
 }

@@ -12,7 +12,7 @@ import {
 import { renderTex } from '../../../../utils/CodeEditor/renderTex'
 import { safe } from '../../../../../utils/utils'
 import { insertCode, selectedText, selectionCoordinates } from '../../../../utils/Selection/selection'
-import { InlineEditorExit, SetFocus, TexMapRef } from '../../../types'
+import { InlineEditorExit, TexMapRef, UPageFocus } from '../../../types'
 import { UText_ } from '../../UText_'
 
 export type ToggleTex = (offset: num, o?: { removeSlash: bool }) => void
@@ -48,7 +48,7 @@ export function useTex(
   ps: UText_,
   text: str,
   setText: SetStr,
-  setFocus: SetFocus,
+  setFocus: (f?: UPageFocus) => void,
   refocus: Fn,
   ref: Ref,
 ): UTextTexEditor {
@@ -64,7 +64,7 @@ export function useTex(
       if (needNew) mapRef.current.set(id, { tex: e.innerHTML, html: renderTex(e.innerHTML) })
     })
 
-    setText(replaceAllCodeToHTML(ps.data, mapRef.current))
+    setText(replaceAllCodeToHTML(ps.data as str, mapRef.current))
     if (ps.data === '/') return // otherwise forces focus update on newly created component with / - breaks autocomplete focus
     refocus()
   }, [ps.data])
@@ -116,8 +116,8 @@ export function useTex(
       setText(newData)
     }
 
-    if (exitedBy === 'key') setFocus({ type: 'start-integer', xOffset: activeTex.offset })
-    else if (exitedBy === 'click' && newData !== text) ps.setData(newData)
+    if (exitedBy === 'key') setFocus({ id: ps.id, type: 'start-integer', xOffset: activeTex.offset })
+    else if (exitedBy === 'click' && newData !== text) ps.setData(ps.id, newData)
 
     setActiveTex(new ActiveTex())
   }

@@ -37,5 +37,5 @@ export const Link = T('link')
 export const Tex = T('tex')
 
 export default {
-  title: 'Editing/UTextOptions',
+  title: 'Editing core/UTextOptions',
 }

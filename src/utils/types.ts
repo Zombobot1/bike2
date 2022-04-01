@@ -27,6 +27,7 @@ export type JSObjectStr = { [key: string]: string }
 export type Fn = () => void
 export type Fns = Fn[]
 export type SetStr = (s: str) => void
+export type GetStr = () => str
 export type SetStrs = (s: strs) => void
 export type SetBool = (s: bool) => void
 export type SetNum = (s: num) => void

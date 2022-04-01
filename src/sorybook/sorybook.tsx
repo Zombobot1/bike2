@@ -1,6 +1,5 @@
 import { all, safe } from '../utils/utils'
 import { FC, useEffect, useRef, useState } from 'react'
-import { useRouter } from '../components/utils/hooks/useRouter'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
 import { useIsSM, useMount } from '../components/utils/hooks/hooks'
 import { bool, Fn, JSObjects, str, strs } from '../utils/types'
@@ -37,6 +36,9 @@ import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded'
 import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded'
 import FullscreenRoundedIcon from '@mui/icons-material/FullscreenRounded'
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
+import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded'
+import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded'
 import { storify } from './utils'
 import { ErrorBoundary } from 'react-error-boundary'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
@@ -44,8 +46,9 @@ import { FSProvider } from '../fb/fs'
 import { useLocalStorage } from '../components/utils/hooks/useLocalStorage'
 import { Provider } from 'jotai'
 import useUpdateEffect from '../components/utils/hooks/useUpdateEffect'
+import { mockBackend, useFirestoreData } from '../fb/useData'
+import { useMatch, useNavigate } from '@tanstack/react-location'
 
-export const _SORYBOOK = '/_stories'
 const SORY: FC = () => null
 
 export interface SoryTree {
@@ -56,13 +59,13 @@ export interface SoryTree {
 export type SoryTrees = SoryTree[]
 
 function SoryTree({ id, name, children }: SoryTree) {
-  const { history } = useRouter()
+  const navigate = useNavigate()
   const depth = id.split('--').length
   let sx = useCaseSX
   if (depth === 2) sx = componentSX
   else if (depth === 3) sx = storySX
 
-  if (!children) return <TreeItem sx={sx} nodeId={id} label={name} onClick={() => history.push(_SORYBOOK + '/' + id)} />
+  if (!children) return <TreeItem sx={sx} nodeId={id} label={name} onClick={() => navigate({ to: '/' + id })} />
   return (
     <TreeItem sx={sx} nodeId={id} label={name}>
       {children.map((c) => (
@@ -91,15 +94,21 @@ const componentSX = svgSX('10px', componentSVG)
 const storySX = svgSX('7px', storySVG)
 
 interface Menu_ {
+  pinNav: bool
+  togglePinNav: Fn
   themeType: ThemeType
   toggleTheme: Fn
   toggleFullscreen: Fn
   toggleOutline: Fn
   rerenderStory: Fn
+  goNext: Fn
+  goPrev: Fn
   navRef: React.MutableRefObject<HTMLElement | undefined>
 }
 
-function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerenderStory, navRef }: Menu_) {
+function Menu(ps: Menu_) {
+  const { themeType, toggleTheme, navRef, pinNav } = ps
+  const { toggleFullscreen, toggleOutline, rerenderStory, goNext, goPrev, togglePinNav } = ps
   const [open, setOpen] = useState(false)
   const anchorRef = useRef<HTMLButtonElement>(null)
 
@@ -148,7 +157,7 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                     </ListItemIcon>
                     <ListItemText>Set {themeType === 'light' ? 'Dark theme' : 'Light theme'}</ListItemText>
                     <Shortcut variant="body2" color="text.secondary">
-                      CA+T
+                      ⌘⌥ T
                     </Shortcut>
                   </MenuItem>
                   <MenuItem onClick={all(toggleOutline, handleClose)}>
@@ -157,7 +166,7 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                     </ListItemIcon>
                     <ListItemText>Outline</ListItemText>
                     <Shortcut variant="body2" color="text.secondary">
-                      CA+O
+                      ⌘⌥ O
                     </Shortcut>
                   </MenuItem>
                   <MenuItem onClick={all(toggleFullscreen, handleClose)}>
@@ -166,7 +175,7 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                     </ListItemIcon>
                     <ListItemText>Fullscreen story</ListItemText>
                     <Shortcut variant="body2" color="text.secondary">
-                      CA+F
+                      ⌘⌥ F
                     </Shortcut>
                   </MenuItem>
                   <MenuItem onClick={all(rerenderStory, handleClose)}>
@@ -175,7 +184,34 @@ function Menu({ themeType, toggleTheme, toggleFullscreen, toggleOutline, rerende
                     </ListItemIcon>
                     <ListItemText>Rerender story</ListItemText>
                     <Shortcut variant="body2" color="text.secondary">
-                      CA+R
+                      ⌘⌥ R
+                    </Shortcut>
+                  </MenuItem>
+                  <MenuItem onClick={all(rerenderStory, goNext)}>
+                    <ListItemIcon>
+                      <KeyboardArrowDownRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Next story</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      ⌘⌥ ↓
+                    </Shortcut>
+                  </MenuItem>
+                  <MenuItem onClick={all(rerenderStory, goPrev)}>
+                    <ListItemIcon>
+                      <KeyboardArrowUpRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Prev story</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      ⌘⌥ ↑
+                    </Shortcut>
+                  </MenuItem>
+                  <MenuItem onClick={all(rerenderStory, togglePinNav)}>
+                    <ListItemIcon>
+                      <PushPinRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>{pinNav ? 'Unpin nav' : 'Pin nav'}</ListItemText>
+                    <Shortcut variant="body2" color="text.secondary">
+                      ⌘⌥ U
                     </Shortcut>
                   </MenuItem>
                 </MenuList>
@@ -196,14 +232,20 @@ interface Nav_ {
   trees: SoryTrees
   toggleOutline: Fn
   rerenderStory: Fn
+  isFullscreen: bool
+  toggleFullscreen: Fn
+  pinNav: bool
+  togglePinNav: Fn
+  goNext: Fn
+  goPrev: Fn
+  soryId: str
 }
 
-function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
+function Nav(ps: Nav_) {
+  const { trees, isFullscreen, soryId } = ps
   const ref = useRef<HTMLElement>()
-  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', true)
-  const toggleFullscreen = () => setIsFullscreen((old) => !old)
-  const { location } = useRouter()
-  const pathIds = location.pathname.replace('/_stories/', '').split('--')
+
+  const pathIds = soryId.split('--')
   const ids = pathIds[0]
     ? [`${pathIds[0]}`, `${pathIds[0]}--${pathIds[1]}`, `${pathIds[0]}--${pathIds[1]}--${pathIds[2]}`]
     : []
@@ -219,21 +261,6 @@ function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
 
   const { toggleTheme, themeType } = useUTheme()
 
-  function handleKeyDown(e: KeyboardEvent) {
-    if ((!e.ctrlKey && !e.metaKey) || !e.altKey) return
-    if ('t†'.includes(e.key)) toggleTheme()
-    else if ('fƒ'.includes(e.key)) {
-      e.preventDefault()
-      toggleFullscreen()
-    } else if ('oø'.includes(e.key)) toggleOutline()
-    else if ('r®'.includes(e.key)) rerenderStory()
-  }
-
-  useMount(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  })
-
   if (isFullscreen) return null
 
   return (
@@ -241,14 +268,7 @@ function Nav({ trees, toggleOutline, rerenderStory }: Nav_) {
       <Heading alignItems="center" justifyContent="center" direction="row" spacing={1}>
         <Logo />
         <SoryText>Sorybook</SoryText>
-        <Menu
-          themeType={themeType}
-          toggleTheme={toggleTheme}
-          toggleFullscreen={toggleFullscreen}
-          toggleOutline={toggleOutline}
-          rerenderStory={rerenderStory}
-          navRef={ref}
-        />
+        <Menu {...ps} themeType={themeType} toggleTheme={toggleTheme} navRef={ref} />
       </Heading>
       <Tree
         aria-label="controlled"
@@ -278,7 +298,8 @@ const Tree = styled(TreeView)({
   },
 })
 
-const NavBox = styled(Box)(({ theme }) => ({
+const NavBox = styled(Box, { label: 'NavBox' })(({ theme }) => ({
+  height: '100%',
   minWidth: '15rem',
   maxWidth: '15rem',
   paddingLeft: '0.25rem',
@@ -320,10 +341,24 @@ const Heading = styled(Stack)({
   padding: '1rem',
 })
 
-function NavBar(props: Nav_) {
+interface NavBar_ {
+  trees: SoryTrees
+  pinNav: bool
+  togglePinNav: Fn
+  toggleOutline: Fn
+  rerenderStory: Fn
+  goNext: Fn
+  goPrev: Fn
+  soryId: str
+}
+
+function NavBar(ps: NavBar_) {
   const isDesktop = useIsSM()
   const [isOpen, setIsOpen] = useState(false)
-  if (isDesktop) return <Nav {...props} />
+  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', true)
+  const toggleFullscreen = () => setIsFullscreen((old) => !old)
+  const { toggleTheme } = useUTheme()
+  const navPs = { ...ps, isFullscreen, toggleFullscreen }
 
   const toggleDrawer = (open: bool) => (event: React.KeyboardEvent | React.MouseEvent) => {
     if (
@@ -337,21 +372,45 @@ function NavBar(props: Nav_) {
     setIsOpen(open)
   }
 
+  function handleKeyDown(e: KeyboardEvent) {
+    if ((!e.ctrlKey && !e.metaKey) || !e.altKey) return
+    if ('t†'.includes(e.key)) toggleTheme()
+    else if ('fƒ'.includes(e.key)) {
+      e.preventDefault()
+      toggleFullscreen()
+    } else if ('oø'.includes(e.key)) ps.toggleOutline()
+    else if ('r®'.includes(e.key)) ps.rerenderStory()
+  }
+
+  useMount(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  })
+
+  if (isDesktop) return <Nav {...navPs} />
+
   return (
     <SwipeableDrawer anchor="right" open={isOpen} onClose={toggleDrawer(false)} onOpen={toggleDrawer(true)}>
-      <Nav {...props} />
+      <Nav {...navPs} />
     </SwipeableDrawer>
   )
 }
 
-interface Pane_ {
+type SoryRendered = { Sory: FC }
+function SoryRendered({ Sory }: SoryRendered) {
+  const backend = useFirestoreData()
+  useMount(() => mockBackend(backend))
+  return <Sory />
+}
+
+interface Pane {
   Sory: FC
   soryId: str
   outline: bool
 }
 
 // provider is used to suppress warning when switching e.g. from upage to fetch with initial data (upage will be updated because it is not unmounted yet?!)
-function Pane({ Sory, outline, soryId }: Pane_) {
+function Pane({ Sory, outline, soryId }: Pane) {
   const theme = useTheme()
   return (
     <ComponentWrapper
@@ -365,7 +424,7 @@ function Pane({ Sory, outline, soryId }: Pane_) {
       <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
         <Provider key={soryId}>
           <FSProvider>
-            <Sory />
+            <SoryRendered Sory={Sory} />
           </FSProvider>
         </Provider>
       </ErrorBoundary>
@@ -400,26 +459,39 @@ function SoryBook_({ trees, sories }: SoryBook_) {
   const [counter, setCounter] = useState(0)
   const rerenderStory = () => setCounter((old) => old + 1)
   const [isOutlined, setIsOutlined] = useLocalStorage('sorybook-outlined', false)
+  const [pinNav, setPinNav] = useLocalStorage('sorybook-pinNav', true)
   const [lastUsedStory, setLastUsedStory] = useLocalStorage('sorybook-last-used-story', '')
-  const toggleOutline = () => setIsOutlined((o) => !o)
-  const { location, history } = useRouter()
-  const activeId = location.pathname.replace(_SORYBOOK + '/', '')
+  const toggleOutline = () => {
+    setIsOutlined((o) => !o)
+  }
+  const togglePinNav = () => setPinNav((o) => !o)
+  const navigate = useNavigate()
+
+  const {
+    params: { soryId },
+  } = useMatch()
+
   const ids = treesToChildrenIds(trees)
   const [openSnack, setOpenSnack] = useState(false)
 
   useUpdateEffect(() => setOpenSnack(true), [counter])
 
   useEffect(() => {
-    if (activeId === '/') return
-    setLastUsedStory(activeId)
-  }, [activeId])
+    if (!soryId) return
+    setLastUsedStory(soryId)
+  }, [soryId])
+
+  const goNext = () => navigate({ to: '/' + getNextStory(soryId, ids) })
+  const goPrev = () => navigate({ to: '/' + getPrevStory(soryId, ids) })
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if ((!e.ctrlKey && !e.metaKey) || !e.altKey) return
-      let activated = true
-      if (['ArrowDown', 'ArrowRight'].includes(e.key)) history.push(_SORYBOOK + '/' + getNextStory(activeId, ids))
-      else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) history.push(_SORYBOOK + '/' + getPrevStory(activeId, ids))
+
+      let activated = true // Dead prevents default chrome action CA+U
+      if (['ArrowDown', 'ArrowRight'].includes(e.key)) goNext()
+      else if (['ArrowUp', 'ArrowLeft'].includes(e.key)) goPrev()
+      else if (['u', '¨', 'Dead'].includes(e.key)) togglePinNav()
       else activated = false
 
       if (activated) e.preventDefault()
@@ -427,27 +499,72 @@ function SoryBook_({ trees, sories }: SoryBook_) {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [JSON.stringify(ids), activeId])
+  }, [JSON.stringify(ids), soryId])
 
   useMount(() => {
-    if (activeId !== '/') return
-    if (lastUsedStory) return history.push(_SORYBOOK + '/' + lastUsedStory)
+    if (soryId) return
+    if (lastUsedStory) return navigate({ to: '/' + lastUsedStory })
     const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
-    if (firstStoryId) history.push(_SORYBOOK + '/' + firstStoryId)
+    if (firstStoryId) navigate({ to: '/' + firstStoryId })
   })
 
+  const ps = { toggleOutline, rerenderStory, goNext, goPrev, pinNav, togglePinNav, trees, soryId }
+
+  const [showNav, setShowNav] = useState(false)
+  // const { hovered, ref } = useHover()
+
+  useMount(() => {
+    const onMove = (e: MouseEvent) => {
+      const show = window.innerWidth - e.clientX < 40
+      setShowNav((old) => {
+        if (old && !show) return false
+        if (!old && show) return true
+        return old
+      })
+    }
+    window.addEventListener('mousemove', onMove)
+    return () => window.removeEventListener('mousemove', onMove)
+  })
+
+  const sx = showNav ? { transform: 'translateX(0)' } : {}
+
   return (
-    <Stack sx={{ height: '100%' }} direction="row">
-      <Pane key={counter} Sory={sories.get(activeId) || SORY} outline={isOutlined} soryId={activeId} />
-      <NavBar trees={trees} toggleOutline={toggleOutline} rerenderStory={rerenderStory} />
+    <>
+      {!pinNav && (
+        <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
+          <Pane key={counter} Sory={sories.get(soryId) || SORY} outline={isOutlined} soryId={soryId} />
+          <NavMover sx={sx}>
+            <NavBar {...ps} />
+          </NavMover>
+        </Box>
+      )}
+      {pinNav && (
+        <Stack sx={{ height: '100%' }} direction="row">
+          <Pane key={counter} Sory={sories.get(soryId) || SORY} outline={isOutlined} soryId={soryId} />
+          <NavBar {...ps} />
+        </Stack>
+      )}
       <Snackbar open={openSnack} autoHideDuration={1000} onClose={() => setOpenSnack(false)}>
         <Alert severity="info" sx={{ width: '100%' }}>
           Rerendered!
         </Alert>
       </Snackbar>
-    </Stack>
+    </>
   )
 }
+
+const NavMover = styled(Box)(({ theme }) => ({
+  height: '100%',
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  transform: 'translateX(100%)',
+  transition: theme.tra('transform', '.1'),
+  ':hover': {
+    transform: 'translateX(0)',
+  },
+  zIndex: 999,
+}))
 
 interface SoryBook {
   sories: JSObjects

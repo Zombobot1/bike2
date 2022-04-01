@@ -7,8 +7,8 @@ import { str } from '../utils/types'
 import { isInProduction } from './utils'
 
 export class UserDTO {
-  uid = 'cat-lover'
-  email = 'cat-lover777@gmail.com'
+  uid = 'cats-lover'
+  email = 'cats-lover777@gmail.com'
   displayName = ''
   photoUrl = ''
 }

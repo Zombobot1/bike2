@@ -1,10 +1,9 @@
 import { TableBody, styled, Box, useTheme } from '@mui/material'
-import { useIsSM, useReactiveObject, useToggle } from '../../utils/hooks/hooks'
+import { useIsSM, useToggle } from '../../utils/hooks/hooks'
 import { useState } from 'react'
-import { bool, num, SetNum, SetStr, str, strs } from '../../../utils/types'
-import { UBlockImplementation } from '../types'
-import { ucast, getEmptyStrings, prevented } from '../../../utils/utils'
-import _ from 'lodash'
+import { bool, num, SetNum, str } from '../../../utils/types'
+import { UBlockContent } from '../types'
+import { prevented } from '../../../utils/utils'
 import { EditableText } from '../../utils/EditableText/EditableText'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded'
@@ -13,83 +12,49 @@ import ArrowDownwardRoundedIcon from '@mui/icons-material/ArrowDownwardRounded'
 import ArrowUpwardRoundedIcon from '@mui/icons-material/ArrowUpwardRounded'
 import ArrowBackRoundedIcon from '@mui/icons-material/ArrowBackRounded'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
-import { insertAt, sum } from '../../../utils/algorithms'
+import { gen, sum } from '../../../utils/algorithms'
 import { ResizableWidth } from '../../utils/ResizableWidth/ResizableWidth'
-import { PaddedBox } from '../UBlock/PaddedBox'
+import { PaddedBox } from '../UPage/UBlock/PaddedBox'
 import { UMenu, UOption, useMenu } from '../../utils/UMenu/UMenu'
+import { UTableData } from '../UPage/ublockTypes'
+import { UTableChanger } from './useUTable'
 
-export function UTable(ps: UBlockImplementation) {
-  const data = ucast<UTableDTO>(ps.data, new UTableDTO())
-  const [widths, setWidths] = useReactiveObject(data.widths)
-  const [rows, setRows_] = useReactiveObject(data.rows)
+export function UTable({ id, data: d, setData }: UBlockContent) {
+  const data = d as UTableData
+  const changer = new UTableChanger(data, (d) => setData(id, d))
+  const [tmpWidth, setTmpWidth] = useState({ j: -1, w: 0 })
   const [resizingIndex, setResizingIndex] = useState(-1)
+  const rows = gen(data[0].rows.length)
   const isSM = useIsSM()
-  const setRows = (new_: strs[]) => {
-    setRows_(new_)
-    ps.setData(JSON.stringify({ rows: new_, widths }))
-  }
 
-  const addRow = (underI: num, where: 'above' | 'below') => {
-    const i = underI + (where === 'below' ? 1 : 0)
-    const r = insertAt(rows, i, getEmptyStrings(rows[0].length))
-    setRows(r)
-  }
-
-  const deleteRow = (atI: num) => {
-    if (rows.length > 1) setRows(rows.filter((_, i) => i !== atI))
-    else setRows([getEmptyStrings(rows[0].length)])
-  }
-
-  const deleteColumn = (atJ: num) => {
-    if (rows[0].length > 1) {
-      setRows(rows.map((row) => row.filter((_, j) => j !== atJ)))
-      setWidths(widths.filter((_, j) => j !== atJ))
-    } else {
-      setRows([getEmptyStrings(1)])
-      setWidths([190])
-    }
-  }
-  const addColumn = (atJ: num, where: 'left' | 'right') => {
-    const j = atJ + (where === 'right' ? 1 : 0)
-    setRows(rows.map((row) => insertAt(row, j, '')))
-  }
+  // TODO: navigate by keys
 
   return (
     <PaddedBox p={0.85} sx={{ overflowX: !isSM ? 'scroll' : undefined }}>
-      <TableContainer sx={{ width: sum(widths, (a, c) => a + c) }}>
+      <TableContainer sx={{ width: sum(data, (a, col) => a + col.width) }}>
         <Table_ width="100%">
           <TableBody>
-            {rows.map((row, i) => (
+            {rows.map((i) => (
               <Row key={i}>
-                {row.map((cell, j) => (
+                {data.map((col, j) => (
                   <Cell
                     key={`${i} ${j}`}
-                    width={widths[j]}
-                    data={cell}
+                    width={tmpWidth.j === j ? tmpWidth.w : col.width}
+                    data={col.rows[i]}
                     i={i}
                     j={j}
-                    rowLength={row.length}
-                    setData={(d) => {
-                      const newRows = _.cloneDeep(rows)
-                      newRows[i][j] = d
-                      setRows(newRows)
-                    }}
-                    updateWidth={(w) => {
-                      const newWidth = _.cloneDeep(widths)
-                      newWidth[j] = w
-                      setWidths(newWidth)
-                      setResizingIndex(-1)
-                      ps.setData(JSON.stringify({ rows, widths: newWidth }))
-                    }}
-                    addRow={addRow}
-                    deleteRow={deleteRow}
-                    addColumn={addColumn}
-                    deleteColumn={deleteColumn}
+                    rowLength={rows.length}
                     isResizing={resizingIndex === j}
-                    onWidthChange={(w) => {
-                      const newWidth = _.cloneDeep(widths)
-                      newWidth[j] = w
-                      setWidths(newWidth)
+                    onWidthChange={(w) => setTmpWidth({ j, w })}
+                    setData={changer.setCell}
+                    addRow={changer.addRow}
+                    deleteRow={changer.removeRow}
+                    addColumn={changer.addColumn}
+                    deleteColumn={changer.removeColumn}
+                    updateWidth={(w) => {
+                      setTmpWidth({ j: -1, w: 0 })
+                      setResizingIndex(-1)
+                      changer.updateWidth(j, w)
                     }}
                   />
                 ))}
@@ -128,7 +93,7 @@ interface Cell_ {
   j: num
   rowLength: num
   data: str
-  setData: SetStr
+  setData: (i: num, j: num, d: str) => void
   updateWidth: SetNum
   addRow: (i: num, w: 'above' | 'below') => void
   deleteRow: SetNum
@@ -182,7 +147,7 @@ function Cell({
         <Box sx={{ padding: '0.5rem' }} onClick={() => setClicksCount((old) => old + 1)}>
           <EditableText
             text={data}
-            setText={setData}
+            setText={(d) => setData(i, j, d)}
             tag="p"
             onBlur={toggleIsEditing}
             onFocus={toggleIsEditing}

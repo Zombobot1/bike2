@@ -115,9 +115,10 @@ export const cut = (string: str, length: num) => (string.length <= length ? stri
 
 export const mod = (n: num, m: num) => ((n % m) + m) % m
 
-export const isStr = (s: unknown): bool => _.isString(s)
-// considers arrays as objects
-export const isObjD = (o: unknown): bool => typeof o === 'object' && o !== null
+export const isStr = (s: unknown): s is string => _.isString(s)
+
+export const isObjOrArr = (o: unknown): bool => typeof o === 'object' && o !== null
+export const isObj = (o: unknown): bool => typeof o === 'object' && o !== null && !Array.isArray(o)
 
 export const filterProps = (props: JSObject, excessive: strs) =>
   Object.fromEntries(Object.entries(props).filter(([k]) => !excessive.includes(k)))

@@ -10,7 +10,7 @@ export const max = <T>(arr: T[], f: (v: T) => num): T => arr.reduce((p, c) => (f
 export const sum = <T>(arr: T[], f: (p: num, v: T) => num = _sum): num => arr.reduce(f, 0)
 export const avg = <T>(arr: T[], f: (p: num, v: T) => num = _sum): num => arr.reduce(f, 0) / arr.length
 
-export const generate = <T>(length: num, f: (i: num) => T): T[] =>
+export const gen = <T = num>(length: num, f: (i: num) => T = (i) => i as unknown as T): T[] =>
   Array(length)
     .fill(undefined)
     .map((_, i) => f(i))
@@ -58,6 +58,7 @@ export const replace = <T>(array: T[], replaceData: T, ...newData: T[]): T[] => 
   return [...array.slice(0, i), ...newData, ...array.slice(i + 1)]
 }
 export const remove = <T>(array: T[], data: T): T[] => array.filter((d) => d !== data)
+export const push = <T>(array: T[], data: T): T[] => [...array, data]
 
 export const insertAt = <T>(array: T[], atI: num, ...data: T[]): T[] => [
   ...array.slice(0, atI),

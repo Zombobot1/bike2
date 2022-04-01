@@ -3,7 +3,6 @@ import { Collapse, Stack, styled } from '@mui/material'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
 import { str, bool } from '../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'
-import { UBlock, mockUblock } from '../../editing/UBlock/UBlock'
 
 export interface UCard {
   readonly: bool
@@ -99,7 +98,7 @@ export interface UCardField extends FieldDTO {
   readonly?: bool
 }
 
-const UCardField = ({ _id, data, type: _, isMediaActive, readonly }: UCardField) => {
-  if (!data) return null
-  return <UBlock {...mockUblock} id={_id} autoplay={isMediaActive} readonly={readonly} isCardField={true} />
+const UCardField = (_ps: UCardField) => {
+  return null
+  // return <UBlock {...mockUblock} id={_id} autoplay={isMediaActive} readonly={readonly} isCardField={true} />
 }

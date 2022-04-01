@@ -1,4 +1,4 @@
-import { Box, Button, Divider, FormControl, InputLabel, OutlinedInput, Stack, styled, Typography } from '@mui/material'
+import { Box, Button, FormControl, InputLabel, Stack, styled, Typography } from '@mui/material'
 import GoogleIcon from '@mui/icons-material/Google'
 
 import { useState } from 'react'
@@ -12,10 +12,11 @@ import { ReactComponent as WaveSVG } from './wave.svg'
 import { ReactComponent as LogoSVG } from './logo.svg'
 import { getAuth, signInWithPopup, GoogleAuthProvider, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import { useIsSignedIn } from '../../../fb/auth'
+import { Hr, TextInput } from '../../utils/MuiUtils'
 
 export function FinishRegistration() {
   const [error, setError] = useState('')
-  const { history, location } = useRouter()
+  const { navigate, location } = useRouter()
 
   useMount(() => {
     if (!isSignInWithEmailLink(getAuth(), location.pathname + location.search)) return
@@ -28,7 +29,7 @@ export function FinishRegistration() {
     signInWithEmailLink(getAuth(), email, location.pathname + location.search)
       .then(() => {
         localStorage.removeItem('emailForSignIn')
-        history.push('/') // to APP (avoiding circular dependency)
+        navigate('/') // to APP (avoiding circular dependency)
       })
       .catch((error) => setError(error.message))
   })
@@ -70,11 +71,12 @@ function LoginForm() {
           <BoldBtn onClick={onGoogleSignIn} variant="contained" size="large" fullWidth startIcon={<GoogleIcon />}>
             Continue with Google
           </BoldBtn>
-          <Hr />
+          <Hr sx={{ width: '100%' }} />
           <FormControl fullWidth variant="outlined">
             <InputLabel htmlFor="email">Email</InputLabel>
-            <OutlinedInput
+            <TextInput
               id="email"
+              variant="outlined"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               label="Email"
@@ -177,10 +179,6 @@ const LoginText = styled(Typography)({
 
 const BoldText = styled(Typography)({
   fontWeight: 600,
-})
-
-const Hr = styled(Divider)({
-  width: '100%',
 })
 
 const BoldBtn = styled(Button)({

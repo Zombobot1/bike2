@@ -21,6 +21,15 @@
       "args": ["run", "${relativeFile}"],
       "smartStep": true,
       "console": "integratedTerminal"
+    },
+    {
+      "name": "Launch TypeScript",
+      "type": "node",
+      "request": "launch",
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+      "args": ["./src/test.ts"],
+      "cwd": "${workspaceFolder}",
+      "internalConsoleOptions": "openOnSessionStart"
     }
   ]
 }

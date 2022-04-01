@@ -76,7 +76,7 @@ export function patienceDiff(a: string, b: string, diffPlusFlag = false) {
     var ja: any = []
 
     // First, walk the list creating the jagged array.
-    abMap.forEach((val: any, key: any, map: any) => {
+    abMap.forEach((val: any) => {
       let i = 0
       while (ja[i] && ja[i][ja[i].length - 1].indexB < val.indexB) {
         i++

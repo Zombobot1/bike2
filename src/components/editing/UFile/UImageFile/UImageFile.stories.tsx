@@ -1,34 +1,31 @@
 import { Box } from '@mui/material'
-import { UBlock, mockUblock } from '../../UBlock/UBlock'
+import { _blocks } from '../../../../content/blocks'
+import { f } from '../../../../utils/types'
+import { UBlockContent } from '../../types'
+import { _generators } from '../../UPage/UPageState/crdtParser/_fakeUPage'
+import { UImageFile } from './UImageFile'
 
-function T(props: UBlock) {
+const { image } = _generators
+
+function T(ps: UBlockContent) {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...props} />
+      <UImageFile {...ps} />
     </Box>
   )
 }
 
-const data1: UBlock = {
-  ...mockUblock,
-  id: 'fluffyJpg',
+const base: UBlockContent = {
+  id: '',
+  data: '',
+  setData: f,
+  type: 'image',
 }
 
-const data2: UBlock = {
-  ...mockUblock,
-  id: 'newImage',
-  initialData: { data: '', type: 'image' },
-}
-
-const data3: UBlock = {
-  ...data1,
-  readonly: true,
-}
-
-export const ResizesImage = () => T(data1)
-export const Readonly = () => T(data3)
-export const UploadsImage = () => T(data2)
+export const ResizesImage = () => T({ ...base, ..._blocks.pets.fluffyImg })
+export const Readonly = () => T({ ...base, ..._blocks.pets.fluffyImg, readonly: true })
+export const UploadsImage = () => T({ ...base, ...image() })
 
 export default {
-  title: 'Editing/UImageFile',
+  title: 'Editing extras/UImageFile',
 }

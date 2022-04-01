@@ -18,22 +18,20 @@ import {
   toggleEmClass,
   toggleTagMutable,
 } from '../../utils/Selection/selection'
-import { TeX, TexMapRef, UBlockType } from '../types'
-import { UMediaFileDTO } from '../UFile/UImageFile/UImageFile'
+import { TeX, TexMapRef } from '../types'
 import { sanitize } from './sanitazer'
 import { UText } from './types'
 import { coloredTextSX, useLastUsedColor, UTextOptions } from './UTextOptions/UTextOptions'
 import { ToggleTex, useTex } from './UTextOptions/UTextInlineEditors/UTextTexEditor'
 import { useLinks } from './UTextOptions/UTextInlineEditors/UTextLinkEditor'
 import { useMenuB } from '../../utils/UMenu/useMenuB'
-import { BlockAutocomplete } from '../UBlock/BlockAutocomplete/BlockAutocomplete'
+import { BlockAutocomplete } from '../UPage/UBlock/BlockAutocomplete/BlockAutocomplete'
 import { Editable, getUTextStyles } from './utextStyles'
-import { isInList, mergeListsAround, setUBlockInfo } from '../UPage/blockIdAndInfo'
+import { UBlockType } from '../UPage/ublockTypes'
 
 export interface UText_ extends UText {
   component: str
   hidePlaceholder?: bool
-  handleKeyDown?: (e: KeyboardEvent<HTMLInputElement>, atStart?: bool) => void
   offset?: num
   color?: str
   focusIfEmpty?: bool
@@ -44,16 +42,20 @@ export function UText_(ps: UText_) {
   const mapRef = useRef(new Map<str, TeX>())
 
   const { text, onBlur, onTextChange, setText } = useText(ps, mapRef)
-  const { refocus } = useFocus(ps, ref)
-  const texProps = useTex(mapRef, ps, text, setText, ps.setFocus, refocus, ref)
+  const { focus, refocus, setFocus } = useFocus(ps, ref)
+  const texProps = useTex(mapRef, ps, text, setText, setFocus, refocus, ref)
   const { toggleTex } = texProps
-  const linkProps = useLinks(text, setText, ps.setFocus, ps.setData, ref)
+  const linkProps = useLinks(ps.id, text, setText, setFocus, ps.setData, ref)
   const { toggleLink } = linkProps
   const autocompletePs = useAutocomplete(ps, text, toggleTex, ref)
   const kdPs = useKeyDown(ps, text, setText, autocompletePs.openAutocomplete, mapRef, toggleLink, toggleTex, ref)
-  const { sx } = useSX(ps, text)
+  const { sx } = useSX(ps)
 
-  useTextMount(ps, text, setText, autocompletePs.openAutocomplete, kdPs.splitText, ref)
+  useTextMount(ps, text, setText, kdPs.splitText, ref)
+
+  useEffect(() => {
+    if (ps.data === '/' && focus?.id === ps.id && focus.fresh) autocompletePs.openAutocomplete(1)
+  }, [focus])
 
   useEffect(() => {
     if (ps.focusIfEmpty) ref.current?.focus()
@@ -61,10 +63,11 @@ export function UText_(ps: UText_) {
 
   let html = text.replaceAll('&', '&amp;')
   if (html.trim().endsWith('</code>')) html += '&nbsp;'
+
   return (
     <Styles sx={{ position: 'relative' }} onClick={ps.resetActiveBlock}>
       <UTextOptions textRef={ref} linkEditorPs={linkProps} texEditorPs={texProps} />
-      <BlockAutocomplete {...autocompletePs} context={ps.inUForm ? 'uform' : 'general'} />
+      <BlockAutocomplete {...autocompletePs} context={ps.context} />
       <Editable
         innerRef={ref}
         html={html}
@@ -83,28 +86,24 @@ export function UText_(ps: UText_) {
 }
 
 function useText(ps: UText_, mapRef: TexMapRef) {
-  const [text, setText] = useReactive(ps.data)
+  const [text, setText] = useReactive(ps.data as str)
 
   useEffect(() => {
     if (!text) return
     if (!text.includes(' ')) return
 
     const firstElement = text.split(' ')
-    const newType = regexAndType.get(firstElement[0])
+    const newType = shorthandAndType.get(firstElement[0])
     if (!newType) return
 
-    ps.setType(newType)
+    ps.setType(ps.id, newType, sanitize(text, mapRef))
   }, [text])
 
   const onTextChange = useRefCallback((e) => setText(e.target.value.replaceAll('&amp;', '&').replaceAll('&nbsp;', ' ')))
   const onBlur = useRefCallback(() => {
     const t = sanitize(text, mapRef)
-    if (t !== ps.data) ps.setData(t)
+    if (t !== ps.data) ps.setData(ps.id, t)
   }, [text])
-
-  useEffect(() => {
-    if (ps.appendedData) setText(text + ps.appendedData)
-  }, [ps.appendedData])
 
   return { text, setText, onTextChange, onBlur }
 }
@@ -123,8 +122,8 @@ function useAutocomplete(ps: UText_, text: str, toggleTex: ToggleTex, ref: DivRe
     if (t === 'inline-equation') {
       setCursor(safe(ref.current), offsetBeforeOpen, 'forward', 'symbol')
       toggleTex(offsetBeforeOpen, { removeSlash: true })
-    } else if (text.trim().length > 1) ps.addNewBlocks(ps.id, undefined, undefined, t)
-    else ps.setType(t)
+    } else if (text.trim().length > 1) ps.addUBlock(ps.id, t)
+    else ps.setType(ps.id, t)
   }
 
   const openAutocomplete = (offset: num) => {
@@ -151,12 +150,17 @@ function useKeyDown(
   const splitText = (additionalText = '') => {
     const offset = cursorOffset(safe(ref.current))
     let nextTextBlockBoundary = offset
+    let textAbove = text
     if (offset !== symbolLength(text)) {
       const textWhichStaysInThisBlock = sliceHtml(text, offset)
-      setText(textWhichStaysInThisBlock + additionalText)
+      const newText = textWhichStaysInThisBlock + additionalText
+
+      setText(newText)
+      textAbove = sanitize(newText, mapRef)
       nextTextBlockBoundary = textWhichStaysInThisBlock.length
     }
-    return sanitize(text.slice(nextTextBlockBoundary), mapRef)
+    const textBelow = sanitize(text.slice(nextTextBlockBoundary), mapRef)
+    return { textBelow, textAbove }
   }
 
   const onBlockKeyDown = useRefCallback(
@@ -164,29 +168,23 @@ function useKeyDown(
       const sRef = safe(ref.current)
       const offset = cursorOffset(sRef)
       const atStart = offset === 0
-      if (ps.handleKeyDown) ps.handleKeyDown(e, atStart)
-      // debugger
+
       // setTimeout - otherwise autocomplete intercepts /, + 1 to include /
       if (e.key === '/') setTimeout(() => openAutocomplete(offset + 1))
 
-      if (atStart && e.key === 'Tab' && ps.type === 'text') {
+      if (atStart && e.key === 'Tab') {
         e.preventDefault()
-        if (!e.shiftKey) {
-          if (!isInList(ps.id)) {
-            ps.mergeLists(mergeListsAround(ps.id, text, 'changed-type', 'bullet-list', true))
-          }
-        } else {
-          if (isInList(ps.id)) ps.moveIdInList?.(ps.id, 'left')
-        }
+        if (e.shiftKey) ps.onUTextShiftTab(ps.id, sanitize(text, mapRef))
+        else ps.onUTextTab(ps.id, sanitize(text, mapRef))
       }
 
       if (!e.shiftKey && e.key === 'Enter') {
         e.preventDefault()
-        const newText = splitText()
-        ps.addNewBlocks(ps.id, 'focus-start', newText, 'text')
+        const { textAbove, textBelow } = splitText()
+        ps.onUTextEnter(textAbove, textBelow, ps.id)
       } else if (e.key === 'Backspace' && !offset) {
         e.preventDefault()
-        ps.deleteBlock?.(ps.id, text)
+        ps.onUTextBackspace(ps.id, sanitize(text, mapRef))
       } else if (e.key === 'Backspace' && offset - 1 === symbolLength(text)) {
         // - 1 due to &nbsp;
         // if tex goes at the end of a block it causes issues with focus
@@ -196,10 +194,10 @@ function useKeyDown(
 
       if (e.metaKey || e.ctrlKey) {
         if (e.altKey || e.shiftKey) {
-          if ('0º'.includes(e.key)) ps.setType('text', text)
-          else if ('1¡'.includes(e.key)) ps.setType('heading-1', text)
-          else if ('2™'.includes(e.key)) ps.setType('heading-2', text)
-          else if ('3£'.includes(e.key)) ps.setType('heading-3', text)
+          if ('0º'.includes(e.key)) ps.setType(ps.id, 'text', sanitize(text, mapRef))
+          else if ('1¡'.includes(e.key)) ps.setType(ps.id, 'heading-1', sanitize(text, mapRef))
+          else if ('2™'.includes(e.key)) ps.setType(ps.id, 'heading-2', sanitize(text, mapRef))
+          else if ('3£'.includes(e.key)) ps.setType(ps.id, 'heading-3', sanitize(text, mapRef))
         }
 
         if (e.shiftKey && 'Ee'.includes(e.key)) {
@@ -239,12 +237,12 @@ function useKeyDown(
         }
       }
     },
-    [text, ps.goUp, ps.goDown, ps.handleKeyDown, ps.type, openAutocomplete],
+    [text, ps.goUp, ps.goDown, openAutocomplete],
   )
   return { onBlockKeyDown, splitText }
 }
 
-function useSX(ps: UText_, text: str): JSObject {
+function useSX(ps: UText_): JSObject {
   const theme = useTheme()
 
   let sx: JSObject = {
@@ -255,25 +253,6 @@ function useSX(ps: UText_, text: str): JSObject {
     },
   }
 
-  if (ps.isCardField) {
-    sx = {
-      ...sx,
-      fontSize: '1.65rem',
-      overflowY: 'hidden',
-      overflowX: 'hidden',
-      wordWrap: 'break-word',
-      whiteSpace: 'pre-wrap',
-      marginBottom: 0,
-      lineHeight: 1.12,
-      flex: '0 0 auto',
-      textAlign: text.length < 90 ? 'center' : 'left',
-
-      [`${theme.breakpoints.up('sm')}`]: {
-        fontSize: '2rem',
-      },
-    }
-  }
-
   if (ps.type === 'quote') sx = { ...sx, paddingLeft: '2rem' }
   if (ps.color) sx = { ...sx, color: ps.color }
   sx = { ...sx, ...coloredTextSX(theme.isDark()) }
@@ -282,54 +261,53 @@ function useSX(ps: UText_, text: str): JSObject {
 }
 
 function useFocus(ps: UText_, ref: DivRef) {
+  const [focus, setFocus] = ps.focusS
+
   useEffect(() => {
-    if (!ps.focus) return
+    if (!focus || focus.id !== ps.id) return
 
     setCursor(
       safe(ref.current),
-      ps.focus.xOffset,
-      ps.focus.type.includes('start') ? 'forward' : 'backward',
-      ps.focus.type.includes('integer') ? 'symbol' : 'pixel',
+      focus.xOffset,
+      focus.type.includes('start') ? 'forward' : 'backward',
+      focus.type.includes('integer') ? 'symbol' : 'pixel',
     )
-  }, [ps.focus])
+  }, [focus])
 
   const refocus = () =>
-    ps.setFocus((old) => {
+    setFocus((old) => {
       if (!old) return old
-      return { ...old, forceUpdate: true }
+      return { ...old }
     })
 
-  return { focus, refocus }
+  return { focus, setFocus, refocus }
 }
 
 function useTextMount(
   ps: UText_,
   text: str,
   setText: SetStr,
-  openAutocomplete: SetNum,
-  splitText: (t?: str) => void,
+  splitText: (t?: str) => { textAbove: str; textBelow: str },
   ref: DivRef,
 ) {
   useMount(() => {
-    // ps.initialData === text - component mounts twice (why?) -> autocomplete opens twice
-    if (ps.initialData === '/' && ps.initialData === text) openAutocomplete(1)
-    setUBlockInfo(ps.id, { scrollTo: () => ref.current?.scrollIntoView({ behavior: 'smooth' }) })
-
     const sRef = safe(ref.current)
     const onPaste = (e: ClipboardEvent) => {
       e.preventDefault()
       const image = e.clipboardData?.files[0] || e.clipboardData?.getData('image/png')
       if (image) {
-        const dto: UMediaFileDTO = { src: srcfy(image as File), isNew: true, width: 900 }
         ref.current?.blur()
-        ps.addNewBlocks(ps.id, 'no-focus', JSON.stringify(dto), 'image')
+        ps.onUTextPaste(srcfy(image as File), ps.id, 'image')
       } else {
         const paste = e.clipboardData?.getData('text') || ''
         if (!paste) return
         const blocks = safeSplit(paste.replaceAll('\r', ''), '\n\n')
         const offset = cursorOffset(sRef)
         if (blocks.length === 1) setText(text.slice(0, offset) + blocks[0] + text.slice(offset))
-        else ps.addNewBlocks(ps.id, 'focus-end', blocks.slice(1).join('\n\n') + splitText(blocks[0]))
+        else {
+          ref.current?.blur()
+          ps.onUTextPaste(blocks.slice(1).join('\n\n') + splitText(blocks[0]).textBelow, ps.id, 'text') // why slice(1) ?
+        }
       }
     }
 
@@ -385,7 +363,7 @@ class Coordinates {
   b = 0
 }
 
-const regexAndType = new Map<str, UBlockType>([
+const shorthandAndType = new Map<str, UBlockType>([
   ['#', 'heading-1'],
   ['##', 'heading-2'],
   ['###', 'heading-3'],

@@ -1,28 +1,30 @@
 import { useState } from 'react'
-import { bool, SetBool, SetStr, str } from '../../../utils/types'
-import { uploadFile } from '../../../fb/storage'
+import { SetBool, SetStr, str } from '../../../utils/types'
 import { use1Drop, use1ImageDrop } from '../../utils/Dropzone/Drop1zone'
+import { fileUploader } from './FileUploader'
 
 type SetFile = (f: File) => void
 type SetSrc = (src: str, fileName?: str) => void
 
-export function useUFile(setSrc: SetSrc, handleFile?: SetFile) {
+export function useUFile(id: str, setSrc: SetSrc) {
   const [isUploading, setIsUploading] = useState(false)
-  const fileS = use1Drop(upload(setSrc, setIsUploading, handleFile))
-  return { isUploading, fileS, deleteFile: () => setSrc('') }
+  const fileS = use1Drop(upload(id, setSrc, setIsUploading))
+  return { isUploading, fileS, deleteFile: fileUploader.delete }
 }
 
-export function useUImageFile(setSrc: SetStr, handleFile?: SetFile) {
+export function useUImageFile(id: str, setSrc: SetStr, showTmpImage?: SetFile) {
   const [isUploading, setIsUploading] = useState(false)
-  const uploadFile = upload(setSrc, setIsUploading, handleFile, true)
+  const uploadFile = upload(id, setSrc, setIsUploading, showTmpImage)
   const { fileS, readFromKeyboard } = use1ImageDrop(uploadFile)
-  return { isUploading, fileS, readFromKeyboard, deleteFile: () => setSrc(''), uploadFile }
+  return { isUploading, fileS, readFromKeyboard, deleteFile: fileUploader.delete, uploadFile }
 }
 
-const upload = (setSrc: SetSrc, setIsUploading: SetBool, handleFile?: SetFile, compress?: bool) => async (f: File) => {
-  if (handleFile) handleFile(f)
+const upload = (id: str, setSrc: SetSrc, setIsUploading: SetBool, handleFile?: SetFile) => async (f: File) => {
+  if (handleFile) handleFile(f) // set tmpImage while its uploading
+
   setIsUploading(true)
-  const url = await uploadFile(f, { compress })
-  setSrc(url, f.name)
-  setIsUploading(false)
+  fileUploader.uploadFile(id, f, (src) => {
+    setSrc(src, f.name)
+    setIsUploading(false)
+  })
 }

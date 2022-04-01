@@ -1,13 +1,15 @@
-import { v4 } from 'uuid'
+import { nanoid } from 'nanoid'
+import { num, str } from '../types'
 
-export const uuid = () => v4()
+export const uuid = ({ short = false } = {}) => {
+  return nanoid(short ? 6 : 21)
+}
 
-function* _uuidS() {
-  let i = 0
+function* _uuidS(i: num) {
   while (true) yield String(i++)
 }
 
-export function uuidS() {
-  const g = _uuidS()
-  return () => g.next().value
+export function uuidS(i = 0): () => str {
+  const g = _uuidS(i)
+  return () => g.next().value || ''
 }

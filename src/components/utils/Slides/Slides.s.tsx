@@ -1,7 +1,7 @@
 import { Button, ButtonGroup, Stack, TextField } from '@mui/material'
 import { useState } from 'react'
 import { num, nums } from '../../../utils/types'
-import { Rec } from '../Rec'
+import { Rec } from '../rec'
 import { Slides, useSlides } from './Slides'
 
 function One() {

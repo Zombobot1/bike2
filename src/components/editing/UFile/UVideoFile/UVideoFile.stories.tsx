@@ -1,33 +1,31 @@
 import { Box } from '@mui/material'
-import { UBlock, mockUblock } from '../../UBlock/UBlock'
+import { _blocks } from '../../../../content/blocks'
+import { f } from '../../../../utils/types'
+import { UBlockContent } from '../../types'
+import { _generators } from '../../UPage/UPageState/crdtParser/_fakeUPage'
+import { UVideoFile } from './UVideoFile'
 
-const T = (props: UBlock) => {
+const { video } = _generators
+
+const T = (ps: UBlockContent) => {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...props} />
+      <UVideoFile {...ps} />
     </Box>
   )
 }
 
-const data: UBlock = {
-  ...mockUblock,
-  id: 'newVideo',
-  initialData: { data: '', type: 'video' },
+const base: UBlockContent = {
+  id: '',
+  data: '',
+  setData: f,
+  type: 'video',
 }
 
-const readonly: UBlock = {
-  ...mockUblock,
-  id: 'new&readonlyVideo',
-  initialData: { data: '', type: 'video' },
-  readonly: true,
-}
-
-const resizable: UBlock = { ...mockUblock, id: 'catVideo' }
-
-export const AwaitsLink = () => T(data)
-export const NewAndReadonly = () => T(readonly)
-export const Resizable = () => T(resizable)
+export const Empty = () => T({ ...base, ...video() })
+export const EmptyAndReadonly = () => T({ ...base, ...video(), readonly: true })
+export const Resizable = () => T({ ...base, ..._blocks.pets.fluffyVideo })
 
 export default {
-  title: 'Editing/UVideoFile',
+  title: 'Editing extras/UVideoFile',
 }

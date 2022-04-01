@@ -156,6 +156,8 @@ export function cutHtml(html: str, dataToCut: str, cursorOffset: num): str {
 
 function scrollUntil(html: str, untilI: num): num {
   if (!html) return 0
+  if (!untilI) return 0
+
   let symbolsCount = 0
   for (let i = 0; i < html.length; i++) {
     if (html[i] === '<') i += scrollThroughTag(i, html)

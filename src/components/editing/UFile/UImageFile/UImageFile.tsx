@@ -1,47 +1,61 @@
-import { useReactiveObject } from '../../../utils/hooks/hooks'
+import { useMount } from '../../../utils/hooks/hooks'
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded'
-import { imageFromSrc, srcfy } from '../../../../utils/filesManipulation'
-import { UBlockImplementation } from '../../types'
+import { UBlockContent } from '../../types'
 import { useUImageFile } from '../useUFile'
 import { alpha, IconButton, styled } from '@mui/material'
-import { bool } from '../../../../utils/types'
-import { ucast } from '../../../../utils/utils'
-import { useEffect, useState } from 'react'
+import { str } from '../../../../utils/types'
+import { useState } from 'react'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
+import { UBlockIdAttribute, UMediaFileData } from '../../UPage/ublockTypes'
+import { fileUploader } from '../FileUploader'
 
-export function UImageFile({ data, setData, readonly }: UBlockImplementation) {
-  const [imageData, setImageData] = useReactiveObject(ucast(data, new UMediaFileDTO()))
-  const [newSrc, setNewSrc] = useState('') // user can change width before image is uploaded
-  const props = useUImageFile(setNewSrc, (f) => {
-    setImageData(() => ({ width: 900, src: srcfy(f) }))
+export function UImageFile({ id, data: d, setData, readonly }: UBlockContent) {
+  const data = d as UMediaFileData
+  const [tmpSrc, setTmpSrc] = useState('')
+
+  const onUpload = (src: str) => {
+    // do not replace tmp src to avoid flickering (even with server)
+    // setTmpSrc('') // in test mode without server image flickers on insertion because tmpSrc is replaced by real immediately
+    setData(id, { src })
+  }
+
+  const ps = useUImageFile(
+    id,
+    (src) => setData(id, { src }),
+    (tmpFile) => {
+      setTmpSrc(fileUploader.uploadBlob(id, tmpFile, onUpload)) // will unsubscribe on unmount
+    },
+  )
+
+  useMount(() => {
+    if (!data.src && fileUploader.hasImage(id)) setTmpSrc(fileUploader.startUpload(id, onUpload))
+    return () => fileUploader.unsubscribe(id)
   })
 
-  // TODO: handle upload in UPageState
-  // useEffect(() => {
-  //   if (imageData.isNew) imageFromSrc(imageData.src).then((i) => props.uploadFile(i))
-  // }, [imageData.isNew]) // image can be created inside UText
+  if (!tmpSrc && !data.src) return <Drop1zone {...ps} label="image" icon={<ImageRoundedIcon />} />
 
-  useEffect(() => {
-    if (newSrc && newSrc !== imageData.src) {
-      setData(JSON.stringify({ width: imageData.width, src: newSrc }))
-      setNewSrc('')
-    }
-  }, [newSrc])
-
-  if (!imageData.src) return <Drop1zone {...props} label="image" icon={<ImageRoundedIcon />} />
+  // undefined on first render
+  const parent = document.querySelector(`[${UBlockIdAttribute}="${id}"]`)?.parentElement as HTMLDivElement | undefined
+  const maxWidth = parent?.offsetWidth || 900
 
   return (
     <ResizableWidth
       readonly={readonly}
-      width={imageData.width}
-      updateWidth={(w) => setData(JSON.stringify({ ...imageData, width: w }))}
-      maxWidth={900}
+      width={data.width}
+      updateWidth={(width) => setData(id, { width })}
+      maxWidth={maxWidth}
     >
-      <Img src={imageData.src} data-cy="img" />
+      <Img src={tmpSrc || data.src} data-cy="img" />
       {!readonly && (
-        <Delete size="small" onClick={props.deleteFile}>
+        <Delete
+          size="small"
+          onClick={() => {
+            setData(id, { src: '' })
+            ps.deleteFile(id)
+          }}
+        >
           <DeleteRoundedIcon />
         </Delete>
       )}

@@ -2,7 +2,6 @@ import { useAtom, atom } from 'jotai'
 import { useMount } from '../../utils/hooks/hooks'
 import { sslugify } from '../../../utils/sslugify'
 import { Fn, f, str } from '../../../utils/types'
-import { uuid } from '../../../utils/uuid'
 
 type FileOrStr = File | str
 
@@ -75,7 +74,7 @@ export function useNewCardDataField(_id: str, name: str) {
 function renameFiles(data: NewCardData, previewName: str): NewCardData {
   const preview = data.find((d) => d.name === previewName)
   if (!preview || preview.value instanceof File) throw new Error('Preview not found in new data')
-  const name = (ext: str) => `${sslugify(preview.value as str)}-${uuid()}.${ext}`
+  const name = (ext: str) => `${sslugify(preview.value as str)}-${'uuid()'}.${ext}`
 
   return data.map((d) => {
     if (d instanceof File) {

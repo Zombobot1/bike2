@@ -1,34 +1,31 @@
 import { Box } from '@mui/material'
-import { UBlock, mockUblock } from '../../UBlock/UBlock'
+import { _blocks } from '../../../../content/blocks'
+import { f } from '../../../../utils/types'
+import { UBlockContent } from '../../types'
+import { _generators } from '../../UPage/UPageState/crdtParser/_fakeUPage'
+import { UAudioFile } from './UAudioFile'
 
-function T(props: UBlock) {
+const { audio } = _generators
+
+function T(ps: UBlockContent) {
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...props} />
+      <UAudioFile {...ps} />
     </Box>
   )
 }
 
-const data1: UBlock = {
-  ...mockUblock,
-  id: 'fluffyMp3',
+const base: UBlockContent = {
+  id: '',
+  data: '',
+  setData: f,
+  type: 'audio',
 }
 
-const data2: UBlock = {
-  ...mockUblock,
-  id: 'newAudio',
-  initialData: { data: '', type: 'audio' },
-}
-
-const data3: UBlock = {
-  ...data1,
-  readonly: true,
-}
-
-export const ShowsAudio = () => T(data1)
-export const ReadOnly = () => T(data3)
-export const UploadsAudio = () => T(data2)
+export const ShowsAudio = () => T({ ...base, ..._blocks.pets.fluffyAudio })
+export const ReadOnly = () => T({ ...base, ..._blocks.pets.fluffyAudio, readonly: true })
+export const UploadsAudio = () => T({ ...base, ...audio() })
 
 export default {
-  title: 'Editing/UAudioFile',
+  title: 'Editing extras/UAudioFile',
 }

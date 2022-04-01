@@ -1,6 +1,6 @@
 import { Avatar, Box, Drawer, Fab, Paper, Stack, styled, Typography, useTheme } from '@mui/material'
 
-import { str, BoolState } from '../../../../utils/types'
+import { str, BoolState, SetStr } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
 import { NavLink, NavTree } from './NavTree'
 import SchoolRoundedIcon from '@mui/icons-material/SchoolRounded'
@@ -8,15 +8,22 @@ import BusinessCenterRoundedIcon from '@mui/icons-material/BusinessCenterRounded
 import SettingsIcon from '@mui/icons-material/Settings'
 import AddRoundedIcon from '@mui/icons-material/AddRounded'
 
-import { WS } from '../workspace'
 import { useShowAppBar } from '../AppBar/AppBar'
 import { _apm } from '../../theming/theme'
-import { useNewUPage } from '../../../editing/UPage/hooks/useNewUPage'
 import { UserDTO } from '../../../../fb/auth'
+import { WorkspaceNav } from '../../Workspace/Workspace'
+import { uuid } from '../../../../utils/wrappers/uuid'
+
+interface Workspace {
+  triggerOpen: SetStr
+  triggerFavoriteOpen: SetStr
+  addNew: SetStr
+}
 
 export interface NavBar {
   user: UserDTO
-  workspace: WS
+  navigation: WorkspaceNav
+  workspace: Workspace
   isNavBarOpenS: BoolState
 }
 
@@ -77,10 +84,9 @@ const NavBarWrapper = styled(Stack, { label: 'NavBar' })({
   },
 })
 
-function NavBar_({ user, workspace }: NavBar) {
+function NavBar_({ user, workspace, navigation }: NavBar) {
   const displayName = user.displayName || `Zombobot ${strShortHash(user.email || '')}`
   const theme = useTheme()
-  const addNewUPage = useNewUPage(workspace)
   const sx = { color: _apm(theme, 'secondary') }
   return (
     <NavBox>
@@ -94,9 +100,9 @@ function NavBar_({ user, workspace }: NavBar) {
           <NavLink name="Teach" icon={<BusinessCenterRoundedIcon sx={sx} />} />
           <NavLink name="Tune" icon={<SettingsIcon sx={sx} />} />
         </Stack>
-        <NavTrees workspace={workspace} />
+        <NavTrees workspace={workspace} navigation={navigation} />
       </Stack>
-      <FAB onClick={() => addNewUPage()} color="primary" sx={{ zIndex: 100 }}>
+      <FAB onClick={() => workspace.addNew(uuid())} color="primary" sx={{ zIndex: 100 }}>
         <AddRoundedIcon />
       </FAB>
     </NavBox>
@@ -116,20 +122,20 @@ const FAB = styled(Fab)({
   boxShadow: 'unset',
 })
 
-function NavTrees({ workspace }: { workspace: WS }) {
+function NavTrees({ workspace, navigation }: { navigation: WorkspaceNav; workspace: Workspace }) {
   return (
     <TreesBox>
       <main style={{ paddingRight: '1rem' }}>
-        {workspace.favorite.length && (
+        {navigation.favorite.length && (
           <Box sx={{ marginBottom: '1.5rem' }}>
             <Section color="text.secondary">Favorite</Section>
-            <NavTree nodes={workspace.favorite} onOpen={workspace.triggerOpen('favorite')} />
+            <NavTree nodes={navigation.favorite} onOpen={(id) => workspace.triggerFavoriteOpen(id)} />
           </Box>
         )}
-        {workspace.personal.length && (
+        {navigation.personal.length && (
           <div>
             <Section color="text.secondary">Workspace</Section>
-            <NavTree nodes={workspace.personal} onOpen={workspace.triggerOpen('personal')} />
+            <NavTree nodes={navigation.personal} onOpen={(id) => workspace.triggerOpen(id)} />
           </div>
         )}
       </main>

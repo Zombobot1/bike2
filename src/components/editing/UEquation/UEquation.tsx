@@ -1,19 +1,20 @@
 import { Box, Popper, styled, Typography, useTheme } from '@mui/material'
 import { useEffect, useRef, useState } from 'react'
-import { UBlockImplementation } from '../types'
+import { UBlockContent } from '../types'
 import katex from 'katex'
 import 'katex/dist/katex.css'
 
 import { useReactive } from '../../utils/hooks/hooks'
 import { safe } from '../../../utils/utils'
-import { ReactComponent as TEXI } from '../UBlock/BlockAutocomplete/tex.svg'
+import { ReactComponent as TEXI } from '../UPage/UBlock/BlockAutocomplete/tex.svg'
 import { RStack, SVGI } from '../../utils/MuiUtils'
 
 import { TeXEditor } from '../../utils/CodeEditor/TeXEditor'
-import { PaddedBox } from '../UBlock/PaddedBox'
+import { PaddedBox } from '../UPage/UBlock/PaddedBox'
+import { str } from '../../../utils/types'
 
-export function UEquation({ data, setData, readonly }: UBlockImplementation) {
-  const [eq, setEq] = useReactive(data)
+export function UEquation({ data, setData, readonly, id }: UBlockContent) {
+  const [eq, setEq] = useReactive(data as str)
   const [isOpen, setIsOpen] = useState(false)
   const ref = useRef(null)
   const latexRef = useRef(null)
@@ -24,7 +25,7 @@ export function UEquation({ data, setData, readonly }: UBlockImplementation) {
   }, [eq])
 
   const close = () => {
-    if (eq !== data) setData(eq)
+    if (eq !== data) setData(id, eq)
     setIsOpen(false)
   }
 

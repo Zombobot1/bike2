@@ -1,16 +1,7 @@
 import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { JSObject, str, strP } from './utils/types'
+import { str, strP } from './utils/types'
 import { getApps, initializeApp } from '@firebase/app'
-import {
-  collection,
-  deleteDoc,
-  doc,
-  Firestore,
-  getDocs,
-  getFirestore,
-  initializeFirestore,
-  setDoc,
-} from 'firebase/firestore'
+import { collection, deleteDoc, doc, Firestore, getDocs, getFirestore, initializeFirestore } from 'firebase/firestore'
 
 export const firebaseConfig = {
   apiKey: 'AIzaSyBilmhjT-Ri3iiwV5wSw6Hsl4B3dJZzy9U',
@@ -20,13 +11,11 @@ export const firebaseConfig = {
   messagingSenderId: '809588642322',
   appId: '1:809588642322:web:1f5f4811b7ae877237becb',
 }
-import axios from 'axios'
-import { ws } from './content/application'
-import { blocksS } from './content/ublocks'
+// import axios from 'axios'
+// import { ws } from './content/application'
 import { getStorage } from 'firebase/storage'
-import { IdAndBlocks } from './content/types'
 
-const PROJECT_ID = 'universe-55cec'
+// const PROJECT_ID = 'universe-55cec'
 type Promises = Promise<unknown>[]
 
 async function deleteCollection(db: Firestore, name: str, jobs: Promises) {
@@ -41,22 +30,22 @@ export async function cleanUp() {
   return Promise.all(jobs)
 }
 
-const set = (col: str, id: str, data: JSObject) => setDoc(doc(getFirestore(), col, id), data)
-const _setMany = (col: str, data: [str, JSObject][]) => data.map(([id, d]) => set(col, id, d))
-async function insertMockData(userId: str) {
-  const jobs = [set('ws', userId, ws), set('_t', '1', { d: 'test' }), ..._setMany('ublocks', blocksS)]
-  return Promise.all(jobs)
-}
-export async function _insertBlocks(blocks: IdAndBlocks) {
-  return Promise.all([..._setMany('ublocks', blocks)])
-}
-const getCode = `http://localhost:9099/emulator/v1/projects/${PROJECT_ID}/oobCodes`
+// const set = (col: str, id: str, data: JSObject) => setDoc(doc(getFirestore(), col, id), data)
+// const _setMany = (col: str, data: [str, JSObject][]) => data.map(([id, d]) => set(col, id, d))
+// async function insertMockData(userId: str) {
+//   const jobs = [set('ws', userId, ws), set('_t', '1', { d: 'test' }), ..._setMany('ublocks', blocksS)]
+//   return Promise.all(jobs)
+// }
+// export async function _insertBlocks(blocks: IdAndBlocks) {
+//   return Promise.all([..._setMany('ublocks', blocks)])
+// }
+// const getCode = `http://localhost:9099/emulator/v1/projects/${PROJECT_ID}/oobCodes`
 
-export async function _getOOBLink(): strP {
-  const r = await axios.get(getCode)
-  const d = await r.data
-  return `?${d.oobCodes[0].oobLink.split('?')[1].split('&continueUrl')[0]}`
-}
+// export async function _getOOBLink(): strP {
+// const r = await axios.get(getCode)
+// const d = await r.data
+// return `?${d.oobCodes[0].oobLink.split('?')[1].split('&continueUrl')[0]}`
+// }
 
 export async function _signIn() {
   // await sendEmailLink('test@gmail.com')
@@ -90,9 +79,9 @@ export async function _initFB(): strP {
 }
 
 export async function _seed() {
-  const userId = await _initFB()
+  // const userId = await _initFB()
   await cleanUp()
-  await insertMockData(userId)
+  // await insertMockData(userId)
 }
 
 export function wrapPromise(promise: Promise<unknown>) {

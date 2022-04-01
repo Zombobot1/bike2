@@ -1,61 +1,75 @@
 import { SoryBook } from './sorybook/sorybook'
 import ReactDOM from 'react-dom'
+import { ReactLocation, Router } from '@tanstack/react-location'
+
+const location = new ReactLocation()
 
 let init = { read: f }
 if (isInProduction) init = wrapPromise(_initFB())
+else setFSD(_fs)
 
 const Sandbox = () => {
   init.read()
 
   return (
     <ErrorBoundary fallbackRender={({ error }) => <p>{error.message}</p>}>
-      <OuterShell>
-        <SoryBook
-          sories={[
-            UPage,
-            UBlocksSet,
-            UText,
-            Code,
-            Callout,
-            Quote,
-            UList,
-            UGrid,
-            UPageBlock,
-            UTable,
-            UDivider,
-            Equation,
-            UVideoFile,
-            UFile,
-            UAudioFile,
-            UImageFile,
-            BlockAutocomplete,
-            TableOfContents,
-            UTextOptions,
-            UForm,
-            InlineExercise,
-            UChecks,
-            UInput,
-            UAutocomplete,
-            CodeEditor,
-            EditableText,
-            Selection,
-            ResizableWidth,
-            Dropzone,
-            UAudio,
-            AppBar,
-            NavBar,
-            App,
-            Fetch,
-            FetchingStateS,
-            Page404,
-            ThemeBtn,
-            LoginPage,
-            UCard,
-            SB,
-          ]}
-          sections={['Editing', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
-        />
-      </OuterShell>
+      <Router
+        location={location}
+        routes={[
+          {
+            path: '/:soryId',
+            element: (
+              <OuterShell>
+                <SoryBook
+                  sories={[
+                    UPage,
+                    UBlocksSet,
+                    UText,
+                    Code,
+                    Callout,
+                    Quote,
+                    UList,
+                    UGrid,
+                    UPageBlock,
+                    UTable,
+                    UDivider,
+                    Equation,
+                    UVideoFile,
+                    UFile,
+                    UAudioFile,
+                    UImageFile,
+                    BlockAutocomplete,
+                    UTextOptions,
+                    TableOfContents,
+                    UForm,
+                    InlineExercise,
+                    UChecks,
+                    UInput,
+                    UAutocomplete,
+                    CodeEditor,
+                    EditableText,
+                    Selection,
+                    ResizableWidth,
+                    Dropzone,
+                    UAudio,
+                    AppBar,
+                    NavBar,
+                    App,
+                    Fetch,
+                    FetchingStateS,
+                    Page404,
+                    ThemeBtn,
+                    LoginPage,
+                    UCard,
+                    SB,
+                  ]}
+                  sections={['Editing core', 'Editing extras', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
+                />
+              </OuterShell>
+            ),
+          },
+        ]}
+      ></Router>
     </ErrorBoundary>
   )
 }
@@ -69,7 +83,7 @@ import * as UVideoFile from './components/editing/UFile/UVideoFile/UVideoFile.st
 import * as UFile from './components/editing/UFile/UFile.stories'
 import * as UAudio from './components/utils/UAudio/UAudio.stories'
 import * as UAutocomplete from './components/utils/UAutocomplete/UAutocomplete.stories'
-import * as UBlocksSet from './components/editing/UBlockSet/UBlockSet.stories'
+import * as UBlocksSet from './components/editing/UPage/UBlockSet/UBlockSet.stories'
 import * as UTable from './components/editing/UTable/UTable.stories'
 import * as TableOfContents from './components/editing/UPage/TableOfContents/TableOfContents.stories'
 import * as UPageBlock from './components/editing/UPage/UPageBlock/UPageBlock.stories'
@@ -87,16 +101,16 @@ import * as ThemeBtn from './components/application/theming/ThemeBtn.stories'
 import * as Page404 from './components/application/Page404/Page404.stories'
 import * as LoginPage from './components/application/LoginPage/LoginPage.stories'
 import * as UCard from './components/decks/UCard/UCard.stories'
-import * as UForm from './components/uforms/UForm.stories'
-import * as UChecks from './components/uforms/UFormBlock/UChecks/UChecks.stories'
-import * as UInput from './components/uforms/UFormBlock/UInput/UInput.stories'
-import * as InlineExercise from './components/uforms/UFormBlock/InlineExercise/InlineExercise.stories'
+import * as UForm from './components/editing/UForm/UForm.stories'
+import * as UChecks from './components/editing/UForm/UFormBlock/UChecks/UChecks.stories'
+import * as UInput from './components/editing/UForm/UFormBlock/UInput/UInput.stories'
+import * as InlineExercise from './components/editing/UForm/UFormBlock/InlineExercise/InlineExercise.stories'
 import * as Code from './components/editing/UText/Code/Code.stories'
 import * as Callout from './components/editing/UText/Callout/Callout.stories'
 import * as Quote from './components/editing/UText/Quote/Quote.stories'
 import * as UList from './components/editing/UList/UList.stories'
 import * as UText from './components/editing/UText/UText.stories'
-import * as BlockAutocomplete from './components/editing/UBlock/BlockAutocomplete/BlockAutocomplete.stories'
+import * as BlockAutocomplete from './components/editing/UPage/UBlock/BlockAutocomplete/BlockAutocomplete.stories'
 import * as UAudioFile from './components/editing/UFile/UAudioFile/UAudioFile.stories'
 import * as UImageFile from './components/editing/UFile/UImageFile/UImageFile.stories'
 import * as SB from './components/utils/Sandbox.stories'
@@ -108,6 +122,8 @@ import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingSt
 import { f } from './utils/types'
 import { ErrorBoundary } from 'react-error-boundary'
 import { isInProduction } from './fb/utils'
+import { setFSD } from './fb/fs'
+import { _fs } from './content/fs'
 
 if (![].at) {
   Array.prototype.at = function (i) {

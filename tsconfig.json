@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["cypress", "cypress-real-events"],
+    "types": ["cypress", "cypress-real-events", "node"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,

@@ -1,37 +1,32 @@
 import { Box } from '@mui/material'
-import { UBlock, mockUblock } from '../UBlock/UBlock'
-import { UTableDTO } from './UTable'
+import { useState } from 'react'
+import { _catTable } from '../../../content/blocks'
+import { UTableData } from '../UPage/ublockTypes'
+import { UTable } from './UTable'
 
-const T = (data: UBlock) => {
+const T = (d: UTableData) => {
+  const [data, setData] = useState(d)
   return (
     <Box sx={{ width: 500 }}>
-      <UBlock {...data} />
+      <UTable data={data} setData={(_, d) => setData(d as [])} id="" type="table" />
     </Box>
   )
 }
 
-const data: UBlock = {
-  ...mockUblock,
-  id: 'catTable',
-}
+const table: UTableData = [
+  {
+    rows: ['00', '01'],
+    width: 190,
+  },
+  {
+    rows: ['01', '11'],
+    width: 190,
+  },
+]
 
-const table: UTableDTO = {
-  rows: [
-    ['00', '01'],
-    ['10', '11'],
-  ],
-  widths: [190, 190],
-}
-
-const newTable: UBlock = {
-  ...mockUblock,
-  id: 'newTable',
-  initialData: { type: 'table', data: JSON.stringify(table) },
-}
-
-export const Default = () => T(data)
-export const Small = () => T(newTable)
+export const Default = () => T(_catTable)
+export const Small = () => T(table)
 
 export default {
-  title: 'Editing/UTable',
+  title: 'Editing extras/UTable',
 }

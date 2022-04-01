@@ -2,15 +2,16 @@ import { Box, Collapse, Stack, styled, Typography, useTheme } from '@mui/materia
 import FiberManualRecordRoundedIcon from '@mui/icons-material/FiberManualRecordRounded'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
-import { bool, JSObject, num, SetStr, str } from '../../../../utils/types'
+import { JSObject, num, SetStr, str } from '../../../../utils/types'
 import { prevented } from '../../../../utils/utils'
 import { useRouter } from '../../../utils/hooks/useRouter'
 import { ReactNode } from 'react'
 import { sslugify } from '../../../../utils/sslugify'
 import { _apm } from '../../theming/theme'
+import { UPageNode, UPageNodes } from '../../Workspace/types'
 
 export interface NavTree {
-  nodes: NavNodeDTOs
+  nodes: UPageNodes
   onOpen: SetStr
 }
 
@@ -24,29 +25,20 @@ export function NavTree({ nodes, onOpen }: NavTree) {
   )
 }
 
-export interface NavNodeDTO {
-  id: str
-  name: str
-  isOpen?: bool
-  children?: NavNodeDTO[]
-}
-export type NavNodeDTOs = NavNodeDTO[]
-export type NavNodeDTOO = NavNodeDTO | undefined
-
-export interface NavNode extends NavNodeDTO {
+export interface NavNode extends UPageNode {
   depth: num
   onOpen: SetStr
 }
 
-function NavNode({ id, name, isOpen, onOpen, depth, children }: NavNode) {
-  const { location, history } = useRouter()
+function NavNode({ id, name, _isOpen: isOpen, onOpen, depth, children }: NavNode) {
+  const { location, navigate } = useRouter()
   const theme = useTheme()
 
   return (
     <NavNode_>
       <li>
         <NavNodeLabel
-          onClick={() => history.push('/' + id)}
+          onClick={() => navigate('/' + id)}
           direction="row"
           alignItems="center"
           sx={location.pathname === '/' + id ? { backgroundColor: _apm(theme, '400') } : {}}
@@ -134,12 +126,12 @@ export interface NavLink {
   icon: ReactNode
 }
 export function NavLink({ name, icon }: NavLink) {
-  const { history, location } = useRouter()
+  const { navigate, location } = useRouter()
   const theme = useTheme()
   const id = sslugify(name)
   return (
     <NavNodeLabel
-      onClick={() => history.push('/' + id)}
+      onClick={() => navigate('/' + id)}
       direction="row"
       alignItems="center"
       spacing={1}

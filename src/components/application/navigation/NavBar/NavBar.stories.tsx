@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { MemoryRouter } from 'react-router'
 import { useUserInfo } from '../../../../fb/auth'
 import { safe } from '../../../../utils/utils'
-import { useWorkspace } from '../workspace'
+import { useWorkspace } from '../../Workspace/Workspace'
 import { NavBar } from './NavBar'
 
 function T() {
@@ -21,7 +21,7 @@ function T() {
           },
         }}
       >
-        <NavBar user={safe(data)} workspace={workspace} isNavBarOpenS={openS} />
+        <NavBar user={safe(data)} workspace={workspace.changer} navigation={workspace.state} isNavBarOpenS={openS} />
       </Box>
     </MemoryRouter>
   )

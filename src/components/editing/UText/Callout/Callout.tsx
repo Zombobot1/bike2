@@ -1,5 +1,3 @@
-import { ucast } from '../../../../utils/utils'
-import { useReactiveObject } from '../../../utils/hooks/hooks'
 import { RStack } from '../../../utils/MuiUtils'
 import { UText } from '../types'
 import { UText_ } from '../UText_'
@@ -10,21 +8,27 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import WarningRoundedIcon from '@mui/icons-material/WarningRounded'
 import ErrorRoundedIcon from '@mui/icons-material/ErrorRounded'
 import { UMenu, useMenu } from '../../../utils/UMenu/UMenu'
-import { bool, SetStr, str } from '../../../../utils/types'
-import { PaddedBox } from '../../UBlock/PaddedBox'
+import { bool } from '../../../../utils/types'
+import { PaddedBox } from '../../UPage/UBlock/PaddedBox'
+import { CalloutData } from '../../UPage/ublockTypes'
 
-export function Callout(props: UText) {
-  const [data] = useReactiveObject(ucast(props.data, new CalloutDTO()))
-  const setText = (d: str) => props.setData(JSON.stringify({ ...data, text: d }))
-  const setType = (t: str) => props.setData(JSON.stringify({ ...data, type: t }))
+export function Callout(ps: UText) {
+  const { id, data: d, setData, readonly } = ps
+  const data = d as CalloutData
 
   const theme = useTheme()
   const bg = alpha(theme.palette[data.type].main, theme.palette.mode === 'dark' ? 0.2 : 0.1)
   return (
     <PaddedBox>
       <Container sx={{ backgroundColor: bg }} alignItems="start" spacing={1}>
-        <CalloutTypePicker type={data.type} setType={setType} readonly={props.readonly} />
-        <UText_ {...props} data={data.text} setData={setText} component="pre" color={theme.palette[data.type].main} />
+        <CalloutTypePicker type={data.type} setType={(type) => setData(id, { type })} readonly={readonly} />
+        <UText_
+          {...ps}
+          data={data.text}
+          setData={(t) => setData(id, { text: t })}
+          component="pre"
+          color={theme.palette[data.type].main}
+        />
       </Container>
     </PaddedBox>
   )
@@ -47,8 +51,8 @@ const icons: { [key: string]: JSX.Element } = {
 }
 
 interface CalloutTypePicker_ {
-  type: str
-  setType: SetStr
+  type: CalloutData['type']
+  setType: (t: CalloutData['type']) => void
   readonly?: bool
 }
 
@@ -62,7 +66,7 @@ function CalloutTypePicker({ type, setType, readonly }: CalloutTypePicker_) {
       </IconButton>
       <UMenu isOpen={isOpen} btnRef={ref} close={close}>
         {Object.entries(icons).map(([k, icon], i) => (
-          <MenuItem value={i} key={i} onClick={() => setType(k)}>
+          <MenuItem value={i} key={i} onClick={() => setType(k as CalloutData['type'])}>
             {icon}
           </MenuItem>
         ))}

@@ -8,7 +8,7 @@ import { Snackbar } from '@mui/material'
 import MuiAlert, { AlertProps } from '@mui/material/Alert'
 import { useMount } from '../utils/hooks/hooks'
 import { useIsPageVisible } from '../utils/hooks/useIsPageVisible'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider, FirebaseAppProvider, FirestoreProvider, useFirebaseApp } from 'reactfire'
 import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
@@ -28,22 +28,20 @@ export function OuterShell({ children }: OuterShell) {
 
   return (
     <StrictMode>
-      <Router>
-        <OuterShell_>
-          <DndProvider backend={HTML5Backend}>
-            <ThemeProvider theme={theme}>
-              <CssBaseline />
-              {isInProduction ? (
-                <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
-                  <FB>{children}</FB>
-                </FirebaseAppProvider>
-              ) : (
-                <>{children}</>
-              )}
-            </ThemeProvider>
-          </DndProvider>
-        </OuterShell_>
-      </Router>
+      <OuterShell_>
+        <DndProvider backend={HTML5Backend}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            {isInProduction ? (
+              <FirebaseAppProvider firebaseConfig={firebaseConfig} suspense={true}>
+                <FB>{children}</FB>
+              </FirebaseAppProvider>
+            ) : (
+              <>{children}</>
+            )}
+          </ThemeProvider>
+        </DndProvider>
+      </OuterShell_>
     </StrictMode>
   )
 }
@@ -56,10 +54,12 @@ const OuterShell_ = styled('div')({
 export function Shell() {
   useNotifications()
   return (
-    <OuterShell>
-      <SWController />
-      <App />
-    </OuterShell>
+    <BrowserRouter>
+      <OuterShell>
+        <SWController />
+        <App />
+      </OuterShell>
+    </BrowserRouter>
   )
 }
 

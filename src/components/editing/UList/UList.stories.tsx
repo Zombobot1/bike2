@@ -1,13 +1,22 @@
 import { Box } from '@mui/material'
-import { useState } from 'react'
-import { _kittensForListsPage } from '../../../content/content'
-import { SetForStories } from '../UBlockSet/SetForStories'
+import { _blocks } from '../../../content/blocks'
+import { SetForStories } from '../UPage/UBlockSet/SetForStories'
+
+const blocks = [
+  _blocks.test.bathYourCat,
+  _blocks.test.bathYourCatList,
+  _blocks.test.whyOwnCat,
+  _blocks.test.whyOwnCatList,
+  _blocks.test.healthyCat,
+  _blocks.test.healthyCatList,
+  _blocks.test.hypoallergenicCat,
+  _blocks.test.hypoallergenicCatList,
+]
 
 function T() {
-  const idsS = useState(_kittensForListsPage.ids)
   return (
     <Box sx={{ width: 700 }}>
-      <SetForStories id="l" ids={idsS[0]} />
+      <SetForStories blocks={blocks} />
     </Box>
   )
 }
@@ -15,5 +24,5 @@ function T() {
 export const DifferentLists = T
 
 export default {
-  title: 'Editing/UList',
+  title: 'Editing extras/UList',
 }

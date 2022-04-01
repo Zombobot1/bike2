@@ -2,19 +2,20 @@ import { useTheme, Box, Paper, Stack, styled, Typography, Drawer } from '@mui/ma
 import { BoolState, num } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
 import { useHover } from '../../../utils/hooks/useHover'
-import { getBlocksForTOC } from '../blockIdAndInfo'
-import { _treefy } from './blocksInfoToTree'
-import { TOCItems_, TOCItem_ } from './types'
+import { UBlockIdAttribute, UBlockType } from '../ublockTypes'
+import { TOCs } from '../UPageState/types'
 
 export interface TableOfContents {
   isOpenS: BoolState
+  getTOC: () => TOCs
 }
 
-export function TableOfContents(ps: TableOfContents) {
-  const [open, setOpen] = ps.isOpenS
+export function TableOfContents({ getTOC, isOpenS }: TableOfContents) {
+  const [open, setOpen] = isOpenS
   const theme = useTheme()
-  const data = _treefy(getBlocksForTOC())
+
   const isSM = useIsSM()
+
   const { ref, hovered } = useHover()
 
   const sx = hovered
@@ -29,7 +30,7 @@ export function TableOfContents(ps: TableOfContents) {
         <TOCWrapper ref={ref} justifyContent="center" sx={sx}>
           <Paper sx={{ position: 'relative' }} elevation={theme.palette.mode === 'dark' ? 1 : 6}>
             <Section color="text.secondary">Table Of Contents</Section>
-            <TOCTree data={data} />
+            <TOCTree data={getTOC()} />
           </Paper>
         </TOCWrapper>
       )}
@@ -42,7 +43,7 @@ export function TableOfContents(ps: TableOfContents) {
         >
           <Box sx={{ padding: '1rem' }}>
             <Section color="text.secondary">Table Of Contents</Section>
-            <TOCTree data={data} />
+            <TOCTree data={getTOC()} />
           </Box>
         </Drawer>
       )}
@@ -82,39 +83,33 @@ const TOCWrapper = styled(Stack, { label: 'TOC' })({
 })
 
 interface TOCTree_ {
-  data: TOCItems_
+  data: TOCs
 }
 
 function TOCTree({ data }: TOCTree_) {
   return (
     <Box sx={{ width: '100%', overflowY: 'auto' }}>
       {data.map((n) => (
-        <TOCNode key={n.id} {...n} depth={0} />
+        <TOCNode_ key={n.id}>
+          <Li
+            onClick={() => {
+              document.querySelector(`[${UBlockIdAttribute}="${n.id}"]`)?.scrollTo({ behavior: 'smooth' })
+            }}
+            sx={{ paddingLeft: 0 + 1 * depthByType(n.type) + 'rem' }}
+          >
+            <Typography sx={{ padding: '0.5rem 0.5rem', lineHeight: 1.3 }}>{n.data}</Typography>
+          </Li>
+        </TOCNode_>
       ))}
     </Box>
   )
 }
 
-interface TOCNode_ extends TOCItem_ {
-  depth: num
-}
-
-function TOCNode({ data, scrollTo, depth, children }: TOCNode_) {
-  return (
-    <TOCNode_>
-      <Li
-        onClick={() => {
-          scrollTo?.()
-        }}
-        sx={{ paddingLeft: 0 + 1 * depth + 'rem' }}
-      >
-        <Typography sx={{ padding: '0.5rem 0.5rem', lineHeight: 1.3 }}>{data}</Typography>
-      </Li>
-      {children?.map((c) => (
-        <TOCNode key={c.id} {...c} depth={depth + 1} />
-      ))}
-    </TOCNode_>
-  )
+function depthByType(type: UBlockType): num {
+  if (type === 'heading-1' || type === 'exercise') return 1
+  if (type === 'heading-2') return 2
+  if (type === 'heading-3') return 3
+  throw new Error('No depth is given for type')
 }
 
 const Li = styled('li')(({ theme }) => ({
