@@ -13,6 +13,7 @@ import { ReactComponent as LogoSVG } from './logo.svg'
 import { getAuth, signInWithPopup, GoogleAuthProvider, isSignInWithEmailLink, signInWithEmailLink } from 'firebase/auth'
 import { useIsSignedIn } from '../../../fb/auth'
 import { Hr, TextInput } from '../../utils/MuiUtils'
+import { _TestLogin } from './testUsers/_TestLogin'
 
 export function FinishRegistration() {
   const [error, setError] = useState('')
@@ -103,6 +104,7 @@ export function LoginPage() {
       <LoginForm />
       <RightBlob />
       <ThemeBtn />
+      <_TestLogin />
     </Screen>
   )
 }
@@ -157,7 +159,7 @@ const RightBlob = styled(RightBlobsSVG)(({ theme }) => ({
   },
 }))
 
-const Screen = styled(Box)({
+const Screen = styled(Box, { label: 'LoginPage' })({
   position: 'relative',
   width: '100%',
   height: '100%',

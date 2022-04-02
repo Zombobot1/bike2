@@ -46,5 +46,5 @@ export type WithChildren = React.FC<{ children: Children }>
 export type DivRef = React.RefObject<HTMLDivElement>
 export type Subset<T, U extends T> = Extract<T, U>
 
-export type OptionIconP = { fontSize: 'large' | 'medium' | 'small' | 'inherit' }
+export type OptionIconP = { fontSize?: 'large' | 'medium' | 'small' | 'inherit' }
 export type UIcon = React.FC<OptionIconP>

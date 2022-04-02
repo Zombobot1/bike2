@@ -18,7 +18,8 @@
     "commit-dangerously": "git add . && git commit --no-verify -m",
     "pre-commit": "unset ELECTRON_RUN_AS_NODE && npm run check && git add .",
     "prepare": "is-ci || husky install",
-    "sart": "cross-env NODE_ENV=development webpack serve --open"
+    "sart": "cross-env NODE_ENV=development webpack serve --open",
+    "t": "tsc"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
