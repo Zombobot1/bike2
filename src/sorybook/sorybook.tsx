@@ -27,10 +27,12 @@ import {
   Typography,
   useTheme,
 } from '@mui/material'
-import useCaseSVG from './useCase.svg'
-import componentSVG from './component.svg'
-import storySVG from './story.svg'
-import { ReactComponent as LogoSVG } from './logo.svg'
+import useCaseSVG from './icons/useCase.svg'
+import componentSVG from './icons/component.svg'
+import storySVG from './icons/story.svg'
+import { ReactComponent as LogoSVG } from './icons/logo.svg'
+import { ReactComponent as DBOnI } from './icons/dbOn.svg'
+import { ReactComponent as DBOffI } from './icons/dbOff.svg'
 import ModeNightRoundedIcon from '@mui/icons-material/ModeNightRounded'
 import WbSunnyRoundedIcon from '@mui/icons-material/WbSunnyRounded'
 import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded'
@@ -48,6 +50,7 @@ import { Provider } from 'jotai'
 import useUpdateEffect from '../components/utils/hooks/useUpdateEffect'
 import { mockBackend, useFirestoreData } from '../fb/useData'
 import { useMatch, useNavigate } from '@tanstack/react-location'
+import { _getMockFB, _setMockFB } from '../fb/utils'
 
 const SORY: FC = () => null
 
@@ -126,17 +129,19 @@ function Menu(ps: Menu_) {
     }
   }
 
+  const mockFB = _getMockFB()
+
   return (
     <>
       <IconButton ref={anchorRef} onClick={handleToggle}>
         <MoreHorizRoundedIcon />
       </IconButton>
-      <Popper open={open} anchorEl={anchorRef.current} container={navRef.current} placement="bottom-start" transition>
+      <Popper open={open} anchorEl={anchorRef.current} container={navRef.current} placement="top-end" transition>
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
             style={{
-              transformOrigin: placement === 'bottom-start' ? 'left top' : 'left bottom',
+              transformOrigin: placement === 'bottom-start' ? 'left top' : 'right top',
             }}
           >
             <Paper>
@@ -147,6 +152,15 @@ function Menu(ps: Menu_) {
                   aria-labelledby="composition-button"
                   onKeyDown={handleListKeyDown}
                 >
+                  <MenuItem
+                    onClick={all(
+                      () => _setMockFB(!mockFB),
+                      () => location.reload(),
+                    )}
+                  >
+                    <ListItemIcon>{mockFB ? <DBOn /> : <DBOff />}</ListItemIcon>
+                    <ListItemText>{mockFB ? 'Connect to FB' : 'Disconnect from FB'}</ListItemText>
+                  </MenuItem>
                   <MenuItem onClick={all(toggleTheme, handleClose)}>
                     <ListItemIcon>
                       {themeType === 'light' ? (
@@ -223,6 +237,9 @@ function Menu(ps: Menu_) {
     </>
   )
 }
+
+const DBOn = () => <DBOnI style={{ width: '24px' }} />
+const DBOff = () => <DBOffI style={{ width: '24px' }} />
 
 const Shortcut = styled(Typography)({
   marginLeft: '0.75rem',
