@@ -50,7 +50,11 @@ export function AppBar({ workspace, openNavBar }: AppBar) {
   const isSM = useIsSM()
   const [showAppBar] = useAtom(showAppBarA)
   const { location } = useRouter()
-  const showUPageOptions = !location.pathname.includes('/study')
+  const showUPageOptions =
+    !location.pathname.includes('/study') &&
+    !location.pathname.includes('/stats') &&
+    !location.pathname.includes('/teach') &&
+    !location.pathname.includes('/settings')
   const { triggerOpenTOC, triggerTurnOffTOC, triggerFullWidth } = useUPageTriggers()
   return (
     <AppBar_ direction="row" alignItems="center" sx={showAppBar ? { opacity: '1 !important' } : {}}>
@@ -125,7 +129,8 @@ function crumbs(path: str, workspace: Workspace): WorkspacePath {
   const pathParts = safeSplit(path, '/')
   if (pathParts[0] === 'study') return [{ id: '/study', name: 'Study' }] // TODO: replace AppBar for study
   if (pathParts[0] === 'teach') return [{ id: '/teach', name: 'Teach' }]
-  if (pathParts[0] === 'tune') return [{ id: '/tune', name: 'Tune' }]
+  if (pathParts[0] === 'settings') return [{ id: '/settings', name: 'Settings' }]
+  if (pathParts[0] === 'stats') return [{ id: '/stats', name: 'Stats' }]
 
   return workspace.path(pathParts[0])
 }

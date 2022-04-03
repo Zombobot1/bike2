@@ -49,7 +49,6 @@ import { useLocalStorage } from '../components/utils/hooks/useLocalStorage'
 import { Provider } from 'jotai'
 import useUpdateEffect from '../components/utils/hooks/useUpdateEffect'
 import { mockBackend, useFirestoreData } from '../fb/useData'
-import { useMatch, useNavigate } from '@tanstack/react-location'
 import { _getMockFB, _setMockFB } from '../fb/utils'
 
 const SORY: FC = () => null
@@ -62,13 +61,13 @@ export interface SoryTree {
 export type SoryTrees = SoryTree[]
 
 function SoryTree({ id, name, children }: SoryTree) {
-  const navigate = useNavigate()
+  const { navigate } = useCutNavigate()
   const depth = id.split('--').length
   let sx = useCaseSX
   if (depth === 2) sx = componentSX
   else if (depth === 3) sx = storySX
 
-  if (!children) return <TreeItem sx={sx} nodeId={id} label={name} onClick={() => navigate({ to: '/' + id })} />
+  if (!children) return <TreeItem sx={sx} nodeId={id} label={name} onClick={() => navigate(id)} />
   return (
     <TreeItem sx={sx} nodeId={id} label={name}>
       {children.map((c) => (
@@ -482,11 +481,9 @@ function SoryBook_({ trees, sories }: SoryBook_) {
     setIsOutlined((o) => !o)
   }
   const togglePinNav = () => setPinNav((o) => !o)
-  const navigate = useNavigate()
+  const { location, navigate } = useCutRouter()
 
-  const {
-    params: { soryId },
-  } = useMatch()
+  const soryId = location.slice(1)
 
   const ids = treesToChildrenIds(trees)
   const [openSnack, setOpenSnack] = useState(false)
@@ -498,8 +495,8 @@ function SoryBook_({ trees, sories }: SoryBook_) {
     setLastUsedStory(soryId)
   }, [soryId])
 
-  const goNext = () => navigate({ to: '/' + getNextStory(soryId, ids) })
-  const goPrev = () => navigate({ to: '/' + getPrevStory(soryId, ids) })
+  const goNext = () => navigate(getNextStory(soryId, ids))
+  const goPrev = () => navigate(getPrevStory(soryId, ids))
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -520,15 +517,14 @@ function SoryBook_({ trees, sories }: SoryBook_) {
 
   useMount(() => {
     if (soryId) return
-    if (lastUsedStory) return navigate({ to: '/' + lastUsedStory })
+    if (lastUsedStory) return navigate(lastUsedStory)
     const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
-    if (firstStoryId) navigate({ to: '/' + firstStoryId })
+    if (firstStoryId) navigate(firstStoryId)
   })
 
   const ps = { toggleOutline, rerenderStory, goNext, goPrev, pinNav, togglePinNav, trees, soryId }
 
   const [showNav, setShowNav] = useState(false)
-  // const { hovered, ref } = useHover()
 
   useMount(() => {
     const onMove = (e: MouseEvent) => {
@@ -621,4 +617,30 @@ function getPrevStory(id: str, ids: strs): str {
   const i = ids.indexOf(id)
   if (i < 1) return id
   return ids[i - 1]
+}
+
+function useCutLocation() {
+  const [cutLocation, setCutLocation] = useState(location.pathname)
+
+  useMount(() => {
+    const onChange = () => setCutLocation(location.pathname)
+    window.addEventListener('popstate', onChange)
+    return () => window.removeEventListener('popstate', onChange)
+  })
+
+  return { location: cutLocation }
+}
+
+function useCutNavigate() {
+  return {
+    navigate: (url: str) => {
+      const r = location.protocol + url
+      history.replaceState(null, '', r)
+      dispatchEvent(new PopStateEvent('popstate', { state: null }))
+    },
+  }
+}
+
+function useCutRouter() {
+  return { ...useCutLocation(), ...useCutNavigate() }
 }

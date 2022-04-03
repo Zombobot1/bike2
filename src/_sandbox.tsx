@@ -1,75 +1,58 @@
 import { SoryBook } from './sorybook/sorybook'
 import ReactDOM from 'react-dom'
-import { ReactLocation, Router } from '@tanstack/react-location'
 
-const location = new ReactLocation()
-
-let init = { read: f }
-if (isInProduction) init = wrapPromise(_initFB())
-else setFSD(_fs)
+if (!isInProduction) setFSD(_fs)
 
 const Sandbox = () => {
-  init.read()
-
   return (
     <ErrorBoundary fallbackRender={({ error }) => <p>{error.message}</p>}>
-      <Router
-        location={location}
-        routes={[
-          {
-            path: '/:soryId',
-            element: (
-              <OuterShell>
-                <SoryBook
-                  sories={[
-                    UPage,
-                    UBlocksSet,
-                    UText,
-                    Code,
-                    Callout,
-                    Quote,
-                    UList,
-                    UGrid,
-                    UPageBlock,
-                    UTable,
-                    UDivider,
-                    Equation,
-                    UVideoFile,
-                    UFile,
-                    UAudioFile,
-                    UImageFile,
-                    BlockAutocomplete,
-                    UTextOptions,
-                    TableOfContents,
-                    UForm,
-                    InlineExercise,
-                    UChecks,
-                    UInput,
-                    UAutocomplete,
-                    CodeEditor,
-                    EditableText,
-                    Selection,
-                    ResizableWidth,
-                    Dropzone,
-                    UAudio,
-                    AppBar,
-                    NavBar,
-                    App,
-                    Fetch,
-                    FetchingStateS,
-                    Page404,
-                    ThemeBtn,
-                    LoginPage,
-                    UCard,
-                    SB,
-                  ]}
-                  sections={['Editing core', 'Editing extras', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
-                />
-              </OuterShell>
-            ),
-          },
-        ]}
-      ></Router>
+      <OuterShell>
+        <SoryBook
+          sories={[
+            UPage,
+            UBlocksSet,
+            UText,
+            Code,
+            Callout,
+            Quote,
+            UList,
+            UGrid,
+            UPageBlock,
+            UTable,
+            UDivider,
+            Equation,
+            UVideoFile,
+            UFile,
+            UAudioFile,
+            UImageFile,
+            BlockAutocomplete,
+            UTextOptions,
+            TableOfContents,
+            UForm,
+            InlineExercise,
+            UChecks,
+            UInput,
+            UAutocomplete,
+            CodeEditor,
+            EditableText,
+            Selection,
+            ResizableWidth,
+            Dropzone,
+            UAudio,
+            AppBar,
+            NavBar,
+            App,
+            Fetch,
+            FetchingStateS,
+            Page404,
+            ThemeBtn,
+            LoginPage,
+            UCard,
+            SB,
+          ]}
+          sections={['Editing core', 'Editing extras', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
+        />
+      </OuterShell>
     </ErrorBoundary>
   )
 }
@@ -116,14 +99,15 @@ import * as UImageFile from './components/editing/UFile/UImageFile/UImageFile.st
 import * as SB from './components/utils/Sandbox.stories'
 import { OuterShell } from './components/application/Shell'
 import { wrapPromise, _initFB } from './_seeding'
-import { Suspense } from 'react'
+import { Suspense, useState } from 'react'
 import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingState'
 
-import { f } from './utils/types'
+import { f, str } from './utils/types'
 import { ErrorBoundary } from 'react-error-boundary'
 import { isInProduction } from './fb/utils'
 import { setFSD } from './fb/fs'
 import { _fs } from './content/fs'
+import { useMount } from './components/utils/hooks/hooks'
 
 if (![].at) {
   Array.prototype.at = function (i) {

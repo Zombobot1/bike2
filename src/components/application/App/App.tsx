@@ -5,7 +5,7 @@ import { TrainingWrapper } from '../../studying/training/training/training'
 import { Trainings } from '../../studying/trainings/trainings'
 import { Page404 } from '../Page404/Page404'
 import { Fetch } from '../../utils/Fetch/Fetch'
-import { ANY, APP, FINISH_REGISTRATION, STUDY, STUDY_ID } from './pages'
+import { ANY, APP, FINISH_REGISTRATION, STATS, STUDY, STUDY_ID, TEACH, TUNE } from './pages'
 import { NavBar } from '../navigation/NavBar/NavBar'
 import { useRouter } from '../../utils/hooks/useRouter'
 import { AppBar } from '../navigation/AppBar/AppBar'
@@ -14,7 +14,7 @@ import { UPage } from '../../editing/UPage/UPage'
 import { useIsSignedIn, useUserInfo } from '../../../fb/auth'
 import { useWorkspace } from '../Workspace/Workspace'
 
-const pages = ['study', 'teach', 'tune']
+const pages = ['study', 'teach', 'settings', 'stats']
 
 export function App() {
   return (
@@ -52,6 +52,9 @@ function App__() {
         <Routes>
           <Route path={STUDY_ID} element={<TrainingWrapper />} />
           <Route path={STUDY} element={<Trainings />} />
+          <Route path={TUNE} element={<p>Tune</p>} />
+          <Route path={TEACH} element={<p>Teach</p>} />
+          <Route path={STATS} element={<p>Stats</p>} />
           <Route path={ANY} element={<UPage key={id} id={id} workspace={ws.changer} />} />
         </Routes>
       </Main>
