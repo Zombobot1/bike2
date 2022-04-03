@@ -371,7 +371,8 @@ interface NavBar_ {
 function NavBar(ps: NavBar_) {
   const isDesktop = useIsSM()
   const [isOpen, setIsOpen] = useState(false)
-  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', true)
+  const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', false)
+  // const [isFullscreen, setIsFullscreen] = useState(false)
   const toggleFullscreen = () => setIsFullscreen((old) => !old)
   const { toggleTheme } = useUTheme()
   const navPs = { ...ps, isFullscreen, toggleFullscreen }

@@ -11,8 +11,8 @@ import { UBlockIdAttribute } from './ublockTypes'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { useUPageState } from './UPageState/UPageState'
 import { UPageManagement } from '../../application/Workspace/Workspace'
-import { UBlocksSet } from './UBlockSet/UBlockSet'
 import { useUserKeyDownForSelection } from './UBlockSet/useUserKeyDownForSelection'
+import { WindowedBlockSet } from './UBlockSet/WindowedBlockSet/WindowedBlockSet'
 
 export interface UPage {
   id: str // remount for new id
@@ -67,7 +67,7 @@ export function UPage({ id, workspace }: UPage) {
         </ColorPicker> */}
       </ColoredBox>
       <UBlocksSetWrapper onMouseDown={onMouseDown} pageRef={pageRef} fullWidth={data.fullWidth}>
-        <UBlocksSet id={'r'} blocks={data.ublocks} title={name} setTitle={rename} />
+        <WindowedBlockSet id={'r'} blocks={data.ublocks} title={name} setTitle={rename} />
       </UBlocksSetWrapper>
       <SelectionBox
         ref={selectionRef}

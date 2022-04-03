@@ -100,7 +100,12 @@ export function UTextOptions({ textRef, alwaysShow, texEditorPs, linkEditorPs }:
   })
 
   return (
-    <Fade in={isActive || texEditorPs.isActive || linkEditorPs.isActive} timeout={{ exit: 0 }}>
+    <Fade
+      in={isActive || texEditorPs.isActive || linkEditorPs.isActive}
+      timeout={{ exit: 0 }}
+      mountOnEnter={true}
+      unmountOnExit={true}
+    >
       <div>
         {!texEditorPs.isActive && !linkEditorPs.isActive && (
           <Options
