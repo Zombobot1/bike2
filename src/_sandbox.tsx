@@ -1,7 +1,7 @@
 import { SoryBook } from './sorybook/sorybook'
 import ReactDOM from 'react-dom'
 
-if (!isInProduction) setFSD(_fs)
+if (!isInProduction) setFSD(firestoreMockData)
 
 const Sandbox = () => {
   return (
@@ -48,9 +48,10 @@ const Sandbox = () => {
             ThemeBtn,
             LoginPage,
             UCard,
+            IdeasViewer,
             SB,
           ]}
-          sections={['Editing core', 'Editing extras', 'UForms', 'Decks', 'App', 'Utils', 'Sandbox']}
+          sections={['Editing core', 'Editing extras', 'UForms', 'Ideas', 'App', 'Utils', 'Sandbox']}
         />
       </OuterShell>
     </ErrorBoundary>
@@ -83,7 +84,6 @@ import * as FetchingStateS from './components/utils/Fetch/FetchingState/Fetching
 import * as ThemeBtn from './components/application/theming/ThemeBtn.stories'
 import * as Page404 from './components/application/Page404/Page404.stories'
 import * as LoginPage from './components/application/LoginPage/LoginPage.stories'
-import * as UCard from './components/decks/UCard/UCard.stories'
 import * as UForm from './components/editing/UForm/UForm.stories'
 import * as UChecks from './components/editing/UForm/UFormBlock/UChecks/UChecks.stories'
 import * as UInput from './components/editing/UForm/UFormBlock/UInput/UInput.stories'
@@ -97,14 +97,16 @@ import * as BlockAutocomplete from './components/editing/UPage/UBlock/BlockAutoc
 import * as UAudioFile from './components/editing/UFile/UAudioFile/UAudioFile.stories'
 import * as UImageFile from './components/editing/UFile/UImageFile/UImageFile.stories'
 import * as SB from './components/utils/Sandbox.stories'
+import * as UCard from './components/studying/decks/UCard/UCard.stories'
+import * as IdeasViewer from './components/studying/IdeasViewer/IdeasViewer.stories'
 import { OuterShell } from './components/application/Shell'
 import { Suspense } from 'react'
 import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingState'
 
 import { ErrorBoundary } from 'react-error-boundary'
 import { isInProduction } from './fb/utils'
-import { setFSD } from './fb/fs'
-import { _fs } from './content/_fs'
+import { setFSD } from './fb/firestore'
+import { firestoreMockData } from './content/firestoreMockData'
 
 if (![].at) {
   Array.prototype.at = function (i) {

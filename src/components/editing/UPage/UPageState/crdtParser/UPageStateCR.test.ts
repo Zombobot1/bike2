@@ -2,7 +2,7 @@ import { assert, describe, it, vi } from 'vitest'
 import { bool, str, strs } from '../../../../../utils/types'
 import { UBlock, UBlockData, UBlocks, UBlockType, UFormData, UTableData } from '../../ublockTypes'
 import { getInitialUPageState, UPageChange, _getUPSCR, _mockServer } from './UPageStateCR'
-import { _getUPageState } from './stubs'
+import { _getUPageState } from './_stubs'
 import { Bytes } from 'firebase/firestore'
 import { _stateToStr } from './_fakeUPage'
 import { getSha } from '../../../../../utils/wrappers/shaUtils'
@@ -14,7 +14,6 @@ vi.mock('../../../../../utils/wrappers/timeUtils', () => {
     now: () => 16e8,
   }
 })
-
 describe('UPageStateCR', () => {
   it('generates initial state', () => {
     const parser = _getUPSCR(getInitialUPageState())
@@ -163,6 +162,7 @@ describe('UPageStateCR', () => {
       parser1.change(chg('0', '1', undefined, true))
 
       assert.deepEqual(server.descriptions[0], {
+        upageId: 'id',
         block: '0',
         date: 1600000000,
         preview: [

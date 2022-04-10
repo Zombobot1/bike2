@@ -27,7 +27,7 @@ import PlaylistPlayRoundedIcon from '@mui/icons-material/PlaylistPlayRounded'
 
 import { bool, num, str, UIcon } from '../../../../../utils/types'
 import { SVGI } from '../../../../utils/MuiUtils'
-import { UBlockType } from '../../ublockTypes'
+import { isUFormBlock, UBlockType } from '../../ublockTypes'
 
 type Context = 'upage' | 'uform' | 'ucard' | 'turner'
 
@@ -99,4 +99,17 @@ export function ublocksFor(context: Context): Items {
 
 export function ublockTypeFrom(type: str): UBlockType {
   return type.replaceAll(' ', '-').toLowerCase() as UBlockType
+}
+
+type UFormBlockItems = { icon: UIcon; type: UBlockType }[]
+export function uformBlocks(): UFormBlockItems {
+  const r: UFormBlockItems = []
+
+  for (const { icon, text } of ublocks) {
+    const type = ublockTypeFrom(text)
+    if (!isUFormBlock(type)) continue
+    r.push({ icon, type })
+  }
+
+  return r
 }

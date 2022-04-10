@@ -175,23 +175,23 @@ const catsLinksGrid = grid(
   ['50%', '50%'],
 )
 
-const fqQ1 = scq(
+export const _fq1SCQ = scq(
   'What is the proper term for a group of kittens?',
   ['kindle'],
   ['kaboodle', 'kine', 'kindle', 'kettle'],
   'The proper term for a group of kittens is a kindle, litter or intrigue.',
 )
 
-const fqQ2 = mcq(
+export const _fq2MCQ = mcq(
   'Why do cats rub against you?',
   ['To say hello', 'To show affiliation'],
   ['To say hello', 'They are itched', 'To show affiliation', 'They are stressed'],
   'It is an affectionate gesture that can also be used as a form of greeting.',
 )
 
-const fqQ3 = saq('What breed of domestic cat has the longest fur?', 'Persian')
+export const _fq3SAQ = saq('What breed of domestic cat has the longest fur?', 'Persian')
 
-const fqInlineExercise = inEx(
+export const _fq4Ie = inEx(
   'A male cat is probably ',
   subq(0, '_', ['sterile'], 'He is born with an extra X chromosome that cats receive from their mother} or just nice'),
   ', if he is both orange and black\n\nIn ',
@@ -205,7 +205,7 @@ const fqInlineExercise = inEx(
   ' is another name for the cougar?',
 )
 
-const fuzzyQuiz = ex('Fuzzy quiz', [fqQ1, fqQ2, fqQ3, fqInlineExercise])
+const fuzzyQuiz = ex('Fuzzy quiz', [_fq1SCQ, _fq2MCQ, _fq3SAQ, _fq4Ie])
 
 const fallingCatsShort1 = `cats <code data-id="2" contenteditable="false">h_{total} \\approx 5.5 * 2.5 = 13.77m</code> and`
 const fallingCatsShort3 = `nice <code data-id="666" contenteditable="false">E=mc^2</code> small <code data-id="2" contenteditable="false">E=mc^2</code> cat`
@@ -223,9 +223,9 @@ const catListsColumns = grid(
   ['50%', '50%'],
 )
 
-const fuzzyQuizShort = ex('Fuzzy quiz', [fqQ1, fqQ2, fqQ3])
-const quizWith1InlineExercise = ex('Test', [fqInlineExercise])
-const quizWith1InputField = ex('Test', [fqQ3])
+const fuzzyQuizShort = ex('Fuzzy quiz', [_fq1SCQ, _fq2MCQ, _fq3SAQ])
+const quizWith1InlineExercise = ex('Test', [_fq4Ie])
+const quizWith1InputField = ex('Test', [_fq3SAQ])
 
 type IdAndBlocks = { [key: str]: UBlock }
 

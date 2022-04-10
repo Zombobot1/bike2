@@ -15,6 +15,7 @@ import {
   UBlockType,
   UChecksData,
   UFormData,
+  UFormLikeData,
   UInputData,
   UListData,
   UPageBlockData,
@@ -27,9 +28,46 @@ interface UPageTree {
   getUBlock: (id: str) => UBlock
 }
 
-export type UFormEvent = 'submit' | 'retry' | 'toggle-edit'
+export class UFormRuntime {
+  static submit = (uform: UFormLikeData, ublocks: UBlocks) => {
+    const error = setValidationErrors(ublocks)
+    if (error) return
 
-export class UFromRuntime {
+    triggerSubmit(ublocks, 'set')
+    uform.$score = getScore(ublocks)
+  }
+
+  static toggleEdit = (uform: UFormLikeData, ublocks: UBlocks): bool => {
+    // assume that when got from server & it is undefined it is like 'filling'
+    if (uform.$state === 'editing') {
+      const error = setValidationErrors(ublocks, { checkCorrectAnswer: true })
+      if (error) return false
+
+      uform.$state = 'filling'
+      setEditing(ublocks, false)
+    } else {
+      uform.$state = 'editing'
+
+      // cleaning filling related data
+      this.clearFillingData(uform, ublocks)
+
+      setEditing(ublocks, true)
+    }
+    return true
+  }
+
+  static clearFillingData = (uform: UFormLikeData, ublocks: UBlocks) => {
+    setValidationErrors(ublocks, { unset: true })
+    triggerSubmit(ublocks, 'unset')
+    clearAnswers(ublocks)
+    uform.$score = -1
+  }
+}
+
+export type UFormEvent = 'submit' | 'toggle-edit'
+export type UPageUFormEvent = 'retry' | UFormEvent
+
+export class UPageUFormRuntime {
   #tree: UPageTree
 
   constructor(tree: UPageTree) {
@@ -38,48 +76,23 @@ export class UFromRuntime {
 
   submit = (id: str) => {
     const { ublocks, uform } = this.#get(id)
-    const error = setValidationErrors(ublocks)
-    if (error) return
-
-    triggerSubmit(ublocks, 'set')
-    uform.$score = getScore(ublocks)
+    UFormRuntime.submit(uform, ublocks)
   }
 
   retry = (id: str) => {
     const { ublocks, uform } = this.#get(id)
-    this.#clearFillingData(uform, ublocks)
+    UFormRuntime.clearFillingData(uform, ublocks)
   }
 
   toggleEdit = (id: str) => {
     const { ublocks, uform } = this.#get(id)
-    // assume that when got from server & it is undefined it is like 'filling'
-    if (uform.$state === 'editing') {
-      const error = setValidationErrors(ublocks, { checkCorrectAnswer: true })
-      if (error) return
-
-      uform.$state = 'filling'
-      setEditing(ublocks, false)
-    } else {
-      uform.$state = 'editing'
-
-      // cleaning filling related data
-      this.#clearFillingData(uform, ublocks)
-
-      setEditing(ublocks, true)
-    }
+    UFormRuntime.toggleEdit(uform, ublocks)
   }
 
   #get = (id: str) => {
     const uform = this.#tree.getUBlock(id).data as UFormData
     const ublocks = flatten(uform.ublocks)
     return { uform, ublocks }
-  }
-
-  #clearFillingData = (uform: UFormData, ublocks: UBlocks) => {
-    setValidationErrors(ublocks)
-    triggerSubmit(ublocks, 'unset')
-    clearAnswers(ublocks)
-    uform.$score = -1
   }
 }
 
@@ -164,15 +177,15 @@ function setEditing(ublocks: UBlocks, editing: bool) {
   ublocks.forEach((b) => ((b.data as UChecksData).$editing = editing))
 }
 
-function setValidationErrors(ublocks: UBlocks, { checkCorrectAnswer = false } = {}): bool {
+function setValidationErrors(ublocks: UBlocks, { checkCorrectAnswer = false, unset = false } = {}): bool {
   let foundError = false
   for (const block of ublocks) {
-    foundError = setError(block, { checkCorrectAnswer }) || foundError
+    foundError = setError(block, { checkCorrectAnswer, unset }) || foundError
   }
   return foundError
 }
 
-function setError(block: UBlock, { checkCorrectAnswer = false } = {}): bool {
+function setError(block: UBlock, { checkCorrectAnswer = false, unset = false } = {}): bool {
   let foundError = false
 
   if (block.type === 'inline-exercise') {
@@ -187,6 +200,11 @@ function setError(block: UBlock, { checkCorrectAnswer = false } = {}): bool {
         if (isStr(strOrSubQ)) return false
 
         const sq = strOrSubQ as SubQuestion
+        if (unset) {
+          if (sq.$error) sq.$error = ''
+          return false
+        }
+
         const valid = checkCorrectAnswer ? !!sq.correctAnswer.length : !!sq.$answer?.length
         if (!valid) {
           sq.$error = ANSWER_REQUIRED
@@ -198,14 +216,22 @@ function setError(block: UBlock, { checkCorrectAnswer = false } = {}): bool {
       foundError = true
     }
 
+    if (unset) {
+      if (data.$editingError) data.$editingError = ''
+      return false
+    }
     return foundError
   }
 
-  const valid = isUFormBlockValid(block, { checkCorrectAnswer })
-  if (!valid) {
-    const data = block.data as UChecksData
-    data.$error = ANSWER_REQUIRED
+  const data = block.data as UChecksData
+
+  if (unset) {
+    if (data.$error) data.$error = ''
+    return false
   }
+
+  const valid = isUFormBlockValid(block, { checkCorrectAnswer })
+  if (!valid) data.$error = ANSWER_REQUIRED
 
   return !valid
 }

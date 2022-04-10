@@ -1,7 +1,7 @@
 import { connectAuthEmulator, getAuth } from 'firebase/auth'
 import { initializeApp } from 'firebase/app'
-import { connectFirestoreEmulator, doc, getFirestore, setDoc, writeBatch } from 'firebase/firestore'
-import { _fs } from './content/_fs'
+import { connectFirestoreEmulator, doc, getFirestore, writeBatch } from 'firebase/firestore'
+import { firestoreMockData } from './content/firestoreMockData'
 import 'dotenv/config'
 import { connectStorageEmulator, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage'
 import * as fs from 'fs'
@@ -9,8 +9,8 @@ import { UPageStateCR } from './components/editing/UPage/UPageState/crdtParser/U
 import { f } from './utils/types'
 import { _pageDTOs } from './content/pages'
 import { _generators } from './components/editing/UPage/UPageState/crdtParser/_fakeUPage'
-import { cls } from './fb/cls'
 import _seedUsers from './_initUsers'
+import { backend } from './fb/useData'
 
 const { image } = _generators
 
@@ -28,7 +28,7 @@ async function _seedCollections() {
   const batchWrite = writeBatch(getFirestore())
 
   await Promise.all(
-    _fs.map((col) =>
+    firestoreMockData.map((col) =>
       col.docs.map(async (d) => {
         batchWrite.set(doc(getFirestore(), col.name, d.id), d.data)
       }),
@@ -54,7 +54,7 @@ async function _seedStorage() {
       const img = image(downloadURL, 450, fileName)
       cr.change({ changes: [{ t: 'change', id: img.id, data: img.data }], preview: [] })
 
-      await setDoc(doc(getFirestore(), cls.upages, 'pets-and-animals'), dto)
+      await backend.setData('upages', 'pets-and-animals', dto)
     }),
   )
 }

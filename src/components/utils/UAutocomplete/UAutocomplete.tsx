@@ -1,22 +1,45 @@
 import TextField from '@mui/material/TextField'
 import Autocomplete from '@mui/material/Autocomplete'
-import { bool, str, strs } from '../../../utils/types'
-import { useRef, useState } from 'react'
+import { bool, num, str, strs } from '../../../utils/types'
+import { useState } from 'react'
 import { max } from '../../../utils/algorithms'
-import { Button, MenuItem } from '@mui/material'
-import { UMenu, useMenu } from '../UMenu/UMenu'
+import { Button } from '@mui/material'
+import { LongMenu, useLongMenu } from '../UMenu/LongMenu'
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 
 export interface UAutocomplete {
   options: strs
-  value: str
+  selected: str
+  onSelect: (t: str, i: num) => void
   placeholder: str
+  width?: str
 }
 
-export function UAutocomplete({ placeholder, options, value: initialValue }: UAutocomplete) {
+export function UAutocomplete({ options, selected, onSelect, placeholder, width }: UAutocomplete) {
+  const ps = useLongMenu(options, selected, onSelect)
+
+  return (
+    <>
+      <Button
+        ref={ps.btnRef}
+        onClick={ps.toggleOpen}
+        sx={{ textTransform: 'none', '.MuiButton-endIcon': { margin: '0 !important' } }}
+        endIcon={<ArrowDropDownRoundedIcon />}
+      >
+        {ps.selectedOption}
+      </Button>
+      <LongMenu {...ps} placeholder={placeholder} disablePortal={true} sx={{ width }} />
+    </>
+  )
+}
+
+// problem: popper sometimes overlaps textfield
+export function MUIBasedAutocomplete({ placeholder, options, selected: initialValue }: UAutocomplete) {
   const [value, setValue] = useState(initialValue)
   const width = max(options, (o) => o.length).length * 16
   return (
     <Autocomplete
+      disablePortal
       disableClearable
       value={value}
       onChange={(_, v) => setValue(v || '')}
@@ -64,24 +87,4 @@ function highlight(option: str, input: str): BoldedTexts {
   if (option.endsWith(input)) r.push({ text: input, isBold: true })
 
   return r
-}
-
-export function SelectText({ options, value: initialValue }: UAutocomplete) {
-  const ref = useRef<HTMLButtonElement>(null)
-  const [value, setValue] = useState(initialValue)
-  const { isOpen, toggleOpen, close } = useMenu()
-  return (
-    <>
-      <Button onClick={toggleOpen} ref={ref}>
-        {value}
-      </Button>
-      <UMenu isOpen={isOpen} btnRef={ref} close={close}>
-        {options.map((o, i) => (
-          <MenuItem value={i} key={i} onClick={() => setValue(o)}>
-            {o}
-          </MenuItem>
-        ))}
-      </UMenu>
-    </>
-  )
 }

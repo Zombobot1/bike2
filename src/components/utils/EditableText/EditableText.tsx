@@ -7,13 +7,14 @@ import { useRefCallback } from '../hooks/useRefCallback'
 
 export interface EditableText {
   text: str
-  setText: SetStr
+  setText?: SetStr
   focusIfEmpty?: bool
   tag?: 'h3' | 'h4' | 'pre' | 'p'
   placeholder?: str
   onBlur?: Fn
   onFocus?: Fn
   focus?: num
+  mr?: str
 }
 
 export function EditableText({
@@ -25,6 +26,7 @@ export function EditableText({
   focus = 0,
   onBlur: onBlurFn = f,
   onFocus: onFocusFn = f,
+  mr,
 }: EditableText) {
   const [text, setText] = useReactive(initialText)
   const ref = useRef<HTMLDivElement>(null)
@@ -32,7 +34,7 @@ export function EditableText({
   const onChange = useRefCallback((e) => setText(e.target.value))
 
   const onBlur = useRefCallback(() => {
-    if (text !== initialText) setTextOnBlur(text)
+    if (text !== initialText) setTextOnBlur?.(text)
     onBlurFn()
   }, [text])
 
@@ -67,7 +69,7 @@ export function EditableText({
   }
 
   return (
-    <Styles>
+    <Styles sx={{ marginRight: mr }}>
       <Editable
         sx={sx}
         innerRef={ref}
@@ -79,6 +81,7 @@ export function EditableText({
         role="textbox"
         onKeyDown={onKeyDown}
         placeholder={placeholder}
+        disabled={!setTextOnBlur}
         data-cy="etext"
       />
     </Styles>

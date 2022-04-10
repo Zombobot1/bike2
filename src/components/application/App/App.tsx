@@ -12,7 +12,7 @@ import { AppBar } from '../navigation/AppBar/AppBar'
 import { useState } from 'react'
 import { UPage } from '../../editing/UPage/UPage'
 import { useIsSignedIn, useUserInfo } from '../../../fb/auth'
-import { useWorkspace } from '../Workspace/Workspace'
+import { useWorkspace } from '../Workspace/WorkspaceState'
 
 const pages = ['study', 'teach', 'settings', 'stats']
 
@@ -48,7 +48,7 @@ function App__() {
     <AppContainer>
       <AppBar workspace={ws.changer} openNavBar={() => setIsNavBarOpen(true)} />
       <NavBar user={user} workspace={ws.changer} navigation={ws.state} isNavBarOpenS={isNavBarOpenS} />
-      <Main>
+      <main>
         <Routes>
           <Route path={STUDY_ID} element={<TrainingWrapper />} />
           <Route path={STUDY} element={<Trainings />} />
@@ -57,7 +57,7 @@ function App__() {
           <Route path={STATS} element={<p>Stats</p>} />
           <Route path={ANY} element={<UPage key={id} id={id} workspace={ws.changer} />} />
         </Routes>
-      </Main>
+      </main>
     </AppContainer>
   )
 }
@@ -76,11 +76,5 @@ const AppContainer = styled('div', { label: 'App' })(({ theme }) => ({
 
   [`${theme.breakpoints.up('sm')}`]: {
     ...theme.scroll('v'),
-  },
-}))
-
-const Main = styled('main')(({ theme }) => ({
-  [`${theme.breakpoints.up('sm')}`]: {
-    marginTop: '-3.75rem',
   },
 }))

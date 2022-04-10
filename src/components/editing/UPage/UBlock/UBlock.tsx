@@ -136,13 +136,16 @@ function ContentWrapper({ block, cursor, inList, children, readonly }: ContentWr
     if (!isDragging) upage.onDragEnd()
   }, [isDragging])
 
-  const notFullWidth = isNotFullWidthBlock(type)
+  const notFullWidth = isNotFullWidthBlock(type) && upage.globalContext() !== 'ucard'
   const flat = isFlat(type)
   const selected = cursor.selected.includes(id)
   const isSideDroppable = cursor.isDragging && !selected && flat
 
   // RStack is mandatory to keep BlockMenu next to block's content, InnerContainer is selectable
   // simpler composition is impossible due to interplay of BlockMenu and selection
+
+  const inUcard = upage.globalContext() === 'ucard'
+
   return (
     <Container
       onMouseDown={() => {
@@ -160,8 +163,9 @@ function ContentWrapper({ block, cursor, inList, children, readonly }: ContentWr
           sx={{ width: notFullWidth ? 'auto' : '100%', maxWidth: '100%' }}
           data-ublock-id={id}
         >
-          {flat && <BlockMenu block={block} drag={drag} inList={inList} readonly={readonly} />}
-          {/* {ps.isSelected && <Selection data-cy="selection" />} */}
+          {flat && (
+            <BlockMenu block={block} drag={drag} inList={inList} readonly={readonly} mode={inUcard ? 'drag' : 'full'} />
+          )}
           {isOver && !selected && <Dropbox />}
           {isSideDroppable && (
             <>
@@ -178,6 +182,7 @@ function ContentWrapper({ block, cursor, inList, children, readonly }: ContentWr
           >
             {children}
           </div>
+          {flat && inUcard && <BlockMenu block={block} drag={drag} inList={inList} readonly={readonly} mode={'add'} />}
         </InnerContainer>
       </InnerContainerWrapper_>
     </Container>
@@ -293,55 +298,73 @@ interface BlockMenu {
   drag: ConnectDragSource
   inList?: bool
   readonly?: bool
+  mode: 'add' | 'drag' | 'full'
 }
 
-function BlockMenu({ block, drag, inList, readonly }: BlockMenu) {
+function BlockMenu({ block, drag, inList, readonly, mode }: BlockMenu) {
   const { id, type } = block
-  // setType={setType}
-  //             deleteBlock={upage.deleteSelectedBlocks}
-  //             onAddClick={() => upage.addBlock(id, 'text')}
-  //             onMenuClick={upage.select}
-  //             clearSelection={upage.unselect}
-  //             readonly={readonly}
-  //             startDrag={upage.onDragStart}
   const ref = useRef<HTMLButtonElement>(null)
   const { close, isOpen, toggleOpen } = useMenu()
   const pt = utextPaddings.get(type.toLowerCase()) || '0'
   const transform = inList ? 'translateX(-130%)' : 'translateX(-100%)'
+  const inCard = mode === 'add'
+  const sx = {
+    transform: !inCard ? transform : 'translateX(100%)',
+    right: inCard ? 0 : undefined,
+    top: inCard ? 0 : undefined,
+  }
 
+  // zIndex: 20 to match zIndex of menu with disabled portal (without disabling doesn't work in idea)
   return (
-    <LeftButtons className={readonly ? '' : 'ublock--block-menu-container'} sx={{ paddingTop: pt, transform }}>
-      <MiniBtn onClick={() => upage.add(id)} ref={ref} data-cy="add-block-h">
-        <AddI />
-      </MiniBtn>
-      <Tooltip
-        title="Click or Drag"
-        placement="left-start"
-        PopperProps={{
-          modifiers: [
-            {
-              name: 'offset',
-              options: {
-                offset: [-20, 0],
-              },
-            },
-          ],
-        }}
-      >
-        <MiniBtn
-          ref={drag}
-          onClick={toggleOpen}
-          onMouseDown={() => {
-            upage.select(id)
-            upage.onDragStart()
-          }}
-          data-cy="block-menu-h"
-          sx={{ cursor: 'grab' }}
-        >
-          <DragI />
+    <LeftButtons
+      className={readonly ? '' : 'ublock--block-menu-container'}
+      sx={{ ...sx, paddingTop: pt }}
+      style={{ zIndex: 20 }}
+    >
+      {(mode === 'add' || mode === 'full') && (
+        <MiniBtn onClick={() => upage.add(id)} ref={ref} data-cy="add-block-h">
+          <AddI />
         </MiniBtn>
-      </Tooltip>
-      <UMenu btnRef={ref} close={close} isOpen={isOpen && !readonly} hasNested={true} offset={[85, 0]} elevation={4}>
+      )}
+      {(mode === 'drag' || mode === 'full') && (
+        <Tooltip
+          title="Click or Drag"
+          placement="left-start"
+          PopperProps={{
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: [-20, 0],
+                },
+              },
+            ],
+          }}
+        >
+          <MiniBtn
+            ref={drag}
+            onClick={toggleOpen}
+            onMouseDown={() => {
+              upage.select(id)
+              upage.onDragStart()
+            }}
+            data-cy="block-menu-h"
+            sx={{ cursor: 'grab' }}
+          >
+            <DragI />
+          </MiniBtn>
+        </Tooltip>
+      )}
+
+      <UMenu
+        btnRef={ref}
+        close={close}
+        isOpen={isOpen && !readonly}
+        hasNested={true}
+        offset={[85, 0]}
+        elevation={4}
+        disablePortal={true}
+      >
         {/* Maybe user can add comments */}
         <UOption
           icon={DeleteRoundedIcon}

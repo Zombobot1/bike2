@@ -1,12 +1,11 @@
-import { enablePatches, produceWithPatches } from 'immer'
-import { UPageNodes, WorkspaceStructure } from '../components/application/Workspace/types'
-import { WorkspaceDTO } from '../components/application/Workspace/Workspace'
-import { getInitialWorkspace, WorkspaceCR } from '../components/application/Workspace/WorkspaceCR'
+import { enablePatches } from 'immer'
+import { UPageNodes } from '../components/application/Workspace/types'
+import { _generateTestWS } from '../components/application/Workspace/WorkspaceState'
 import { UPageData } from '../components/editing/UPage/ublockTypes'
 import { _generators } from '../components/editing/UPage/UPageState/crdtParser/_fakeUPage'
-import { sslugify } from '../utils/sslugify'
-import { str, strs } from '../utils/types'
+import { str } from '../utils/types'
 import { safe } from '../utils/utils'
+import { sslugify } from '../utils/sslugify'
 
 enablePatches()
 
@@ -101,26 +100,6 @@ function generateIDs(nodes: UPageNodes) {
 generateIDs(ws)
 generateIDs(medium)
 generateIDs(pets)
-
-function _generateTestWS(nodes: UPageNodes, favorite = [] as strs): WorkspaceDTO {
-  nodes = JSON.parse(
-    JSON.stringify(nodes, function (k, v) {
-      return k === 'id' ? sslugify(this.name) : v
-    }),
-  )
-
-  const structure: WorkspaceStructure = { pages: nodes, trash: [] }
-  const dto: WorkspaceDTO = { favorite, updates: getInitialWorkspace() }
-  const wcr = new WorkspaceCR([...dto.updates], (u) => dto.updates.push(u))
-
-  wcr.change(
-    produceWithPatches(wcr.state, (draft) => {
-      draft.pages = structure.pages // if structure is returned patch will contain single replace op with empty path
-    })[1],
-  )
-
-  return dto
-}
 
 export const _wsDTOs = {
   lover: _generateTestWS(ws, ['vocabulary', 'python']),

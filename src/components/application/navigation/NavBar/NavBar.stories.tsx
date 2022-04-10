@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { MemoryRouter } from 'react-router'
 import { useUserInfo } from '../../../../fb/auth'
 import { safe } from '../../../../utils/utils'
-import { useWorkspace } from '../../Workspace/Workspace'
+import { useWorkspace } from '../../Workspace/WorkspaceState'
 import { NavBar } from './NavBar'
 
 function T() {

@@ -1,8 +1,4 @@
-import { useEffect, useState } from 'react'
-import { useMount } from '../utils/hooks/hooks'
 import { strs } from '../../utils/types'
-import { useUser } from 'reactfire'
-import { useData } from '../../fb/useData'
 
 export class UserDTO {
   fcmTokens: strs = []
@@ -11,28 +7,28 @@ export class UserDTO {
 // to test foreground notifications move a tab with site to a new window (after you can return it back to the other chrome tabs)
 export function useNotifications() {
   if (process.env.NODE_ENV === 'development') return
-  const [n, sn] = useState<UNotification>({ body: '', title: '' })
-  const { data: user } = useUser()
-  const [data, setData] = useData<UserDTO>('users', user?.uid || '', new UserDTO())
+  // const [n, sn] = useState<UNotification>({ body: '', title: '' })
+  // const { data: user } = useUser()
+  // const [data, setData] = useData('users', user?.uid || '', new UserDTO())
 
-  useMount(() => {
-    getFCMToken(sn)
-      .then((t) =>
-        setData({ fcmTokens: data.fcmTokens.length > 3 ? [...data.fcmTokens.slice(1), t] : [...data.fcmTokens, t] }),
-      )
-      .catch(console.error)
-  })
+  // useMount(() => {
+  //   _getFCMToken(sn)
+  //     .then((t) =>
+  //       setData({ fcmTokens: data.fcmTokens.length > 3 ? [...data.fcmTokens.slice(1), t] : [...data.fcmTokens, t] }),
+  //     )
+  //     .catch(console.error)
+  // })
 
-  useEffect(() => {
-    if (n.title) window.alert(`title: ${n.title}, body: ${n.body}`)
-  }, [n])
+  // useEffect(() => {
+  //   if (n.title) window.alert(`title: ${n.title}, body: ${n.body}`)
+  // }, [n])
 }
 // if (process.env.NODE_ENV !== 'development')
 // const messaging = getMessaging()
 
 type UNotification = { title: string; body: string }
 
-function getFCMToken(_f: (n: UNotification) => void): Promise<string> {
+function _getFCMToken(_f: (n: UNotification) => void): Promise<string> {
   // onMessage(messaging, (payload) => {
   //   f({ title: payload.notification?.title || '', body: payload.notification?.body || '' })
   // })

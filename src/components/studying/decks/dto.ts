@@ -1,5 +1,5 @@
-import { str } from '../../utils/types'
-import { UBlockType } from '../editing/UPage/ublockTypes'
+import { str } from '../../../utils/types'
+import { UBlockType } from '../../editing/UPage/ublockTypes'
 
 type FieldInformationDTO = {
   name: str

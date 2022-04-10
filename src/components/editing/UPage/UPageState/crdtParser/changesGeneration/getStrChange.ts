@@ -2,7 +2,8 @@ import { deleteInStr, insertInStr } from '../../../../../../utils/algorithms'
 import { patienceDiff } from '../../../../../../utils/wrappers/patienceDiff'
 import { num, str } from '../../../../../../utils/types'
 import { safe } from '../../../../../../utils/utils'
-import { ChangePreview, previewMaker, PreviewTag } from '../previewGeneration'
+import { previewMaker } from '../previewGeneration'
+import { ChangePreview, PreviewTag } from '../../../../../../fb/FSSchema'
 
 type Insertion = {
   text: str

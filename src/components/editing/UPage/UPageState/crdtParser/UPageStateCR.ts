@@ -5,12 +5,12 @@ import { bool, f, str, strs } from '../../../../../utils/types'
 import { YObject } from './types'
 import { fromUint8Array, toUint8Array } from 'js-base64'
 import { safe } from '../../../../../utils/utils'
-import { UPageChangeDescriptionDTO, UPageChangeDescriptionDTOs } from '../../../../../fb/upageChangesAPI'
 import { getSha } from '../../../../../utils/wrappers/shaUtils'
 import { DUMMY_DATA, UPageShallowTree } from './UPageShallowTree'
 import { getUserId } from '../../userId'
 import { now } from '../../../../../utils/wrappers/timeUtils'
-import { ChangePreview, getNewBlocksPreview, previewMaker } from './previewGeneration'
+import { getNewBlocksPreview, previewMaker } from './previewGeneration'
+import { ChangePreview, UPageChangeDescriptionDTO, UPageChangeDescriptionDTOs } from '../../../../../fb/FSSchema'
 
 type UPageRawChange =
   | { t: 'change'; id: str; data: UBlockData; addPreview?: bool }
@@ -143,14 +143,7 @@ export class UPageStateCR {
     changeFn()
 
     if (update) {
-      const description: UPageChangeDescriptionDTO = {
-        sha: getSha(update),
-        block: blockId || undefined,
-        date: now(),
-        preview,
-        user: getUserId(),
-      }
-
+      const description = signUpdate(this.#id, update, preview, blockId)
       const bytes = Bytes.fromUint8Array(update)
       this.#sendUpdate(this.#id, bytes, description)
       this.#updates.push(update)
@@ -168,23 +161,52 @@ export class UPageStateCR {
   }
 }
 
+export function signUpdate(
+  upageId: str,
+  update: Uint8Array,
+  preview: ChangePreview,
+  blockId?: str,
+): UPageChangeDescriptionDTO {
+  return {
+    upageId,
+    sha: getSha(update),
+    block: blockId || undefined,
+    date: now(),
+    preview,
+    user: getUserId(),
+  }
+}
+
+type Updates = { update: Bytes; description: UPageChangeDescriptionDTO }[]
+export function mergeUpdates(id: str, updates: Updates, sendUpdate: SendUpdate) {
+  const update = Y.mergeUpdatesV2(updates.map(({ update }) => update.toUint8Array()))
+  const preview = updates.map((update) => update.description.preview).flat()
+  const description = signUpdate(id, update, preview)
+  sendUpdate(id, Bytes.fromUint8Array(update), description)
+}
+
 export function getInitialUPageState(): Bytes[] {
   const doc = new Y.Doc()
 
-  const page = r(doc)
-  const ublocks = new Y.Map()
+  doc.transact(() => {
+    const page = r(doc)
+    const ublocks = new Y.Map()
 
-  const rootCR = new Y.Map() as UBlockCR
-  const rootJS = { ublocks: [DUMMY_DATA] }
-  rootCR.set('data', new Y.Text(JSON.stringify(rootJS)))
-  rootCR.set('type', new Y.Text())
+    const rootCR = new Y.Map() as UBlockCR
+    const rootJS = { ublocks: [DUMMY_DATA] }
+    rootCR.set('data', new Y.Text(JSON.stringify(rootJS)))
+    rootCR.set('type', new Y.Text())
 
-  ublocks.set('r', rootCR)
-  page.set('ublocks', ublocks)
+    ublocks.set('r', rootCR)
+    page.set('ublocks', ublocks)
+  })
 
   const bytes = Y.encodeStateAsUpdateV2(doc)
+
   return [Bytes.fromUint8Array(bytes)]
 }
+
+export const getInitialIdeaState = getInitialUPageState
 
 export type SendUpdate = (id: str, update: Bytes, description: UPageChangeDescriptionDTO) => void
 export type DeleteUpdates = (id: str, _updatesLeft: Bytes[], _shas: strs) => void

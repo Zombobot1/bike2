@@ -27,7 +27,7 @@
       "type": "node",
       "request": "launch",
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
-      "args": ["./src/test.ts"],
+      "args": ["./src/_test.ts"],
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "openOnSessionStart"
     }

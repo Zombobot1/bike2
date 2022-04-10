@@ -47,10 +47,13 @@ function Loading() {
 }
 
 export interface FetchingState {
-  message?: str
+  error?: { message?: str }
 }
 
-export function FetchingState({ message }: FetchingState) {
-  if (message) return <Error message={message} />
+export function FetchingState({ error }: FetchingState) {
+  if (error?.message) return <Error message={error.message} />
+  // Error boundaries catch everything (message exist only on Errors)
+  // Always use Promise.reject(new Error('msg')) not Promise.reject('msg')
+  if (error) return <Error message={'Caught: ' + error} />
   return <Loading />
 }

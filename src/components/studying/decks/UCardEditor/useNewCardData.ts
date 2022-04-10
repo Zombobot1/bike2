@@ -1,7 +1,7 @@
 import { useAtom, atom } from 'jotai'
-import { useMount } from '../../utils/hooks/hooks'
-import { sslugify } from '../../../utils/sslugify'
-import { Fn, f, str } from '../../../utils/types'
+import { useMount } from '../../../utils/hooks/hooks'
+import { sslugify } from '../../../../utils/sslugify'
+import { Fn, f, str } from '../../../../utils/types'
 
 type FileOrStr = File | str
 

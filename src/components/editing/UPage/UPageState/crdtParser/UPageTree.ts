@@ -21,11 +21,10 @@ import {
   UListData,
   UListItem,
   UPageBlockData,
-  UPageData,
+  WithUBlocks,
 } from '../../ublockTypes'
 import { TOCs } from '../types'
 import { UPageRawChanges } from './UPageStateCR'
-import { UFromRuntime, UFormEvent } from './UPageRuntimeTree'
 import { UPageTreeStructureChanger } from './UPageTreeChanger'
 import { isUBlockInOpenNode } from './ulistManagement'
 
@@ -37,9 +36,8 @@ export class UPageTree {
   #idAndParent: IdAndBlock
   #bfsRoute: UBlocks
 
-  #data: UPageData
+  #data: WithUBlocks
 
-  #uformRuntime: UFromRuntime
   #changer: UPageTreeStructureChanger
   #getId: GetId
   #onPageAdded: OnPageAdded
@@ -47,7 +45,7 @@ export class UPageTree {
   #onUFilesDeleted: SetStrs
 
   constructor(
-    data: UPageData,
+    data: WithUBlocks,
     getId: GetId,
     onPageAdded: OnPageAdded,
     onPagesDeleted: OnPagesDeleted,
@@ -58,7 +56,6 @@ export class UPageTree {
     this.#idAndParent = idAndParent
     this.#bfsRoute = bfsRoute
     this.#data = data
-    this.#uformRuntime = new UFromRuntime(this)
     this.#changer = new UPageTreeStructureChanger(this, getId)
     this.#getId = getId
     this.#onPageAdded = onPageAdded
@@ -68,12 +65,6 @@ export class UPageTree {
 
   get bfs(): UBlocks {
     return this.#bfsRoute
-  }
-
-  handleUFormEvent = (uformId: str, e: UFormEvent) => {
-    if (e === 'submit') return this.#uformRuntime.submit(uformId)
-    if (e === 'retry') return this.#uformRuntime.retry(uformId)
-    if (e === 'toggle-edit') return this.#uformRuntime.toggleEdit(uformId)
   }
 
   context = (id: str): UBlockContext => {
@@ -216,12 +207,6 @@ export class UPageTree {
     if (isObj(block.data)) newData = { ...(block.data as JSObject), ...(newData as JSObject) } // it preserves original order of keys -> less CR changes
     block.data = newData as str // as str - to hack ts
     return [{ t: 'change', id, data: newData as UBlockData, addPreview: true }]
-  }
-
-  changeRuntimeData = (changes: [str, UBlockData][]) => {
-    for (const [id, newData] of changes) {
-      this.getUBlock(id).data = newData
-    }
   }
 
   onUTextTab = (id: str, data: str): UPageRawChanges => this.#changer.onUTextTab(id, data)
@@ -387,7 +372,7 @@ function dfsUList(node: UListItem) {
   return dfs(node)
 }
 
-function bfsUPage(data: UPageData) {
+function bfsUPage(data: WithUBlocks) {
   const bfsRoute = [] as UBlocks
   const idAndBlock: IdAndBlock = new Map()
   const idAndParent: IdAndBlock = new Map()

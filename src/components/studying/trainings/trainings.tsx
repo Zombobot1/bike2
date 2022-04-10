@@ -13,7 +13,7 @@ const TrainingsMasonry = styled(Masonry)({
   },
 })
 
-const Trainings_ = () => {
+const _Trainings_ = () => {
   // const { data } = useTrainings()
 
   const isSM = useIsSM()
@@ -35,11 +35,11 @@ const Trainings_ = () => {
 
 export function Trainings() {
   return (
-    <div>
+    <div style={{ padding: '4rem' }}>
       <Typography fontSize="large" sx={{ fontWeight: 600, marginBottom: 1 }}>
         Regular trainings
       </Typography>
-      <Trainings_ />
+      {/* <IdeasTable /> */}
     </div>
   )
 }

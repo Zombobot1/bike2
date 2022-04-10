@@ -6,16 +6,15 @@ import { CodeRoot } from './CodeRoot'
 import { highlight, programmingLanguages } from './highlight'
 import { unhighlight } from '../../../utils/unhighlight'
 import { bool, Fn, f, num, SetStr, str, strs } from '../../../utils/types'
-import { Box, Button, styled, Typography } from '@mui/material'
+import { Box, styled, Typography } from '@mui/material'
 import ContentEditable from 'react-contenteditable'
 import { insert } from '../../../utils/algorithms'
 import { IBtn } from '../MuiUtils'
 import ContentCopyIcon from '@mui/icons-material/ContentCopy'
-import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
-import { LongMenu, useLongMenu } from '../UMenu/LongMenu'
 import { copyText } from '../../../utils/copyText'
 import { useMount } from '../hooks/hooks'
 import { UPageFocus } from '../../editing/types'
+import { UAutocomplete } from '../UAutocomplete/UAutocomplete'
 
 export interface CodeEditor {
   language: str
@@ -238,7 +237,6 @@ interface SelectLanguage_ {
 }
 
 function SelectLanguage({ languages, selected, onSelect, readonly }: SelectLanguage_) {
-  const props = useLongMenu(languages, selected, onSelect)
   if (readonly)
     return (
       <LanguageSelector>
@@ -247,15 +245,7 @@ function SelectLanguage({ languages, selected, onSelect, readonly }: SelectLangu
     )
   return (
     <LanguageSelector>
-      <Button
-        ref={props.btnRef}
-        onClick={props.toggleOpen}
-        sx={{ textTransform: 'none', '.MuiButton-endIcon': { margin: '0 !important' } }}
-        endIcon={<ArrowDropDownRoundedIcon />}
-      >
-        {selected}
-      </Button>
-      <LongMenu {...props} placeholder="language" />
+      <UAutocomplete options={languages} selected={selected} onSelect={onSelect} placeholder="language" width="15rem" />
     </LanguageSelector>
   )
 }

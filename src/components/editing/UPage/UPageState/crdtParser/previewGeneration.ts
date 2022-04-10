@@ -1,20 +1,10 @@
+import { ChangePreview, PreviewItem, PreviewTag } from '../../../../../fb/FSSchema'
 import { num, str } from '../../../../../utils/types'
 import { UBlock, isStringBasedBlock, isAdvancedText, isUFormBlock, UBlocks } from '../../ublockTypes'
 import { bfsUBlocks } from './UPageTree'
 
 const MAX_SIZE = 24
 const DELTA = 4 // for ...
-
-export enum PreviewTag {
-  no,
-  em,
-  s,
-  b,
-  br,
-}
-
-type PreviewItem = { data?: str; tag: PreviewTag }
-export type ChangePreview = PreviewItem[]
 
 export class _PreviewMaker {
   #maxSize: num

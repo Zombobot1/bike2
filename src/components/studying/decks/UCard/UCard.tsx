@@ -1,7 +1,7 @@
-import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../studying/training/types'
+import { CardEstimation, estimationColor, FieldDTO, FieldDTOs } from '../../training/types'
 import { Collapse, Stack, styled } from '@mui/material'
 import { ReactComponent as StageChevron } from './stageChevron.svg'
-import { str, bool } from '../../../utils/types'
+import { str, bool } from '../../../../utils/types'
 import { TransitionGroup } from 'react-transition-group'
 
 export interface UCard {

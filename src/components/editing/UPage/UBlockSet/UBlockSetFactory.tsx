@@ -13,6 +13,7 @@ export interface UBlockSetFactory {
 export function UBlockSetFactory(ps: UBlockSetFactory) {
   const { cursor } = useUPageCursor()
   const [focus, setFocus] = useState(0)
+
   useEffect(() => setFocus((old) => (cursor.focus?.id === 'factory' ? old + 1 : old)), [cursor.focus])
 
   return (
