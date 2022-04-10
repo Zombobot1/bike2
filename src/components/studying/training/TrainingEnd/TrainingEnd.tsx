@@ -4,7 +4,7 @@ import { fancyTime, percentage } from '../../../../utils/formatting'
 import { useMount } from '../../../utils/hooks/hooks'
 import { num, str } from '../../../../utils/types'
 import { TrainingCard } from '../../trainings/training-deck/training-card/training-card'
-import { TrainingDTO } from '../training/training'
+import { _TrainingDTO as TrainingDTO } from '../training/training'
 import { ReactComponent as BadgeI } from './badge.svg'
 
 interface Badge {

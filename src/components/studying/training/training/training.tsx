@@ -8,7 +8,7 @@ import { Box } from '@mui/material'
 import { Fetch } from '../../../utils/Fetch/Fetch'
 import { TrainingConceptsInfoP } from '../../trainings/training-deck/training-card/training-cards-info/training-concepts-info'
 
-export interface TrainingDTO {
+export interface _TrainingDTO {
   _id: string
   deckName: string
   deckColor: string
@@ -19,12 +19,12 @@ export interface TrainingDTO {
 
 export interface TrainingsGroupDTO {
   rootDeckName: string
-  trainings: TrainingDTO[]
+  trainings: _TrainingDTO[]
 }
 export type TrainingsGroupDTOs = TrainingsGroupDTO[]
 
 export interface TrainingP {
-  dto: TrainingDTO
+  dto: _TrainingDTO
   onLastCard: Fn
 }
 

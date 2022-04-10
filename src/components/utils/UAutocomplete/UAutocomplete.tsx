@@ -26,7 +26,7 @@ export function UAutocomplete({ options, selected, onSelect, placeholder, width 
         sx={{ textTransform: 'none', '.MuiButton-endIcon': { margin: '0 !important' } }}
         endIcon={<ArrowDropDownRoundedIcon />}
       >
-        {selected}
+        {ps.selectedOption}
       </Button>
       <LongMenu {...ps} placeholder={placeholder} disablePortal={true} sx={{ width }} />
     </>

@@ -1,8 +1,10 @@
 import { WorkspaceStructure } from '../../application/Workspace/types'
 import { useTestWorkspace } from '../../application/Workspace/WorkspaceState'
+import { setUserId } from '../../editing/UPage/userId'
 import { IdeasViewer } from './IdeasViewer'
 
 const T = (structure: WorkspaceStructure) => {
+  setUserId('cat-lover1')
   useTestWorkspace(structure)
   return (
     <div style={{ width: '100%', maxWidth: 900, paddingLeft: '1rem', paddingRight: '1rem' }}>
@@ -17,11 +19,9 @@ const ws1: WorkspaceStructure = {
       id: 'english',
       name: 'English',
       color: '',
-      children: [
-        { id: 'rules', name: 'Rules', color: '' },
-        { id: 'cats', name: 'Cats', color: '' },
-      ],
+      children: [{ id: 'rules', name: 'Rules', color: '' }],
     },
+    { id: 'cats', name: 'Cats', color: '' },
   ],
   trash: [],
 }

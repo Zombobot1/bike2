@@ -1,13 +1,15 @@
 import { doc, getFirestore, setDoc, getDoc, updateDoc, Bytes, arrayUnion } from '@firebase/firestore'
 import { DocumentData } from 'firebase/firestore'
 import { useCallback } from 'react'
-import { useFirestore, useFirestoreDocData } from 'reactfire'
+import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from 'reactfire'
 import { useC } from '../components/utils/hooks/hooks'
 import { bool, str } from '../utils/types'
 import { FSSchema } from './FSSchema'
 import { useFS } from './fs'
 import { isInProduction } from './utils'
 import { wait } from '../utils/utils'
+import { UQuery } from './q'
+import { getUserId } from '../components/editing/UPage/userId'
 
 function useFSData_<T extends keyof FSSchema>(
   col: T,
@@ -46,16 +48,17 @@ export function useData<T extends keyof FSSchema>(
   return [data as FSSchema[T], setData_]
 }
 
-// export function useEntireCollectionByUserId<T extends keyof FSSchema>(query: UQuery<T>) {
-// if (!isInProduction) return useFSCollectionByUserId_(col) as FSSchema[T][]
-// const { data } = useFirestoreCollectionData(q(col).orderBy(''))
-// return
-// }
+export function useCollectionData<T extends keyof FSSchema>(query: UQuery<T>) {
+  if (!isInProduction) return useFSCollectionData(query) as FSSchema[T][]
 
-// function useFSCollectionByUserId_<T extends keyof FSSchema>(col: T) {
-//   const { queryDocs } = useFS()
-//   return queryDocs(q(col, { combineWithUserId: true }))
-// }
+  const { data } = useFirestoreCollectionData(query.toQuery())
+  return data as FSSchema[T][]
+}
+
+function useFSCollectionData<T extends keyof FSSchema>(query: UQuery<T>) {
+  const { queryDocs } = useFS()
+  return queryDocs(query)
+}
 
 const delay = () => JSON.parse(localStorage.getItem('sorybook-delayResponses') || 'false') as bool
 const waitABit = () => wait(delay() ? 1e3 : 0)
@@ -92,8 +95,7 @@ export function useFirestoreData() {
   }
 }
 
-const d = (col: str, id: str) => doc(getFirestore(), col, id)
-// const c = (col: str) => collection(getFirestore(), col)
+const d = (col: str, id: str) => doc(getFirestore(), col === 'trainings' ? col + '-' + getUserId() : col, id)
 const setData = <T extends keyof FSSchema>(col: T, id: str, data: Partial<FSSchema[T]>, merge = true): Promise<void> =>
   setDoc(d(col, id), data as DocumentData, { merge })
 const addData = <T extends keyof FSSchema>(col: T, id: str, data: FSSchema[T]): Promise<void> =>
@@ -101,13 +103,6 @@ const addData = <T extends keyof FSSchema>(col: T, id: str, data: FSSchema[T]): 
 
 const getData = <T extends keyof FSSchema>(col: T, id: str): Promise<FSSchema[T]> =>
   getDoc(d(col, id)).then((snap) => snap.data()) as Promise<FSSchema[T]>
-// const queryData = async <T extends keyof FSSchema>(q: UQuery<T>): Promise<FSSchema[T][]> => {
-//   const _query = query(c(q.col), where(q.prop, q.op as WhereFilterOp, q.val))
-//   const docs = await getDocs(_query)
-//   const r: FSSchema[T][] = []
-//   docs.forEach((d) => r.push(d.data() as FSSchema[T]))
-//   return r
-// }
 
 const appendDataToArray = <T extends keyof FSSchema>(col: T, id: str, arrayName: keyof FSSchema[T], data: Bytes) =>
   updateDoc(d(col, id), { [arrayName]: arrayUnion(data) })

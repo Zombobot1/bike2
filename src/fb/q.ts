@@ -1,4 +1,5 @@
-import { CollectionReference, query, where, orderBy } from 'firebase/firestore'
+import { query, where, orderBy, collection, getFirestore } from 'firebase/firestore'
+import { getUserId } from '../components/editing/UPage/userId'
 import { str } from '../utils/types'
 import { FSSchema } from './FSSchema'
 
@@ -10,8 +11,11 @@ type Filters = Filter[]
 export class UQuery<T extends keyof FSSchema> {
   filters: Filters = []
   order?: { prop: str; type: 'asc' | 'desc' }
+  col = ''
 
-  constructor(public col: T, public combineWithUserId = false) {}
+  constructor(colName: T, combineWithUserId = false) {
+    this.col = combineWithUserId ? colName + '-' + getUserId() : colName
+  }
 
   where = (prop: keyof FSSchema[T], op: FilterOperation, val: unknown): UQuery<T> => {
     this.filters.push({ prop: prop as str, op, val })
@@ -23,7 +27,8 @@ export class UQuery<T extends keyof FSSchema> {
     return this
   }
 
-  toQuery = (colRef: CollectionReference) => {
+  toQuery = () => {
+    const colRef = collection(getFirestore(), this.col)
     const filters = this.filters.map(({ prop, op, val }) => where(prop, op as FilterOperation, val))
     if (this.order) filters.push(orderBy(this.order.prop, this.order.type))
 

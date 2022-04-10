@@ -35,9 +35,9 @@ export interface TrainingDTO {
   idAndIndicators: { [key: str]: TrainingIndicators }
   frozen?: bool
   repeatAt: num
-  createdAt: str
+  createdAt: num // consistent sorting is required
 }
-export type IdeaTrainingDTOs = TrainingDTO[]
+export type TrainingDTOs = TrainingDTO[]
 export type UCardPriority = 'low' | 'medium' | 'high'
 export type TrainingIndicators = {
   repeatAt: num

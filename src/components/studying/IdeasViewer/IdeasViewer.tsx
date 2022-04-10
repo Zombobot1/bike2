@@ -1,9 +1,9 @@
-import { Modal, ClickAwayListener, IconButton, Snackbar, Alert, Box, styled } from '@mui/material'
+import { Modal, ClickAwayListener, IconButton, Snackbar, Alert, Box, styled, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
-import { TrainingDTO as TrainingDTOP } from '../../../fb/FSSchema'
-import { str, bool, Fn, f } from '../../../utils/types'
+import { TrainingDTO } from '../../../fb/FSSchema'
+import { str, bool, Fn, SetStr, strs } from '../../../utils/types'
 import { isStr, safe } from '../../../utils/utils'
-import { nowCompact } from '../../../utils/wrappers/timeUtils'
+import { now } from '../../../utils/wrappers/timeUtils'
 import { uuid } from '../../../utils/wrappers/uuid'
 import { uformBlocks } from '../../editing/UPage/UBlock/BlockAutocomplete/BlockAutocompleteOptions'
 import { UBlocksSet } from '../../editing/UPage/UBlockSet/UBlockSet'
@@ -28,6 +28,8 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
 import { workspace } from '../../application/Workspace/WorkspaceState'
 import { UAutocomplete } from '../../utils/UAutocomplete/UAutocomplete'
+import { backend, useCollectionData } from '../../../fb/useData'
+import { q } from '../../../fb/q'
 
 // TODO: sync preview on editor close
 // TODO: sync upageId on editor open (show warning that idea was moved), on idea training
@@ -47,39 +49,44 @@ export function IdeasViewer() {
   const [topPaths] = useState(() => workspace.topPaths()) // TODO: update on paths change
   const [selectedUPageI, setSelectedUPageI] = useState(0) // TODO: handle empty workspace
   const selectedUPageId = topPaths[selectedUPageI]?.id || ''
+  const pagesIn = workspace.getPagesIn(selectedUPageId)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
   const [idea, setIdea] = useState({ id: '', create: true })
 
   return (
     <Root>
-      <RStack justifyContent="space-between">
+      <RStack justifyContent="start">
         <EditableText text={'Ideas'} tag="h3" placeholder="Untitled" />
-        <UAutocomplete
-          placeholder="top page"
-          options={topPaths.map((p) => p.name)}
-          selected={topPaths[0].name}
-          onSelect={(_, i) => {
-            setSelectedUPageI(safe(i))
-          }}
-        />
+        <Box sx={{ transform: 'translate(1rem, 0.15rem)' }}>
+          <UAutocomplete
+            placeholder="top page"
+            options={topPaths.map((p) => p.name)}
+            selected={topPaths[0].name}
+            onSelect={(_, i) => {
+              setSelectedUPageI(safe(i))
+            }}
+            width="15rem"
+          />
+        </Box>
         <IBtn
           icon={AddCircleOutlineRoundedIcon}
           onClick={() => {
             setIdea({ id: uuid(), create: true })
             setIsEditorOpen(true)
           }}
+          sx={{ marginLeft: 'auto' }}
           data-cy="new-idea"
         />
       </RStack>
       <Hr sx={{ marginBottom: '0.5rem' }} />
       <Fetch>
-        {/* <IdeaDTOs
-          topUPage={selectedUPageId}
+        <IdeaDTOs
+          pagesTree={pagesIn}
           editDTO={(id) => {
             setIdea({ id, create: false })
             setIsEditorOpen(true)
           }}
-        /> */}
+        />
       </Fetch>
       <Modal open={isEditorOpen} onClose={() => !idea.create && setIsEditorOpen(false)}>
         <EditorWrapper>
@@ -88,7 +95,6 @@ export function IdeasViewer() {
             upageId={selectedUPageId}
             create={idea.create}
             close={() => setIsEditorOpen(false)}
-            appendDto={f}
           />
         </EditorWrapper>
       </Modal>
@@ -101,24 +107,22 @@ const Root = styled(Box)({
   maxWidth: 900,
 })
 
-// interface IdeaDTOs {
-//   topUPage: str
-//   editDTO: SetStr
-// }
+interface IdeaDTOs {
+  pagesTree: strs
+  editDTO: SetStr
+}
 
-function _IdeaDTOs() {
-  // const { data } = useQuery('ideaTrainings', () =>
-  //   backend.queryData(q('ideaTrainings', 'upageId', 'in', workspace.getPagesIn(topUPage))),
-  // )
+function IdeaDTOs({ editDTO, pagesTree }: IdeaDTOs) {
+  const trainings = useCollectionData(q('trainings', { combineWithUserId: true }).orderBy('createdAt', 'desc'))
+  const trainingsForPage = trainings.filter((t) => pagesTree.includes(t.upageId))
   // TODO: handle empty case
-  // return (
-  //   <Stack spacing={1}>
-  //     {data?.map((dto) => (
-  //       <TrainingDTO key={dto.dataId} dto={dto} editDTO={editDTO} />
-  //     ))}
-  //   </Stack>
-  // )
-  return null
+  return (
+    <Stack spacing={1}>
+      {trainingsForPage.map((dto) => (
+        <TrainingItem key={dto.dataId} dto={dto} editDTO={editDTO} />
+      ))}
+    </Stack>
+  )
 }
 
 const EditorWrapper = styled(Box)(({ theme }) => ({
@@ -142,10 +146,9 @@ interface IdeaEditor {
   id: str
   create?: bool
   close: Fn
-  appendDto: (d: TrainingDTOP) => void
 }
 
-function IdeaEditor({ id, upageId, create, close, appendDto }: IdeaEditor) {
+function IdeaEditor({ id, upageId, create, close }: IdeaEditor) {
   const { data, changer } = useIdeaState(id, upageId, { create, editing: true })
 
   const [showError, setShowError] = useState(false)
@@ -180,15 +183,17 @@ function IdeaEditor({ id, upageId, create, close, appendDto }: IdeaEditor) {
             setShowError(!success)
             if (!success) return
 
-            if (create)
-              appendDto({
+            if (create) {
+              backend.addData('trainings', uuid(), {
                 upageId,
                 dataId: id,
                 idAndIndicators: {},
                 preview: extractPreview(data.ublocks),
                 repeatAt: 0,
-                createdAt: nowCompact(),
+                createdAt: now(),
               })
+            }
+
             close()
           }}
         >
@@ -210,20 +215,20 @@ function IdeaEditor({ id, upageId, create, close, appendDto }: IdeaEditor) {
   )
 }
 
-// interface TrainingDto {
-//   dto: TrainingDTOP
-//   editDTO: (id: str) => void
-// }
+interface TrainingItem {
+  dto: TrainingDTO
+  editDTO: (id: str) => void
+}
 
-// function TrainingDTO({ dto, editDTO }: TrainingDto) {
-//   return (
-//     <TrainingDto_ onClick={() => editDTO(dto.dataId)}>
-//       <Typography sx={{ marginRight: 'auto' }}>{dto.preview}</Typography>
-//     </TrainingDto_>
-//   )
-// }
+function TrainingItem({ dto, editDTO }: TrainingItem) {
+  return (
+    <TrainingItem_ onClick={() => editDTO(dto.dataId)}>
+      <Typography sx={{ marginRight: 'auto' }}>{dto.preview}</Typography>
+    </TrainingItem_>
+  )
+}
 
-const _TrainingDto_ = styled(RStack)(({ theme }) => ({
+const TrainingItem_ = styled(RStack)(({ theme }) => ({
   borderRadius: theme.shape.borderRadius,
   padding: '0.25rem 0.5rem',
 

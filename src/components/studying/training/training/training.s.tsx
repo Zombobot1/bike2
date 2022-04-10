@@ -1,4 +1,4 @@
-import { Training, TrainingDTO } from './training'
+import { Training, _TrainingDTO as TrainingDTO } from './training'
 import { MemoryRouter } from 'react-router-dom'
 import { trainings } from '../../../../content/trainingsAndDecks'
 import { Stack, Button } from '@mui/material'

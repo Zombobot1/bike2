@@ -34,6 +34,7 @@ export function useFS() {
   const { getFS, setFS } = useFS_()
 
   const setDoc = useC((col: str, id: str, data: JSObject) => {
+    col = col === 'trainings' ? col + '-' + getUserId() : col
     const old = getFS()
     if (pendingInsertions.has(col + id)) {
       data = { ...pendingInsertions.get(col + id), ...data }
@@ -69,8 +70,9 @@ export function useFS() {
   })
 
   const queryDocs = useC(<T extends keyof FSSchema>(query: UQuery<T>): JSObjects => {
-    const col = query.combineWithUserId ? query.col + '-' + getUserId() : query.col
-    let allDocs = getFS().find((c) => c.name === col)?.docs
+    let allDocs = getFS()
+      .find((c) => c.name === query.col)
+      ?.docs.map((d) => d.data)
     if (!allDocs) return []
 
     if (query.filters.length) {

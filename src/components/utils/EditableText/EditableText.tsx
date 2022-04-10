@@ -14,6 +14,7 @@ export interface EditableText {
   onBlur?: Fn
   onFocus?: Fn
   focus?: num
+  mr?: str
 }
 
 export function EditableText({
@@ -25,6 +26,7 @@ export function EditableText({
   focus = 0,
   onBlur: onBlurFn = f,
   onFocus: onFocusFn = f,
+  mr,
 }: EditableText) {
   const [text, setText] = useReactive(initialText)
   const ref = useRef<HTMLDivElement>(null)
@@ -67,7 +69,7 @@ export function EditableText({
   }
 
   return (
-    <Styles>
+    <Styles sx={{ marginRight: mr }}>
       <Editable
         sx={sx}
         innerRef={ref}

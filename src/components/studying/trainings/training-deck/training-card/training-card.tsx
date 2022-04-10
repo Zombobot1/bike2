@@ -1,6 +1,6 @@
 import { SmallDeckCard } from './types'
 import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
-import { TrainingDTO } from '../../../training/training/training'
+import { _TrainingDTO as TrainingDTO } from '../../../training/training/training'
 import { styled, Typography } from '@mui/material'
 import { chop } from '../../../utils'
 import { f } from '../../../../../utils/types'
