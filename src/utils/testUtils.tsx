@@ -9,7 +9,7 @@ import { COLORS } from '../components/application/theming/theme'
 import { UTextGreen } from '../components/editing/UText/UTextOptions/UTextOptions'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { isCypress } from '../components/utils/hooks/isCypress'
-import { _fs } from '../content/fs'
+import { _fs } from '../content/_fs'
 import { FSProvider, setFSD } from '../fb/fs'
 import { Fn, num, str } from './types'
 

@@ -16,10 +16,10 @@ export const _fs: _FSD = [
     ['small', _wsDTOs.small],
   ]),
   $(cls.upages, [
+    ...(_extraPages as [str, JSObject][]),
     ['pets-and-animals', _pageDTOs.pets],
     ['medium', _pageDTOs.medium],
     ['small', _pageDTOs.small],
-    ...(_extraPages as [str, JSObject][]),
   ]),
   $('_t', [['1', { d: 'test' }]]),
 ]

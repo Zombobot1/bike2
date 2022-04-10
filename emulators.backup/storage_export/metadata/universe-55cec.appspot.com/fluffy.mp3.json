@@ -1,0 +1,19 @@
+{
+  "name": "fluffy.mp3",
+  "bucket": "universe-55cec.appspot.com",
+  "contentType": "application/octet-stream",
+  "metageneration": 1,
+  "generation": 1649586387363,
+  "storageClass": "STANDARD",
+  "etag": "someETag",
+  "contentDisposition": "inline",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "fe29422f-d3db-4b40-8083-874316bf4c98"
+  ],
+  "timeCreated": "2022-04-10T10:26:27.362Z",
+  "updated": "2022-04-10T10:26:27.363Z",
+  "size": 8877,
+  "md5Hash": "G71J2eHKumt+uIhTIP0bnw==",
+  "crc32c": "2380634825"
+}

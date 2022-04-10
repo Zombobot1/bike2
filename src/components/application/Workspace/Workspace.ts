@@ -51,7 +51,7 @@ export class WorkspaceNav {
 
 export interface WorkspaceDTO {
   favorite: strs
-  wsUpdates: Bytes[]
+  updates: Bytes[]
 }
 
 export class WorkspaceOpenness {
@@ -79,7 +79,7 @@ export class Workspace implements UPageManagement {
     this.#openness = openness
     this.#updateOpenness = updateOpenness
     this.#favorite = dto.favorite
-    this.#cr = new WorkspaceCR(dto.wsUpdates, sendWSUpdate)
+    this.#cr = new WorkspaceCR(dto.updates, sendWSUpdate)
     this.#structure = this.#cr.state
     this.#updateFavorite = updateFavorite
     this.#nav = this.#getState()
@@ -92,7 +92,7 @@ export class Workspace implements UPageManagement {
   setStateSetter = (s: (n: WorkspaceNav) => void) => (this.#setNav = s)
 
   applyUpdate = (dto: WorkspaceDTO) => {
-    const newState = this.#cr.applyUpdate(dto.wsUpdates)
+    const newState = this.#cr.applyUpdate(dto.updates)
     const newFavorites = !deepEqual(dto.favorite, this.#favorite)
     if (!newState && !newFavorites) return
 
@@ -379,8 +379,8 @@ type O = {
 }
 
 export function _getWS(nodes: UPageNodeDTOs, o: O = { sendUpdate: f, sendDTO: f, updateOpenness: f }) {
-  const wsUpdates: Bytes[] = getInitialWorkspace()
-  const cr = new WorkspaceCR([...wsUpdates], (u) => wsUpdates.push(u))
+  const updates: Bytes[] = getInitialWorkspace()
+  const cr = new WorkspaceCR([...updates], (u) => updates.push(u))
   nodes.forEach((n, i) => cr.change([{ op: 'add', path: ['pages', i], value: n }]))
 
   const bfs = bfsNodes(nodes)
@@ -391,7 +391,7 @@ export function _getWS(nodes: UPageNodeDTOs, o: O = { sendUpdate: f, sendDTO: f,
   })
 
   return new Workspace(
-    { wsUpdates, favorite },
+    { updates, favorite },
     o.sendDTO || f,
     { open: [], openFavorite: [] },
     o.updateOpenness || f,

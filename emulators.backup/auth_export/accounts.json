@@ -1,0 +1,44 @@
+{
+  "kind": "identitytoolkit#DownloadAccountResponse",
+  "users": [
+    {
+      "localId": "cats-lover",
+      "createdAt": "1649586387326",
+      "lastLoginAt": "1649586400406",
+      "emailVerified": false,
+      "email": "kitten@non-existent-email.net",
+      "salt": "fakeSaltSo7zn2WOlVM1aelLJthm",
+      "passwordHash": "fakeHash:salt=fakeSaltSo7zn2WOlVM1aelLJthm:password=WAD3=;zmjGYWc](gyf94",
+      "passwordUpdatedAt": 1649586387326,
+      "validSince": "1649586387",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "kitten@non-existent-email.net",
+          "federatedId": "kitten@non-existent-email.net",
+          "rawId": "kitten@non-existent-email.net"
+        }
+      ],
+      "lastRefreshAt": "2022-04-10T10:26:40.407Z"
+    },
+    {
+      "localId": "pets-and-animals",
+      "createdAt": "1649586387334",
+      "lastLoginAt": "1649586387334",
+      "emailVerified": false,
+      "email": "puppy@non-existent-email.net",
+      "salt": "fakeSaltLh6M9ytmPM0W47ydsOVz",
+      "passwordHash": "fakeHash:salt=fakeSaltLh6M9ytmPM0W47ydsOVz:password=123456789!",
+      "passwordUpdatedAt": 1649586387334,
+      "validSince": "1649586387",
+      "providerUserInfo": [
+        {
+          "providerId": "password",
+          "email": "puppy@non-existent-email.net",
+          "federatedId": "puppy@non-existent-email.net",
+          "rawId": "puppy@non-existent-email.net"
+        }
+      ]
+    }
+  ]
+}

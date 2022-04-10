@@ -1,5 +1,5 @@
 import { all, safe } from '../utils/utils'
-import { FC, useEffect, useRef, useState } from 'react'
+import { FC, memo, useEffect, useRef, useState } from 'react'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
 import { useIsSM, useMount } from '../components/utils/hooks/hooks'
 import { bool, Fn, JSObjects, str, strs } from '../utils/types'
@@ -425,8 +425,9 @@ interface Pane {
   outline: bool
 }
 
+const Pane = memo(_Pane, (prev, next) => prev.soryId === next.soryId && prev.outline === next.outline)
 // provider is used to suppress warning when switching e.g. from upage to fetch with initial data (upage will be updated because it is not unmounted yet?!)
-function Pane({ Sory, outline, soryId }: Pane) {
+function _Pane({ Sory, outline, soryId }: Pane) {
   const theme = useTheme()
   return (
     <ComponentWrapper

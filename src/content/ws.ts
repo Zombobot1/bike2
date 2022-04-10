@@ -11,28 +11,6 @@ import { safe } from '../utils/utils'
 enablePatches()
 
 const color = '#0066FF'
-// {
-// id: 'pets-test',
-// },
-// {
-// id: 'pets-test-small',
-// },
-// {
-//   id: 'removal',
-//   name: 'Removal',
-// },
-// {
-//   id: 'empty-page',
-//   name: '',
-// },
-
-// const petsTestPage: UPageDTO = {
-//   ids: _kittensForFocusPage.ids,
-// }
-
-// const petsTestSmallPage: UPageDTO = {
-//   ids: ['emptyString'],
-// }
 
 const medium: UPageNodes = [
   {
@@ -111,6 +89,19 @@ const ws: UPageNodes = [
   },
 ]
 
+function generateIDs(nodes: UPageNodes) {
+  nodes.map((node) => {
+    node.id = sslugify(node.name)
+    if (node.children) {
+      generateIDs(node.children)
+    }
+  })
+}
+
+generateIDs(ws)
+generateIDs(medium)
+generateIDs(pets)
+
 function _generateTestWS(nodes: UPageNodes, favorite = [] as strs): WorkspaceDTO {
   nodes = JSON.parse(
     JSON.stringify(nodes, function (k, v) {
@@ -119,8 +110,8 @@ function _generateTestWS(nodes: UPageNodes, favorite = [] as strs): WorkspaceDTO
   )
 
   const structure: WorkspaceStructure = { pages: nodes, trash: [] }
-  const dto: WorkspaceDTO = { favorite, wsUpdates: getInitialWorkspace() }
-  const wcr = new WorkspaceCR([...dto.wsUpdates], (u) => dto.wsUpdates.push(u))
+  const dto: WorkspaceDTO = { favorite, updates: getInitialWorkspace() }
+  const wcr = new WorkspaceCR([...dto.updates], (u) => dto.updates.push(u))
 
   wcr.change(
     produceWithPatches(wcr.state, (draft) => {

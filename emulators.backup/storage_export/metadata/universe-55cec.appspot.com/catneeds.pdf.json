@@ -1,0 +1,19 @@
+{
+  "name": "catneeds.pdf",
+  "bucket": "universe-55cec.appspot.com",
+  "contentType": "application/octet-stream",
+  "metageneration": 1,
+  "generation": 1649586387372,
+  "storageClass": "STANDARD",
+  "etag": "someETag",
+  "contentDisposition": "inline",
+  "contentEncoding": "identity",
+  "downloadTokens": [
+    "0404461b-07bd-471b-b400-72fde05fab72"
+  ],
+  "timeCreated": "2022-04-10T10:26:27.371Z",
+  "updated": "2022-04-10T10:26:27.374Z",
+  "size": 368685,
+  "md5Hash": "MD2iLQl6bYG4QcIzqDm0sw==",
+  "crc32c": "2405533059"
+}

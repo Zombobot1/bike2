@@ -1,5 +1,5 @@
 import { getAuth } from '@firebase/auth'
-import { signOut } from 'firebase/auth'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { atom, useAtom } from 'jotai'
 import { useSigninCheck, useUser } from 'reactfire'
 import { sendEmailLink } from '../components/application/LoginPage/sendEmailLink'
@@ -48,5 +48,17 @@ export function useIsSignedIn() {
     const { data } = useSigninCheck()
     const signIn = (email: str) => sendEmailLink(email).then(() => localStorage.setItem('emailForSignIn', email))
     return { isSignedIn: data.signedIn, signIn, signOut: () => signOut(getAuth()) }
+  }
+}
+
+export function _onTestUserSignIn(userName: string) {
+  const kittenPassword = import.meta.env.VITE_KITTEN_PASSWORD
+  const puppyPassword = import.meta.env.VITE_PUPPY_PASSWORD
+
+  switch (userName) {
+    case 'Kitten':
+      return signInWithEmailAndPassword(getAuth(), 'kitten@non-existent-email.net', kittenPassword)
+    case 'Puppy':
+      return signInWithEmailAndPassword(getAuth(), 'puppy@non-existent-email.net', puppyPassword)
   }
 }

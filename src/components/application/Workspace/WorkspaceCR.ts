@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Y from 'yjs'
-import { Bytes } from 'firebase/firestore'
+
 import { sendWorkspaceUpdate } from '../../../fb/upageChangesAPI'
 import { isObjOrArr, isStr } from '../../../utils/utils'
 import { num, str } from '../../../utils/types'
 import { WorkspaceStructure } from './types'
 import { Patch } from 'immer'
 
+import { Bytes } from 'firebase/firestore'
 export function getInitialWorkspace() {
   const doc = new Y.Doc()
   const ws = doc.getMap('ws')
@@ -37,7 +38,7 @@ export class WorkspaceCR {
     return this.#ws.toJSON() as WorkspaceStructure
   }
 
-  get wsUpdates(): Bytes[] {
+  get updates(): Bytes[] {
     return this.#updates.map((update) => Bytes.fromUint8Array(update))
   }
 

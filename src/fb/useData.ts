@@ -24,7 +24,7 @@ export function useData<T extends JSObject>(col: str, id: str, initialData?: T):
   if (!isInProduction) return useFSData_(col, id, initialData)
 
   const setData_ = useCallback((data: Partial<T>) => setData(col, id, data), [])
-  const data = useFirestoreDocData(doc(useFirestore(), col, id), { initialData }).data // https://github.com/FirebaseExtended/reactfire/blob/main/docs/use.md#show-a-single-document
+  const { data } = useFirestoreDocData(doc(useFirestore(), col, id), initialData ? { initialData } : undefined) // https://github.com/FirebaseExtended/reactfire/blob/main/docs/use.md#show-a-single-document
   if (!data && initialData) {
     addData(col, id, initialData)
     return [initialData, setData_]

@@ -1,5 +1,3 @@
-import fluffyJpg from './fluffy.jpg'
-import fluffyMp3 from './fluffy.mp3'
 import { imageFromSrc } from '../utils/filesManipulation'
 import { CalloutData, CodeData, UBlock, UTableData } from '../components/editing/UPage/ublockTypes'
 import { _generators } from '../components/editing/UPage/UPageState/crdtParser/_fakeUPage'
@@ -72,10 +70,10 @@ export function Kitty({ cuteness, roundness = 0.99 }: Kitty) {
 }`
 export const _catCode: CodeData = { text: _codeWithPaws, language: 'TypeScript' }
 
-const fluffyAudio = audio(fluffyMp3)
-const fluffyImg = image(fluffyJpg, 450)
+const fluffyAudio = audio('src/content/fluffy.mp3', 'fluffy.mp3')
+const fluffyImg = image('src/content/fluffy.jpg', 450, 'fluffy.jpg')
 const fluffyVideo = video('y8kTYCex8RU', 600)
-const fluffyPdf = file('/src/content/catneeds.pdf', 'cat needs.pdf')
+const fluffyPdf = file('/src/content/catneeds.pdf', 'cat needs.pdf', 'catneeds.pdf')
 
 export const _catTable: UTableData = [
   {
@@ -289,6 +287,6 @@ const test: IdAndBlocks = {
 
 export const _blocks = { test, pets }
 
-export const _fluffyBlob = () => imageFromSrc(fluffyJpg)
+export const _fluffyBlob = () => imageFromSrc('src/content/fluffy.jpg')
 
 // export const _kittensForLists: IdAndBlocks = [['petsForFocus', { type: 'page', data: $(_kittensForListsPage) }]]
