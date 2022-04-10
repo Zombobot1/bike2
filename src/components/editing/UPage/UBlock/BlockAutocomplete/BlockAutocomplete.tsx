@@ -17,6 +17,8 @@ export function BlockAutocomplete({ coordinates, menu, context, createBlock }: B
     doNotMemorizeSelection: true,
   })
 
+  if (!ps.isOpen) return null
+
   return (
     <Box
       sx={{
