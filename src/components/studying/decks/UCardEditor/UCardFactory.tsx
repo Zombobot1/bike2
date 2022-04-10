@@ -1,6 +1,6 @@
 import { CardTemplateDTO } from '../dto'
 import { NewCardData } from './useNewCardData'
-import { CardDataP, CardData } from '../../studying/training/training/card-carousel'
+import { CardDataP, CardData } from '../../training/training/card-carousel'
 
 export interface UCardFactory {
   template: CardTemplateDTO

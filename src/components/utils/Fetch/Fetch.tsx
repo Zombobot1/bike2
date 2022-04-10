@@ -8,7 +8,7 @@ interface Fetch {
 
 export function Fetch({ children }: Fetch) {
   return (
-    <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
+    <ErrorBoundary fallbackRender={({ error }) => <FetchingState error={error} />}>
       <Suspense fallback={<FetchingState />}>{children}</Suspense>
     </ErrorBoundary>
   )

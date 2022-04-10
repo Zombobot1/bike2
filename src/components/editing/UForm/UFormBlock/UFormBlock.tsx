@@ -28,5 +28,6 @@ const Root = styled(Box)(({ theme }) => ({
   [`${theme.breakpoints.up('md')}`]: {
     paddingBottom: '2rem',
     width: '30rem',
+    maxWidth: '100%',
   },
 }))

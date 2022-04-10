@@ -1,5 +1,6 @@
 import { assert, describe, it } from 'vitest'
-import { ChangePreview, PreviewTag, _PreviewMaker } from '../previewGeneration'
+import { ChangePreview, PreviewTag } from '../../../../../../fb/FSSchema'
+import { _PreviewMaker } from '../previewGeneration'
 import { getStrChanges, applyStrChanges, _strChanger } from './getStrChange'
 
 describe('getStrChange', () => {

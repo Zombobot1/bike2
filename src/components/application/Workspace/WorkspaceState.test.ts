@@ -1,7 +1,7 @@
 import { assert, describe, vi, it, expect } from 'vitest'
 import { str, strs } from '../../../utils/types'
-import { UPageNodeDTOs, UPageNodeDTO } from './types'
-import { WorkspaceOpenness, _getWS, _navToStr } from './Workspace'
+import { UPageNodesData, UPageNodeData } from './types'
+import { WorkspaceOpenness, _getWS, _navToStr } from './WorkspaceState'
 
 // NODE FAILS FROM TIME TO TIME
 
@@ -9,6 +9,16 @@ describe('workspace', () => {
   it('derives navigation', () => {
     const ws = _getWS([p('0', [p('01'), p('*02')]), p('*1')])
     assert.equal(_navToStr(ws.state), 'f: [{*1},{*02}] p: [{0, [{01},{*02}]},{*1}]')
+  })
+
+  it('derives pages in parent', () => {
+    const ws = _getWS([p('0', [p('01', [p('001'), p('002')]), p('*02')]), p('*1')])
+    assert.equal(ws.getPagesIn('01').join(', '), '01, 001, 002')
+  })
+
+  it('derives top level paths', () => {
+    const paths = _getWS([p('0', [p('01')]), p('1')]).topPaths()
+    assert.equal(paths.map((p) => p.id).join(', '), '0, 1')
   })
 
   it('triggers favorite', () => {
@@ -115,7 +125,7 @@ describe('workspace', () => {
   })
 })
 
-const p = (id: str, children?: UPageNodeDTOs): UPageNodeDTO => ({
+const p = (id: str, children?: UPageNodesData): UPageNodeData => ({
   id,
   name: id,
   color: 'red',

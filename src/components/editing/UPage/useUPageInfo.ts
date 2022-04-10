@@ -2,7 +2,9 @@ import { atom, useAtom } from 'jotai'
 import { bool, f, str } from '../../../utils/types'
 import { useAtomTrigger } from '../../utils/hooks/useAtomTrigger'
 import { UBlockData } from './ublockTypes'
-import { UPageCursor, UPageStateMutation } from './UPageState/types'
+import { UPageCursor } from './UPageState/types'
+import { UEditorI } from './UPageState/UEditor'
+import { UPageEditor } from './UPageState/UPageState'
 
 const openTOCTriggerA = atom(0)
 const triggerFullWidthA = atom(0)
@@ -31,7 +33,7 @@ const upageInfoA = atom(new UPageInfo())
 const setUpageInfoA = atom(null, (_, set, update: UPageInfo) => set(upageInfoA, update))
 
 // supposed to be used only in UBlock.tsx & UBlockSet.tsx
-export let upage: UPageStateMutation = {
+export let upage: UPageEditor = {
   add: f,
   rearrange: f,
   deleteSelected: f,
@@ -39,7 +41,6 @@ export let upage: UPageStateMutation = {
   moveTo: f,
   change: f,
   changeType: f,
-  changeRuntimeData: f,
   onUTextBackspace: f,
   onUTextEnter: f,
   onUTextPaste: f,
@@ -58,6 +59,7 @@ export let upage: UPageStateMutation = {
   triggerUListOpen: f,
   handleUFormEvent: f,
   context: () => 'upage',
+  globalContext: () => 'upage',
   _da: () => 'net',
 }
 
@@ -69,7 +71,11 @@ declare global {
 
 typeof window !== 'undefined' && (window.da = upage._da)
 
-export const setUPageChanger = (val: UPageStateMutation) => {
+export const setUPageChanger = (val: UPageEditor) => {
   upage = val
   typeof window !== 'undefined' && (window.da = upage._da)
+}
+
+export const setIdeaChanger = (val: UEditorI) => {
+  upage = { ...upage, ...val }
 }

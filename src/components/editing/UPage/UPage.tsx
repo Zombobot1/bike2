@@ -10,16 +10,17 @@ import { useUPageTriggers } from './useUPageInfo'
 import { UBlockIdAttribute } from './ublockTypes'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { useUPageState } from './UPageState/UPageState'
-import { UPageManagement } from '../../application/Workspace/Workspace'
+import { UPageManagement } from '../../application/Workspace/WorkspaceState'
 import { useUserKeyDownForSelection } from './UBlockSet/useUserKeyDownForSelection'
 import { WindowedBlockSet } from './UBlockSet/WindowedBlockSet/WindowedBlockSet'
+import { Fetch } from '../../utils/Fetch/Fetch'
 
 export interface UPage {
   id: str // remount for new id
   workspace: UPageManagement
 }
 
-export function UPage({ id, workspace }: UPage) {
+function UPage_({ id, workspace }: UPage) {
   const { data, changer } = useUPageState(id, workspace)
 
   useUserKeyDownForSelection(changer)
@@ -53,10 +54,11 @@ export function UPage({ id, workspace }: UPage) {
   }, [turnOffTOCTrigger])
 
   return (
-    <UPage_ ref={upageRef} onMouseUp={onMouseUp}>
-      <ColoredBox sx={{ path: { fill: color } }} onMouseEnter={showAppBar} onMouseLeave={hideAppBar}>
-        <WaveSVG />
-        {/* <ColorPicker variant="contained" size="small">
+    <>
+      <UPage__ ref={upageRef} onMouseUp={onMouseUp}>
+        <ColoredBox sx={{ path: { fill: color } }} onMouseEnter={showAppBar} onMouseLeave={hideAppBar}>
+          <WaveSVG />
+          {/* <ColorPicker variant="contained" size="small">
           <input
             type="color"
             value={color}
@@ -65,16 +67,25 @@ export function UPage({ id, workspace }: UPage) {
           />
           Set color
         </ColorPicker> */}
-      </ColoredBox>
-      <UBlocksSetWrapper onMouseDown={onMouseDown} pageRef={pageRef} fullWidth={data.fullWidth}>
-        <WindowedBlockSet id={'r'} blocks={data.ublocks} title={name} setTitle={rename} />
-      </UBlocksSetWrapper>
-      <SelectionBox
-        ref={selectionRef}
-        sx={{ top: selectionBox.y, left: selectionBox.x, width: selectionBox.width, height: selectionBox.height }}
-      />
-      <TableOfContents isOpenS={isTOCOpenS} getTOC={changer.deriveTOC} />
-    </UPage_>
+        </ColoredBox>
+        <UBlocksSetWrapper onMouseDown={onMouseDown} pageRef={pageRef} fullWidth={data.fullWidth}>
+          <WindowedBlockSet id={'r'} blocks={data.ublocks} title={name} setTitle={rename} />
+        </UBlocksSetWrapper>
+        <SelectionBox
+          ref={selectionRef}
+          sx={{ top: selectionBox.y, left: selectionBox.x, width: selectionBox.width, height: selectionBox.height }}
+        />
+        <TableOfContents isOpenS={isTOCOpenS} getTOC={changer.deriveTOC} />
+      </UPage__>
+    </>
+  )
+}
+
+export function UPage(ps: UPage) {
+  return (
+    <Fetch>
+      <UPage_ {...ps} />
+    </Fetch>
   )
 }
 
@@ -250,7 +261,7 @@ class Selection {
 
 let selectionBox = new Selection()
 
-const UPage_ = styled(Box, { label: 'UPage' })({
+const UPage__ = styled(Box, { label: 'UPage' })(({ theme }) => ({
   overflowY: 'auto',
   overflowX: 'hidden',
   position: 'relative',
@@ -265,11 +276,16 @@ const UPage_ = styled(Box, { label: 'UPage' })({
     userSelect: 'none',
     flexGrow: 10,
   },
-})
+
+  [`${theme.breakpoints.up('sm')}`]: {
+    transform: 'translateY(-3.75rem)',
+  },
+}))
 
 const Side = Box
 const Page = Box
 
+// height is dynamic -> cannot be positioned absolute
 const ColoredBox = styled('div')({
   position: 'relative',
   width: '100%',

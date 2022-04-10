@@ -1,9 +1,12 @@
 import { createContext, useContext } from 'react'
+import { getUserId } from '../components/editing/UPage/userId'
 import { useC } from '../components/utils/hooks/hooks'
 import { useCurrentState } from '../components/utils/hooks/usePrevious'
-import { f, JSObject, OJSObject, str } from '../utils/types'
+import { f, JSObject, JSObjects, OJSObject, str } from '../utils/types'
 import { safe } from '../utils/utils'
 import { structuredClone } from '../utils/wrappers/clone'
+import { FSSchema } from './FSSchema'
+import { UQuery } from './q'
 import { _FSD } from './types'
 
 let _fsd: _FSD = []
@@ -65,5 +68,33 @@ export function useFS() {
     setDoc(col, id, newData)
   })
 
-  return { setDoc, getDoc, appendToArray }
+  const queryDocs = useC(<T extends keyof FSSchema>(query: UQuery<T>): JSObjects => {
+    const col = query.combineWithUserId ? query.col + '-' + getUserId() : query.col
+    let allDocs = getFS().find((c) => c.name === col)?.docs
+    if (!allDocs) return []
+
+    if (query.filters.length) {
+      allDocs = allDocs.filter((d) => {
+        const doc = d as JSObject
+        return query.filters.every(({ prop, op, val }) => {
+          if (op === '==') return doc[prop] === val
+          if (op === '<') return doc[prop] < val
+          if (op === 'in') return val.includes(doc[prop])
+        })
+      })
+    }
+
+    if (query.order)
+      allDocs.sort((a, b) => {
+        let aDoc = a as JSObject
+        let bDoc = b as JSObject
+        if (query.order?.type === 'desc') [aDoc, bDoc] = [bDoc, aDoc]
+        const prop = query.order?.prop || ''
+        return aDoc[prop] - bDoc[prop]
+      })
+
+    return allDocs
+  })
+
+  return { setDoc, getDoc, appendToArray, queryDocs }
 }

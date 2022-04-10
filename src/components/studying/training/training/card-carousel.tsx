@@ -1,4 +1,4 @@
-import { UCard } from '../../../decks/UCard/UCard'
+import { UCard } from '../../decks/UCard/UCard'
 import { CardDTO, CardEstimation } from '../types'
 import { styled } from '@mui/material'
 import { Slides } from '../../../utils/Slides/Slides'

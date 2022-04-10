@@ -57,7 +57,7 @@ function LoginForm() {
 
   function onEmailSignIn() {
     signIn(email)
-      .then(() => setIsLinkSent(true))
+      .then(() => setIsLinkSent(true)) // causes update on unmounted component in sorybook
       .catch((error) => setError(error.message))
   }
 

@@ -3,12 +3,13 @@ import { signOut } from 'firebase/auth'
 import { atom, useAtom } from 'jotai'
 import { useSigninCheck, useUser } from 'reactfire'
 import { sendEmailLink } from '../components/application/LoginPage/sendEmailLink'
+import { setUserId } from '../components/editing/UPage/userId'
 import { str } from '../utils/types'
 import { isInProduction } from './utils'
 
 export class UserDTO {
-  uid = 'cats-lover'
-  email = 'cats-lover777@gmail.com'
+  uid = 'cat-lover'
+  email = 'cat-lover777@gmail.com'
   displayName = ''
   photoUrl = ''
 }
@@ -27,6 +28,7 @@ export function useUserInfo(): UserDTO {
       photoUrl: data?.photoURL || '',
     }
   }
+  setUserId(user.uid)
   return user
 }
 

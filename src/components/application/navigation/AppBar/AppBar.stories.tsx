@@ -2,7 +2,7 @@ import { MemoryRouter } from 'react-router'
 import { useUserInfo } from '../../../../fb/auth'
 import { f, str } from '../../../../utils/types'
 import { useMount } from '../../../utils/hooks/hooks'
-import { useWorkspace } from '../../Workspace/Workspace'
+import { useWorkspace } from '../../Workspace/WorkspaceState'
 import { AppBar, useShowAppBar } from './AppBar'
 
 function T({ path }: { path: str }) {

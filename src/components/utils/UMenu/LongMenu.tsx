@@ -13,7 +13,7 @@ import {
 } from '@mui/material'
 import _ from 'lodash'
 import { FC, useEffect, useRef, useState } from 'react'
-import { f, Fn, num, OptionIconP, SetStr, str, strs, UIcon } from '../../../utils/types'
+import { bool, f, Fn, num, OptionIconP, str, strs, UIcon } from '../../../utils/types'
 import { filterProps, mod } from '../../../utils/utils'
 import { useReactive } from '../hooks/hooks'
 import { useOnScreen } from '../hooks/useOnScreen'
@@ -24,15 +24,17 @@ type Option = { text: str; icon: UIcon }
 type Options = Option[]
 type LongMenuOption = str | Option
 type LongMenuOptions = LongMenuOption[]
+type OnSelect = (text: str, i: num) => void
 
 export interface LongMenu extends MenuB {
   options: LongMenuOptions
   selectedOption: str
-  select: SetStr
+  select: OnSelect
   placeholder: str
+  disablePortal?: bool
 }
 
-const uOptionedMenu = [...menuFilterProps, 'options', 'selectedOption', 'select', 'placeholder']
+const uOptionedMenu = [...menuFilterProps, 'options', 'selectedOption', 'select', 'placeholder', 'disablePortal']
 export function LongMenu(ps: LongMenu) {
   const theme = useTheme()
 
@@ -45,6 +47,7 @@ export function LongMenu(ps: LongMenu) {
     <>
       {ps.btnRef?.current && (
         <Popper
+          disablePortal={ps.disablePortal}
           open={ps.isOpen}
           anchorEl={ps.btnRef?.current}
           placement={'bottom-start'}
@@ -76,11 +79,11 @@ export function LongMenu(ps: LongMenu) {
   )
 }
 
-export function useLongMenu(options: LongMenuOptions, selected: str, onSelect: SetStr, onOpen = f, onClose = f) {
+export function useLongMenu(options: LongMenuOptions, selected: str, onSelect: OnSelect, onOpen = f, onClose = f) {
   const props = useMenu(onOpen, onClose)
   const [selectedOption, setSelectedOption] = useState(selected)
-  const select = (new_: str) => {
-    onSelect(new_)
+  const select = (new_: str, i: num) => {
+    onSelect(new_, i)
     setSelectedOption(new_)
   }
   return { ...props, options, selectedOption, select }
@@ -90,12 +93,12 @@ export function useControlledLongMenu(
   controls: UMenuControlsB,
   options: LongMenuOptions,
   selected: str,
-  onSelect: SetStr,
+  onSelect: OnSelect,
   { doNotMemorizeSelection = false } = {},
 ) {
   const [selectedOption, setSelectedOption] = useState(selected)
-  const select = (new_: str) => {
-    onSelect(new_)
+  const select = (new_: str, i: num) => {
+    onSelect(new_, i)
     if (!doNotMemorizeSelection) setSelectedOption(new_)
   }
   return { ...controls, options, selectedOption, select }
@@ -117,7 +120,7 @@ function OptionedMenu_(ps: LongMenu) {
       setSelectedIndex((o) => mod(o - 1, options.length))
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      select(getOptionTextAt(options, selectedIndex))
+      select(getOptionTextAt(options, selectedIndex), selectedIndex)
       close('enter')
     } else if (e.key === 'Escape') {
       e.preventDefault()
@@ -137,11 +140,12 @@ function OptionedMenu_(ps: LongMenu) {
           placeholder={`Search for a ${ps.placeholder}`}
           sx={{ padding: '1rem' }}
           inputProps={{ 'data-cy': 'long-menu-search' }}
+          fullWidth
         />
         <MenuList
           {...filterProps(ps, uOptionedMenu)}
           onClick={() => close('enter')}
-          sx={{ maxHeight: '300px', overflowY: 'auto' }}
+          sx={{ ...(ps.sx || {}), maxHeight: '300px', overflowY: 'auto' }}
         >
           {options.map((o, i) => (
             <Item
@@ -150,7 +154,7 @@ function OptionedMenu_(ps: LongMenu) {
               text={optionText(o)}
               icon={optionIcon(o)}
               i={i}
-              onClick={() => select(optionText(o))}
+              onClick={() => select(optionText(o), i)}
             />
           ))}
         </MenuList>

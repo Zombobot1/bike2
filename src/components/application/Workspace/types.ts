@@ -1,12 +1,12 @@
 import { str, bool, num } from '../../../utils/types'
 
-export interface UPageNodeDTO {
+export interface UPageNodeData {
   id: str
   name: str
   color: str
-  children?: UPageNodeDTO[]
+  children?: UPageNodeData[]
 }
-export type UPageNodeDTOs = UPageNodeDTO[]
+export type UPageNodesData = UPageNodeData[]
 
 export interface UPageNode {
   id: str
@@ -29,3 +29,4 @@ export class WorkspaceStructure {
 }
 
 export type WorkspacePath = { id: str; name: str }[]
+export type WorkspacePaths = WorkspacePath[]

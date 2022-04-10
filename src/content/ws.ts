@@ -1,38 +1,14 @@
-import { enablePatches, produceWithPatches } from 'immer'
-import { UPageNodes, WorkspaceStructure } from '../components/application/Workspace/types'
-import { WorkspaceDTO } from '../components/application/Workspace/Workspace'
-import { getInitialWorkspace, WorkspaceCR } from '../components/application/Workspace/WorkspaceCR'
+import { enablePatches } from 'immer'
+import { UPageNodes } from '../components/application/Workspace/types'
+import { _generateTestWS } from '../components/application/Workspace/WorkspaceState'
 import { UPageData } from '../components/editing/UPage/ublockTypes'
 import { _generators } from '../components/editing/UPage/UPageState/crdtParser/_fakeUPage'
-import { sslugify } from '../utils/sslugify'
-import { str, strs } from '../utils/types'
+import { str } from '../utils/types'
 import { safe } from '../utils/utils'
 
 enablePatches()
 
 const color = '#0066FF'
-// {
-// id: 'pets-test',
-// },
-// {
-// id: 'pets-test-small',
-// },
-// {
-//   id: 'removal',
-//   name: 'Removal',
-// },
-// {
-//   id: 'empty-page',
-//   name: '',
-// },
-
-// const petsTestPage: UPageDTO = {
-//   ids: _kittensForFocusPage.ids,
-// }
-
-// const petsTestSmallPage: UPageDTO = {
-//   ids: ['emptyString'],
-// }
 
 const medium: UPageNodes = [
   {
@@ -110,26 +86,6 @@ const ws: UPageNodes = [
     ],
   },
 ]
-
-function _generateTestWS(nodes: UPageNodes, favorite = [] as strs): WorkspaceDTO {
-  nodes = JSON.parse(
-    JSON.stringify(nodes, function (k, v) {
-      return k === 'id' ? sslugify(this.name) : v
-    }),
-  )
-
-  const structure: WorkspaceStructure = { pages: nodes, trash: [] }
-  const dto: WorkspaceDTO = { favorite, wsUpdates: getInitialWorkspace() }
-  const wcr = new WorkspaceCR([...dto.wsUpdates], (u) => dto.wsUpdates.push(u))
-
-  wcr.change(
-    produceWithPatches(wcr.state, (draft) => {
-      draft.pages = structure.pages // if structure is returned patch will contain single replace op with empty path
-    })[1],
-  )
-
-  return dto
-}
 
 export const _wsDTOs = {
   lover: _generateTestWS(ws, ['vocabulary', 'python']),

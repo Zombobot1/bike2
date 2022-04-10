@@ -56,8 +56,9 @@ export function AppBar({ workspace, openNavBar }: AppBar) {
     !location.pathname.includes('/teach') &&
     !location.pathname.includes('/settings')
   const { triggerOpenTOC, triggerTurnOffTOC, triggerFullWidth } = useUPageTriggers()
+  const show = !showUPageOptions || showAppBar
   return (
-    <AppBar_ direction="row" alignItems="center" sx={showAppBar ? { opacity: '1 !important' } : {}}>
+    <AppBar_ direction="row" alignItems="center" sx={show ? { opacity: '1 !important' } : {}}>
       {!isSM && (
         <IconButton color="primary" onClick={openNavBar}>
           <MenuRoundedIcon />
@@ -78,14 +79,15 @@ export function AppBar({ workspace, openNavBar }: AppBar) {
 }
 
 const AppBar_ = styled(Stack, { label: 'AppBar' })(({ theme }) => ({
-  position: 'sticky',
+  position: 'fixed', // if sticky AppBar oscillates on scroll (chrome mobile mode)
+  width: '100%',
   top: 0,
-  borderBottom: `solid 1px ${_apm(theme, 'border')}`,
+  borderBottom: theme.bd(),
   zIndex: 1000,
   backgroundColor: theme.palette.background.paper,
   transition: 'opacity 0.3s ease-in-out',
-
   [`${theme.breakpoints.up('sm')}`]: {
+    position: 'sticky',
     border: 'unset',
     padding: '0.5rem 1rem',
     opacity: 0,

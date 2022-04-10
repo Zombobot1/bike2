@@ -40,6 +40,7 @@ import FullscreenRoundedIcon from '@mui/icons-material/FullscreenRounded'
 import AutorenewRoundedIcon from '@mui/icons-material/AutorenewRounded'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded'
 import KeyboardArrowUpRoundedIcon from '@mui/icons-material/KeyboardArrowUpRounded'
+import MoreTimeRoundedIcon from '@mui/icons-material/MoreTimeRounded'
 import PushPinRoundedIcon from '@mui/icons-material/PushPinRounded'
 import { storify } from './utils'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -113,6 +114,7 @@ function Menu(ps: Menu_) {
   const { toggleFullscreen, toggleOutline, rerenderStory, goNext, goPrev, togglePinNav } = ps
   const [open, setOpen] = useState(false)
   const anchorRef = useRef<HTMLButtonElement>(null)
+  const [delayResponses, setDelayResponses] = useLocalStorage('sorybook-delayResponses', false)
 
   const handleToggle = () => {
     setOpen((prevOpen) => !prevOpen)
@@ -159,6 +161,12 @@ function Menu(ps: Menu_) {
                   >
                     <ListItemIcon>{mockFB ? <DBOn /> : <DBOff />}</ListItemIcon>
                     <ListItemText>{mockFB ? 'Connect to FB' : 'Disconnect from FB'}</ListItemText>
+                  </MenuItem>
+                  <MenuItem onClick={all(() => setDelayResponses((o) => !o), handleClose)}>
+                    <ListItemIcon>
+                      <MoreTimeRoundedIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>{delayResponses ? 'Do not delay responses' : 'Delay responses'}</ListItemText>
                   </MenuItem>
                   <MenuItem onClick={all(toggleTheme, handleClose)}>
                     <ListItemIcon>
@@ -372,7 +380,7 @@ function NavBar(ps: NavBar_) {
   const isDesktop = useIsSM()
   const [isOpen, setIsOpen] = useState(false)
   const [isFullscreen, setIsFullscreen] = useLocalStorage('sorybook-full-screen', false)
-  // const [isFullscreen, setIsFullscreen] = useState(false)
+
   const toggleFullscreen = () => setIsFullscreen((old) => !old)
   const { toggleTheme } = useUTheme()
   const navPs = { ...ps, isFullscreen, toggleFullscreen }
@@ -416,7 +424,7 @@ function NavBar(ps: NavBar_) {
 type SoryRendered = { Sory: FC }
 function SoryRendered({ Sory }: SoryRendered) {
   const backend = useFirestoreData()
-  useMount(() => mockBackend(backend))
+  mockBackend(backend) // not on mount, otherwise suspense will crash
   return <Sory />
 }
 
@@ -438,7 +446,7 @@ function Pane({ Sory, outline, soryId }: Pane) {
           : {}
       }
     >
-      <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
+      <ErrorBoundary fallbackRender={({ error }) => <FetchingState error={error} />}>
         <Provider key={soryId}>
           <FSProvider>
             <SoryRendered Sory={Sory} />

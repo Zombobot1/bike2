@@ -8,7 +8,7 @@ import {
   INVALID_EXERCISE,
   isAnswerCorrect,
   RuntimeDataKeeper,
-  UFromRuntime,
+  UPageUFormRuntime,
 } from './UPageRuntimeTree'
 import { UPageTree } from './UPageTree'
 import { _generators, _stateToStr } from './_fakeUPage'
@@ -239,6 +239,12 @@ describe('UPageRuntimeTree', () => {
         true,
       )
     })
+
+    it('bug: shows error because answer was not provided on transition filling -> editing', () => {
+      const { uf, ufr } = getUFR(e([saq('sa', 'a')]))
+      ufr.toggleEdit('e')
+      assert.equal(uid(uf, 0).$error, '')
+    })
   })
 })
 
@@ -267,7 +273,7 @@ const answer = (data: UFormData, i: num, a: str | strs, sqi = -1) => {
 const getUFR = (e: UBlock) => {
   const tree = getTree(e)
   const uf = ufd(tree.state)
-  return { ufr: new UFromRuntime(tree.tree), state: tree.state, uf }
+  return { ufr: new UPageUFormRuntime(tree.tree), state: tree.state, uf }
 }
 
 const getTree = (...ublocks: UBlocks) => {

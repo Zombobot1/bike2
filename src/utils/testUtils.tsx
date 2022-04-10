@@ -109,7 +109,7 @@ export const show = (Component: React.FC, pd = '') => {
 
   mount(
     <OuterShell>
-      <ErrorBoundary fallbackRender={({ error }) => <FetchingState message={error.message} />}>
+      <ErrorBoundary fallbackRender={({ error }) => <FetchingState error={error} />}>
         {/* Without provider atoms don't clean up */}
         <Provider>
           <FSProvider>

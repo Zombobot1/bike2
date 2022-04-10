@@ -1,5 +1,5 @@
 import { MemoryRouter, useLocation } from 'react-router'
-import { useWorkspace } from '../../application/Workspace/Workspace'
+import { useWorkspace } from '../../application/Workspace/WorkspaceState'
 import { UPage } from './UPage'
 
 const Inner = () => {

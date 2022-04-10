@@ -1,4 +1,4 @@
-import { bool, f, SetStr, str, strs } from '../../../utils/types'
+import { bool, f, Fn as F, SetStr, str, strs } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { useData } from '../../../fb/useData'
 import { Bytes } from 'firebase/firestore'
@@ -6,8 +6,8 @@ import { enablePatches, produceWithPatches } from 'immer'
 import {
   DeletedUPageNodes,
   UPageNode,
-  UPageNodeDTO,
-  UPageNodeDTOs,
+  UPageNodeData,
+  UPageNodesData,
   UPageNodes,
   WorkspacePath,
   WorkspaceStructure,
@@ -20,7 +20,9 @@ import { useState } from 'react'
 import { useLocalStorage } from '../../utils/hooks/useLocalStorage'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'
 import { now } from '../../../utils/wrappers/timeUtils'
-import { cls } from '../../../fb/cls'
+import { WorkspaceDTO } from '../../../fb/FSSchema'
+import { getUserId } from '../../editing/UPage/userId'
+import { sslugify } from '../../../utils/sslugify'
 
 enablePatches()
 
@@ -49,17 +51,18 @@ export class WorkspaceNav {
   personal: UPageNodes = []
 }
 
-export interface WorkspaceDTO {
-  favorite: strs
-  wsUpdates: Bytes[]
-}
-
 export class WorkspaceOpenness {
   open = [] as strs
   openFavorite = [] as strs
 }
 
-export class Workspace implements UPageManagement {
+export interface WorkspaceLookup {
+  getOwner: F
+  topPaths: () => WorkspacePath
+  getPagesIn: (parentId: str) => strs
+}
+
+export class WorkspaceState implements UPageManagement, WorkspaceLookup {
   #openness: WorkspaceOpenness
   #updateOpenness: (o: WorkspaceOpenness) => void
   #favorite: strs
@@ -79,7 +82,7 @@ export class Workspace implements UPageManagement {
     this.#openness = openness
     this.#updateOpenness = updateOpenness
     this.#favorite = dto.favorite
-    this.#cr = new WorkspaceCR(dto.wsUpdates, sendWSUpdate)
+    this.#cr = new WorkspaceCR(dto.updates, sendWSUpdate)
     this.#structure = this.#cr.state
     this.#updateFavorite = updateFavorite
     this.#nav = this.#getState()
@@ -89,10 +92,18 @@ export class Workspace implements UPageManagement {
     return this.#nav
   }
 
+  getOwner = () => getUserId()
+  getPagesIn = (parentId: str): strs => {
+    const parent = safe(findNode(this.#structure.pages, parentId))
+    const children = parent.children ? bfsNodes(parent.children) : []
+    const ids = children.map((n) => n.id)
+    return [parentId, ...ids]
+  }
+
   setStateSetter = (s: (n: WorkspaceNav) => void) => (this.#setNav = s)
 
   applyUpdate = (dto: WorkspaceDTO) => {
-    const newState = this.#cr.applyUpdate(dto.wsUpdates)
+    const newState = this.#cr.applyUpdate(dto.updates)
     const newFavorites = !deepEqual(dto.favorite, this.#favorite)
     if (!newState && !newFavorites) return
 
@@ -162,11 +173,12 @@ export class Workspace implements UPageManagement {
   has = (id: str): bool => !!findNode(this.#structure.pages, id)
   isFavorite = (id: str): bool => this.#favorite.includes(id)
   path = (id: str): WorkspacePath => getPath(this.#structure.pages, id)
+  topPaths = (): WorkspacePath => this.#structure.pages.map((n) => ({ id: n.id, name: n.name }))
 
   name = (id: str): str => safe(findNode(this.#structure.pages, id)).name
   color = (id: str): str => safe(findNode(this.#structure.pages, id)).color
 
-  #change = (f: (nodes: UPageNodeDTOs, deleted: DeletedUPageNodes) => void) => {
+  #change = (f: (nodes: UPageNodesData, deleted: DeletedUPageNodes) => void) => {
     const [newStructure, patches] = produceWithPatches(this.#structure, (draft) => {
       f(draft.pages, draft.trash) // not one liner to avoid return
     })
@@ -188,16 +200,26 @@ export class Workspace implements UPageManagement {
 
   #updateDTO = () => this.#updateFavorite({ favorite: this.#favorite })
 }
+
+export let workspace: WorkspaceLookup = {
+  getOwner: () => '',
+  getPagesIn: () => [],
+  topPaths: () => [],
+}
+
+const setWorkspace = (w: WorkspaceLookup) => (workspace = w)
+
 const d = new WorkspaceOpenness()
 export function useWorkspace(id: str) {
-  const [data, setData] = useData<WorkspaceDTO>(cls.workspaces, id)
+  const [data, setData] = useData('workspaces', id)
   const [openness, setOpenness] = useLocalStorage('openness', d)
 
-  const [changer] = useState(() => new Workspace(data, setData, openness, setOpenness))
+  const [changer] = useState(() => new WorkspaceState(data, setData, openness, setOpenness))
   const [state, setState] = useState(changer.state)
   changer.setStateSetter(setState)
 
   useUpdateEffect(() => changer.applyUpdate(data), [data])
+  setWorkspace(changer)
 
   return {
     state,
@@ -205,7 +227,50 @@ export function useWorkspace(id: str) {
   }
 }
 
-function getFavorite(nodes: UPageNodeDTOs, favorite: strs, openFavorite: strs): UPageNodes {
+export function _generateTestWS(nodes: UPageNodes, favorite = [] as strs): WorkspaceDTO {
+  nodes = JSON.parse(
+    JSON.stringify(nodes, function (k, v) {
+      return k === 'id' ? sslugify(this.name) : v
+    }),
+  )
+
+  const structure: WorkspaceStructure = { pages: nodes, trash: [] }
+  const dto: WorkspaceDTO = { favorite, updates: getInitialWorkspace() }
+  const wcr = new WorkspaceCR([...dto.updates], (u) => dto.updates.push(u))
+
+  wcr.change(
+    produceWithPatches(wcr.state, (draft) => {
+      draft.pages = structure.pages // if structure is returned patch will contain single replace op with empty path
+    })[1],
+  )
+
+  return dto
+}
+
+class TestWorkspaceState extends WorkspaceState {
+  constructor(structure: WorkspaceStructure, openness: WorkspaceOpenness) {
+    const dto = _generateTestWS(structure.pages)
+    super(dto, f, openness, f, f)
+  }
+}
+
+export function useTestWorkspace(
+  structure: WorkspaceStructure,
+  openness: WorkspaceOpenness = { open: [], openFavorite: [] },
+) {
+  const [changer] = useState(() => new TestWorkspaceState(structure, openness))
+  const [state, setState] = useState(changer.state)
+  changer.setStateSetter(setState)
+
+  setWorkspace(changer)
+
+  return {
+    ublocks: state,
+    changer: changer,
+  }
+}
+
+function getFavorite(nodes: UPageNodesData, favorite: strs, openFavorite: strs): UPageNodes {
   const r = [] as UPageNodes
 
   const queue = [...nodes]
@@ -223,7 +288,7 @@ function getFavorite(nodes: UPageNodeDTOs, favorite: strs, openFavorite: strs): 
   return r
 }
 
-function deriveOpenNodes(nodes: UPageNodeDTOs, open: strs): UPageNodes {
+function deriveOpenNodes(nodes: UPageNodesData, open: strs): UPageNodes {
   const r = structuredClone(nodes) as UPageNodes // cannot modify original nodes otherwise isOpen will be serialized
 
   const queue = [...r]
@@ -240,7 +305,7 @@ function deriveOpenNodes(nodes: UPageNodeDTOs, open: strs): UPageNodes {
   return r
 }
 
-function getNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO {
+function getNode(nodes: UPageNodesData, id: str): UPageNodeData {
   const queue = [...nodes]
 
   while (queue.length) {
@@ -252,8 +317,8 @@ function getNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO {
   throw new Error('WS node not found')
 }
 
-function bfsNodes(nodes: UPageNodeDTOs): UPageNodeDTOs {
-  const r = [] as UPageNodeDTOs
+function bfsNodes(nodes: UPageNodesData): UPageNodesData {
+  const r = [] as UPageNodesData
   const queue = [...nodes]
 
   while (queue.length) {
@@ -265,9 +330,9 @@ function bfsNodes(nodes: UPageNodeDTOs): UPageNodeDTOs {
   return r
 }
 
-function getPath(nodes: UPageNodeDTOs, id: str): WorkspacePath {
+function getPath(nodes: UPageNodesData, id: str): WorkspacePath {
   const queue = [...nodes]
-  const nodeAndParent = new Map<UPageNodeDTO, UPageNodeDTO>()
+  const nodeAndParent = new Map<UPageNodeData, UPageNodeData>()
 
   while (queue.length) {
     let node = safe(queue.shift())
@@ -291,7 +356,7 @@ function getPath(nodes: UPageNodeDTOs, id: str): WorkspacePath {
   throw new Error('WS Node not found')
 }
 
-function findNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO | undefined {
+function findNode(nodes: UPageNodesData, id: str): UPageNodeData | undefined {
   const queue = [...nodes]
 
   while (queue.length) {
@@ -301,9 +366,9 @@ function findNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO | undefined {
   }
 }
 
-function deleteNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO {
+function deleteNode(nodes: UPageNodesData, id: str): UPageNodeData {
   const queue = [...nodes]
-  const nodeAndParent = new Map<UPageNodeDTO, UPageNodeDTO>()
+  const nodeAndParent = new Map<UPageNodeData, UPageNodeData>()
 
   while (queue.length) {
     const node = safe(queue.shift())
@@ -330,7 +395,7 @@ function deleteNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO {
   throw new Error('WS Node not found')
 }
 
-function insertNode(nodes: UPageNodeDTOs, parentId: str, underId: str, id: str) {
+function insertNode(nodes: UPageNodesData, parentId: str, underId: str, id: str) {
   const queue = [...nodes]
 
   while (queue.length) {
@@ -350,7 +415,7 @@ function insertNode(nodes: UPageNodeDTOs, parentId: str, underId: str, id: str) 
   }
 }
 
-function insertNodeAsLast(nodes: UPageNodeDTOs, parentId: str, node: UPageNodeDTO) {
+function insertNodeAsLast(nodes: UPageNodesData, parentId: str, node: UPageNodeData) {
   const queue = [...nodes]
 
   while (queue.length) {
@@ -365,7 +430,7 @@ function insertNodeAsLast(nodes: UPageNodeDTOs, parentId: str, node: UPageNodeDT
   }
 }
 
-function getPrevNode(nodes: UPageNodeDTOs, id: str): UPageNodeDTO | undefined {
+function getPrevNode(nodes: UPageNodesData, id: str): UPageNodeData | undefined {
   const bfs = bfsNodes(nodes)
   const i = bfs.findIndex((node) => node.id === id)
   if (i < 1) return
@@ -378,7 +443,7 @@ type O = {
   updateOpenness?: (o: WorkspaceOpenness) => void
 }
 
-export function _getWS(nodes: UPageNodeDTOs, o: O = { sendUpdate: f, sendDTO: f, updateOpenness: f }) {
+export function _getWS(nodes: UPageNodesData, o: O = { sendUpdate: f, sendDTO: f, updateOpenness: f }) {
   const wsUpdates: Bytes[] = getInitialWorkspace()
   const cr = new WorkspaceCR([...wsUpdates], (u) => wsUpdates.push(u))
   nodes.forEach((n, i) => cr.change([{ op: 'add', path: ['pages', i], value: n }]))
@@ -390,8 +455,8 @@ export function _getWS(nodes: UPageNodeDTOs, o: O = { sendUpdate: f, sendDTO: f,
     if (n.id.startsWith('*')) favorite.push(n.id)
   })
 
-  return new Workspace(
-    { wsUpdates, favorite },
+  return new WorkspaceState(
+    { updates: wsUpdates, favorite },
     o.sendDTO || f,
     { open: [], openFavorite: [] },
     o.updateOpenness || f,

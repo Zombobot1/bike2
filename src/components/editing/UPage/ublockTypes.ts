@@ -1,4 +1,3 @@
-import { Bytes } from 'firebase/firestore'
 import { bool, JSObject, num, str, strs } from '../../../utils/types'
 import { getEmptyStrings, isStr } from '../../../utils/utils'
 
@@ -14,7 +13,7 @@ type OtherUBlocks = 'block-equation' | 'divider' | 'table' | PseudoUBlock
 export type UBlockType = UTextBlock | UFileBlock | UQuestionBlock | UProjectionBlock | OtherUBlocks
 export type UBlockTypes = UBlockType[]
 
-export type UBlockContext = 'upage' | 'uform' | 'ucard'
+export type UBlockContext = 'upage' | 'uform'
 
 // all src are empty unless file uploading is succeeded (no blob urls)
 
@@ -86,11 +85,15 @@ export class InlineExerciseData {
   $submitted?: bool
   $editingError?: str
 }
-export class UFormData {
-  name = ''
+
+export class UFormLikeData {
   ublocks = [] as UBlocks
   $state?: 'filling' | 'editing' = 'editing' // form & questions are in editing mode upon creation via getDefaultData
   $score?: num = -1
+}
+
+export class UFormData extends UFormLikeData {
+  name = ''
 }
 
 export class UGridColumnData {
@@ -143,8 +146,8 @@ export interface UPageData extends UPageFlags {
   ublocks: UBlocks
 }
 
-export interface UPageDTO {
-  updates: Bytes[]
+export interface WithUBlocks {
+  ublocks: UBlocks
 }
 
 // TODO: if removing block contained a file it should be removed via file uploader

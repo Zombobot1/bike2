@@ -69,7 +69,10 @@ export function EditableUtility(ps: EditableUtility) {
       cursor: 'text',
     },
   }
+
   sx = ps.type === 'factory' && ps.hidePlaceholder ? { ...sx, minHeight: '12rem' } : sx
+  let placeholder = ps.type === 'factory' ? "Type '/' for commands" : 'Untitled'
+  if (ps.placeholder) placeholder = ps.placeholder
 
   return (
     <Styles>
@@ -81,7 +84,7 @@ export function EditableUtility(ps: EditableUtility) {
         onChange={onChange}
         role="textbox"
         onKeyDown={onKeyDown}
-        placeholder={ps.type === 'factory' ? "Type '/' for commands" : 'Untitled'}
+        placeholder={placeholder}
         data-cy={ps.cy || 'etext'}
         sx={sx}
         onClick={ps.onClick}

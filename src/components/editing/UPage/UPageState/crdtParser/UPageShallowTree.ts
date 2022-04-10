@@ -1,3 +1,4 @@
+import { ChangePreview } from '../../../../../fb/FSSchema'
 import { bool, str, strs } from '../../../../../utils/types'
 import { isStr, safe } from '../../../../../utils/utils'
 import {
@@ -16,7 +17,6 @@ import {
 } from '../../ublockTypes'
 import { getObjectChanges } from './changesGeneration/getObjectChanges'
 import { applyStrChanges, ChangeableStr, getStrChanges, _strChanger } from './changesGeneration/getStrChange'
-import { ChangePreview } from './previewGeneration'
 import { bfsUBlocks } from './UPageTree'
 
 export class UPageShallowTree {
