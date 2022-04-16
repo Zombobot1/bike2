@@ -181,7 +181,7 @@ function createTraining(upageId: str, dataId: str, ublocks: UBlocks, type: IdeaT
     errorRate: 0,
     repeatAt: 0,
     stageId: '',
-    timeToAnswer: 60,
+    timeToAnswer: 0,
   }
   return {
     id: uuid(),

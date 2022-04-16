@@ -6,7 +6,9 @@ import { _fakeIdeaTrainingDTOs, _ideaDTOs, _ideaTrainingDTOs } from './ideas'
 import { FSSchema } from '../fb/FSSchema'
 
 function $(name: keyof FSSchema, data: [str, JSObject][]): _Col {
-  return { name, docs: data.map(([id, data]) => ({ id, data })) }
+  const map = new Map<str, JSObject>()
+  data.forEach(([id, data]) => map.set(id, data))
+  return { name, docs: Array.from(map.entries()).map(([id, data]) => ({ id, data })) }
 }
 
 type IdAndDocs = [str, JSObject][]
