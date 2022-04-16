@@ -71,6 +71,8 @@ class FileUploader {
   }
 
   #upload = (id: str, file: File, onUpload: (url: str) => void) => {
+    if (!idAndFile.has(id)) idAndFile.set(id, { tmpSrc: '' })
+
     const data = safe(idAndFile.get(id))
 
     uploadFile(file).then((src) => {
