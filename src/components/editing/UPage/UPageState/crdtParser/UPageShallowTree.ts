@@ -131,6 +131,7 @@ type UPageMap = {
   set<TKey extends keyof UPage>(key: TKey, value: UPage[TKey]): void
   has<TKey extends keyof UPage>(key: TKey): bool
   delete<TKey extends keyof UPage>(key: TKey): void
+  forEach: (f: (value: unknown, key: str) => void) => void
 }
 
 type FlatGrid = Array<Omit<UGridColumnData, 'ublocks'> & { ublocks: strs }>
@@ -156,7 +157,11 @@ function flattenData(data: UBlockData): str {
 }
 
 const toUPageData = (pageCR: UPageMap): UPageData => {
-  const r: UPageData = { fullWidth: pageCR.get('fullWidth'), turnOffTOC: pageCR.get('turnOffTOC'), ublocks: [] }
+  const r: UPageData = { ublocks: [] }
+  pageCR.forEach((value, key) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    if (key !== 'ublocks') (r as any)[key] = value // may contain extra data e.g. IdeaData
+  })
   const ublocksMap = safe(pageCR.get('ublocks'))
   const rootStr = safe(ublocksMap.get('r')?.get('data')).toJSON()
   const root = JSON.parse(rootStr) as { ublocks: strs }

@@ -1,5 +1,5 @@
 import { Bytes } from 'firebase/firestore'
-import produce, { immerable } from 'immer'
+import produce, { immerable, Patch } from 'immer'
 import { ChangePreview, PreviewTag } from '../../../../fb/FSSchema'
 import { DeleteUPageUpdates, SendUPageUpdate } from '../../../../fb/upageChangesAPI'
 import { safeSplit } from '../../../../utils/algorithms'
@@ -131,6 +131,8 @@ export class UEditor implements UEditorI {
   globalContext = () => 'upage' as const
 
   context = (id: str): UBlockContext => this.#tree.context(id)
+
+  _applyPatch = (preview: ChangePreview, patches: Patch | Patch[]) => this.#cr._applyPatch(preview, patches)
 
   applyUpdate = (updates: Bytes[]) => {
     const newState = this.#cr.applyUpdate(updates)

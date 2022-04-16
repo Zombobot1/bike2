@@ -13,10 +13,11 @@ import {
   Checkbox,
   CheckboxProps,
   useTheme,
+  Select,
+  SelectProps,
 } from '@mui/material'
 import { FC } from 'react'
 import { JSObject, num, OptionIconP, str, strs, SVGIcon } from '../../utils/types'
-import { _apm } from '../application/theming/theme'
 
 export function RStack(props: StackProps) {
   return (
@@ -44,7 +45,7 @@ export function Hr(props: DividerProps) {
 }
 
 const ThemedDivider = styled(Divider)(({ theme }) => ({
-  borderColor: _apm(theme, '200'),
+  borderColor: theme.apm('200'),
 }))
 
 export function TextInput(props: TextFieldProps) {
@@ -65,6 +66,27 @@ const Text = styled(TextField)<TextFieldProps>(({ theme }) => ({
     WebkitTextFillColor: 'unset !important',
     'fieldset.MuiOutlinedInput-notchedOutline': {
       borderColor: `${theme.apm('200')}`,
+    },
+  },
+}))
+
+export function USelect(ps: SelectProps) {
+  return <USelect_ {...ps} />
+}
+
+const USelect_ = styled(Select)(({ theme }) => ({
+  'fieldset.MuiOutlinedInput-notchedOutline': {
+    borderColor: `${theme.apm('200')}`,
+  },
+
+  '.Mui-disabled': {
+    color: `${theme.apm('400')} !important`,
+    WebkitTextFillColor: 'unset !important',
+  },
+
+  '&.Mui-disabled': {
+    'fieldset.MuiOutlinedInput-notchedOutline': {
+      borderColor: `${theme.apm('200')} !important`,
     },
   },
 }))

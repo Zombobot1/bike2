@@ -1,35 +1,21 @@
-import { Modal, ClickAwayListener, IconButton, Snackbar, Alert, Box, styled, Stack, Typography } from '@mui/material'
+import { Modal, Box, styled, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
-import { TrainingDTO } from '../../../fb/FSSchema'
-import { str, bool, Fn, SetStr, strs } from '../../../utils/types'
-import { isStr, safe } from '../../../utils/utils'
-import { now } from '../../../utils/wrappers/timeUtils'
+import { TrainingIdAndDTO } from '../../../fb/FSSchema'
+import { str, strs } from '../../../utils/types'
+import { safe } from '../../../utils/utils'
 import { uuid } from '../../../utils/wrappers/uuid'
-import { uformBlocks } from '../../editing/UPage/UBlock/BlockAutocomplete/BlockAutocompleteOptions'
-import { UBlocksSet } from '../../editing/UPage/UBlockSet/UBlockSet'
-import {
-  isUFormBlock,
-  UBlocks,
-  UBlock,
-  isUListBlock,
-  isStringBasedBlock,
-  isAdvancedText,
-  InlineExerciseData,
-  UChecksData,
-} from '../../editing/UPage/ublockTypes'
-import { bfsUBlocks } from '../../editing/UPage/UPageState/crdtParser/UPageTree'
+
 import { EditableText } from '../../utils/EditableText/EditableText'
 import { Fetch } from '../../utils/Fetch/Fetch'
 import { IBtn, Hr, RStack } from '../../utils/MuiUtils'
-import { useIdeaState } from '../IdeaState'
 import AddCircleOutlineRoundedIcon from '@mui/icons-material/AddCircleOutlineRounded'
-import CancelRoundedIcon from '@mui/icons-material/CancelRounded'
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded'
-import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
+
 import { workspace } from '../../application/Workspace/WorkspaceState'
 import { UAutocomplete } from '../../utils/UAutocomplete/UAutocomplete'
-import { backend, useCollectionData } from '../../../fb/useData'
+import { useCollectionData } from '../../../fb/useData'
 import { q } from '../../../fb/q'
+import { getUserId } from '../../editing/UPage/userId'
+import { IdeaEditor } from './IdeaEditor/IdeaEditor'
 
 // TODO: sync preview on editor close
 // TODO: sync upageId on editor open (show warning that idea was moved), on idea training
@@ -44,17 +30,17 @@ import { q } from '../../../fb/q'
 // TODO: client side filter by preview, sort by error rate | created data
 // TODO: frozen are hidden by def, add btn to show them (frozen - text.secondary) (but hide non frozen)
 // TODO: show info (flex end on desktop, as 2nd row on mob): created date (text.2ndary), error rate (if > 10%), stage: borderLeft: 'solid 2px red',
-
+type IdeaIdAndTraining = { id: str; training?: TrainingIdAndDTO }
 export function IdeasViewer() {
   const [topPaths] = useState(() => workspace.topPaths()) // TODO: update on paths change
   const [selectedUPageI, setSelectedUPageI] = useState(0) // TODO: handle empty workspace
   const selectedUPageId = topPaths[selectedUPageI]?.id || ''
   const pagesIn = workspace.getPagesIn(selectedUPageId)
   const [isEditorOpen, setIsEditorOpen] = useState(false)
-  const [idea, setIdea] = useState({ id: '', create: true })
+  const [ideaIdAndTraining, setIdeaIdAndTraining] = useState<IdeaIdAndTraining>({ id: '' })
 
   return (
-    <Root>
+    <IdeasViewer_>
       <RStack justifyContent="start">
         <EditableText text={'Ideas'} tag="h3" placeholder="Untitled" />
         <Box sx={{ transform: 'translate(1rem, 0.15rem)' }}>
@@ -71,7 +57,7 @@ export function IdeasViewer() {
         <IBtn
           icon={AddCircleOutlineRoundedIcon}
           onClick={() => {
-            setIdea({ id: uuid(), create: true })
+            setIdeaIdAndTraining({ id: uuid() })
             setIsEditorOpen(true)
           }}
           sx={{ marginLeft: 'auto' }}
@@ -80,149 +66,57 @@ export function IdeasViewer() {
       </RStack>
       <Hr sx={{ marginBottom: '0.5rem' }} />
       <Fetch>
-        <IdeaDTOs
+        <Trainings
           pagesTree={pagesIn}
-          editDTO={(id) => {
-            setIdea({ id, create: false })
+          editIdea={(training) => {
+            setIdeaIdAndTraining({ id: training.ideaId, training })
             setIsEditorOpen(true)
           }}
         />
       </Fetch>
-      <Modal open={isEditorOpen} onClose={() => !idea.create && setIsEditorOpen(false)}>
-        <EditorWrapper>
-          <IdeaEditor
-            id={idea.id}
-            upageId={selectedUPageId}
-            create={idea.create}
-            close={() => setIsEditorOpen(false)}
-          />
-        </EditorWrapper>
+      <Modal open={isEditorOpen} onClose={() => setIsEditorOpen(false)}>
+        <IdeaEditor
+          id={ideaIdAndTraining.id}
+          training={ideaIdAndTraining.training}
+          upageId={selectedUPageId}
+          close={() => setIsEditorOpen(false)}
+        />
       </Modal>
-    </Root>
+    </IdeasViewer_>
   )
 }
 
-const Root = styled(Box)({
+const IdeasViewer_ = styled(Box)({
   width: '100%',
   maxWidth: 900,
 })
 
-interface IdeaDTOs {
+interface Trainings {
   pagesTree: strs
-  editDTO: SetStr
+  editIdea: (dto: TrainingIdAndDTO) => void
 }
 
-function IdeaDTOs({ editDTO, pagesTree }: IdeaDTOs) {
-  const trainings = useCollectionData(q('trainings', { combineWithUserId: true }).orderBy('createdAt', 'desc'))
+function Trainings({ editIdea, pagesTree }: Trainings) {
+  const trainings = useCollectionData(q('trainings').where('userId', '==', getUserId()).orderBy('createdAt', 'desc'))
   const trainingsForPage = trainings.filter((t) => pagesTree.includes(t.upageId))
   // TODO: handle empty case
   return (
     <Stack spacing={1}>
       {trainingsForPage.map((dto) => (
-        <TrainingItem key={dto.dataId} dto={dto} editDTO={editDTO} />
+        <TrainingItem key={dto.ideaId} dto={dto} editIdea={editIdea} />
       ))}
     </Stack>
   )
 }
 
-const EditorWrapper = styled(Box)(({ theme }) => ({
-  padding: '1.5rem 2.75rem',
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '100%',
-  maxWidth: '32rem',
-  height: '100%',
-  maxHeight: '40rem',
-  backgroundColor: theme.palette.common.white,
-  border: theme.bd(),
-  borderRadius: theme.shape.borderRadius,
-  outline: 'none',
-}))
-
-interface IdeaEditor {
-  upageId: str
-  id: str
-  create?: bool
-  close: Fn
-}
-
-function IdeaEditor({ id, upageId, create, close }: IdeaEditor) {
-  const { data, changer } = useIdeaState(id, upageId, { create, editing: true })
-
-  const [showError, setShowError] = useState(false)
-
-  const blocks = uformBlocks()
-  const hasUFormBlock = data.ublocks.find((b) => isUFormBlock(b.type))
-
-  return (
-    <>
-      <ClickAwayListener onClickAway={changer.unselect}>
-        <div>
-          <UBlocksSet id="r" blocks={data.ublocks} factoryPlaceholder="Write something" />
-        </div>
-      </ClickAwayListener>
-      {!hasUFormBlock && (
-        <RStack>
-          {blocks.map(({ type, icon }) => (
-            <IBtn key={type} icon={icon} onClick={() => changer.add(data.ublocks.at(-1)?.id || '', type)} />
-          ))}
-        </RStack>
-      )}
-      <RStack sx={{ position: 'absolute', left: 0, bottom: 10, width: '100%' }}>
-        {create && (
-          <IconButton color="error" onClick={close}>
-            <CancelRoundedIcon sx={{ width: 32, height: 32 }} />
-          </IconButton>
-        )}
-        <IconButton
-          color="success"
-          onClick={() => {
-            const success = changer.handleUCardEvent('toggle-edit')
-            setShowError(!success)
-            if (!success) return
-
-            if (create) {
-              backend.addData('trainings', uuid(), {
-                upageId,
-                dataId: id,
-                idAndIndicators: {},
-                preview: extractPreview(data.ublocks),
-                repeatAt: 0,
-                createdAt: now(),
-              })
-            }
-
-            close()
-          }}
-        >
-          {!create && <SaveRoundedIcon sx={{ width: 32, height: 32 }} />}
-          {create && <AddCircleRoundedIcon sx={{ width: 32, height: 32 }} />}
-        </IconButton>
-        <Snackbar
-          open={showError}
-          autoHideDuration={2000}
-          onClose={() => setShowError(false)}
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        >
-          <Alert severity="error" sx={{ width: '100%' }}>
-            {data.$error}
-          </Alert>
-        </Snackbar>
-      </RStack>
-    </>
-  )
-}
-
 interface TrainingItem {
-  dto: TrainingDTO
-  editDTO: (id: str) => void
+  dto: TrainingIdAndDTO
+  editIdea: (dto: TrainingIdAndDTO) => void
 }
 
-function TrainingItem({ dto, editDTO }: TrainingItem) {
+function TrainingItem({ dto, editIdea }: TrainingItem) {
   return (
-    <TrainingItem_ onClick={() => editDTO(dto.dataId)}>
+    <TrainingItem_ onClick={() => editIdea(dto)}>
       <Typography sx={{ marginRight: 'auto' }}>{dto.preview}</Typography>
     </TrainingItem_>
   )
@@ -237,45 +131,3 @@ const TrainingItem_ = styled(RStack)(({ theme }) => ({
     backgroundColor: theme.apm('bg-hover'),
   },
 }))
-
-function extractPreview(ublocks: UBlocks, maxLength = 50): str {
-  let r = ''
-  let i = 0
-
-  while (r.length < maxLength && i < ublocks.length) {
-    r += preview(ublocks[i++])
-  }
-
-  return r.slice(0, maxLength)
-}
-
-function preview(block: UBlock): str {
-  if (isUListBlock(block.type))
-    return bfsUBlocks([block])
-      .slice(1)
-      .map((b) => preview(b))
-      .join('\n')
-
-  if (isStringBasedBlock(block.type)) return block.data as str
-  if (isAdvancedText(block.type)) return (block.data as { text: str }).text
-  if (isUFormBlock(block.type)) {
-    if (block.type === 'inline-exercise') {
-      const data = block.data as InlineExerciseData
-      return data.content
-        .map((sq) => {
-          if (isStr(sq)) return sq
-
-          if (sq.type === 'short-answer') return '__'
-          const options = sq.options.join()
-          return sq.type === 'single-choice' ? `(${options})` : `[${options}]`
-        })
-        .flat()
-        .join(' ')
-    }
-
-    const data = block.data as UChecksData
-    return data.question
-  }
-
-  return ''
-}

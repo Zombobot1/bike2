@@ -1,36 +1,40 @@
 import { Bytes } from 'firebase/firestore'
-import { deleteIdeaUpdates, sendIdeaUpdate } from '../../fb/ideaChangesAPI'
+import { deleteIdeaUpdates, sendIdeaUpdate, setTraining } from '../../fb/ideaChangesAPI'
 import { SendUPageUpdate } from '../../fb/upageChangesAPI'
 import { f, str, bool, strs, num } from '../../utils/types'
 import { uuid, uuidS } from '../../utils/wrappers/uuid'
 import { FocusType } from '../editing/types'
 import { fileUploader } from '../editing/UFile/FileUploader'
-import { isUFormBlock, UBlockData, UBlockType } from '../editing/UPage/ublockTypes'
-import { UFormEvent, UFormRuntime } from '../editing/UPage/UPageState/crdtParser/UPageRuntimeTree'
-import { getInitialIdeaState, mergeUpdates } from '../editing/UPage/UPageState/crdtParser/UPageStateCR'
+import { UBlockData, UBlockType } from '../editing/UPage/ublockTypes'
+import { _mockServer } from '../editing/UPage/UPageState/crdtParser/UPageStateCR'
 import { UPageCursor } from '../editing/UPage/UPageState/types'
 import { UEditor, UEditorI } from '../editing/UPage/UPageState/UEditor'
-import { IdeaData } from './types'
+import { IdeaData, IdeaRelatedData, IdeaType } from './types'
 import { _getIdeaState, _IdeaStates } from './_stubs'
 import { useData } from '../../fb/useData'
 import { useEffect, useState } from 'react'
 import useUpdateEffect from '../utils/hooks/useUpdateEffect'
 import { setIdeaChanger, useSetUPageCursor, useSetUPageInfo } from '../editing/UPage/useUPageInfo'
-import { IdeaDTO, UPageChangeDescriptionDTO } from '../../fb/FSSchema'
+import { IdeaDTO, TrainingIdAndDTO, UCardPriority } from '../../fb/FSSchema'
+import { workspace } from '../application/Workspace/WorkspaceState'
+
+import { Patch } from 'immer'
+import { diffAsPatches } from '../../utils/wrappers/microdiffUtils'
+import { IdeaRelatedState, PartialIdeaData, PartialTrainingData } from './IdeaRelatedState'
+import { previewMaker } from '../editing/UPage/UPageState/crdtParser/previewGeneration'
 
 export interface IdeaEditor extends UEditorI {
-  handleUCardEvent: (e: UFormEvent) => bool
+  save: () => bool
 }
 
 export class IdeaState implements IdeaEditor {
   #editor: UEditor
-  #collector: IdeaChangesCollector
+  #idea: IdeaRelatedState
 
   constructor(
-    id: str,
-    updates: Bytes[],
+    idea: PartialIdeaData & { updates: Bytes[] },
+    training: PartialTrainingData,
     {
-      editing = false,
       addImage = fileUploader.prepareUpload,
       deleteFiles = fileUploader.delete,
       sendUpdate = sendIdeaUpdate,
@@ -38,11 +42,9 @@ export class IdeaState implements IdeaEditor {
       getId = uuid,
     } = {},
   ) {
-    this.#collector = new IdeaChangesCollector(id, sendUpdate)
-    if (editing && !updates.length) {
-      updates = getInitialIdeaState()
-      this.#collector.interceptUpdate('', updates[0], { date: 0, preview: [], sha: '', user: '', upageId: '' })
-    }
+    const { id, updates } = idea
+    this.#idea = new IdeaRelatedState(idea, training, sendUpdate)
+    updates.push(...this.#idea.initializeIfNew())
 
     this.#editor = new UEditor({
       id,
@@ -53,53 +55,54 @@ export class IdeaState implements IdeaEditor {
       getId,
       onPageAdded: f,
       onPagesDeleted: f,
-      sendUpdate: this.#collector.interceptUpdate,
+      sendUpdate: this.#idea.interceptUpdate,
     })
 
-    if (editing) {
-      const data = this.#editor._getRoot() as IdeaData
-      const formBlock = data.ublocks.find((b) => isUFormBlock(b.type))
-      UFormRuntime.toggleEdit(data, formBlock ? [formBlock] : [])
-    }
+    this.#idea.edit(this.#editor._getRoot() as IdeaData)
   }
 
   get state(): State {
     return this.#editor.state as State
   }
 
+  hasUnsavedChanges = (): bool => this.#idea.hasUnsavedChanges
+
   globalContext = () => 'ucard' as const
 
   readonly = () => false // TODO: if user doesn't have write access to page it is true
 
-  handleUCardEvent = (e: UFormEvent) => {
+  preview = (ucardId: str): str => this.#idea.preview(ucardId)
+  toggleFreeze = (ucardId: str) => this.#idea.toggleFreeze(ucardId)
+  changePriority = (ucardId: str, priority: UCardPriority) => this.#idea.changePriority(ucardId, priority)
+
+  save = (): bool => {
     let success = true
+    let changes: Patch[] = []
+    const oldData: IdeaRelatedData = { ucards: (this.#editor._getRoot() as IdeaRelatedData).ucards }
+    let newData = oldData
 
     this.#editor._runtimeChange((_, d) => {
-      const data = d as IdeaData
-      const formBlock = data.ublocks.find((b) => isUFormBlock(b.type))
-
-      if (!formBlock && data.$state === 'editing') {
-        data.$error = BAD_IDEA
-        success = false
-        return
-      }
-      if (!formBlock) return
-
-      if (e === 'submit') return UFormRuntime.submit(data, [formBlock])
-
-      // if (e === 'toggle-edit')
-      const prevState = data.$state
-      const isValid = UFormRuntime.toggleEdit(data, [formBlock])
-      if (prevState === 'editing' && isValid) this.#collector.sendToServer()
-      else if (!isValid) {
-        success = false
-        data.$error = BAD_IDEA
-      }
-
-      if (isValid && data.$error) data.$error = ''
+      const update = this.#idea.save(d as IdeaData)
+      newData = { ucards: update.ucards }
+      success = update.success
     })
 
+    if (success) {
+      changes = diffAsPatches(oldData, newData)
+      this.#editor._applyPatch(previewMaker.bold('Updated ucards'), changes)
+    }
+
     return success
+  }
+
+  setType = (type: IdeaType) => {
+    let changes: Patch[] = []
+    const oldData: IdeaRelatedData = { type: (this.#editor._getRoot() as IdeaRelatedData).type }
+
+    this.#editor._runtimeChange((_, d) => this.#idea.setType(d as IdeaData, type))
+
+    changes = diffAsPatches(oldData, { type })
+    this.#editor._applyPatch(previewMaker.bold('Changed idea type'), changes)
   }
 
   context = (id: str) => this.#editor.context(id)
@@ -145,35 +148,25 @@ export class IdeaState implements IdeaEditor {
   getSelectedData = (): str => this.#editor.getSelectedData()
 }
 
-export const BAD_IDEA = 'Add question and provide answer!'
-
-interface Update {
-  update: Bytes
-  description: UPageChangeDescriptionDTO
-}
-
-class IdeaChangesCollector {
-  collectedUpdates: Update[] = []
-
-  constructor(public id: str, public sendUpdate: SendUPageUpdate) {}
-
-  interceptUpdate: SendUPageUpdate = (_, update, description) => this.collectedUpdates.push({ update, description })
-  sendToServer = () => {
-    if (!this.collectedUpdates.length) return
-    mergeUpdates(this.id, this.collectedUpdates, this.sendUpdate)
-    this.collectedUpdates = []
-  }
-}
-
 interface State {
   data: IdeaData
   cursor: UPageCursor
 }
 
-export function useIdeaState(id: str, upageId: str, { create = false, editing = false }) {
-  const [ideaUpdates] = useData('ideas', id, create ? { ...new IdeaDTO(), upageId } : undefined)
+export function useIdeaState(id: str, upageId: str, training?: TrainingIdAndDTO) {
+  const ownerId = workspace.getOwner(upageId)
+  const created = !!training
+  const [ideaUpdates, setUpdates] = useData('ideas', id, !created ? { ...new IdeaDTO(), upageId } : undefined, {
+    defferCreation: !created,
+  })
 
-  const [changer] = useState(() => new IdeaState(id, ideaUpdates.updates, { editing: create || editing }))
+  const [changer] = useState(
+    () =>
+      new IdeaState(
+        { id, createIdea: setUpdates, ownerId: ownerId, upageId, updates: ideaUpdates.updates },
+        { training, setTraining },
+      ),
+  )
   const [state, setState] = useState(changer.state)
   changer.setStateSetter(setState)
 
@@ -193,12 +186,33 @@ export function useIdeaState(id: str, upageId: str, { create = false, editing = 
   }
 }
 
-export function _ideaS(init: _IdeaStates, { editing = false, id = 0, sendUpdate = f as SendUPageUpdate } = {}) {
-  return new IdeaState('ideaId', _getIdeaState(init), {
-    editing,
-    getId: uuidS(id),
-    addImage: f,
-    deleteFiles: f,
-    sendUpdate,
-  })
+export function _mockIdeaServer(initialUpdates: Bytes[]) {
+  const server = _mockServer(initialUpdates)
+  const create = (dto: IdeaDTO) => server.updates.push(...dto.updates)
+  return { ...server, create }
+}
+
+type Create = (dto: IdeaDTO) => void
+export function _ideaS(
+  init: _IdeaStates,
+  {
+    id = 0,
+    sendUpdate = f as SendUPageUpdate,
+    create = f as Create,
+    updates = [] as Bytes[],
+    training = undefined as TrainingIdAndDTO | undefined,
+  } = {},
+) {
+  const initialUpdates = init === '' ? [] : _getIdeaState(init)
+  updates = updates.length ? updates : initialUpdates
+  return new IdeaState(
+    { id: 'ideaId', ownerId: '', upageId: '', createIdea: create, updates },
+    { training, setTraining: f },
+    {
+      getId: uuidS(id),
+      addImage: f,
+      deleteFiles: f,
+      sendUpdate,
+    },
+  )
 }

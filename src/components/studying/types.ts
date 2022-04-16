@@ -10,15 +10,18 @@ export type UCardData = WordUCardTypes | TextOcclusionUCard[]
 export interface UCard {
   id: str
   data: UCardData
-  timeToAnswer: num
-  priority: num
 }
 export type UCards = UCard[]
 
-export type IdeaType = 'word' | 'text' | 'image'
+export type IdeaType = 'question' | 'error' | 'word' | 'text' | 'image'
 
-export interface IdeaData extends UFormLikeData {
-  $error?: str
+export type UCardSchedule = 'usual' | 'short'
+export interface IdeaRelatedData {
   type?: IdeaType
   ucards?: UCards
+  schedule?: UCardSchedule // TODO: on creation user can set schedule, on edit it can be changed
+}
+
+export interface IdeaData extends UFormLikeData, IdeaRelatedData {
+  $error?: str
 }

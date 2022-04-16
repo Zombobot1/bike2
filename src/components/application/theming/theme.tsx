@@ -4,6 +4,8 @@ import _ from 'lodash'
 import { bool, JSObject, num, str } from '../../../utils/types'
 import { isCypress } from '../../utils/hooks/isCypress'
 import { useLocalStorage } from '../../utils/hooks/useLocalStorage'
+import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded'
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
 
 export const COLORS = {
   white: '#fff',
@@ -88,6 +90,18 @@ const baseTheme = {
       main: COLORS.error,
     },
     text: { secondary: alpha(COLORS.primary, 0.4) },
+  },
+
+  components: {
+    // add Mui to component name
+    MuiAlert: {
+      defaultProps: {
+        iconMapping: {
+          warning: <WarningAmberRoundedIcon fontSize="small" />,
+          success: <CheckCircleOutlineRoundedIcon fontSize="small" />,
+        },
+      },
+    },
   },
 
   isDark: function () {

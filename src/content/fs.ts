@@ -5,10 +5,10 @@ import { _extraPages, _pageDTOs } from './pages'
 import { _fakeIdeaTrainingDTOs, _ideaDTOs, _ideaTrainingDTOs } from './ideas'
 import { FSSchema } from '../fb/FSSchema'
 
-function $(name: keyof FSSchema, data: [str, JSObject][], userId = ''): _Col {
-  if (userId) name += '-' + userId
+function $(name: keyof FSSchema, data: [str, JSObject][]): _Col {
   return { name, docs: data.map(([id, data]) => ({ id, data })) }
 }
+
 type IdAndDocs = [str, JSObject][]
 export const _fs: _FSD = [
   $('workspaces', [
@@ -24,7 +24,6 @@ export const _fs: _FSD = [
     ...(_extraPages as IdAndDocs),
   ]),
   $('ideas', _ideaDTOs as IdAndDocs),
-  $('trainings', _ideaTrainingDTOs as IdAndDocs, 'cat-lover'),
-  $('trainings', _fakeIdeaTrainingDTOs as IdAndDocs, 'cat-lover1'),
+  $('trainings', [..._ideaTrainingDTOs, ..._fakeIdeaTrainingDTOs] as IdAndDocs),
   $('_t', [['1', { d: 'test' }]]),
 ]

@@ -1,4 +1,4 @@
-import { bool, f, Fn as F, SetStr, str, strs } from '../../../utils/types'
+import { bool, f, SetStr, str, strs } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { useData } from '../../../fb/useData'
 import { Bytes } from 'firebase/firestore'
@@ -57,7 +57,7 @@ export class WorkspaceOpenness {
 }
 
 export interface WorkspaceLookup {
-  getOwner: F
+  getOwner: (page: str) => str
   topPaths: () => WorkspacePath
   getPagesIn: (parentId: str) => strs
 }
@@ -92,7 +92,7 @@ export class WorkspaceState implements UPageManagement, WorkspaceLookup {
     return this.#nav
   }
 
-  getOwner = () => getUserId()
+  getOwner = (_upageId: str) => getUserId()
   getPagesIn = (parentId: str): strs => {
     const parent = safe(findNode(this.#structure.pages, parentId))
     const children = parent.children ? bfsNodes(parent.children) : []

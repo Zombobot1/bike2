@@ -9,7 +9,6 @@ import { useFS } from './fs'
 import { isInProduction } from './utils'
 import { wait } from '../utils/utils'
 import { UQuery } from './q'
-import { getUserId } from '../components/editing/UPage/userId'
 
 function useFSData_<T extends keyof FSSchema>(
   col: T,
@@ -25,34 +24,44 @@ function useFSData_<T extends keyof FSSchema>(
     [id], // otherwise sets old block
   )
 
-  const data = getDoc(col, id, initialData)
+  const data = getDoc(col, id, initialData) // assume that it synchronous & defferCreation, createIfNotExist don't affect it
   if (!data) throw new Error(`Document ${id} in ${col} not found`)
   return [data as FSSchema[T], setData_]
 }
+
+// TODO: test next use cases
+// if initial data provided & doc exists it returns initial data and then the actual doc
+//    if createIfNotExist == true it returns initialData only if doc doesn't exists (& creates it)
+// if defferCreation == true it doesn't rise exception, and when doc is created (via setData_) subscribes to it on next react rerender
 
 export function useData<T extends keyof FSSchema>(
   col: T,
   id: str,
   initialData?: FSSchema[T],
+  { defferCreation = false, createIfNotExist = false } = {},
 ): [FSSchema[T], (d: Partial<FSSchema[T]>) => void] {
   if (!isInProduction) return useFSData_(col, id, initialData)
 
   const setData_ = useCallback((data: Partial<FSSchema[T]>) => setData(col, id, data), [])
-  const data = useFirestoreDocData(doc(useFirestore(), col, id), { initialData }).data // https://github.com/FirebaseExtended/reactfire/blob/main/docs/use.md#show-a-single-document
-  if (!data && initialData) {
+  const initial = initialData && !createIfNotExist ? { initialData } : undefined
+  const { data } = useFirestoreDocData(doc(useFirestore(), col, id), initial) // https://github.com/FirebaseExtended/reactfire/blob/main/docs/use.md#show-a-single-document
+  if (!data && initialData && createIfNotExist) {
     addData(col, id, initialData)
     return [initialData, setData_]
   }
 
-  if (!data) throw new Error(`Document ${id} in ${col} not found`)
+  if (!data) {
+    if (defferCreation && initialData) return [initialData, setData_]
+    throw new Error(`Document ${id} in ${col} not found`)
+  }
   return [data as FSSchema[T], setData_]
 }
 
-export function useCollectionData<T extends keyof FSSchema>(query: UQuery<T>) {
-  if (!isInProduction) return useFSCollectionData(query) as FSSchema[T][]
+export function useCollectionData<T extends keyof FSSchema>(query: UQuery<T>): Array<FSSchema[T] & { id: str }> {
+  if (!isInProduction) return useFSCollectionData(query) as Array<FSSchema[T] & { id: str }>
 
-  const { data } = useFirestoreCollectionData(query.toQuery())
-  return data as FSSchema[T][]
+  const { data } = useFirestoreCollectionData(query.toQuery(), { idField: 'id' })
+  return data as Array<FSSchema[T] & { id: str }>
 }
 
 function useFSCollectionData<T extends keyof FSSchema>(query: UQuery<T>) {
@@ -95,7 +104,8 @@ export function useFirestoreData() {
   }
 }
 
-const d = (col: str, id: str) => doc(getFirestore(), col === 'trainings' ? col + '-' + getUserId() : col, id)
+const d = (col: str, id: str) => doc(getFirestore(), col, id)
+// TODO: test that merge == true doesn't affect document creation (to delete addData)
 const setData = <T extends keyof FSSchema>(col: T, id: str, data: Partial<FSSchema[T]>, merge = true): Promise<void> =>
   setDoc(d(col, id), data as DocumentData, { merge })
 const addData = <T extends keyof FSSchema>(col: T, id: str, data: FSSchema[T]): Promise<void> =>

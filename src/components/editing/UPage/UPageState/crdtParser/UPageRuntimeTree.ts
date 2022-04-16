@@ -40,7 +40,7 @@ export class UFormRuntime {
   static toggleEdit = (uform: UFormLikeData, ublocks: UBlocks): bool => {
     // assume that when got from server & it is undefined it is like 'filling'
     if (uform.$state === 'editing') {
-      const error = setValidationErrors(ublocks, { checkCorrectAnswer: true })
+      const error = UFormRuntime.isChangeInvalid(ublocks)
       if (error) return false
 
       uform.$state = 'filling'
@@ -55,6 +55,8 @@ export class UFormRuntime {
     }
     return true
   }
+
+  static isChangeInvalid = (ublocks: UBlocks): bool => setValidationErrors(ublocks, { checkCorrectAnswer: true })
 
   static clearFillingData = (uform: UFormLikeData, ublocks: UBlocks) => {
     setValidationErrors(ublocks, { unset: true })

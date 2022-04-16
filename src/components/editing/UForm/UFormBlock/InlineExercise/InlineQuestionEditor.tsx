@@ -13,6 +13,9 @@ import { cursorOffset, setCursor } from '../../../../utils/Selection/selection'
 import { extractQuestions, highlight, inlineQuestions } from './questionsParser'
 import { INVALID_EXERCISE } from '../../../UPage/UPageState/crdtParser/UPageRuntimeTree'
 
+// TODO: provide GUI for editor (reuse mcq, scq but inline them)
+// TODO: explanation editor goes below as stack with numbers & placeholders: 1. "Add explanation for {answer}" or "() o1 () o2"
+
 export function InlineExerciseEditor({ id, data: d, setData }: UBlockContent) {
   const data = d as InlineExerciseData
   const [text, setText] = useState(() => highlight(inlineQuestions(data)))
@@ -98,9 +101,7 @@ const Styles = styled('div', { label: 'EditableText ' })(({ theme }) => ({
 
   pre: { fontSize: '1rem' },
 
-  [`${theme.breakpoints.up('sm')}`]: {
-    pre: { fontSize: '1.5rem' },
-  },
+  [`${theme.breakpoints.up('sm')}`]: { pre: { fontSize: '1.25rem' } },
 }))
 
 const Editable = styled(ContentEditable)(({ theme }) => ({

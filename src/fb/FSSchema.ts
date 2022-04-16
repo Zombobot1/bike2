@@ -25,18 +25,20 @@ export class IdeaDTO {
   upageId = ''
   updates: Bytes[] = []
   deletedAt?: num
-  builtIn?: bool
+  // builtIn?: bool // users remove each other ideas if they have write access
 }
 
 export interface TrainingDTO {
-  upageId: str
+  userId: str
+  upageId: str // to access trainings in UPage
   preview: str
-  dataId: str
+  ideaId: str
   idAndIndicators: { [key: str]: TrainingIndicators }
   frozen?: bool
   repeatAt: num
   createdAt: num // consistent sorting is required
 }
+export type TrainingIdAndDTO = TrainingDTO & { id: str }
 export type TrainingDTOs = TrainingDTO[]
 export type UCardPriority = 'low' | 'medium' | 'high'
 export type TrainingIndicators = {
