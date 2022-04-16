@@ -64,10 +64,10 @@ const cal = (text = '', t: 'i' | 'w' | 's' | 'e') =>
   b('', { text, type: t === 'e' ? 'error' : t === 'i' ? 'info' : t === 's' ? 'success' : 'warning' }, 'callout')
 
 const code = (text = '', l = 'Text') => b('', { text, language: l }, 'code')
-const image = (src = '', width = 900) => b('', { src, width }, 'image')
+const image = (src = '', width = 900, id = '') => b(id, { src, width }, 'image')
 const video = (src = '', width = 900) => b('', { src, width }, 'video')
-const audio = (src = '') => b('', { src }, 'audio')
-const file = (src = '', name = '') => b('', { src, name }, 'file')
+const audio = (src = '', id = '') => b(id, { src }, 'audio')
+const file = (src = '', name = '', id = '') => b(id, { src, name }, 'file')
 const p = (id: str) => b('', { id }, 'page')
 
 const lr = (...items: UListItem[]): UBlock => ({ id: 'l', data: items, type: 'bullet-list' })

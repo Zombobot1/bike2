@@ -1,7 +1,7 @@
 import { SoryBook } from './sorybook/sorybook'
 import ReactDOM from 'react-dom'
 
-if (!isInProduction) setFSD(_fs)
+if (!isInProduction) setFSD(firestoreMockData)
 
 const Sandbox = () => {
   return (
@@ -107,8 +107,8 @@ import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingSt
 
 import { ErrorBoundary } from 'react-error-boundary'
 import { isInProduction } from './fb/utils'
-import { setFSD } from './fb/fs'
-import { _fs } from './content/fs'
+import { setFSD } from './fb/firestore'
+import { firestoreMockData } from './content/firestoreMockData'
 
 if (![].at) {
   Array.prototype.at = function (i) {

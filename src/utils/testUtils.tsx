@@ -9,8 +9,8 @@ import { COLORS } from '../components/application/theming/theme'
 import { UTextGreen } from '../components/editing/UText/UTextOptions/UTextOptions'
 import { FetchingState } from '../components/utils/Fetch/FetchingState/FetchingState'
 import { isCypress } from '../components/utils/hooks/isCypress'
-import { _fs } from '../content/fs'
-import { FSProvider, setFSD } from '../fb/fs'
+import { firestoreMockData } from '../content/firestoreMockData'
+import { FSProvider, setFSD } from '../fb/firestore'
 import { Fn, num, str } from './types'
 
 export type CYChain = Cypress.Chainable<JQuery<HTMLElement>>
@@ -105,7 +105,7 @@ export const doNotFret = () => cy.on('uncaught:exception', () => false)
 
 export const show = (Component: React.FC, pd = '') => {
   isCypress.isCypress = true
-  setFSD(_fs)
+  setFSD(firestoreMockData)
 
   mount(
     <OuterShell>

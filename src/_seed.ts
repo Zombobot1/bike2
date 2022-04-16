@@ -1,6 +1,9 @@
 import { _seed } from './_seeding'
+import seedUsers from './_initUsers'
 
-_seed().then(() => {
-  console.info('Emulator running on http://localhost:4000/')
-  process.exit()
+seedUsers().then(() => {
+  _seed().then(() => {
+    console.info('Seeding success!')
+    process.exit(0)
+  })
 })

@@ -5,7 +5,7 @@ import { useFirestore, useFirestoreCollectionData, useFirestoreDocData } from 'r
 import { useC } from '../components/utils/hooks/hooks'
 import { bool, str } from '../utils/types'
 import { FSSchema } from './FSSchema'
-import { useFS } from './fs'
+import { useFS } from './firestore'
 import { isInProduction } from './utils'
 import { wait } from '../utils/utils'
 import { UQuery } from './q'

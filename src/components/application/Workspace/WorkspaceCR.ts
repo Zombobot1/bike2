@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import * as Y from 'yjs'
-import { Bytes } from 'firebase/firestore'
+
 import { sendWorkspaceUpdate } from '../../../fb/upageChangesAPI'
 import { f } from '../../../utils/types'
 import { WorkspaceStructure } from './types'
 import { Patch } from 'immer'
 import { CRDT } from '../../../utils/wrappers/CRDT'
 
+import { Bytes } from 'firebase/firestore'
 export function getInitialWorkspace() {
   const doc = new Y.Doc()
   const ws = doc.getMap('ws')

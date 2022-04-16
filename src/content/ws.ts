@@ -5,6 +5,7 @@ import { UPageData } from '../components/editing/UPage/ublockTypes'
 import { _generators } from '../components/editing/UPage/UPageState/crdtParser/_fakeUPage'
 import { str } from '../utils/types'
 import { safe } from '../utils/utils'
+import { sslugify } from '../utils/sslugify'
 
 enablePatches()
 
@@ -86,6 +87,19 @@ const ws: UPageNodes = [
     ],
   },
 ]
+
+function generateIDs(nodes: UPageNodes) {
+  nodes.map((node) => {
+    node.id = sslugify(node.name)
+    if (node.children) {
+      generateIDs(node.children)
+    }
+  })
+}
+
+generateIDs(ws)
+generateIDs(medium)
+generateIDs(pets)
 
 export const _wsDTOs = {
   lover: _generateTestWS(ws, ['vocabulary', 'python']),

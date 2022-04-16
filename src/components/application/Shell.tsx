@@ -10,14 +10,24 @@ import { useMount } from '../utils/hooks/hooks'
 import { useIsPageVisible } from '../utils/hooks/useIsPageVisible'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider, FirebaseAppProvider, FirestoreProvider, useFirebaseApp } from 'reactfire'
-import { getAuth } from 'firebase/auth'
-import { getFirestore } from 'firebase/firestore'
+import { connectAuthEmulator, getAuth } from 'firebase/auth'
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore'
 import { App } from './App/App'
-import { firebaseConfig } from '../../_seeding'
 import { registerServiceWorker } from '../../serviceWorkerRegistration'
 import { isInProduction } from '../../fb/utils'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
+import { connectStorageEmulator, getStorage } from 'firebase/storage'
+import { connectFunctionsEmulator, getFunctions } from 'firebase/functions'
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyBilmhjT-Ri3iiwV5wSw6Hsl4B3dJZzy9U',
+  authDomain: 'universe-55cec.firebaseapp.com',
+  projectId: 'universe-55cec',
+  storageBucket: 'universe-55cec.appspot.com',
+  messagingSenderId: '809588642322',
+  appId: '1:809588642322:web:1f5f4811b7ae877237becb',
+}
 
 export interface OuterShell {
   children: ReactNode
@@ -67,6 +77,40 @@ function FB({ children }: OuterShell) {
   const app = useFirebaseApp()
   const auth = getAuth(app)
   const fs = getFirestore(app)
+
+  const shouldUseEmulator = import.meta.env.VITE_USE_EMULATORS === 'true' // or other logic to determine when to use
+
+  const firestoreSettings: { experimentalForceLongPolling?: boolean; host?: string; ssl?: boolean } = {}
+  // Pass long polling setting to Firestore when running in Cypress
+  //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  if ((window as any).Cypress) {
+    // Needed for Firestore support in Cypress (see https://github.com/cypress-io/cypress/issues/6350)
+    firestoreSettings.experimentalForceLongPolling = true
+  }
+
+  // Emulate Firestore
+  if (shouldUseEmulator) {
+    connectFirestoreEmulator(getFirestore(), 'localhost', 8080)
+    console.info(`Using Firestore emulator: http://localhost:8080`)
+  }
+
+  // Emulate Auth
+  if (shouldUseEmulator) {
+    connectAuthEmulator(auth, 'http://localhost:9099/', { disableWarnings: true })
+    console.info(`Using Auth emulator: http://localhost:9099/`)
+  }
+
+  // Emulate Storage
+  if (shouldUseEmulator) {
+    connectStorageEmulator(getStorage(), 'localhost', 9199)
+    console.info(`Using Storage emulator: http://localhost:9199/`)
+  }
+
+  // Emulate Cloud functions
+  if (shouldUseEmulator) {
+    connectFunctionsEmulator(getFunctions(), 'localhost', 5001)
+    console.info(`Using Cloud functions emulator: http://localhost:5001/`)
+  }
 
   return (
     <AuthProvider sdk={auth}>

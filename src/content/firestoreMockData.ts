@@ -10,7 +10,7 @@ function $(name: keyof FSSchema, data: [str, JSObject][]): _Col {
 }
 
 type IdAndDocs = [str, JSObject][]
-export const _fs: _FSD = [
+export const firestoreMockData: _FSD = [
   $('workspaces', [
     ['cat-lover', _wsDTOs.lover],
     ['pets-and-animals', _wsDTOs.pets],
@@ -18,10 +18,10 @@ export const _fs: _FSD = [
     ['small', _wsDTOs.small],
   ]),
   $('upages', [
+    ...(_extraPages as IdAndDocs),
     ['pets-and-animals', _pageDTOs.pets],
     ['medium', _pageDTOs.medium],
     ['small', _pageDTOs.small],
-    ...(_extraPages as IdAndDocs),
   ]),
   $('ideas', _ideaDTOs as IdAndDocs),
   $('trainings', [..._ideaTrainingDTOs, ..._fakeIdeaTrainingDTOs] as IdAndDocs),

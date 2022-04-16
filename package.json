@@ -11,7 +11,7 @@
     "compile": "tsc -w",
     "circles": "dpdm ./src/index.tsx --tree=false --warning=false",
     "serve": "npm run build && serve -s dist",
-    "seed": "ts-node ./src/_seed.ts",
+    "seed": "FIREBASE_AUTH_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.auth.port)\" FIREBASE_DATABASE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.database.port)\" FIRESTORE_EMULATOR_HOST=\"localhost:$(cat firebase.json | jq .emulators.firestore.port)\" tsm ./src/_seed.ts",
     "lint": "eslint ./src/* --fix --max-warnings=0",
     "check": "npm run lint && tsc && npm run test-ci-u && npm run test-ci-i",
     "build": "rimraf ./dist && cross-env NODE_ENV=production webpack",
@@ -19,7 +19,8 @@
     "pre-commit": "unset ELECTRON_RUN_AS_NODE && npm run check && git add .",
     "prepare": "is-ci || husky install",
     "sart": "cross-env NODE_ENV=development webpack serve --open",
-    "t": "tsc"
+    "t": "tsc",
+    "emulators:start": "VITE_USE_EMULATORS=true firebase emulators:start --only functions,firestore,auth,storage --import=./emulators.backup"
   },
   "dependencies": {
     "@emotion/react": "^11.5.0",
@@ -69,6 +70,7 @@
     "yjs": "^13.5.34"
   },
   "devDependencies": {
+    "firebase-admin": "10.0.2",
     "@babel/core": "^7.17.8",
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-react": "^7.16.7",
@@ -126,6 +128,7 @@
     "webpack": "^5.49.0",
     "webpack-cli": "^4.7.2",
     "webpack-dev-server": "^3.11.2",
-    "workbox-webpack-plugin": "^6.2.2"
+    "workbox-webpack-plugin": "^6.2.2",
+    "tsm": "^2.2.1"
   }
 }
