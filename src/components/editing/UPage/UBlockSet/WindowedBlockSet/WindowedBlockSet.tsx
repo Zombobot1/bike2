@@ -60,8 +60,7 @@ class UBlocksWindow {
     let acc = 0
 
     while (this.#i < ublocks.length) {
-      this.#i++
-      acc += getLettersNumber(ublocks[this.#i])
+      acc += getLettersNumber(ublocks[this.#i++])
       if (acc > n) break
     }
 

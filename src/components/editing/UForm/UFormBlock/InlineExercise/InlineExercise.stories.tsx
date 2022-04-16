@@ -108,9 +108,9 @@ const invalid: T = {
   ]),
 }
 
-export const Default = () => T(ieBlock)
-export const Submitted = () => T(submitted)
-export const Invalid = () => T(invalid)
+export const Default = T(ieBlock)
+export const Submitted = T(submitted)
+export const Invalid = T(invalid)
 export const Editing = () => T3(e([ie()], true))
 export const Filling = () => T3(e([ieBlock]))
 
