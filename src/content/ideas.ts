@@ -10,10 +10,18 @@ const iDTO = (updates: Bytes[], upageId = 'pets-and-animals'): IdeaDTO => ({
   updates,
 })
 
-const itDTO = (preview: str, upageId: str, dataId: str, createdAt: num, stageId: str): TrainingDTO => ({
+const itDTO = (
+  preview: str,
+  upageId: str,
+  dataId: str,
+  createdAt: num,
+  stageId: str,
+  userId = 'cat-lover',
+): TrainingDTO => ({
+  userId,
   upageId,
   preview,
-  dataId,
+  ideaId: dataId,
   createdAt,
   repeatAt: 16e8,
   idAndIndicators: { r: { errorRate: 0, priority: 'medium', repeatAt: 16e8, stageId, timeToAnswer: 60 } },
@@ -46,11 +54,11 @@ export const _fakeIdeaDTOs = [
   ['fq33', iDTO(i3, 'cats')], // top level
   ['fq4', iDTO(i4, 'cats')],
 ]
-
+const c1 = 'cat-lover1'
 export const _fakeIdeaTrainingDTOs = [
-  ['fq1', itDTO('What is the proper term for a group of kittens?', 'english', 'fq1', 16e8, '')],
-  ['fq2', itDTO('Why do cats rub against you?', 'rules', 'fq2', 162e7, 'day3-zuYt')],
-  ['fq3', itDTO('What breed of domestic cat has the longest fur?', 'english', 'fq3', 163e7, 'day15-wNC5')],
-  ['fq33', itDTO('What breed of domestic cat has the longest fur?', 'cats', 'fq33', 163e7, 'day15-wNC5')],
-  ['fq4', itDTO('A male cat is probably __ if he is both orange and black', 'cats', 'fq4', 164e7, 'day30-U4WD')],
+  ['fq1', itDTO('What is the proper term for a group of kittens?', 'english', 'q1', 16e8, '', c1)],
+  ['fq2', itDTO('Why do cats rub against you?', 'rules', 'q2', 162e7, 'day3-zuYt', c1)],
+  ['fq3', itDTO('What breed of domestic cat has the longest fur?', 'english', 'q3', 163e7, 'day15-wNC5', c1)],
+  ['fq33', itDTO('What breed of domestic cat has the longest fur?', 'cats', 'q3', 163e7, 'day15-wNC5', c1)],
+  ['fq4', itDTO('A male cat is probably __ if he is both orange and black', 'cats', 'q4', 164e7, 'day30-U4WD', c1)],
 ]

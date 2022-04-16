@@ -1,67 +1,74 @@
 import { assert, describe, it } from 'vitest'
-import { f, str } from '../../utils/types'
-import { uuidS } from '../../utils/wrappers/uuid'
+import { str } from '../../utils/types'
 import { _previewToStr } from '../editing/UPage/UPageState/crdtParser/previewGeneration'
-import { _mockServer } from '../editing/UPage/UPageState/crdtParser/UPageStateCR'
-import { BAD_IDEA, IdeaState, _ideaS } from './IdeaState'
-import { _ideaToStr } from './_stubs'
+import { BAD_IDEA } from './IdeaRelatedState'
+import { _ideaS, _mockIdeaServer } from './IdeaState'
+import { _ideaToStr, _trainings } from './_stubs'
 
 describe('IdeaState', () => {
   it('creates new with empty Bytes[]', () => {
-    const idea = new IdeaState('', [], { editing: true, getId: uuidS(0), sendUpdate: f })
+    const idea = _ideaS('')
 
     idea.add('', 'multiple-choice')
     idea.change('0', { correctAnswer: ['Option 1'] })
-    idea.handleUCardEvent('toggle-edit')
+    idea.save()
 
-    assert.equal(_ideaToStr(idea.state.data), '{, , false, [Option 1], [Option 1, Option 2]}')
+    assert.equal(_ideaToStr(idea.state.data), '{, , true, [Option 1], [Option 1, Option 2]}')
   })
 
   it('prevents empty creation', () => {
-    const idea = _ideaS('', { editing: true })
-    idea.handleUCardEvent('toggle-edit')
+    const idea = _ideaS('')
+    idea.save()
     assert.equal(_ideaToStr(idea.state.data), 'Add question and provide answer!')
 
     idea.add('', 'multiple-choice')
-    idea.handleUCardEvent('toggle-edit')
+    idea.save()
     assert.equal(_ideaToStr(idea.state.data), bad('{, , true, [], [Option 1, Option 2], Provide answer!}'))
 
     idea.change('0', { correctAnswer: ['Option 1'], $error: '' })
-    idea.handleUCardEvent('toggle-edit')
-    assert.equal(_ideaToStr(idea.state.data), '{, , false, [Option 1], [Option 1, Option 2], }')
+    idea.save()
+    assert.equal(_ideaToStr(idea.state.data), '{, , true, [Option 1], [Option 1, Option 2], }')
   })
 
-  it('collects changes into one update', () => {
-    const server = _mockServer([])
-    const idea = _ideaS('', { editing: true, sendUpdate: server.sendUpdate })
+  it('collects changes into one update for idea creation and change', () => {
+    const server = _mockIdeaServer([])
+    const idea = _ideaS('', { sendUpdate: server.sendUpdate, create: server.create })
 
     idea.onFactoryChange('0', 'text')
     idea.add('0', 'short-answer')
 
-    idea.handleUCardEvent('toggle-edit') // shouldn't trigger sendUpdate
+    idea.save() // shouldn't trigger sendUpdate
 
     idea.change('1', { correctAnswer: 'a', $error: '' })
-    idea.handleUCardEvent('toggle-edit')
+    idea.save()
 
     assert.equal(server.updates.length, 1)
-    assert.equal(_previewToStr(server.descriptions[0].preview), '<em>0</em><b>Added short-answer</b><em>a</em>')
+
+    idea.add('1', 'callout')
+    idea.change('2', { type: 'success', text: 'cat' })
+    idea.save()
+
+    assert.equal(server.updates.length, 2)
+    assert.equal(
+      _previewToStr(server.descriptions[0].preview),
+      '<b>Added callout</b><em>cat</em><s>info</s><em>success</em>',
+    )
   })
 
   it('loads data from server', () => {
-    const server = _mockServer([])
-    const idea = new IdeaState('', [...server.updates], {
-      editing: true,
-      getId: uuidS(0),
-      sendUpdate: server.sendUpdate,
-    })
-
+    const server = _mockIdeaServer([])
+    const idea = _ideaS('', { create: server.create })
+    idea.setType('error')
     idea.add('', 'short-answer')
     idea.change('0', { correctAnswer: 'a' })
-    idea.handleUCardEvent('toggle-edit')
+    idea.save()
 
     assert.equal(server.updates.length, 1)
-    const idea2 = new IdeaState('', [...server.updates], { editing: true, getId: uuidS(1), sendUpdate: f })
-    assert.equal(_ideaToStr(idea2.state.data), '{, , a, false, , true}')
+
+    // use mock training to avoid flakiness (if idea isNew it will append initial state to updates)
+    const idea2 = _ideaS('', { updates: [...server.updates], training: _trainings.mock })
+
+    assert.equal(_ideaToStr(idea2.state.data), '(error) {, , a, false, , true}')
   })
 })
 

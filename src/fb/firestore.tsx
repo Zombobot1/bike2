@@ -1,5 +1,4 @@
 import { createContext, useContext } from 'react'
-import { getUserId } from '../components/editing/UPage/userId'
 import { useC } from '../components/utils/hooks/hooks'
 import { useCurrentState } from '../components/utils/hooks/usePrevious'
 import { f, JSObject, JSObjects, OJSObject, str } from '../utils/types'
@@ -34,7 +33,6 @@ export function useFS() {
   const { getFS, setFS } = useFS_()
 
   const setDoc = useC((col: str, id: str, data: JSObject) => {
-    col = col === 'trainings' ? col + '-' + getUserId() : col
     const old = getFS()
     if (pendingInsertions.has(col + id)) {
       data = { ...pendingInsertions.get(col + id), ...data }
@@ -72,7 +70,7 @@ export function useFS() {
   const queryDocs = useC(<T extends keyof FSSchema>(query: UQuery<T>): JSObjects => {
     let allDocs = getFS()
       .find((c) => c.name === query.col)
-      ?.docs.map((d) => d.data)
+      ?.docs.map((d) => ({ ...d.data, id: d.id }))
     if (!allDocs) return []
 
     if (query.filters.length) {

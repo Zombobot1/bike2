@@ -49,6 +49,7 @@ const Sandbox = () => {
             LoginPage,
             UCard,
             IdeasViewer,
+            IdeaEditor,
             SB,
           ]}
           sections={['Editing core', 'Editing extras', 'UForms', 'Ideas', 'App', 'Utils', 'Sandbox']}
@@ -99,6 +100,7 @@ import * as UImageFile from './components/editing/UFile/UImageFile/UImageFile.st
 import * as SB from './components/utils/Sandbox.stories'
 import * as UCard from './components/studying/decks/UCard/UCard.stories'
 import * as IdeasViewer from './components/studying/IdeasViewer/IdeasViewer.stories'
+import * as IdeaEditor from './components/studying/IdeasViewer/IdeaEditor/IdeaEditor.stories'
 import { OuterShell } from './components/application/Shell'
 import { Suspense } from 'react'
 import { FetchingState } from './components/utils/Fetch/FetchingState/FetchingState'

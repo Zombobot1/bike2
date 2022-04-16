@@ -11,6 +11,8 @@ import { getUserId } from '../../userId'
 import { now } from '../../../../../utils/wrappers/timeUtils'
 import { getNewBlocksPreview, previewMaker } from './previewGeneration'
 import { ChangePreview, UPageChangeDescriptionDTO, UPageChangeDescriptionDTOs } from '../../../../../fb/FSSchema'
+import { CRDT } from '../../../../../utils/wrappers/CRDT'
+import { Patch } from 'immer'
 
 type UPageRawChange =
   | { t: 'change'; id: str; data: UBlockData; addPreview?: bool }
@@ -23,26 +25,28 @@ export type UPageRawChanges = UPageRawChange[]
 export type UPageChange = { changes: UPageRawChanges; preview: ChangePreview; blockId?: str }
 
 export class UPageStateCR {
-  #id: str
-  #undoManager: Y.UndoManager
-  #doc: Y.Doc
-  #sendUpdate: SendUpdate
+  #updatesSigner: UpdatesSigner
+  #cr: CRDT
   #tree: UPageShallowTree
-  #updates: Uint8Array[]
   #deleteUPageChanges: DeleteUpdates
-  #lastUpdate?: Bytes
 
   constructor(id: str, updates: Bytes[], sendUpdate: SendUpdate, deleteUpdates: DeleteUpdates) {
-    this.#id = id
-    const u8a = bytesToU8A(updates)
-    this.#updates = u8a
-    this.#doc = ydocFromArrays(this.#updates)
-    this.#undoManager = new Y.UndoManager(r(this.#doc), { captureTimeout: 0 })
+    this.#updatesSigner = new UpdatesSigner(id)
+    this.#cr = new CRDT(
+      updates,
+      (doc) => doc.getMap(ROOT),
+      (update, rawUpdate) => {
+        const description = this.#updatesSigner.sign(rawUpdate)
+        sendUpdate(id, update, description)
+      },
+      (updatesLeft, deletedShas) => {
+        this.#tree = this.#getTree()
+        this.#deleteUPageChanges(id, updatesLeft, deletedShas)
+      },
+    )
     this.#tree = this.#getTree()
 
-    this.#sendUpdate = sendUpdate
     this.#deleteUPageChanges = deleteUpdates
-    this.#lastUpdate = safe(updates.at(-1))
   }
 
   get state(): UPageData {
@@ -50,109 +54,73 @@ export class UPageStateCR {
   }
 
   applyUpdate = (updates: Bytes[]): UPageData | undefined => {
-    if (updates.length === this.#updates.length && this.#lastUpdate && updates.at(-1)?.isEqual(this.#lastUpdate)) return
+    if (this.#cr.applyUpdate(updates)) return this.state
+  }
 
-    const u8a = bytesToU8A(updates)
-    this.#updates = u8a
-    const update = Y.mergeUpdatesV2(u8a)
-    Y.applyUpdateV2(this.#doc, update) // updates are idempotent -> applying existing updates is fine
-    // this.#tree // all doc references are valid after updates merge (tested on Y.Text)
-    return this.state
+  // use for Idea related data only
+  _applyPatch = (preview: ChangePreview, patches: Patch[] | Patch) => {
+    if (!Array.isArray(patches)) patches = [patches]
+    if (!patches.length) return
+    this.#updatesSigner.prepare(preview)
+    this.#cr.change(patches)
   }
 
   change = ({ changes, preview, blockId }: UPageChange) => {
     if (!changes.length) return
-    // TODO: test memory occupation
-    return this.#change(
-      preview,
-      () => {
-        this.#doc.transact(() => {
-          changes.forEach((change) => {
-            switch (change.t) {
-              case 'insert':
-                this.#tree.insert(change.ublocks)
-                break
-              case 'delete':
-                this.#tree.delete(change.ids)
-                break
-              case 'change':
-                change.addPreview
-                  ? preview.push(...this.#tree.change(change.id, change.data))
-                  : this.#tree.change(change.id, change.data)
-                break
-              case 'change-type':
-                this.#tree.changeType(change.id, change.type, change.data)
-                break
-              case 'trigger-flag':
-                this.#tree.triggerFlag(change.name, change.type)
-                break
-            }
-          })
-        })
-      },
-      blockId,
-    )
+
+    this.#cr.change(() => {
+      changes.forEach((change) => {
+        switch (change.t) {
+          case 'insert':
+            this.#tree.insert(change.ublocks)
+            break
+          case 'delete':
+            this.#tree.delete(change.ids)
+            break
+          case 'change':
+            change.addPreview
+              ? preview.push(...this.#tree.change(change.id, change.data))
+              : this.#tree.change(change.id, change.data)
+            break
+          case 'change-type':
+            this.#tree.changeType(change.id, change.type, change.data)
+            break
+          case 'trigger-flag':
+            this.#tree.triggerFlag(change.name, change.type)
+            break
+        }
+
+        this.#updatesSigner.prepare(preview, blockId)
+      })
+    })
   }
 
-  append = (ublocks: UBlocks) =>
-    this.#change(previewMaker.bold('Appended', getNewBlocksPreview(ublocks)), () => this.#tree.append(ublocks))
+  append = (ublocks: UBlocks) => {
+    this.#cr.change(() => {
+      this.#tree.append(ublocks)
+      this.#updatesSigner.prepare(previewMaker.bold('Appended', getNewBlocksPreview(ublocks)))
+    })
+  }
 
-  undo = (): UPageData => this.#changeState(previewMaker.bold('Undo'), () => this.#undoManager.undo())
-  redo = (): UPageData => this.#changeState(previewMaker.bold('Redo'), () => this.#undoManager.redo())
+  undo = (): UPageData => {
+    this.#updatesSigner.prepare(previewMaker.bold('Undo'))
+    this.#cr.undo()
+    return this.state
+  }
+
+  redo = (): UPageData => {
+    this.#updatesSigner.prepare(previewMaker.bold('Redo'))
+    this.#cr.redo()
+    return this.state
+  }
 
   rollBackTo = (sha: str): UPageData => {
-    const shas = [] as strs
-
-    for (let i = this.#updates.length - 1; i > -1; i--) {
-      const updateSha = getSha(this.#updates[i])
-
-      if (updateSha === sha) {
-        // probably a better way
-        // const updatesToDelete = this.#updates.slice(i + 1).map((u) => Bytes.fromUint8Array(u))
-        this.#updates = this.#updates.slice(0, i + 1)
-
-        this.#doc = ydocFromArrays(this.#updates)
-        this.#undoManager = new Y.UndoManager(r(this.#doc), { captureTimeout: 0 })
-        this.#tree = this.#getTree()
-
-        this.#deleteUPageChanges(
-          this.#id,
-          this.#updates.map((u) => Bytes.fromUint8Array(u)),
-          shas,
-        )
-      }
-
-      shas.push(updateSha)
-    }
-
+    this.#cr.rollBackTo(sha)
     return this.state
-  }
-
-  #changeState = (preview: ChangePreview, changeFn: () => void, blockId?: str): UPageData => {
-    this.#change(preview, changeFn, blockId)
-    return this.state
-  }
-
-  #change = (preview: ChangePreview, changeFn: () => void, blockId?: str) => {
-    let update: Uint8Array | undefined
-
-    this.#doc.once('updateV2', (u: Uint8Array) => {
-      update = u
-    })
-
-    changeFn()
-
-    if (update) {
-      const description = signUpdate(this.#id, update, preview, blockId)
-      const bytes = Bytes.fromUint8Array(update)
-      this.#sendUpdate(this.#id, bytes, description)
-      this.#updates.push(update)
-      this.#lastUpdate = bytes
-    }
   }
 
   #getTree = (): UPageShallowTree => {
-    return new UPageShallowTree(r(this.#doc), (d, t) => {
+    return new UPageShallowTree(this.#cr.getRootRef<UPageCRData>(), (d, t) => {
       const block = new Y.Map() as UBlockCR
       block.set('data', new Y.Text(d))
       block.set('type', new Y.Text(t))
@@ -161,7 +129,28 @@ export class UPageStateCR {
   }
 }
 
-export function signUpdate(
+class UpdatesSigner {
+  #upageId: str
+  #preview: ChangePreview = []
+  #blockId?: str
+
+  constructor(upageId: str) {
+    this.#upageId = upageId
+  }
+
+  prepare = (preview: ChangePreview, blockId?: str) => {
+    this.#preview = preview
+    this.#blockId = blockId
+  }
+
+  sign = (update: Uint8Array): UPageChangeDescriptionDTO => {
+    const r = signUpdate(this.#upageId, update, this.#preview, this.#blockId)
+    this.prepare([])
+    return r
+  }
+}
+
+function signUpdate(
   upageId: str,
   update: Uint8Array,
   preview: ChangePreview,
@@ -215,18 +204,9 @@ const ROOT = 'root'
 
 type UBlockCR = YObject<{ type: str; data: Y.Text }>
 type UBlockMap = Y.Map<UBlockCR>
-type UPageCR = YObject<UPageFlags & { ublocks: UBlockMap }>
-
+type UPageCRData = UPageFlags & { ublocks: UBlockMap }
+type UPageCR = YObject<UPageCRData>
 const r = (y: Y.Doc): UPageCR => y.getMap(ROOT) as UPageCR
-
-const bytesToU8A = (bytes: Bytes[]) => bytes.map((v) => v.toUint8Array())
-
-function ydocFromArrays(arrays: Uint8Array[]): Y.Doc {
-  const doc = new Y.Doc()
-  const update = Y.mergeUpdatesV2(arrays)
-  Y.applyUpdateV2(doc, update)
-  return doc
-}
 
 export const _stateToBase64 = (state: { doc: Y.Doc }): str => _docToBase64(state.doc)
 const _docToBase64 = (doc: Y.Doc): str => fromUint8Array(Y.encodeStateAsUpdateV2(doc))

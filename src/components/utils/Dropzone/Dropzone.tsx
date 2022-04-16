@@ -65,7 +65,7 @@ export function Dropzone({ filesS, label = 'files', readFromKeyboard, icon, isUp
 const Vr = styled('div')(({ theme }) => ({
   height: '25px',
   width: '8px',
-  borderRight: `1px solid ${theme.palette.grey['500']}`,
+  borderRight: `1px solid ${theme.apm('200')}`,
 }))
 
 const DropArea = styled(Stack)(({ theme }) => ({
