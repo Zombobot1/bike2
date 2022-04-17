@@ -37,7 +37,7 @@ describe('BlockAutocomplete', () => {
   it('turns block and preserves data', () => {
     show(BlockAutocomplete.AutocompleteCompletes, '2rem')
     got('block-menu-h').click({ force: true }) // realClick produces anomalies
-    got('turn-into').realHover()
+    got('turn-into').trigger('mouseenter')
     got('heading-1').click()
     saw('cat')
     cy.get('h2').should('exist')
