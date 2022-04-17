@@ -108,8 +108,7 @@ export class IdeaRelatedState {
   toggleFreeze = (ucardId: str) => {
     if (!this.#training) throw new Error('Cannot change priority in new idea')
     const info = findInObject(this.#training.idAndIndicators, ucardId)
-    if (info.frozen) delete info.frozen
-    else info.frozen = true
+    info.frozen = !info.frozen
 
     const frozen = Array.from(Object.values(this.#training.idAndIndicators)).every(({ frozen }) => frozen)
 

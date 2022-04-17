@@ -79,7 +79,10 @@ export class UPageState implements UPageEditor {
   deriveTOC = (): TOCs => this.#editor._getTree().deriveTOC()
 
   readonly = () => false // TODO: add flag to UPage, manage permissions
+
+  context = (id: str) => this.#editor.context(id)
   globalContext = () => 'upage' as const
+  getUPageId = () => this.#editor.getUPageId()
 
   createUGrid = (id: str, side: 'right' | 'left') =>
     this.#editor._change((tree) => {
@@ -110,11 +113,9 @@ export class UPageState implements UPageEditor {
 
     return update
   }
-
   triggerFullWidth = () => this.#flag('fullWidth')
-  triggerTurnOffTOC = () => this.#flag('turnOffTOC')
 
-  context = (id: str) => this.#editor.context(id)
+  triggerTurnOffTOC = () => this.#flag('turnOffTOC')
 
   setStateSetter = (s: (s: State) => void) => this.#editor.setStateSetter(s)
 

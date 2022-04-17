@@ -6,7 +6,7 @@ import { backend } from './useData'
 
 export function sendIdeaUpdate(id: str, update: Bytes, description: UPageChangeDescriptionDTO) {
   backend.appendDataToArray('ideas', id, 'updates', update)
-  backend.addData('upageChanges', uuid(), description)
+  backend.setData('upageChanges', uuid(), description)
 }
 
 export type DeleteUPageUpdates = (id: str, updatesLeft: Bytes[], _shas: strs) => void

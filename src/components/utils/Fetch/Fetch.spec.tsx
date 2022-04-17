@@ -3,13 +3,13 @@ import * as Fetch from './Fetch.stories'
 
 describe('Fetch', () => {
   it('Shows data', () => {
-    show(Fetch.Success)
+    show(Fetch.ExistingData)
     saw('test')
   })
 
   it('Shows error', () => {
     doNotFret()
-    show(Fetch.Fail)
+    show(Fetch.Fail404)
     saw('Error!')
   })
 

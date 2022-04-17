@@ -29,29 +29,27 @@ function useFSData_<T extends keyof FSSchema>(
   return [data as FSSchema[T], setData_]
 }
 
-// TODO: test next use cases
-// if initial data provided & doc exists it returns initial data and then the actual doc
-//    if createIfNotExist == true it returns initialData only if doc doesn't exists (& creates it)
-// if defferCreation == true it doesn't rise exception, and when doc is created (via setData_) subscribes to it on next react rerender
-
 export function useData<T extends keyof FSSchema>(
   col: T,
   id: str,
   initialData?: FSSchema[T],
-  { defferCreation = false, createIfNotExist = false } = {},
+  { avoidCreation = false, createIfNotExist = false } = {}, //use with care
 ): [FSSchema[T], (d: Partial<FSSchema[T]>) => void] {
+  if (avoidCreation && createIfNotExist) {
+    throw new Error(`defferCreation and createIfNotExist can't be true at the same time`)
+  }
   if (!isInProduction) return useFSData_(col, id, initialData)
 
   const setData_ = useCallback((data: Partial<FSSchema[T]>) => setData(col, id, data), [])
-  const initial = initialData && !createIfNotExist ? { initialData } : undefined
+  const initial = initialData && !createIfNotExist && !avoidCreation ? { initialData } : undefined
   const { data } = useFirestoreDocData(doc(useFirestore(), col, id), initial) // https://github.com/FirebaseExtended/reactfire/blob/main/docs/use.md#show-a-single-document
-  if (!data && initialData && createIfNotExist) {
-    addData(col, id, initialData)
+  if (!data && initialData && !avoidCreation) {
+    setData(col, id, initialData)
     return [initialData, setData_]
   }
 
   if (!data) {
-    if (defferCreation && initialData) return [initialData, setData_]
+    if (avoidCreation && initialData) return [initialData, setData_]
     throw new Error(`Document ${id} in ${col} not found`)
   }
   return [data as FSSchema[T], setData_]
@@ -86,11 +84,6 @@ export function useFirestoreData() {
     return waitABit() as Promise<void>
   })
 
-  const addData = useC(<T extends keyof FSSchema>(col: T, id: str, data: FSSchema[T]) => {
-    setDoc(col, id, data)
-    return waitABit() as Promise<void>
-  })
-
   const appendDataToArray = useC(<T extends keyof FSSchema>(col: T, id: str, name: keyof FSSchema[T], data: Bytes) => {
     appendToArray(col, id, name as str, data)
     return waitABit() as Promise<void>
@@ -98,18 +91,15 @@ export function useFirestoreData() {
 
   return {
     setData,
-    addData,
     getData,
     appendDataToArray,
   }
 }
 
 const d = (col: str, id: str) => doc(getFirestore(), col, id)
-// TODO: test that merge == true doesn't affect document creation (to delete addData)
+
 const setData = <T extends keyof FSSchema>(col: T, id: str, data: Partial<FSSchema[T]>, merge = true): Promise<void> =>
   setDoc(d(col, id), data as DocumentData, { merge })
-const addData = <T extends keyof FSSchema>(col: T, id: str, data: FSSchema[T]): Promise<void> =>
-  setData(col, id, data, false)
 
 const getData = <T extends keyof FSSchema>(col: T, id: str): Promise<FSSchema[T]> =>
   getDoc(d(col, id)).then((snap) => snap.data()) as Promise<FSSchema[T]>
@@ -119,7 +109,6 @@ const appendDataToArray = <T extends keyof FSSchema>(col: T, id: str, arrayName:
 
 export let backend = {
   setData,
-  addData,
   getData,
   appendDataToArray,
 }
@@ -127,7 +116,6 @@ export let backend = {
 if (!isInProduction) {
   const error = () => Promise.reject(new Error('No server provided'))
   backend.setData = error
-  backend.addData = error
   backend.getData = error as <T>() => Promise<T>
   // backend.queryData = error as <T>() => Promise<T[]>
   backend.appendDataToArray = error

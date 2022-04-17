@@ -11,8 +11,9 @@ import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
 import { UVideoFile } from './UVideoFile/UVideoFile'
 import { PaddedBox } from '../UPage/UBlock/PaddedBox'
 import { isNotFullWidthBlock, UFileData } from '../UPage/ublockTypes'
+import { UFile as UFileP } from "./types";
 
-export function UFile_({ id, data: d, setData, readonly }: UBlockContent) {
+export function UFile_({ id, data: d, setData, readonly, upageId }: UFile) {
   const data = d as UFileData
   const { fileS, isUploading, deleteFile } = useUFile(id, (src, name) => setData(id, { name, src }))
   if (!data.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
@@ -25,7 +26,7 @@ export function UFile_({ id, data: d, setData, readonly }: UBlockContent) {
         <Delete
           onClick={prevented(() => {
             setData(id, { src: '' })
-            deleteFile(id)
+            deleteFile(id, upageId)
           })}
         >
           <DeleteRoundedIcon />
@@ -35,7 +36,7 @@ export function UFile_({ id, data: d, setData, readonly }: UBlockContent) {
   )
 }
 
-export function UFile(ps: UBlockContent) {
+export function UFile(ps: UFileP) {
   const nfw = isNotFullWidthBlock(ps.type)
   return (
     <PaddedBox sx={{ width: nfw ? 'auto' : '100%' }}>

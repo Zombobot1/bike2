@@ -3,16 +3,16 @@
   "bucket": "universe-55cec.appspot.com",
   "contentType": "application/octet-stream",
   "metageneration": 1,
-  "generation": 1649586387372,
+  "generation": 1650213593826,
   "storageClass": "STANDARD",
   "etag": "someETag",
   "contentDisposition": "inline",
   "contentEncoding": "identity",
   "downloadTokens": [
-    "0404461b-07bd-471b-b400-72fde05fab72"
+    "2cca5517-7d61-4fb1-a321-a195d898ed7f"
   ],
-  "timeCreated": "2022-04-10T10:26:27.371Z",
-  "updated": "2022-04-10T10:26:27.374Z",
+  "timeCreated": "2022-04-17T16:39:53.825Z",
+  "updated": "2022-04-17T16:39:53.828Z",
   "size": 368685,
   "md5Hash": "MD2iLQl6bYG4QcIzqDm0sw==",
   "crc32c": "2405533059"

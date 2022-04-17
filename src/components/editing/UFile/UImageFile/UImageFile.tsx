@@ -1,6 +1,5 @@
 import { useMount } from '../../../utils/hooks/hooks'
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded'
-import { UBlockContent } from '../../types'
 import { useUImageFile } from '../useUFile'
 import { alpha, IconButton, styled } from '@mui/material'
 import { str } from '../../../../utils/types'
@@ -10,8 +9,9 @@ import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'
 import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 import { UBlockIdAttribute, UMediaFileData } from '../../UPage/ublockTypes'
 import { fileUploader } from '../FileUploader'
+import { UFile } from '../types'
 
-export function UImageFile({ id, data: d, setData, readonly }: UBlockContent) {
+export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
   const data = d as UMediaFileData
   const [tmpSrc, setTmpSrc] = useState('')
 
@@ -31,7 +31,7 @@ export function UImageFile({ id, data: d, setData, readonly }: UBlockContent) {
 
   useMount(() => {
     if (!data.src && fileUploader.hasImage(id)) setTmpSrc(fileUploader.startUpload(id, onUpload))
-    return () => fileUploader.unsubscribe(id)
+    return () => fileUploader.unsubscribe(id, upageId)
   })
 
   if (!tmpSrc && !data.src) return <Drop1zone {...ps} label="image" icon={<ImageRoundedIcon />} />
@@ -53,7 +53,7 @@ export function UImageFile({ id, data: d, setData, readonly }: UBlockContent) {
           size="small"
           onClick={() => {
             setData(id, { src: '' })
-            ps.deleteFile(id)
+            ps.deleteFile(id, upageId)
           }}
         >
           <DeleteRoundedIcon />

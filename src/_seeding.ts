@@ -9,7 +9,6 @@ import { UPageStateCR } from './components/editing/UPage/UPageState/crdtParser/U
 import { f } from './utils/types'
 import { _pageDTOs } from './content/pages'
 import { _generators } from './components/editing/UPage/UPageState/crdtParser/_fakeUPage'
-import _seedUsers from './_initUsers'
 import { backend } from './fb/useData'
 
 const { image } = _generators
@@ -61,33 +60,6 @@ async function _seedStorage() {
 
 export async function _seed() {
   await _initFB()
-  await _seedUsers()
   await _seedStorage()
   await _seedCollections()
-}
-
-export function wrapPromise(promise: Promise<unknown>) {
-  let status = 'pending'
-  let result: unknown
-  const suspender = promise.then(
-    (r) => {
-      status = 'success'
-      result = r
-    },
-    (e) => {
-      status = 'error'
-      result = e
-    },
-  )
-  return {
-    read() {
-      if (status === 'pending') {
-        throw suspender
-      } else if (status === 'error') {
-        throw result
-      } else if (status === 'success') {
-        return result
-      }
-    },
-  }
 }

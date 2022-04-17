@@ -1,13 +1,13 @@
 import { Box } from '@mui/material'
 import { _blocks } from '../../../../content/blocks'
 import { f } from '../../../../utils/types'
-import { UBlockContent } from '../../types'
 import { _generators } from '../../UPage/UPageState/crdtParser/_fakeUPage'
 import { UAudioFile } from './UAudioFile'
+import { UFile } from '../types'
 
 const { audio } = _generators
 
-function T(ps: UBlockContent) {
+function T(ps: UFile) {
   return (
     <Box sx={{ width: 500 }}>
       <UAudioFile {...ps} />
@@ -15,11 +15,12 @@ function T(ps: UBlockContent) {
   )
 }
 
-const base: UBlockContent = {
+const base: UFile = {
   id: '',
   data: '',
   setData: f,
   type: 'audio',
+  upageId: '',
 }
 
 export const ShowsAudio = () => T({ ...base, ..._blocks.pets.fluffyAudio })

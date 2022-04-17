@@ -10,7 +10,7 @@ import { isInProduction } from './utils'
 export type SendUPageUpdate = (id: str, update: Bytes, description: UPageChangeDescriptionDTO) => void
 export function sendUPageUpdate(id: str, update: Bytes, description: UPageChangeDescriptionDTO) {
   backend.appendDataToArray('upages', id, 'updates', update)
-  backend.addData('upageChanges', uuid(), description)
+  backend.setData('upageChanges', uuid(), description)
 }
 
 export type DeleteUPageUpdates = (id: str, _updatesLeft: Bytes[], _shas: strs) => void
@@ -29,6 +29,6 @@ export function sendWorkspaceUpdate(update: Bytes) {
   backend.appendDataToArray('workspaces', getUserId(), 'updates', update)
 }
 
-export function deleteFile(src: str) {
-  backend.setData('deletedFiles', uuid(), { src, deletedAt: now() })
+export function deleteFile(src: str, upageId: str) {
+  backend.setData('deletedFiles', uuid(), { src, upageId, deletedAt: now() })
 }

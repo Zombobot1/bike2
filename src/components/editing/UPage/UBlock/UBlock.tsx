@@ -217,7 +217,7 @@ function Content_({ type, commonPs, utextPs }: ContentP) {
   return (
     <>
       {isUTextBlock(type) && <UText {...utextPs} />}
-      {isUFileBlock(type) && <UFile {...commonPs} />}
+      {isUFileBlock(type) && <UFile {...commonPs} upageId={upage.getUPageId()} />}
       {isUFormBlock(type) && <UFormBlock {...commonPs} />}
       {isUListBlock(type) && <UList {...commonPs} toggleOpen={upage.triggerUListOpen} />}
       {type === 'exercise' && <UForm {...commonPs} handleUFormEvent={upage.handleUFormEvent} />}

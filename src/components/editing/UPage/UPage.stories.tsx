@@ -22,6 +22,8 @@ export const Pets = T('pets-and-animals')
 export const Medium = T('medium')
 export const Small = T('small')
 export const No = () => null
+//move blocks from medium to small -> used in specification as an example for `setData`, `getData` and `appendToArray`
+export const MoveBlocks = () => null
 
 export default {
   title: 'Editing core/UPage',

@@ -88,6 +88,9 @@ function FB({ children }: OuterShell) {
     firestoreSettings.experimentalForceLongPolling = true
   }
 
+  // Got called three times in a row, threw [Settings were already set, can't set settings multiple times] error
+  // Reloading emulators seems to fix it -> maybe some modified data caused it?
+  // Drag and drop of blocks started duplicating blocks
   // Emulate Firestore
   if (shouldUseEmulator) {
     connectFirestoreEmulator(getFirestore(), 'localhost', 8080)

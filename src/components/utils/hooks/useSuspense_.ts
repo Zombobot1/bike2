@@ -1,5 +1,4 @@
 import { str, bool } from '../../../utils/types'
-import { wrapPromise } from '../../../_seeding'
 import { useMount } from './hooks'
 
 const map = new Map<str, { finished: bool; result?: unknown; error?: unknown }>()
@@ -20,7 +19,7 @@ export function useSuspense_<T>(id: str, promise: () => Promise<T>) {
 
     map.set(id, { finished: false })
 
-    wrapPromise(p).read()
+    _wrapPromise(p).read()
   } else if (map.get(id)?.error) {
     // map.delete(id) // causes endless rerender -> memory leak
     throw map.get(id)?.error
@@ -31,4 +30,30 @@ export function useSuspense_<T>(id: str, promise: () => Promise<T>) {
   })
 
   return map.get(id)?.result
+}
+
+function _wrapPromise(promise: Promise<unknown>) {
+  let status = 'pending'
+  let result: unknown
+  const jabka = promise.then(
+    (r) => {
+      status = 'success'
+      result = r
+    },
+    (e) => {
+      status = 'error'
+      result = e
+    },
+  )
+  return {
+    read() {
+      if (status === 'pending') {
+        throw jabka
+      } else if (status === 'error') {
+        throw result
+      } else if (status === 'success') {
+        return result
+      }
+    },
+  }
 }

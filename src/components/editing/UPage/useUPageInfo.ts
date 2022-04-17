@@ -60,6 +60,7 @@ export let upage: UPageEditor = {
   handleUFormEvent: f,
   context: () => 'upage',
   globalContext: () => 'upage',
+  getUPageId: () => '',
   _da: () => 'net',
 }
 

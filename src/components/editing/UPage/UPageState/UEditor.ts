@@ -49,6 +49,7 @@ export interface UBlocksManagement extends BasicUBlocksManagement {
 
 interface UPageStateLookup {
   context: (id: str) => UBlockContext
+  getUPageId: () => str
   globalContext: () => 'ucard' | 'upage'
 }
 
@@ -82,7 +83,7 @@ type Constructor = {
   updates: Bytes[]
 
   addImage: (id: str, blobUrl: str) => void
-  deleteFiles: (ids: str | strs) => void
+  deleteFiles: (ids: str | strs, upageId: str) => void
 
   sendUpdate: SendUPageUpdate
   deleteUpdates: DeleteUPageUpdates
@@ -94,6 +95,8 @@ type Constructor = {
 }
 
 export class UEditor implements UEditorI {
+  #id: str
+
   #cr: UPageStateCR
   #tree: UPageTree
 
@@ -101,7 +104,7 @@ export class UEditor implements UEditorI {
   #setState: (state: UEditorState) => void = f
 
   #addImage: (id: str, blobUrl: str) => void // other files are added outside this class
-  #deleteFiles: SetStrs
+  #deleteFiles: (src: strs, upageId: str) => void
   #getId: (options?: { long?: bool }) => str
 
   #onPageAdded: OnPageAdded
@@ -109,6 +112,7 @@ export class UEditor implements UEditorI {
 
   constructor(args: Constructor) {
     this.#getId = ({ long = false } = {}) => args.getId({ short: !long })
+    this.#id = args.id
 
     this.#cr = new UPageStateCR(args.id, args.updates, args.sendUpdate, args.deleteUpdates)
     this.#state.data = this.#cr.state
@@ -120,7 +124,9 @@ export class UEditor implements UEditorI {
     this.#onPagesDeleted = args.onPagesDeleted
 
     const { onPageAdded, onPagesDeleted, deleteFiles } = args
-    this.#tree = new UPageTree(this.#state.data, this.#getId, onPageAdded, onPagesDeleted, deleteFiles)
+    this.#tree = new UPageTree(this.#state.data, this.#getId, onPageAdded, onPagesDeleted, (src) =>
+      deleteFiles(src, this.#id),
+    )
   }
 
   get state(): UEditorState {
@@ -128,9 +134,10 @@ export class UEditor implements UEditorI {
   }
 
   setStateSetter = (s: (s: UEditorState) => void) => (this.#setState = s)
-  globalContext = () => 'upage' as const
 
   context = (id: str): UBlockContext => this.#tree.context(id)
+  globalContext = () => 'upage' as const
+  getUPageId = () => this.#id
 
   _applyPatch = (preview: ChangePreview, patches: Patch | Patch[]) => this.#cr._applyPatch(preview, patches)
 
@@ -336,7 +343,7 @@ export class UEditor implements UEditorI {
 
     const srcAfter = this.#tree.getAllSrc()
     const deletedSrc = srcBefore.filter((src) => !srcAfter.includes(src))
-    if (deletedSrc.length) this.#deleteFiles(deletedSrc)
+    if (deletedSrc.length) this.#deleteFiles(deletedSrc, this.#id)
 
     this.#state = { ...this.#state }
     this.#state.data = newState
@@ -415,12 +422,8 @@ export class UEditor implements UEditorI {
   }
 
   #remakeTree = (data?: WithUBlocks) => {
-    this.#tree = new UPageTree(
-      data || this.#state.data,
-      this.#getId,
-      this.#onPageAdded,
-      this.#onPagesDeleted,
-      this.#deleteFiles,
+    this.#tree = new UPageTree(data || this.#state.data, this.#getId, this.#onPageAdded, this.#onPagesDeleted, (src) =>
+      this.#deleteFiles(src, this.#id),
     )
   }
 

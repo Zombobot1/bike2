@@ -156,14 +156,16 @@ function signUpdate(
   preview: ChangePreview,
   blockId?: str,
 ): UPageChangeDescriptionDTO {
-  return {
+  const r = {
     upageId,
     sha: getSha(update),
-    block: blockId || undefined,
+    block: blockId,
     date: now(),
     preview,
     user: getUserId(),
   }
+  if (!blockId) delete r.block
+  return r
 }
 
 type Updates = { update: Bytes; description: UPageChangeDescriptionDTO }[]

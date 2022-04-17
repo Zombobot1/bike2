@@ -11,7 +11,7 @@ type UploadingFile = { tmpSrc: str; onUpload?: SetStr; uploaded?: bool }
 const idAndFile: Map<str, UploadingFile> = new Map()
 
 class FileUploader {
-  #deleteFile: SetStr
+  #deleteFile: (src: str, upageId: str) => void
 
   constructor(removeFile = deleteFile) {
     this.#deleteFile = removeFile
@@ -42,7 +42,7 @@ class FileUploader {
   hasImage = (id: str): bool => idAndFile.has(id) // used in new UImage
 
   // called on unmount
-  unsubscribe = (id: str) => {
+  unsubscribe = (id: str, upageId: str) => {
     if (!idAndFile.has(id)) return
 
     const data = safe(idAndFile.get(id))
@@ -51,21 +51,21 @@ class FileUploader {
     // unmount happened before src was set -> delete file (image component will be broken)
     data.onUpload = (src) => {
       idAndFile.delete(id)
-      this.#deleteFile(src)
+      this.#deleteFile(src, upageId)
     }
   }
 
-  delete = (ids: str | strs) => {
+  delete = (ids: str | strs, upageId: str) => {
     if (!Array.isArray(ids)) ids = [ids]
 
     ids.forEach((id) => {
       const data = idAndFile.get(id)
-      if (!data || data.uploaded) return this.#deleteFile(id)
+      if (!data || data.uploaded) return this.#deleteFile(id, upageId)
 
       // delete requested before src was set -> delete file
       data.onUpload = (src) => {
         idAndFile.delete(id)
-        this.#deleteFile(src)
+        this.#deleteFile(src, upageId)
       }
     })
   }
@@ -89,6 +89,6 @@ export let fileUploader = new FileUploader()
 
 export function _mockFileUploader() {
   fileUploader = new FileUploader(f)
-  fileUploader.delete([''])
+  fileUploader.delete([''], '')
   return () => (fileUploader = new FileUploader())
 }

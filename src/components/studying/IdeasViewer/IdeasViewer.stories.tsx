@@ -26,7 +26,8 @@ const ws1: WorkspaceStructure = {
   trash: [],
 }
 
-export const Default = () => T(ws1)
+//used as an example for `useCollectionData`
+export const SeeExistingAndCreateNew = () => T(ws1)
 
 export default {
   title: 'Ideas/IdeasViewer',

@@ -4,13 +4,16 @@ import { f } from '../../../../utils/types'
 import { UBlockContent } from '../../types'
 import { _generators } from '../../UPage/UPageState/crdtParser/_fakeUPage'
 import { UImageFile } from './UImageFile'
+import { useState } from 'react'
+import { UMediaFileData } from '../../UPage/ublockTypes'
 
 const { image } = _generators
 
 function T(ps: UBlockContent) {
+  const [state, setState] = useState(ps.data as UMediaFileData)
   return (
     <Box sx={{ width: 500 }}>
-      <UImageFile {...ps} />
+      <UImageFile {...ps} data={state} setData={(_, src) => setState(src as UMediaFileData)} upageId="" />
     </Box>
   )
 }

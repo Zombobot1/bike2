@@ -72,5 +72,6 @@ export type ChangePreview = PreviewItem[]
 export interface DeleteFileDTO {
   src: str
   deletedAt: num
+  upageId: str
 }
 export type DeleteFileDTOs = DeleteFileDTO[]

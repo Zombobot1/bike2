@@ -1,10 +1,7 @@
 Naming
   Suffixes / Prefixes
     DTO - data transfer objects
-    ComponentP - interface for a component
     stateS - compact state
-    ComponentT - template for stories
-    argsA - arguments for stories
 
 Prefer
   Inline export

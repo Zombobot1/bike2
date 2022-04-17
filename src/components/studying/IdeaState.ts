@@ -68,11 +68,13 @@ export class IdeaState implements IdeaEditor {
   hasUnsavedChanges = (): bool => this.#idea.hasUnsavedChanges
 
   globalContext = () => 'ucard' as const
+  context = (id: str) => this.#editor.context(id)
+  getUPageId = () => this.#editor.getUPageId()
 
   readonly = () => false // TODO: if user doesn't have write access to page it is true
-
   preview = (ucardId: str): str => this.#idea.preview(ucardId)
   toggleFreeze = (ucardId: str) => this.#idea.toggleFreeze(ucardId)
+
   changePriority = (ucardId: str, priority: UCardPriority) => this.#idea.changePriority(ucardId, priority)
 
   save = (): bool => {
@@ -104,8 +106,6 @@ export class IdeaState implements IdeaEditor {
     changes = diffAsPatches(oldData, { type })
     this.#editor._applyPatch(previewMaker.bold('Changed idea type'), changes)
   }
-
-  context = (id: str) => this.#editor.context(id)
 
   setStateSetter = (s: (s: State) => void) => this.#editor.setStateSetter(s)
 
@@ -157,7 +157,7 @@ export function useIdeaState(id: str, upageId: str, training?: TrainingIdAndDTO)
   const ownerId = workspace.getOwner(upageId)
   const created = !!training
   const [ideaUpdates, setUpdates] = useData('ideas', id, !created ? { ...new IdeaDTO(), upageId } : undefined, {
-    defferCreation: !created,
+    avoidCreation: !created,
   })
 
   const [changer] = useState(

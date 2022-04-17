@@ -35,6 +35,14 @@ export const BlocksDeletion = () => T(_removalPage)
 export const OneEmptyBlock = () => T([t()])
 export const WihLatex = () => T([_blocks.test.fallingCatsShort1, _blocks.test.fallingCatsShort3])
 export const Other = () => T([t('0'), t('ab'), t('2')])
+//used as an example for FileUploader specification
+export const PastesAndDeletesImage = () => T([t()])
+//TODO: Add a test to UBlockSet:
+//  - upload image
+//- check that image is shown
+//- delete image
+//- click on "Check deletedFiles collection" btn
+//- check that correct file name is shown
 
 export default {
   title: 'Editing core/UBlocksSet',
