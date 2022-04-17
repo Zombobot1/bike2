@@ -1,7 +1,7 @@
 import { Modal, Box, styled, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import { TrainingIdAndDTO } from '../../../fb/FSSchema'
-import { BoolState, str, strs } from '../../../utils/types'
+import { bool, Fn, str, strs } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 import { uuid } from '../../../utils/wrappers/uuid'
 
@@ -30,16 +30,13 @@ import { IdeaEditor } from './IdeaEditor/IdeaEditor'
 // TODO: client side filter by preview, sort by error rate | created data
 // TODO: frozen are hidden by def, add btn to show them (frozen - text.secondary) (but hide non frozen)
 // TODO: show info (flex end on desktop, as 2nd row on mob): created date (text.2ndary), error rate (if > 10%), stage: borderLeft: 'solid 2px red',
-type IdeaIdAndTraining = { id: str; training?: TrainingIdAndDTO }
+
 export function IdeasViewer() {
   const [topPaths] = useState(() => workspace.topPaths()) // TODO: update on paths change
   const [selectedUPageI, setSelectedUPageI] = useState(0) // TODO: handle empty workspace
   const selectedUPageId = topPaths[selectedUPageI]?.id || ''
   const pagesIn = workspace.getPagesIn(selectedUPageId)
-  const isEditorOpenS = useState(false)
-  const setIsEditorOpen = isEditorOpenS[1]
   const [ideaId, setIdeaId] = useState('')
-  const editorPs: EditorPs = { isEditorOpenS, upageId: selectedUPageId, ideaId }
 
   return (
     <IdeasViewer_>
@@ -58,26 +55,16 @@ export function IdeasViewer() {
         </Box>
         <IBtn
           icon={AddCircleOutlineRoundedIcon}
-          onClick={() => {
-            setIdeaId(uuid())
-            setIsEditorOpen(true)
-          }}
+          onClick={() => setIdeaId(uuid())}
           sx={{ marginLeft: 'auto' }}
           data-cy="new-idea"
         />
       </RStack>
       <Hr sx={{ marginBottom: '0.5rem' }} />
       <Fetch>
-        <Trainings
-          {...editorPs}
-          pagesTree={pagesIn}
-          editIdea={(training) => {
-            setIdeaId(training.ideaId)
-            setIsEditorOpen(true)
-          }}
-        />
+        <Trainings upageId={selectedUPageId} pagesTree={pagesIn} />
       </Fetch>
-      <EditorModal {...editorPs} />
+      <EditorModal isEditorOpen={!!ideaId} close={() => setIdeaId('')} upageId={selectedUPageId} ideaId={ideaId} />
     </IdeasViewer_>
   )
 }
@@ -90,48 +77,56 @@ const IdeasViewer_ = styled(Box)({
 interface EditorPs {
   ideaId: str
   training?: TrainingIdAndDTO
-  isEditorOpenS: BoolState
+  isEditorOpen: bool
+  close: Fn
   upageId: str
 }
 
-interface Trainings extends EditorPs {
-  pagesTree: strs
-  editIdea: (dto: TrainingIdAndDTO) => void
+function EditorModal({ ideaId, training, upageId, isEditorOpen, close }: EditorPs) {
+  return (
+    <Modal open={isEditorOpen}>
+      <Box sx={{ width: '100%', height: '100%' }}>
+        <IdeaEditor id={ideaId} training={training} upageId={upageId} close={close} />
+      </Box>
+    </Modal>
+  )
 }
 
-function Trainings({ editIdea, pagesTree, ...editorPs }: Trainings) {
+interface Trainings {
+  upageId: str
+  pagesTree: strs
+}
+
+function Trainings({ pagesTree, upageId }: Trainings) {
   const trainings = useCollectionData(q('trainings').where('userId', '==', getUserId()).orderBy('createdAt', 'desc'))
   const trainingsForPage = trainings.filter((t) => pagesTree.includes(t.upageId))
   // TODO: handle empty case
   return (
     <Stack spacing={1}>
       {trainingsForPage.map((dto) => (
-        <TrainingItem key={dto.ideaId} dto={dto} editIdea={editIdea} {...editorPs} />
+        <TrainingItem key={dto.ideaId} dto={dto} upageId={upageId} />
       ))}
     </Stack>
   )
 }
 
-interface TrainingItem extends EditorPs {
+interface TrainingItem {
+  upageId: str
   dto: TrainingIdAndDTO
-  editIdea: (dto: TrainingIdAndDTO) => void
 }
 
-function EditorModal({ ideaId, training, upageId, isEditorOpenS }: EditorPs) {
-  const [isEditorOpen, setIsEditorOpen] = isEditorOpenS
+function TrainingItem({ dto, upageId }: TrainingItem) {
+  const [open, setIsOpen] = useState(false)
   return (
-    <Modal open={isEditorOpen}>
-      <Box sx={{ width: '100%', height: '100%' }}>
-        <IdeaEditor id={ideaId} training={training} upageId={upageId} close={() => setIsEditorOpen(false)} />
-      </Box>
-    </Modal>
-  )
-}
-function TrainingItem({ dto, editIdea, ...editorPs }: TrainingItem) {
-  return (
-    <TrainingItem_ onClick={() => editIdea(dto)}>
+    <TrainingItem_ onClick={() => setIsOpen(true)}>
       <Typography sx={{ marginRight: 'auto' }}>{dto.preview}</Typography>
-      <EditorModal {...editorPs} training={dto} />
+      <EditorModal
+        isEditorOpen={open}
+        close={() => setIsOpen(false)}
+        ideaId={dto.ideaId}
+        upageId={upageId}
+        training={dto}
+      />
     </TrainingItem_>
   )
 }

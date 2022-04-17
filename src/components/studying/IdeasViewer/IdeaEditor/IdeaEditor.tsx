@@ -112,7 +112,6 @@ const UCards = styled(Box, { label: 'UCards' })(({ theme }) => ({
   padding: '1rem',
   width: '100%',
   backgroundColor: theme.palette.background.paper,
-  border: theme.bd(),
   borderRadius: theme.shape.borderRadius,
 }))
 
@@ -268,7 +267,6 @@ const EditorWrapper = styled(Box, { label: 'IdeaDataEditor' })(({ theme }) => ({
   width: '100%',
   height: '100%',
   backgroundColor: theme.palette.background.paper,
-  border: theme.bd(),
   borderRadius: theme.shape.borderRadius,
 }))
 
@@ -309,8 +307,8 @@ const CloseBtnWrapper = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 
   [`${theme.breakpoints.up('sm')}`]: {
-    right: '-1.35rem',
-    top: '-1.35rem',
+    right: '-1rem',
+    top: '-1rem',
   },
 }))
 

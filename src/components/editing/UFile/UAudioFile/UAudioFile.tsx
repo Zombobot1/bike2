@@ -1,5 +1,4 @@
 import AudiotrackRoundedIcon from '@mui/icons-material/AudiotrackRounded'
-import { UBlockContent } from '../../types'
 import { useUFile } from '../useUFile'
 import { UAudio } from '../../../utils/UAudio/UAudio'
 import { Drop1zone } from '../../../utils/Dropzone/Drop1zone'

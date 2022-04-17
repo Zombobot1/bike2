@@ -163,7 +163,7 @@ describe('UPageState', () => {
     page.add('', 'audio')
     page.change('1', { src: 's' })
     page.undo()
-    expect(deleteFiles).toBeCalledWith(['s'])
+    expect(deleteFiles).toBeCalledWith(['s'], 'pageId')
   })
 
   it('provides deleted block preview', () => {

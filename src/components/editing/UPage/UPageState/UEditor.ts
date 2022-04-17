@@ -3,7 +3,7 @@ import produce, { immerable, Patch } from 'immer'
 import { ChangePreview, PreviewTag } from '../../../../fb/FSSchema'
 import { DeleteUPageUpdates, SendUPageUpdate } from '../../../../fb/upageChangesAPI'
 import { safeSplit } from '../../../../utils/algorithms'
-import { str, num, Fn, strs, f, SetStrs, bool } from '../../../../utils/types'
+import { str, num, Fn, strs, f, bool } from '../../../../utils/types'
 import { safe, isStr } from '../../../../utils/utils'
 import { FocusType, NewBlockFocus } from '../../types'
 import {

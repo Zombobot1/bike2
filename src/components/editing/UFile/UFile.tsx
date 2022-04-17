@@ -1,6 +1,5 @@
 import { Stack, styled, Typography, IconButton } from '@mui/material'
 import { prevented } from '../../../utils/utils'
-import { UBlockContent } from '../types'
 import AttachFileRoundedIcon from '@mui/icons-material/AttachFileRounded'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
 import { useUFile } from './useUFile'
@@ -11,9 +10,9 @@ import { Drop1zone } from '../../utils/Dropzone/Drop1zone'
 import { UVideoFile } from './UVideoFile/UVideoFile'
 import { PaddedBox } from '../UPage/UBlock/PaddedBox'
 import { isNotFullWidthBlock, UFileData } from '../UPage/ublockTypes'
-import { UFile as UFileP } from "./types";
+import { UFile as UFileP } from './types'
 
-export function UFile_({ id, data: d, setData, readonly, upageId }: UFile) {
+export function UFile_({ id, data: d, setData, readonly, upageId }: UFileP) {
   const data = d as UFileData
   const { fileS, isUploading, deleteFile } = useUFile(id, (src, name) => setData(id, { name, src }))
   if (!data.src || isUploading) return <Drop1zone fileS={fileS} isUploading={isUploading} />
