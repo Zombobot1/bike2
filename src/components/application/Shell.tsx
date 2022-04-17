@@ -74,6 +74,7 @@ export function Shell() {
 }
 
 function FB({ children }: OuterShell) {
+  const [initialized, setInitialized] = useState(false)
   const app = useFirebaseApp()
   const auth = getAuth(app)
   const fs = getFirestore(app)
@@ -88,32 +89,34 @@ function FB({ children }: OuterShell) {
     firestoreSettings.experimentalForceLongPolling = true
   }
 
-  // Got called three times in a row, threw [Settings were already set, can't set settings multiple times] error
-  // Reloading emulators seems to fix it -> maybe some modified data caused it?
-  // Drag and drop of blocks started duplicating blocks
+  // Got called several times in a row, threw [Firestore has already been started and its settings can no longer be changed.] error
+  // hmr of Shell also caused this behaviour, because flag state would be lost on hmr
+  // initialized flag makes sure that connect to emulators functions get called only once
   // Emulate Firestore
-  if (shouldUseEmulator) {
+  if (shouldUseEmulator && !initialized) {
     connectFirestoreEmulator(getFirestore(), 'localhost', 8080)
     console.info(`Using Firestore emulator: http://localhost:8080`)
   }
 
   // Emulate Auth
-  if (shouldUseEmulator) {
+  if (shouldUseEmulator && !initialized) {
     connectAuthEmulator(auth, 'http://localhost:9099/', { disableWarnings: true })
     console.info(`Using Auth emulator: http://localhost:9099/`)
   }
 
   // Emulate Storage
-  if (shouldUseEmulator) {
+  if (shouldUseEmulator && !initialized) {
     connectStorageEmulator(getStorage(), 'localhost', 9199)
     console.info(`Using Storage emulator: http://localhost:9199/`)
   }
 
   // Emulate Cloud functions
-  if (shouldUseEmulator) {
+  if (shouldUseEmulator && !initialized) {
     connectFunctionsEmulator(getFunctions(), 'localhost', 5001)
     console.info(`Using Cloud functions emulator: http://localhost:5001/`)
   }
+
+  useMount(() => setInitialized(true))
 
   return (
     <AuthProvider sdk={auth}>
