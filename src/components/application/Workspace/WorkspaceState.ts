@@ -15,7 +15,6 @@ import {
 import { getInitialWorkspace, WorkspaceCR } from './WorkspaceCR'
 import { deepEqual } from 'fast-equals'
 import { sendWorkspaceUpdate } from '../../../fb/upageChangesAPI'
-import { structuredClone } from '../../../utils/wrappers/clone'
 import { useState } from 'react'
 import { useLocalStorage } from '../../utils/hooks/useLocalStorage'
 import useUpdateEffect from '../../utils/hooks/useUpdateEffect'

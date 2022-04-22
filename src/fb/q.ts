@@ -30,6 +30,12 @@ export class UQuery<T extends keyof FSSchema> {
 
     return query(colRef, ...filters)
   }
+
+  toString = (): str => {
+    const filters = this.filters.map((f) => `${f.prop}${f.op}${f.val}`).join(' ')
+    const order = this.order ? `${this.order.prop} ${this.order.type}` : ''
+    return `${this.col} ${filters} ${order}`.trim()
+  }
 }
 
 export const q = <T extends keyof FSSchema>(col: T): UQuery<T> => new UQuery(col)

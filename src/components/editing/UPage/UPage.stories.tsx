@@ -6,7 +6,7 @@ const Inner = () => {
   const l = useLocation()
   const id = l.pathname.slice(1)
   const workspace = useWorkspace(id)
-  return <UPage key={id} id={id} workspace={workspace.changer} />
+  return <UPage key={id} id={id} workspace={workspace.changer} _noOffsetFSB={true} />
 }
 
 const T = (id: 'pets-and-animals' | 'medium' | 'small') => () => {

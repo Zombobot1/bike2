@@ -3,8 +3,6 @@ import { str, strs } from '../../../utils/types'
 import { UPageNodesData, UPageNodeData } from './types'
 import { WorkspaceOpenness, _getWS, _navToStr } from './WorkspaceState'
 
-// NODE FAILS FROM TIME TO TIME
-
 describe('workspace', () => {
   it('derives navigation', () => {
     const ws = _getWS([p('0', [p('01'), p('*02')]), p('*1')])

@@ -1,5 +1,4 @@
 import { styled } from '@mui/material'
-import _ from 'lodash'
 import { bool, f, Fn, JSObject, num, str, strs } from './types'
 
 type E = {
@@ -115,7 +114,7 @@ export const cut = (string: str, length: num) => (string.length <= length ? stri
 
 export const mod = (n: num, m: num) => ((n % m) + m) % m
 
-export const isStr = (s: unknown): s is string => _.isString(s)
+export const isStr = (s: unknown): s is string => typeof s === 'string' // doesn't work for new String() - never use it
 
 export const isObjOrArr = (o: unknown): bool => typeof o === 'object' && o !== null
 export const isObj = (o: unknown): bool => typeof o === 'object' && o !== null && !Array.isArray(o)
@@ -131,3 +130,5 @@ export function log<State, Action>(f: (s: State, a: Action) => State): (s: State
     return new_
   }
 }
+
+// expoirt

@@ -1,7 +1,6 @@
 import { mount } from '@cypress/react'
 import { Box, hexToRgb } from '@mui/material'
 import { Provider } from 'jotai'
-import _ from 'lodash'
 import React from 'react'
 import { ErrorBoundary } from 'react-error-boundary'
 import { OuterShell } from '../components/application/Shell'
@@ -12,6 +11,7 @@ import { isCypress } from '../components/utils/hooks/isCypress'
 import { firestoreMockData } from '../content/firestoreMockData'
 import { FSProvider, setFSD } from '../fb/firestore'
 import { Fn, num, str } from './types'
+import { isStr } from './utils'
 
 export type CYChain = Cypress.Chainable<JQuery<HTMLElement>>
 
@@ -39,7 +39,7 @@ type TypeFn = (
   ...rest: TypeArgs[]
 ) => { click: (cy: str | TypeArgs, eq?: num | TypeArgs, ...rest: TypeArgs[]) => { type: TypeFn }; blur: Fn }
 export const type: TypeFn = (textOrCYorArr, textOrEQ, text, ...rest) => {
-  if (_.isString(textOrCYorArr)) _type(textOrCYorArr as str, textOrEQ as str | num, text as str)
+  if (isStr(textOrCYorArr)) _type(textOrCYorArr as str, textOrEQ as str | num, text as str)
   else {
     const args: TypeArgs[] = [textOrCYorArr, textOrEQ as TypeArgs, text as TypeArgs, ...rest].filter(Boolean)
     // type(['t'], ['utext', 1, 't'])
@@ -82,7 +82,7 @@ const _saw = (text: str, strict = false) =>
 type Color = 'c' | 'bg' | undefined
 type Colored = Array<str | (() => CYChain) | Color>
 function sawColored([el, color, type = 'c']: Colored) {
-  const element = (_.isString(el) ? () => cy.contains(el as str) : el) as () => CYChain
+  const element = (isStr(el) ? () => cy.contains(el as str) : el) as () => CYChain
   if (color === 'disabled') disabled(element())
   else {
     if (type === 'c') element().should('have.css', 'color', hexToRgb(color as str))

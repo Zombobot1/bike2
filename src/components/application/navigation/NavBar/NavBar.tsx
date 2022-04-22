@@ -16,7 +16,7 @@ import { useIsSignedIn, UserDTO } from '../../../../fb/auth'
 import { WorkspaceNav } from '../../Workspace/WorkspaceState'
 import { uuid } from '../../../../utils/wrappers/uuid'
 import { UMenu, UMenuControls, UOption, useMenu } from '../../../utils/UMenu/UMenu'
-import { useRouter } from '../../../utils/hooks/useRouter'
+import { useURouter } from '../../../utils/hooks/useRouter'
 import { TUNE } from '../../App/pages'
 import { useRef } from 'react'
 
@@ -98,7 +98,7 @@ interface NavBar_ extends NavBar {
 }
 
 function NavBar_({ user, workspace, navigation, menu }: NavBar_) {
-  const { navigate } = useRouter()
+  const { navigate } = useURouter()
   const { signOut } = useIsSignedIn()
   const theme = useTheme()
 

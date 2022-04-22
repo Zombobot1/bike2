@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { ThemeBtn } from '../theming/ThemeBtn'
 import { prevent } from '../../../utils/utils'
 import { useMount } from '../../utils/hooks/hooks'
-import { useRouter } from '../../utils/hooks/useRouter'
+import { useURouter } from '../../utils/hooks/useRouter'
 import { ReactComponent as RightBlobsSVG } from './rightBlob.svg'
 import { ReactComponent as LeftBlobsSVG } from './leftBlob.svg'
 import { ReactComponent as WaveSVG } from './wave.svg'
@@ -17,7 +17,7 @@ import { _TestLogin } from './testUsers/_TestLogin'
 
 export function FinishRegistration() {
   const [error, setError] = useState('')
-  const { navigate, location } = useRouter()
+  const { navigate, location } = useURouter()
 
   useMount(() => {
     if (!isSignInWithEmailLink(getAuth(), location.pathname + location.search)) return

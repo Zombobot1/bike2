@@ -6,7 +6,7 @@ import { bool, DivRef, f, Fn, JSObject, num, SetNum, SetStr, str } from '../../.
 import { safe } from '../../../utils/utils'
 import { _apm } from '../../application/theming/theme'
 import { unhighlight } from '../../../utils/unhighlight'
-import { useMount, useReactive } from '../../utils/hooks/hooks'
+import { useIsSM, useMount, useReactive } from '../../utils/hooks/hooks'
 import { useRefCallback } from '../../utils/hooks/useRefCallback'
 import { sliceHtml, replaceAllCodeToNothing } from '../../utils/Selection/htmlAsStr'
 import {
@@ -253,7 +253,9 @@ function useSX(ps: UText_): JSObject {
     },
   }
 
-  if (ps.type === 'quote') sx = { ...sx, paddingLeft: '2rem' }
+  const isSM = useIsSM()
+
+  if (ps.type === 'quote') sx = { ...sx, paddingLeft: isSM ? '2rem' : '1rem' }
   if (ps.color) sx = { ...sx, color: ps.color }
   sx = { ...sx, ...coloredTextSX(theme.isDark()) }
 

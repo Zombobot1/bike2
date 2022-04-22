@@ -35,11 +35,16 @@ export const utextPaddings = new Map([
   ['heading-2', `${0.625 + 0.2}rem`],
   ['heading-3', `0.75rem`],
   ['text', `0.15rem`],
+  ['callout', `0.30rem`],
   ['list', `0.15rem`],
   ['numbered-list', `0.15rem`],
   ['bullet-list', `0.15rem`],
   ['toggle-list', `0.15rem`],
   ['exercise', `0.75rem`],
+  ['file', `0.30rem`],
+  ['video', `0.30rem`],
+  ['audio', `0.15rem`],
+  ['table', `0.5rem`],
 ])
 
 // paddingBottom + constant to move up * constant for cypress

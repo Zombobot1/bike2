@@ -14,6 +14,7 @@ import { isSubQuestionCorrect } from '../../../UPage/UPageState/crdtParser/UPage
 export interface InlineExercise extends UBlockContent {
   showTipOnMobile?: bool
   autoFocus?: bool
+  activeQuestionIds?: strs
 }
 
 export function InlineExercise(ps: InlineExercise) {
@@ -23,10 +24,12 @@ export function InlineExercise(ps: InlineExercise) {
   return <InlineExercise_ {...ps} />
 }
 
-function InlineExercise_({ id, data: d, setData, autoFocus, showTipOnMobile }: InlineExercise) {
+function InlineExercise_({ id, data: d, setData, autoFocus, showTipOnMobile, activeQuestionIds }: InlineExercise) {
   const data = d as InlineExerciseData
   const questions = data.content.filter((sq) => !isStr(sq)) as SubQuestions
   const submitted = data.$submitted
+  const showOnlySome = activeQuestionIds !== undefined
+
   const error = questions.find((q) => q.$error)?.$error
   const setAnswer = (i: num, _answer: strs) =>
     setData(
@@ -43,11 +46,17 @@ function InlineExercise_({ id, data: d, setData, autoFocus, showTipOnMobile }: I
       <Form onSubmit={(e) => e.preventDefault()}>
         {data.content.map((q, i) => {
           if (isStr(q)) return <span key={i}>{q}</span>
-          if (q.type === 'short-answer')
+
+          const showAnswer = showOnlySome && q.i < +activeQuestionIds[0]
+          const disabled = showOnlySome && !activeQuestionIds.includes(String(q.i))
+
+          if (q.type === 'short-answer') {
+            let answer = q.$answer?.[0] || ''
+            if (showAnswer) answer = q.correctAnswer[0]
             return (
               <UInputField
                 key={i}
-                answer={q.$answer?.[0] || ''}
+                answer={answer}
                 setAnswer={(a) => setAnswer(q.i, [a])}
                 correctAnswer={q.correctAnswer[0]}
                 error={q.$error}
@@ -56,13 +65,19 @@ function InlineExercise_({ id, data: d, setData, autoFocus, showTipOnMobile }: I
                 hideTipOnMobile={showTipOnMobile}
                 inline={true}
                 i={questions.length > 1 ? q.i : undefined}
+                disabled={disabled}
               />
             )
+          }
+
+          let answer = q.$answer || []
+          if (showAnswer) answer = q.correctAnswer
+
           return (
             <UChecksOptions
               key={i}
               options={q.options}
-              answer={q.$answer || []}
+              answer={answer}
               setAnswer={(a) => setAnswer(q.i, a)}
               correctAnswer={q.correctAnswer}
               error={q.$error}
@@ -70,21 +85,27 @@ function InlineExercise_({ id, data: d, setData, autoFocus, showTipOnMobile }: I
               selectMultiple={q.type === 'multiple-choice'}
               inline={true}
               i={questions.length > 1 ? q.i : undefined}
+              disabled={disabled}
             />
           )
         })}
         {submitted &&
-          questions.map((q, i) => {
-            return (
-              <Feedback
-                key={i}
-                explanation={getExplanation(q, questions.length, i, safe(q.type))}
-                error=""
-                isCorrect={isSubQuestionCorrect(q.type, q)}
-                submitted={true}
-              />
-            )
-          })}
+          questions
+            .filter((q) => {
+              if (!showOnlySome) return true
+              return activeQuestionIds.includes(String(q.i))
+            })
+            .map((q, i) => {
+              return (
+                <Feedback
+                  key={i}
+                  explanation={getExplanation(q, questions.length, i, safe(q.type))}
+                  error=""
+                  isCorrect={isSubQuestionCorrect(q.type, q)}
+                  submitted={true}
+                />
+              )
+            })}
         {error && <Feedback explanation="" error={error} isCorrect={false} submitted={false} />}
       </Form>
     </Box>

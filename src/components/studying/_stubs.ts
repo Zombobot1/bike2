@@ -1,4 +1,5 @@
 import { TrainingIdAndDTO, TrainingIndicators } from '../../fb/FSSchema'
+import { str } from '../../utils/types'
 import { WithUBlocks } from '../editing/UPage/ublockTypes'
 import { _base64ToState } from '../editing/UPage/UPageState/crdtParser/UPageStateCR'
 import { _stateToStr } from '../editing/UPage/UPageState/crdtParser/_fakeUPage'
@@ -21,19 +22,33 @@ export function _ideaToStr(_idea: WithUBlocks) {
   return blocks.trim()
 }
 
+const _indicator: TrainingIndicators = {
+  id: '',
+  failNumber: 0,
+  repeatNumber: 0,
+  priority: 'medium',
+  repeatAt: 0,
+  stageId: '',
+  timeToAnswer: 0,
+}
+
+const indicator = (id = '', stageId = ''): TrainingIndicators => ({ ..._indicator, id, stageId })
+
 const training: TrainingIdAndDTO = {
   id: 't',
   createdAt: 0,
   ideaId: '',
-  idAndIndicators: {},
+  indicators: [indicator()],
   preview: '',
   repeatAt: 0,
   upageId: '',
   userId: '',
 }
 
-const indicator: TrainingIndicators = { errorRate: 0, priority: 'medium', repeatAt: 0, stageId: '', timeToAnswer: 0 }
+const trg = (preview: str, indicators: TrainingIndicators[]): TrainingIdAndDTO => ({ ...training, preview, indicators })
+
 export const _trainings = {
   mock: training,
-  saq: { ...training, preview: 'Q', idAndIndicators: { r: indicator } } as TrainingIdAndDTO,
+  saq: trg('Q', [indicator()]),
+  ie: trg('A __ and __', [indicator('a', '1'), indicator('b', '2')]),
 }

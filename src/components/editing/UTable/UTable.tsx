@@ -1,7 +1,7 @@
 import { TableBody, styled, Box, useTheme } from '@mui/material'
 import { useIsSM, useToggle } from '../../utils/hooks/hooks'
 import { useState } from 'react'
-import { bool, num, SetNum, str } from '../../../utils/types'
+import { bool, num, SetNum, str, strs } from '../../../utils/types'
 import { UBlockContent } from '../types'
 import { prevented } from '../../../utils/utils'
 import { EditableText } from '../../utils/EditableText/EditableText'
@@ -20,30 +20,31 @@ import { UTableData } from '../UPage/ublockTypes'
 import { UTableChanger } from './useUTable'
 
 export function UTable({ id, data: d, setData }: UBlockContent) {
-  const data = d as UTableData
-  const changer = new UTableChanger(data, (d) => setData(id, d))
+  const rawData = d as UTableData
+  const changer = new UTableChanger(rawData, (d) => setData(id, d))
   const [tmpWidth, setTmpWidth] = useState({ j: -1, w: 0 })
   const [resizingIndex, setResizingIndex] = useState(-1)
-  const rows = gen(data[0].rows.length)
+  const data = rotateTable(rawData)
+  // const rows = gen(rawData[0].rows.length)
   const isSM = useIsSM()
 
   // TODO: navigate by keys
-
+  // overflowX cuts buttons (in 1st column it's really noticeable) - cannot find a fix
   return (
     <PaddedBox p={0.85} sx={{ overflowX: !isSM ? 'scroll' : undefined }}>
-      <TableContainer sx={{ width: sum(data, (a, col) => a + col.width) }}>
+      <TableContainer sx={{ width: sum(rawData, (a, col) => a + col.width) }}>
         <Table_ width="100%">
           <TableBody>
-            {rows.map((i) => (
+            {data.map((row, i) => (
               <Row key={i}>
-                {data.map((col, j) => (
+                {row.map((value, j) => (
                   <Cell
                     key={`${i} ${j}`}
-                    width={tmpWidth.j === j ? tmpWidth.w : col.width}
-                    data={col.rows[i]}
+                    width={tmpWidth.j === j ? tmpWidth.w : rawData[j].width}
+                    data={value}
                     i={i}
                     j={j}
-                    rowLength={rows.length}
+                    rowLength={row.length}
                     isResizing={resizingIndex === j}
                     onWidthChange={(w) => setTmpWidth({ j, w })}
                     setData={changer.setCell}
@@ -65,6 +66,18 @@ export function UTable({ id, data: d, setData }: UBlockContent) {
       </TableContainer>
     </PaddedBox>
   )
+}
+
+function rotateTable(table: UTableData): strs[] {
+  const iMax = table[0].rows.length
+  const jMax = table.length
+  const r = gen(iMax, () => gen(jMax, () => ''))
+  for (let i = 0; i < table[0].rows.length; i++) {
+    for (let j = 0; j < table.length; j++) {
+      r[i][j] = table[j].rows[i]
+    }
+  }
+  return r
 }
 
 const TableContainer = styled(Box)({
@@ -138,6 +151,7 @@ function Cell({
       <ResizableWidth
         width={width}
         maxWidth={190 * 2}
+        minWidth={50}
         updateWidth={updateWidth}
         rightOnly={true}
         hiddenHandler={i !== 0}
@@ -199,7 +213,7 @@ const MiniBtn = styled('button')(({ theme }) => ({
   position: 'absolute',
   transform: 'translate(-50%, -50%)',
 
-  padding: '0.1rem',
+  // padding: '0.1rem', // causes strange icon offsets depending on rows count (even / not even)
   backgroundColor: theme.palette.background.default,
   border: `1px solid ${theme.apm('100')}`,
   borderRadius: theme.shape.borderRadius,
@@ -227,12 +241,6 @@ const MiniBtn = styled('button')(({ theme }) => ({
     height: '16px',
     color: theme.apm('800'),
   },
-
-  ':after': {
-    content: '""',
-    position: 'absolute',
-    inset: 0,
-  },
 }))
 
 const MiniBtnVLeft = styled(MiniBtn)({
@@ -242,7 +250,7 @@ const MiniBtnVLeft = styled(MiniBtn)({
   width: '1rem',
 
   '.MuiSvgIcon-root': {
-    transform: 'translate(-10%, 12%)',
+    transform: 'translate(-6.5px, 1.5px)',
   },
 })
 
@@ -252,16 +260,22 @@ const MiniBtnVRight = styled(MiniBtnVLeft)({
   transform: 'translate(50%, -50%)',
 })
 
-const MiniBtnH = styled(MiniBtn)({
+const MiniBtnH = styled(MiniBtn)(({ theme }) => ({
   top: 0,
   left: '50%',
   height: '1rem',
   width: '1.5rem',
 
   '.MuiSvgIcon-root': {
-    transform: 'translate(0, -12%)',
+    transform: 'translate(0, -18%)',
   },
-})
+
+  [`${theme.breakpoints.up('sm')}`]: {
+    '.MuiSvgIcon-root': {
+      transform: 'translate(-3px, -2px)',
+    },
+  },
+}))
 
 const Cell_ = styled('td', { label: 'Cell' })(({ theme }) => ({
   position: 'relative',

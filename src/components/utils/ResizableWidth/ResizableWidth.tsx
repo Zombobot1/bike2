@@ -7,6 +7,7 @@ export interface ResizableWidth {
   updateWidth: SetNum
   width?: num
   maxWidth: num
+  minWidth?: num
   children: ReactNode
   readonly?: bool
   rightOnly?: bool
@@ -18,6 +19,7 @@ export interface ResizableWidth {
 
 export function ResizableWidth({
   width: initialWidth = 0,
+  minWidth = 200,
   updateWidth,
   children,
   readonly,
@@ -28,20 +30,20 @@ export function ResizableWidth({
   stretchHandler,
   onWidthChange = f,
 }: ResizableWidth) {
-  const [isResizing, setIsResizing] = useState(false)
-  const [width, setWidth] = useState({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
   const ref = useRef<HTMLDivElement>(null)
+  const [isResizing, setIsResizing] = useState(false)
+  const [width, setWidth] = useState({ ...new Width(), width: Math.min(initialWidth, maxWidth), minWidth })
+
   useEffect(() => {
     if (isResizing) return
-    setWidth({ ...new Width(), width: Math.min(initialWidth, maxWidth) })
+    setWidth({ ...new Width(), width: Math.min(initialWidth, maxWidth), minWidth }) // wtf??
   }, [initialWidth, maxWidth])
 
   const [needUpdate, setNeedUpdate] = useState(false)
-  const isSM = useIsSM()
 
   useEffect(() => {
     if (!needUpdate) return
-    updateWidth(width.width)
+    updateWidth(width.width) // set new width whe resize is over
     setNeedUpdate(false)
   }, [needUpdate])
 
@@ -50,7 +52,7 @@ export function ResizableWidth({
     const newWidth = width.widthBeforeResize + width.needResize * scaleBy
 
     if (Math.abs(width.needResize - width.previousResize) > 1 && newWidth >= width.minWidth) {
-      onWidthChange(Math.min(newWidth, maxWidth))
+      onWidthChange(Math.min(newWidth, maxWidth)) // update current width during resize
       setWidth((old) => ({
         ...old,
         width: Math.min(old.widthBeforeResize + old.needResize * scaleBy, maxWidth),
@@ -58,6 +60,8 @@ export function ResizableWidth({
       }))
     }
   }, [width.needResize])
+
+  const isSM = useIsSM()
 
   const onMouseDown =
     (reverse = false) =>
@@ -148,9 +152,9 @@ export const Handler = styled('span')(({ theme }) => ({
   height: '30%',
   opacity: 0,
   transition: 'opacity 0.1s ease-in-out',
-  border: `1px solid ${alpha(theme.palette.common.white, 0.8)}`,
+  border: `1px solid ${alpha(theme.palette.secondary.main, 0.8)}`,
   borderRadius: '10px',
-  backgroundColor: alpha(theme.palette.grey[800], 0.6),
+  backgroundColor: alpha(theme.palette.primary.main, 0.6),
   userSelect: 'none',
   zIndex: 2, // for UGrid
 }))

@@ -20,6 +20,7 @@ export interface UChecksOptions {
   overallCorrectness?: Correctness
   inline?: bool
   i?: num
+  disabled?: bool
 }
 export function UChecksOptions({
   answer = [],
@@ -32,6 +33,7 @@ export function UChecksOptions({
   i,
   overallCorrectness = 'none',
   inline,
+  disabled,
 }: UChecksOptions) {
   const [options, setOptions] = useState(initialOptions) // use state to shuffle only once
 
@@ -63,7 +65,7 @@ export function UChecksOptions({
             validity={validity}
             onChange={onOptionClick}
             checked={answer.includes(o)}
-            readonly={submitted}
+            readonly={disabled || submitted}
             inline={inline}
           />
         )

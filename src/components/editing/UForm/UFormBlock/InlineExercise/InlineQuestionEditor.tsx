@@ -25,9 +25,10 @@ export function InlineExerciseEditor({ id, data: d, setData }: UBlockContent) {
 
   const onChange = useRefCallback((e) => {
     const cp = cursorOffset(safe(ref.current))
-    const newText = highlight(unhighlight(e.target.value))
+    const newText = highlight(clean(e.target.value))
     setText(newText)
     setCursorPosition(cp)
+
     if (data.$editingError && isValid(newText)) setData(id, { $editingError: '' })
   })
 
@@ -48,7 +49,8 @@ export function InlineExerciseEditor({ id, data: d, setData }: UBlockContent) {
       if (e.key === 'Enter') {
         e.preventDefault()
         const cp = cursorOffset(sRef)
-        setText(highlight(insert(unhighlight(text), cp, '\n')))
+        const t = highlight(insert(unhighlight(text), cp, '\n'))
+        setText(t)
         setCursorPosition(cp + 1)
       }
     },
@@ -66,12 +68,15 @@ export function InlineExerciseEditor({ id, data: d, setData }: UBlockContent) {
     if (cursorPosition !== null) setCursor(safe(ref.current), cursorPosition, 'forward', 'symbol')
   }, [cursorPosition])
 
+  // console.log({ text })
+  // const html = text.at(-1) === '\n' && text.at(-2) !== '\n' ? text.slice(0, -1) + '&#10;&#13;' : text // bad idea
+  const html = text.at(-1) === '\n' ? text + '&nbsp;' : text // bad render if text = "a\n"
   return (
     <div>
       <Styles sx={{ border: theme.bd(data.$editingError ? 'e' : 'p') }}>
         <Editable
           innerRef={ref}
-          html={text}
+          html={html}
           tagName={'pre'}
           onBlur={onBlur}
           onChange={onChange}
@@ -85,6 +90,10 @@ export function InlineExerciseEditor({ id, data: d, setData }: UBlockContent) {
       {data.$editingError && <Error>{data.$editingError}</Error>}
     </div>
   )
+}
+
+const clean = (text: str) => {
+  return text.replaceAll('&nbsp;', '').replaceAll('<br>', '') // br magically appears
 }
 
 const isValid = (text: str) => !text.includes('<span class="invalid">') && text.includes('<span class="')

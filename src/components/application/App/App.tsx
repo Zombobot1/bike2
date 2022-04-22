@@ -7,7 +7,7 @@ import { Page404 } from '../Page404/Page404'
 import { Fetch } from '../../utils/Fetch/Fetch'
 import { ANY, APP, FINISH_REGISTRATION, STATS, STUDY, STUDY_ID, TEACH, TUNE } from './pages'
 import { NavBar } from '../navigation/NavBar/NavBar'
-import { useRouter } from '../../utils/hooks/useRouter'
+import { useURouter } from '../../utils/hooks/useRouter'
 import { AppBar } from '../navigation/AppBar/AppBar'
 import { useState } from 'react'
 import { UPage } from '../../editing/UPage/UPage'
@@ -40,7 +40,7 @@ function App__() {
   const user = useUserInfo()
   const ws = useWorkspace(user?.uid || '')
 
-  const { location } = useRouter()
+  const { location } = useURouter()
   const id = location.pathname.split('/').slice(-1)[0]
   if (!pages.includes(id) && !ws.changer.has(id)) return <Page404 />
 

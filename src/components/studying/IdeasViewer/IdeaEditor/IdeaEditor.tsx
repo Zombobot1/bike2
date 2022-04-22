@@ -14,10 +14,10 @@ import {
   FormControl,
   InputLabel,
 } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TrainingIdAndDTO, UCardPriority } from '../../../../fb/FSSchema'
-import { str, bool, Fn } from '../../../../utils/types'
-import { all } from '../../../../utils/utils'
+import { str, bool, Fn, num, NumState } from '../../../../utils/types'
+import { all, cut } from '../../../../utils/utils'
 import { uformBlocks } from '../../../editing/UPage/UBlock/BlockAutocomplete/BlockAutocompleteOptions'
 import { UBlocksSet } from '../../../editing/UPage/UBlockSet/UBlockSet'
 import { isUFormBlock } from '../../../editing/UPage/ublockTypes'
@@ -26,52 +26,56 @@ import { RStack, USelect, IBtn } from '../../../utils/MuiUtils'
 import { IdeaState, useIdeaState } from '../../IdeaState'
 import SaveRoundedIcon from '@mui/icons-material/SaveRounded'
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded'
-import VisibilityRoundedIcon from '@mui/icons-material/VisibilityRounded'
 import AcUnitRoundedIcon from '@mui/icons-material/AcUnitRounded'
 import { IdeaData, IdeaType } from '../../types'
-import { chop } from '../../utils'
 
 export interface IdeaEditor {
   upageId: str
   id: str
   close: Fn
   training?: TrainingIdAndDTO
+  closeTriggerS: NumState
 }
 
-type UCardInfo = { id: str; preview: str; priority: UCardPriority; frozen?: bool }
-type UCardInfos = UCardInfo[]
-function ucardInfo(preview: (id: str) => str, training: TrainingIdAndDTO, id: str): UCardInfo {
-  const indicators = training.idAndIndicators[id]
-  return { id, preview: preview(id), priority: indicators.priority, frozen: indicators.frozen }
-}
-
-export function IdeaEditor({ id, upageId, training, close }: IdeaEditor) {
+export function IdeaEditor({ id, upageId, training, close, closeTriggerS }: IdeaEditor) {
   const { data, changer } = useIdeaState(id, upageId, training)
+  return <IdeaEditor_ data={data} changer={changer} training={training} close={close} closeTriggerS={closeTriggerS} />
+}
+
+interface IdeaEditor_ {
+  data: IdeaData
+  changer: IdeaState
+  training?: TrainingIdAndDTO
+  close: Fn
+  closeTriggerS: NumState
+}
+
+export function IdeaEditor_({ data, changer, training, close, closeTriggerS }: IdeaEditor_) {
+  const [closeTrigger, setCloseTrigger] = closeTriggerS
   const created = !!training
 
-  const ucards = [] as UCardInfos
-  if (training) {
-    if (data.ucards) data.ucards.forEach((c) => ucards.push(ucardInfo(changer.preview, training, c.id)))
-    else ucards.push(ucardInfo(changer.preview, training, 'r'))
-  }
-
   return (
-    <Grid onClick={(e) => e.stopPropagation()}>
-      <Box className="history">{created && <Box sx={{ backgroundColor: 'blue', height: '2rem' }}>History</Box>}</Box>
+    <Grid onClick={() => setCloseTrigger((o) => o + 1)}>
+      <Box className="history">
+        {created && (
+          <Box onClick={(e) => e.stopPropagation()} sx={{ backgroundColor: 'blue', height: '2rem' }}>
+            History
+          </Box>
+        )}
+      </Box>
       <Box className="editor">
-        <IdeaDataEditor data={data} changer={changer} created={created} close={close} />
+        <IdeaDataEditor data={data} changer={changer} created={created} close={close} closeTrigger={closeTrigger} />
       </Box>
       <Box className="ucards-and-stats">
         {created && (
           <>
             <Box className="ucards">
-              <UCards>
+              <UCards onClick={(e) => e.stopPropagation()}>
                 <Typography sx={{ fontWeight: 'bold' }}>Flashcards</Typography>
-                <Stack spacing={1}>
-                  {ucards.map(({ id, preview, priority, frozen }) => (
+                <Stack spacing={1.5}>
+                  {changer.ucardInfos().map(({ id, preview, priority, frozen }) => (
                     <RStack key={id} justifyContent="start">
-                      <Typography sx={{ marginRight: 'auto' }}>{chop(preview, 10)}</Typography>
-                      <IBtn icon={VisibilityRoundedIcon} size="small" sx={{ marginRight: '0.5rem' }} />
+                      <UCardPreview>{cut(preview, 10)}</UCardPreview>
                       <FormControl>
                         <InputLabel id={`priority-${id}`}>Priority</InputLabel>
                         <USelect
@@ -99,7 +103,9 @@ export function IdeaEditor({ id, upageId, training, close }: IdeaEditor) {
               </UCards>
             </Box>
             <Box className="stats">
-              <Box sx={{ backgroundColor: 'red', height: '2rem' }}>Stats</Box>
+              <Box onClick={(e) => e.stopPropagation()} sx={{ backgroundColor: 'red', height: '2rem' }}>
+                Stats
+              </Box>
             </Box>
           </>
         )}
@@ -108,55 +114,50 @@ export function IdeaEditor({ id, upageId, training, close }: IdeaEditor) {
   )
 }
 
-const UCards = styled(Box, { label: 'UCards' })(({ theme }) => ({
-  padding: '1rem',
-  width: '100%',
-  backgroundColor: theme.palette.background.paper,
-  borderRadius: theme.shape.borderRadius,
-}))
-
 const Grid = styled(Box, { label: 'IdeaEditor' })(({ theme }) => ({
   minHeight: '100%',
   width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
+  display: 'grid',
+  gridTemplateColumns: 'minmax(0, 32rem)',
+  gridTemplateRows: 'auto auto auto', // % leads to weird overflow
   gap: '1rem',
+  justifyContent: 'center',
+  alignContent: 'center',
   padding: '1rem',
   overflowX: 'hidden',
 
-  '.history': { order: 4 },
-  '.editor': { order: 1, height: '32rem' }, // height 32rem instead of minHeight: 90, because if grid is in parent with height 100% it doesn't work
+  '.editor': { minHeight: '32rem' }, // minHeight 32rem instead of minHeight: 90, because if grid is in parent with height 100% it doesn't work
+  '.history': { gridRow: '3 / 4' },
+
   '.ucards-and-stats': {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     gap: '1rem',
-    order: 3,
   },
 
   [`${theme.breakpoints.up('md')}`]: {
-    display: 'grid',
-    gridTemplateColumns: '25% 35% 25%',
-    gridTemplateRows: '80%',
-    gridGap: '1rem',
-    justifyContent: 'center',
-    alignContent: 'center',
+    gridTemplateColumns: '35% 45%',
+    gridTemplateRows: '60vh 20vh', // % leads to weird overflow
     padding: 0,
 
     '.history': {
       gridColumn: '1 / 2',
-      gridRow: '1 / 2',
+      gridRow: '2 / 3',
       overflow: 'auto',
     },
 
     '.editor': {
       height: 'auto',
       gridColumn: '2 / 3',
+      gridRow: '1 / 3',
     },
 
     '.ucards-and-stats': {
-      gridColumn: '3 / 4',
+      gridColumn: '1 / 2',
+      gridRow: '1 / 2',
       overflow: 'auto',
+      justifyContent: 'start',
 
       '.ucards, .stats': {
         maxHeight: '50%',
@@ -164,35 +165,109 @@ const Grid = styled(Box, { label: 'IdeaEditor' })(({ theme }) => ({
       },
     },
   },
+
+  [`${theme.breakpoints.up('lg')}`]: {
+    gridTemplateColumns: '25% 35% minmax(315px, 25%)',
+    gridTemplateRows: '80vh', // % leads to weird overflow
+
+    '.history': {
+      gridColumn: '1 / 2',
+      gridRow: '1 / 2',
+    },
+
+    '.editor': {
+      gridColumn: '2 / 3',
+      gridRow: '1 / 1',
+    },
+
+    '.ucards-and-stats': {
+      gridColumn: '3 / 4',
+      gridRow: '1 / 1',
+      justifyContent: 'center',
+    },
+  },
 }))
+
+// function TestGrid() { // use for test in Sandbox.stories
+//   const fill = false
+//   return (
+//     <Box sx={{ width: '100%', height: '100%' }}>
+//       <Grid>
+//         <Box className="history" onClick={(e) => e.stopPropagation()}>
+//           <Box sx={{ backgroundColor: 'blue', minHeight: '2rem' }}>
+//             History
+//             {fill && gen(12, (i) => <div style={{ height: '5rem' }}>{i}</div>)}
+//           </Box>
+//         </Box>
+//         <Box className="editor" onClick={(e) => e.stopPropagation()}>
+//           <Box sx={{ backgroundColor: 'yellow', height: '100%' }}>Editor</Box>
+//         </Box>
+//         <Box className="ucards-and-stats" onClick={(e) => e.stopPropagation()}>
+//           <Box className="ucards">
+//             <Box sx={{ backgroundColor: 'green', minHeight: '2rem' }}>
+//               Cards
+//               {fill && gen(12, (i) => <div style={{ height: '5rem' }}>{i}</div>)}
+//             </Box>
+//           </Box>
+//           <Box className="stats">
+//             <Box sx={{ backgroundColor: 'red', minHeight: '2rem' }}>
+//               Stats
+//               {fill && gen(12, (i) => <div style={{ height: '5rem' }}>{i}</div>)}
+//             </Box>
+//           </Box>
+//         </Box>
+//       </Grid>
+//     </Box>
+//   )
+// }
+
+const UCards = styled(Box, { label: 'UCards' })(({ theme }) => ({
+  padding: '1rem',
+  width: '100%',
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+}))
+
+const UCardPreview = styled(Typography)({
+  marginRight: 'auto',
+  cursor: 'pointer',
+  textUnderlineOffset: '0.25rem',
+
+  ':hover': {
+    textDecoration: 'underline',
+  },
+})
 
 interface IdeaDataEditor {
   data: IdeaData
   changer: IdeaState
   close: Fn
   created: bool
+  closeTrigger: num
 }
 
-function IdeaDataEditor({ data, changer, close, created }: IdeaDataEditor) {
+function IdeaDataEditor({ data, changer, close, created, closeTrigger }: IdeaDataEditor) {
   const [type, setType] = useState<IdeaType>(data.type || 'question')
   const [showError, setShowError] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
   const isSM = useIsSM()
 
+  const onClose = () => {
+    if (changer.hasUnsavedChanges()) setModalOpen(true)
+    else close()
+  }
+
+  useEffect(() => {
+    if (closeTrigger) onClose()
+  }, [closeTrigger])
+
   const blockIcons = uformBlocks()
   const hasUFormBlock = data.ublocks.find((b) => isUFormBlock(b.type))
   /* TODO: on edit show text "Edit ${type}", add options btn (remove, moveTo) */
   return (
-    <EditorWrapper>
+    <EditorWrapper onClick={(e) => e.stopPropagation()}>
       <CloseBtnWrapper>
-        <IBtn
-          icon={CloseRoundedIcon}
-          size={isSM ? 'medium' : 'small'}
-          onClick={() => {
-            if (changer.hasUnsavedChanges()) setModalOpen(true)
-            else close()
-          }}
-        />
+        <IBtn icon={CloseRoundedIcon} size={isSM ? 'medium' : 'small'} onClick={onClose} />
       </CloseBtnWrapper>
       <EditorHeader justifyContent="space-between" sx={{ marginBottom: '1rem' }}>
         <Typography sx={{ fontWeight: 'bold' }}>{created ? 'Edit idea' : 'Create new'}</Typography>
@@ -301,15 +376,10 @@ const UFormBlocksRow = styled(RStack)(({ theme }) => ({
 
 const CloseBtnWrapper = styled('div')(({ theme }) => ({
   position: 'absolute',
-  right: '-1.15rem',
-  top: '-1.15rem',
+  right: '-0.75rem',
+  top: '-0.75rem',
   borderRadius: '50%',
   backgroundColor: theme.palette.background.paper,
-
-  [`${theme.breakpoints.up('sm')}`]: {
-    right: '-1rem',
-    top: '-1rem',
-  },
 }))
 
 const UnsavedAlert = styled(Alert)({

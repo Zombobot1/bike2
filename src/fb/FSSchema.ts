@@ -33,20 +33,23 @@ export interface TrainingDTO {
   upageId: str // to access trainings in UPage
   preview: str
   ideaId: str
-  idAndIndicators: { [key: str]: TrainingIndicators }
+  indicators: TrainingIndicators[]
   frozen?: bool
   repeatAt: num
   createdAt: num // consistent sorting is required
 }
 export type TrainingIdAndDTO = TrainingDTO & { id: str }
+export type TrainingIdAndDTOs = TrainingIdAndDTO[]
 export type TrainingDTOs = TrainingDTO[]
 export type UCardPriority = 'low' | 'medium' | 'high'
 export type TrainingIndicators = {
+  id: str // provide unique id for flashcards to transfer indicators when data is changed
   repeatAt: num
   timeToAnswer: num
   priority: UCardPriority
   stageId: str
-  errorRate: num
+  failNumber: num
+  repeatNumber: num
   frozen?: bool
 }
 

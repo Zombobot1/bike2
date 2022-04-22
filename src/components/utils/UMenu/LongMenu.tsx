@@ -11,10 +11,9 @@ import {
   ListItemIcon,
   Fade,
 } from '@mui/material'
-import _ from 'lodash'
 import { FC, useEffect, useRef, useState } from 'react'
 import { bool, f, Fn, num, OptionIconP, str, strs, UIcon } from '../../../utils/types'
-import { filterProps, mod } from '../../../utils/utils'
+import { filterProps, isStr, mod } from '../../../utils/utils'
 import { useReactive } from '../hooks/hooks'
 import { useOnScreen } from '../hooks/useOnScreen'
 import { TextInput } from '../MuiUtils'
@@ -164,26 +163,25 @@ function OptionedMenu_(ps: LongMenu) {
 }
 
 function getOptionTextAt(options: LongMenuOptions, i: num): str {
-  if (_.isString(options[i])) return options[i] as str
+  if (isStr(options[i])) return options[i] as str
   const r = options[i] as Option
   return r.text
 }
 
 function getOptionIndexWithText(options: LongMenuOptions, text: str): num {
-  if (_.isString(options[0])) return (options as strs).indexOf(text)
+  if (isStr(options[0])) return (options as strs).indexOf(text)
   const r = options as Options
   return r.findIndex((o) => o.text === text)
 }
 
 function filterOptions(options: LongMenuOptions, filterText: str): LongMenuOptions {
-  if (_.isString(options[0])) return (options as strs).filter((o) => o.toLowerCase().includes(filterText))
+  if (isStr(options[0])) return (options as strs).filter((o) => o.toLowerCase().includes(filterText))
   const r = options as Options
   return r.filter((o) => o.text.toLowerCase().includes(filterText))
 }
 
-const optionText = (option: LongMenuOption): str => (_.isString(option) ? (option as str) : (option as Option).text)
-const optionIcon = (option: LongMenuOption): UIcon | undefined =>
-  _.isString(option) ? undefined : (option as Option).icon
+const optionText = (option: LongMenuOption): str => (isStr(option) ? (option as str) : (option as Option).text)
+const optionIcon = (option: LongMenuOption): UIcon | undefined => (isStr(option) ? undefined : (option as Option).icon)
 
 interface Item_ {
   selectedIndex: num

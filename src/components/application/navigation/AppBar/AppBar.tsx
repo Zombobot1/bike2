@@ -22,7 +22,7 @@ import { atom, useAtom } from 'jotai'
 import { _apm } from '../../theming/theme'
 import { bool, Fn, num, SetStr, str } from '../../../../utils/types'
 import { useIsSM } from '../../../utils/hooks/hooks'
-import { useRouter } from '../../../utils/hooks/useRouter'
+import { useURouter } from '../../../utils/hooks/useRouter'
 import { safeSplit } from '../../../../utils/algorithms'
 import { all, cut } from '../../../../utils/utils'
 import { AcceptRemovalDialog } from '../../../utils/AcceptRemovalDialog'
@@ -49,7 +49,7 @@ export interface AppBar {
 export function AppBar({ workspace, openNavBar }: AppBar) {
   const isSM = useIsSM()
   const [showAppBar] = useAtom(showAppBarA)
-  const { location } = useRouter()
+  const { location } = useURouter()
   const showUPageOptions =
     !location.pathname.includes('/study') &&
     !location.pathname.includes('/stats') &&
@@ -145,7 +145,7 @@ function cutAt(path: WorkspacePath, isLast: bool, isSM: bool): num {
 
 export function Crumbs({ workspace }: { workspace: Workspace }) {
   const isSM = useIsSM()
-  const { location, navigate } = useRouter()
+  const { location, navigate } = useURouter()
 
   const path = crumbs(location.pathname, workspace)
   const overflow = !isSM && path.length > 2

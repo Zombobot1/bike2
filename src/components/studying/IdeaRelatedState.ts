@@ -1,5 +1,4 @@
 import { bfsUBlocks } from '../editing/UPage/UPageState/crdtParser/UPageTree'
-import { now } from 'lodash'
 import { isStr, safe } from '../../utils/utils'
 import { getUserId } from '../editing/UPage/userId'
 import {
@@ -8,6 +7,8 @@ import {
   isStringBasedBlock,
   isUFormBlock,
   isUListBlock,
+  SubQuestion,
+  SubQuestions,
   UBlock,
   UBlocks,
   UChecksData,
@@ -20,15 +21,16 @@ import {
   UCardPriority,
   UPageChangeDescriptionDTO,
 } from '../../fb/FSSchema'
-import { f, str, bool } from '../../utils/types'
+import { f, str, bool, num } from '../../utils/types'
 import { Bytes } from 'firebase/firestore'
 import { SendUPageUpdate } from '../../fb/upageChangesAPI'
 import { uuid } from '../../utils/wrappers/uuid'
 import { UFormRuntime } from '../editing/UPage/UPageState/crdtParser/UPageRuntimeTree'
-import { getInitialIdeaState, mergeUpdates } from '../editing/UPage/UPageState/crdtParser/UPageStateCR'
-import { IdeaData, IdeaType, UCardData, UCards } from './types'
+import { getInitialUPageState, mergeUpdates } from '../editing/UPage/UPageState/crdtParser/UPageStateCR'
+import { IdeaData, IdeaType } from './types'
+import { now } from '../../utils/wrappers/timeUtils'
 
-type CreateIdeaInFS = (dto: IdeaDTO) => void
+export type CreateIdeaInFS = (dto: IdeaDTO) => void
 export type SetTrainingInFS = (id: str, dto: Partial<TrainingDTO>) => void
 export type PartialIdeaData = {
   id: str
@@ -68,7 +70,7 @@ export class IdeaRelatedState {
 
   initializeIfNew = (): Bytes[] => {
     if (!this.isNew) return []
-    const updates = getInitialIdeaState()
+    const updates = getInitialUPageState()
     this.#collector.interceptUpdate('', updates[0], { date: 0, preview: [], sha: '', user: '', upageId: '' })
     return updates
   }
@@ -87,43 +89,74 @@ export class IdeaRelatedState {
     UFormRuntime.toggleEdit(data, formBlock ? [formBlock] : [])
   }
 
-  save = (data: IdeaData): { success: bool; ucards?: UCards } => {
+  save = (data: IdeaData): bool => {
     const success = this.#save(data)
+
     if (this.isNew && success) {
       const { id, dto } = createTraining(this.#upageId, this.#id, data.ublocks, data.type || 'question')
       this.#training = { ...dto, id }
       this.#setTraining(id, dto)
+      // TODO: sync idea & training indicators on idea open or show during training
+    } else if (success && this.#training) {
+      const preview = extractPreview(data.ublocks)
+      const indicators = regenerateIndicators(data.ublocks, data.type || 'question', this.#training.indicators)
+      this.#training.preview = preview
+      this.#training.indicators = indicators
+      this.#setTraining(this.#training.id, { preview, indicators })
     }
 
-    return { success, ucards: undefined }
+    return success
   }
 
-  changePriority = (ucardId: str, priority: UCardPriority) => {
+  changePriority = (ucardId: num, priority: UCardPriority) => {
     if (!this.#training) throw new Error('Cannot change priority in new idea')
-    const info = findInObject(this.#training.idAndIndicators, ucardId)
+    const info = this.#training.indicators[ucardId]
     info.priority = priority
-    this.#setTraining(this.#training.id, { idAndIndicators: this.#training.idAndIndicators })
+    this.#setTraining(this.#training.id, { indicators: this.#training.indicators })
   }
 
-  toggleFreeze = (ucardId: str) => {
+  toggleFreeze = (ucardId: num) => {
     if (!this.#training) throw new Error('Cannot change priority in new idea')
-    const info = findInObject(this.#training.idAndIndicators, ucardId)
+    const info = this.#training.indicators[ucardId]
     info.frozen = !info.frozen
 
-    const frozen = Array.from(Object.values(this.#training.idAndIndicators)).every(({ frozen }) => frozen)
+    const frozen = this.#training.indicators.every(({ frozen }) => frozen)
 
     this.#setTraining(this.#training.id, {
-      idAndIndicators: this.#training.idAndIndicators,
+      indicators: this.#training.indicators,
       frozen: frozen,
     })
+  }
+
+  ucardInfos = (data: IdeaData): UCardInfos => {
+    const r = [] as UCardInfos
+
+    const ucardInfo = (id: num, { priority, frozen }: TrainingIndicators): UCardInfo => {
+      return { id, preview: this.#preview(id, data), priority, frozen }
+    }
+
+    if (this.#training) {
+      if (getExercise(data.ublocks)) {
+        this.#training.indicators.forEach((indicator, i) => r.push(ucardInfo(i, indicator)))
+      } else r.push(ucardInfo(0, this.#training.indicators[0]))
+    }
+
+    return r
   }
 
   setType = (data: IdeaData, type: IdeaType) => {
     data.type = type
   }
 
-  preview = (ucardId: str): str => {
-    if (ucardId === 'r') return safe(this.#training).preview.slice(0, 10)
+  #preview = (ucardId: num, data: IdeaData): str => {
+    const exercise = getExercise(data.ublocks)
+    if (!exercise) return safe(this.#training).preview
+    if (exercise) {
+      const data = exercise.data as InlineExerciseData
+      const question = data.content.find((sq) => !isStr(sq) && sq.i === ucardId)
+      if (!question) return '' // when sq is removed preview is called before indicators are updated
+      return sqToId(question as SubQuestion)
+    }
     return '' // safe()
   }
 
@@ -151,12 +184,18 @@ export class IdeaRelatedState {
   }
 }
 
+const getExercise = (ublocks: UBlocks) => ublocks.find((b) => b.type === 'inline-exercise')
+const getUFormBlock = (ublocks: UBlocks) => ublocks.find((b) => isUFormBlock(b.type))
+
 export const BAD_IDEA = 'Add question and provide answer!'
 
 interface Update {
   update: Bytes
   description: UPageChangeDescriptionDTO
 }
+
+type UCardInfo = { id: num; preview: str; priority: UCardPriority; frozen?: bool }
+type UCardInfos = UCardInfo[]
 
 class IdeaChangesCollector {
   collectedUpdates: Update[] = []
@@ -174,21 +213,67 @@ class IdeaChangesCollector {
   }
 }
 
-function createTraining(upageId: str, dataId: str, ublocks: UBlocks, type: IdeaType): { id: str; dto: TrainingDTO } {
-  const indicators: TrainingIndicators = {
-    priority: type === 'error' ? 'high' : 'medium',
-    errorRate: 0,
-    repeatAt: 0,
-    stageId: '',
-    timeToAnswer: 0,
+function createIndicators(ublocks: UBlocks, type: IdeaType): TrainingIndicators[] {
+  const r: TrainingIndicators[] = []
+
+  if (type === 'question' || type === 'error') {
+    const exercise = ublocks.find((b) => b.type === 'inline-exercise')
+    const priority: UCardPriority = type === 'error' ? 'high' : 'medium'
+
+    if (exercise) {
+      const data = exercise.data as InlineExerciseData
+      const questions = data.content.filter((sq) => !isStr(sq)) as SubQuestions
+      questions.forEach((q) => r.push({ ...indicators, id: q.correctAnswer.join(', '), priority }))
+    } else r.push({ ...indicators, priority })
   }
+
+  return r
+}
+
+function regenerateIndicators(
+  ublocks: UBlocks,
+  type: IdeaType,
+  oldIndicators: TrainingIndicators[],
+): TrainingIndicators[] {
+  const r: TrainingIndicators[] = []
+
+  if (type === 'question' || type === 'error') {
+    const block = safe(getUFormBlock(ublocks))
+    const priority: UCardPriority = type === 'error' ? 'high' : 'medium'
+
+    if (block.type === 'inline-exercise') {
+      const data = (block.data as InlineExerciseData).content.filter((sq) => !isStr(sq)) as SubQuestions
+      data.forEach((sq) => {
+        const id = sqToId(sq)
+        const old = oldIndicators.find((indicator) => indicator.id === id)
+        return r.push(old || { ...indicators, priority, id })
+      })
+    } else r.push(!oldIndicators[0].id ? oldIndicators[0] : { ...indicators, priority }) // new indicators if ie -> another block
+  }
+
+  return r
+}
+
+const sqToId = (sq: SubQuestion): str => sq.correctAnswer.join(', ')
+
+const indicators: TrainingIndicators = {
+  id: '',
+  priority: 'medium',
+  failNumber: 0,
+  repeatNumber: 0,
+  repeatAt: 0,
+  stageId: '',
+  timeToAnswer: 0,
+}
+
+function createTraining(upageId: str, dataId: str, ublocks: UBlocks, type: IdeaType): { id: str; dto: TrainingDTO } {
   return {
     id: uuid(),
     dto: {
       userId: getUserId(),
       upageId,
       ideaId: dataId,
-      idAndIndicators: { r: indicators },
+      indicators: createIndicators(ublocks, type),
       preview: extractPreview(ublocks),
       repeatAt: 0,
       createdAt: now(),
@@ -253,26 +338,20 @@ export function _ideaRS(data: IdeaData, initialTraining?: TrainingIdAndDTO) {
     f,
   )
 
-  const ucardPreview = (training: TrainingIdAndDTO, ucard: str, data?: UCardData) => {
-    const info = training.idAndIndicators[ucard]
-    const priority = priorityAndSymbol[info.priority]
-    let preview = `${idea.preview(ucard)}${priority}`
-    if (data) preview += `: ${data}`
-    if (info.frozen) preview += ' (frozen)'
-    return preview
-  }
-
   const preview = () => {
-    if (!training) throw new Error('Training not exist')
-    const trainingSafe = safe(training)
+    if (!training) throw new Error('Training does not exist')
     let r = `${training.preview} (${data.type || 'question'})`
 
-    if (data.ucards) {
-      const info = data.ucards.map((c) => ucardPreview(trainingSafe, c.id, c.data)).join(', ')
-      r += ': ' + info
-    } else {
-      r += `: ${ucardPreview(trainingSafe, 'r')}`
-    }
+    r +=
+      ': ' +
+      idea
+        .ucardInfos(data)
+        .map((c) => {
+          const priority = priorityAndSymbol[c.priority]
+          return `${c.preview}${priority}${c.frozen ? ' (frozen)' : ''}`
+        })
+        .join(', ')
+
     return r
   }
 
@@ -280,6 +359,3 @@ export function _ideaRS(data: IdeaData, initialTraining?: TrainingIdAndDTO) {
 }
 
 const priorityAndSymbol: Record<UCardPriority, str> = { high: '!', low: '', medium: '*' }
-function findInObject<T>(obj: Record<str, T>, key: str) {
-  return safe(Object.entries(obj).find(([k]) => k === key))[1]
-}

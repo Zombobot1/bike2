@@ -25,6 +25,8 @@
     "plugin:mocha/recommended"
   ],
 
+  "ignorePatterns": ["_test.ts"],
+
   "rules": {
     "mocha/no-mocha-arrows": 0,
     "mocha/no-exclusive-tests": "error",

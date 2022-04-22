@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import _ from 'lodash'
-import { avg } from '../../../../../utils/algorithms'
+import { avg, difference } from '../../../../../utils/algorithms'
 import { bool, JSObject, num, str } from '../../../../../utils/types'
 import { isObj, isObjOrArr, isStr, safe } from '../../../../../utils/utils'
 import {
@@ -240,14 +239,14 @@ function setError(block: UBlock, { checkCorrectAnswer = false, unset = false } =
 
 function getUChecksScore(data: UChecksData): num {
   if (!data.$answer) return 0
-  const difference = _.difference(
+  const diff = difference(
     data.correctAnswer.map((a) => a.toLowerCase()),
     safe(data.$answer).map((a) => a.toLowerCase()),
   ).length
 
-  if (!difference) return 1
-  if (difference >= data.correctAnswer.length) return 0
-  return difference / data.correctAnswer.length
+  if (!diff) return 1
+  if (diff >= data.correctAnswer.length) return 0
+  return diff / data.correctAnswer.length
 }
 
 function getUInputScore(data: UInputData): num {

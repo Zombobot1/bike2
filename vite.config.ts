@@ -7,12 +7,9 @@ import svgrPlugin from 'vite-plugin-svgr'
 export default defineConfig({
   plugins: [react(), svgrPlugin()],
   server: {
-    open: true,
+    // open: true, // opens browser when cypress runs
     host: '0.0.0.0',
   },
-  // esbuild: {
-  //   jsxInject: `import React from 'react'`,
-  // },
   test: {
     include: ['**/*.test.ts'],
   },

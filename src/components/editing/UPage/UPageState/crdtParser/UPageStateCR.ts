@@ -197,8 +197,6 @@ export function getInitialUPageState(): Bytes[] {
   return [Bytes.fromUint8Array(bytes)]
 }
 
-export const getInitialIdeaState = getInitialUPageState
-
 export type SendUpdate = (id: str, update: Bytes, description: UPageChangeDescriptionDTO) => void
 export type DeleteUpdates = (id: str, _updatesLeft: Bytes[], _shas: strs) => void
 

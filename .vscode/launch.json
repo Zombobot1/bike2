@@ -26,7 +26,7 @@
       "name": "Launch TypeScript",
       "type": "node",
       "request": "launch",
-      "runtimeArgs": ["--nolazy", "-r", "ts-node/register/transpile-only"],
+      "runtimeArgs": ["--experimental-specifier-resolution=node", "--loader", "ts-node/esm"],
       "args": ["./src/_test.ts"],
       "cwd": "${workspaceFolder}",
       "internalConsoleOptions": "openOnSessionStart"

@@ -16,14 +16,18 @@
 /**
  * @type {Cypress.PluginConfig}
  */
-// eslint-disable-next-line no-unused-vars
-module.exports = (on, config) => {
-  if (config.testingType === 'component') {
-    const { startDevServer } = require('@cypress/webpack-dev-server')
+// const { startDevServer } = require('@cypress/vite-dev-server')
 
-    // Your project's Webpack configuration
-    const webpackConfig = require('../../webpack.config.js')
+// module.exports = (on, config) => {
+//   on('dev-server:start', (options) => startDevServer({ options }))
 
-    on('dev-server:start', (options) => startDevServer({ options, webpackConfig }))
-  }
+//   return config
+// }
+
+const plugins = async (on, config) => {
+  const { startDevServer } = await import('@cypress/vite-dev-server')
+  on('dev-server:start', (options) => startDevServer({ options }))
+  return config
 }
+
+export default plugins

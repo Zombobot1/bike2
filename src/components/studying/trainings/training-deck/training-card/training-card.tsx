@@ -2,8 +2,8 @@ import { SmallDeckCard } from './types'
 import { TrainingConceptsInfo, TrainingConceptsInfoP } from './training-cards-info/training-concepts-info'
 import { _TrainingDTO as TrainingDTO } from '../../../training/training/training'
 import { styled, Typography } from '@mui/material'
-import { chop } from '../../../utils'
 import { f } from '../../../../../utils/types'
+import { cut } from '../../../../../utils/utils'
 
 export interface DeckCard extends SmallDeckCard {
   deckPath: string
@@ -22,7 +22,7 @@ export const TrainingCard = ({ _id, deckColor, deckName, deckPath, trainingConce
       <DeckPath fontSize="small" color="text.secondary">
         {deckPath}
       </DeckPath>
-      <DeckName>{chop(deckName, 40)}</DeckName>
+      <DeckName>{cut(deckName, 40)}</DeckName>
       <S>
         <TrainingConceptsInfo {...trainingConceptsInfo} />
       </S>

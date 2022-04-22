@@ -4,7 +4,7 @@ import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
 import { JSObject, num, SetStr, str } from '../../../../utils/types'
 import { prevented } from '../../../../utils/utils'
-import { useRouter } from '../../../utils/hooks/useRouter'
+import { useURouter } from '../../../utils/hooks/useRouter'
 import { ReactNode } from 'react'
 import { sslugify } from '../../../../utils/sslugify'
 import { _apm } from '../../theming/theme'
@@ -31,7 +31,7 @@ export interface NavNode extends UPageNode {
 }
 
 function NavNode({ id, name, _isOpen: isOpen, onOpen, depth, children }: NavNode) {
-  const { location, navigate } = useRouter()
+  const { location, navigate } = useURouter()
   const theme = useTheme()
 
   return (
@@ -126,7 +126,7 @@ export interface NavLink {
   icon: ReactNode
 }
 export function NavLink({ name, icon }: NavLink) {
-  const { navigate, location } = useRouter()
+  const { navigate, location } = useURouter()
   const theme = useTheme()
   const id = sslugify(name)
   return (

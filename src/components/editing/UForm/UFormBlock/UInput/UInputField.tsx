@@ -18,6 +18,7 @@ export interface UInputField {
   hideTipOnMobile?: bool
   inline?: bool
   i?: num
+  disabled?: bool
 }
 
 export function UInputField({
@@ -32,6 +33,7 @@ export function UInputField({
   onChange = f,
   inline,
   i,
+  disabled,
 }: UInputField) {
   const [answer, setAnswer] = useReactive(initialAnswer || '')
   const [type, setType] = useState(hideTipOnMobile ? 'password' : 'text')
@@ -88,7 +90,7 @@ export function UInputField({
         onBlur={() => {
           if (answer !== initialAnswer) setOuterAnswer(answer)
         }}
-        disabled={submitted}
+        disabled={disabled || submitted}
         autoFocus={autoFocus}
         autoComplete="off" // must be in form (UInput_)! https://stackoverflow.com/questions/15738259/disabling-chrome-autofill
         multiline={multiline}

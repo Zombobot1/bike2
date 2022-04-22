@@ -2,7 +2,7 @@ import { all, safe } from '../utils/utils'
 import { FC, memo, useEffect, useRef, useState } from 'react'
 import { ThemeType, useUTheme } from '../components/application/theming/theme'
 import { useIsSM, useMount } from '../components/utils/hooks/hooks'
-import { bool, Fn, JSObjects, str, strs } from '../utils/types'
+import { bool, f, Fn, JSObjects, str, strs } from '../utils/types'
 import { TreeItem, TreeView } from '@mui/lab'
 import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
 import ArrowRightRoundedIcon from '@mui/icons-material/ArrowRightRounded'
@@ -11,6 +11,7 @@ import {
   Alert,
   alpha,
   Box,
+  Button,
   ClickAwayListener,
   Grow,
   IconButton,
@@ -52,7 +53,16 @@ import useUpdateEffect from '../components/utils/hooks/useUpdateEffect'
 import { mockBackend, useFirestoreData } from '../fb/useData'
 import { _getMockFB, _setMockFB } from '../fb/utils'
 
-const SORY: FC = () => null
+const SORY: FC = () => {
+  return (
+    <Stack spacing={2}>
+      <Typography sx={{ fontSize: '2rem', fontWeight: 'bold' }}>Story not found</Typography>
+      <Button onClick={triggerOpenFirstStory} variant="outlined">
+        Go to first story
+      </Button>
+    </Stack>
+  )
+}
 
 export interface SoryTree {
   id: str
@@ -498,11 +508,23 @@ function SoryBook_({ trees, sories }: SoryBook_) {
   const ids = treesToChildrenIds(trees)
   const [openSnack, setOpenSnack] = useState(false)
 
+  const [openFirstStoryTrigger, setOpenFirstStoryTrigger] = useState(0)
+
+  triggerOpenFirstStory = () => setOpenFirstStoryTrigger((o) => o + 1)
+
+  useEffect(() => {
+    if (!openFirstStoryTrigger) return
+
+    if (lastUsedStory) return navigate(lastUsedStory)
+    const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
+    if (firstStoryId) navigate(firstStoryId)
+  }, [openFirstStoryTrigger])
+
   useUpdateEffect(() => setOpenSnack(true), [counter])
 
   useEffect(() => {
     if (!soryId) return
-    setLastUsedStory(soryId)
+    if (sories.has(soryId)) setLastUsedStory(soryId)
   }, [soryId])
 
   const goNext = () => navigate(getNextStory(soryId, ids))
@@ -526,10 +548,7 @@ function SoryBook_({ trees, sories }: SoryBook_) {
   }, [JSON.stringify(ids), soryId])
 
   useMount(() => {
-    if (soryId) return
-    if (lastUsedStory) return navigate(lastUsedStory)
-    const firstStoryId = trees[0].children?.at(0)?.children?.at(0)?.id || ''
-    if (firstStoryId) navigate(firstStoryId)
+    if (!soryId) triggerOpenFirstStory()
   })
 
   const ps = { toggleOutline, rerenderStory, goNext, goPrev, pinNav, togglePinNav, trees, soryId }
@@ -654,3 +673,5 @@ function useCutNavigate() {
 function useCutRouter() {
   return { ...useCutLocation(), ...useCutNavigate() }
 }
+
+let triggerOpenFirstStory = f

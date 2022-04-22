@@ -6,10 +6,9 @@ import { UText_ } from '../UText_'
 export function Quote(ps: UText) {
   return (
     <RStack sx={{ flex: 1 }} alignItems="stretch">
-      <Box sx={{ paddingBottom: '0.5rem', minWidth: '0.25rem' }}>
+      <Box sx={{ paddingBottom: '0.25rem', minWidth: '0.25rem' }}>
         <Left />
       </Box>
-
       <UText_ {...ps} component="pre" />
     </RStack>
   )

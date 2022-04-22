@@ -1,7 +1,6 @@
-import _ from 'lodash'
 import { isCypress } from '../components/utils/hooks/isCypress'
 import { num, str } from './types'
-import { safe } from './utils'
+import { isStr, safe } from './utils'
 
 export const transformedMax = <T>(arr: T[], f: (v: T) => num): num => Math.max(...arr.map(f))
 export const min = <T>(arr: T[], f: (v: T) => num): T => arr.reduce((p, c) => (f(p) - f(c) < 0 ? p : c))
@@ -79,11 +78,30 @@ export function mapAppend<K, V>(map: Map<K, V[]>, key: K, data: V): Map<K, V[]> 
 
 export const insert = (s: str, i: num, data: str): str => s.slice(0, i) + data + s.slice(i)
 export function cutData(s: str, start: num, dataOrEnd: str | num): str {
-  if (_.isString(dataOrEnd)) return s.slice(0, start) + s.slice(start + dataOrEnd.length)
+  if (isStr(dataOrEnd)) return s.slice(0, start) + s.slice(start + dataOrEnd.length)
   return s.slice(0, start) + s.slice(dataOrEnd)
 }
 
 export const sort = <T>(arr: T[], toNum: (element: T) => num = (e) => e as unknown as num): T[] => {
   arr.sort((a, b) => toNum(a) - toNum(b))
   return arr
+}
+
+export const difference = <T>(arr: T[], arr2: T[]): T[] => arr.filter((a) => !arr2.includes(a))
+
+export const _get = <T>(fakeData: Array<str | T>[], id: str): T => safe(fakeData.find(([id_]) => id_ === id))[1] as T
+
+export function _deepCopy<T>(source: T): T {
+  return Array.isArray(source)
+    ? source.map((item) => _deepCopy(item))
+    : source instanceof Date
+    ? new Date(source.getTime())
+    : source && typeof source === 'object'
+    ? Object.getOwnPropertyNames(source).reduce((o, prop) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        Object.defineProperty(o, prop, Object.getOwnPropertyDescriptor(source, prop)!)
+        o[prop] = _deepCopy((source as unknown as { [key: string]: unknown })[prop])
+        return o
+      }, Object.create(Object.getPrototypeOf(source)))
+    : (source as T)
 }

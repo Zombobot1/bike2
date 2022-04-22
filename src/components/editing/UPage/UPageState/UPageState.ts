@@ -215,14 +215,18 @@ export function useUPageState(id: str, workspace: UPageManagement) {
   }
 }
 
-export function _generateTestUPage(data: UPageData): Bytes[] {
+export function _generateTestUPageAndGetCR(data: UPageData) {
   const dto = { updates: getInitialUPageState() }
   const cr = new UPageStateCR('', [...dto.updates], (_, u) => dto.updates.push(u), f)
 
   cr.change({ changes: [{ t: 'insert', ublocks: bfsUBlocks(data.ublocks) }], preview: [] })
   cr.change({ changes: [{ t: 'change', id: 'r', data: { ublocks: data.ublocks } }], preview: [] })
 
-  return dto.updates
+  return { updates: dto.updates, cr }
+}
+
+export function _generateTestUPage(data: UPageData): Bytes[] {
+  return _generateTestUPageAndGetCR(data).updates
 }
 
 export class _TestUPageState extends UPageState {

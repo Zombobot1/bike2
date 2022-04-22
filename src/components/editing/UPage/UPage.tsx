@@ -18,9 +18,10 @@ import { Fetch } from '../../utils/Fetch/Fetch'
 export interface UPage {
   id: str // remount for new id
   workspace: UPageManagement
+  _noOffsetFSB?: bool
 }
 
-function UPage_({ id, workspace }: UPage) {
+function UPage_({ id, workspace, _noOffsetFSB }: UPage) {
   const { data, changer } = useUPageState(id, workspace)
 
   useUserKeyDownForSelection(changer)
@@ -55,7 +56,7 @@ function UPage_({ id, workspace }: UPage) {
 
   return (
     <>
-      <UPage__ ref={upageRef} onMouseUp={onMouseUp}>
+      <UPage__ ref={upageRef} onMouseUp={onMouseUp} sx={_noOffsetFSB ? { transform: 'translateY(0) !important' } : {}}>
         <ColoredBox sx={{ path: { fill: color } }} onMouseEnter={showAppBar} onMouseLeave={hideAppBar}>
           <WaveSVG />
           {/* <ColorPicker variant="contained" size="small">

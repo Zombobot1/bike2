@@ -1,6 +1,6 @@
-import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import { State, str } from '../../../utils/types'
+import { isStr } from '../../../utils/utils'
 import { useGlobalEventListener } from './useGlobalEventListener'
 
 type V<T> = T | (() => T)
@@ -36,7 +36,7 @@ function readValue<T>(key: str, defaultValue: V<T>, storageObject: Storage): T {
     try {
       return JSON.parse(jsonValue)
     } catch (e) {
-      if (_.isString(default_)) return jsonValue as unknown as T
+      if (isStr(default_)) return jsonValue as unknown as T
       throw e
     }
   }

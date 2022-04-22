@@ -1,7 +1,6 @@
-import _ from 'lodash'
 import { ReactNode } from 'react'
 import { bool, Fn } from '../../utils/types'
-import { getIds } from '../../utils/utils'
+import { getIds, isStr } from '../../utils/utils'
 
 const id = getIds()
 
@@ -29,7 +28,7 @@ export const Rec = ({
     <div
       style={{
         width: stretch ? '100%' : `${width}px`,
-        height: stretch ? '100%' : `${height}${_.isString(height) ? '' : 'px'}`,
+        height: stretch ? '100%' : `${height}${isStr(height) ? '' : 'px'}`,
         backgroundColor: color,
         display: isHidden ? 'none' : 'block',
       }}

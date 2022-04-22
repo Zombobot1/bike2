@@ -15,13 +15,16 @@ import { useData } from '../../fb/useData'
 import { useEffect, useState } from 'react'
 import useUpdateEffect from '../utils/hooks/useUpdateEffect'
 import { setIdeaChanger, useSetUPageCursor, useSetUPageInfo } from '../editing/UPage/useUPageInfo'
-import { IdeaDTO, TrainingIdAndDTO, UCardPriority } from '../../fb/FSSchema'
+import { IdeaDTO, TrainingDTO, TrainingIdAndDTO, UCardPriority } from '../../fb/FSSchema'
 import { workspace } from '../application/Workspace/WorkspaceState'
 
 import { Patch } from 'immer'
 import { diffAsPatches } from '../../utils/wrappers/microdiffUtils'
 import { IdeaRelatedState, PartialIdeaData, PartialTrainingData } from './IdeaRelatedState'
 import { previewMaker } from '../editing/UPage/UPageState/crdtParser/previewGeneration'
+import { _generateTestUPageAndGetCR } from '../editing/UPage/UPageState/UPageState'
+import { RuntimeDataKeeper } from '../editing/UPage/UPageState/crdtParser/UPageRuntimeTree'
+import { bfsUBlocks } from '../editing/UPage/UPageState/crdtParser/UPageTree'
 
 export interface IdeaEditor extends UEditorI {
   save: () => bool
@@ -72,27 +75,18 @@ export class IdeaState implements IdeaEditor {
   getUPageId = () => this.#editor.getUPageId()
 
   readonly = () => false // TODO: if user doesn't have write access to page it is true
-  preview = (ucardId: str): str => this.#idea.preview(ucardId)
-  toggleFreeze = (ucardId: str) => this.#idea.toggleFreeze(ucardId)
 
-  changePriority = (ucardId: str, priority: UCardPriority) => this.#idea.changePriority(ucardId, priority)
+  ucardInfos = () => this.#idea.ucardInfos(this.state.data)
+  toggleFreeze = (ucardId: num) => this.#idea.toggleFreeze(ucardId)
+
+  changePriority = (ucardId: num, priority: UCardPriority) => this.#idea.changePriority(ucardId, priority)
 
   save = (): bool => {
     let success = true
-    let changes: Patch[] = []
-    const oldData: IdeaRelatedData = { ucards: (this.#editor._getRoot() as IdeaRelatedData).ucards }
-    let newData = oldData
 
     this.#editor._runtimeChange((_, d) => {
-      const update = this.#idea.save(d as IdeaData)
-      newData = { ucards: update.ucards }
-      success = update.success
+      success = this.#idea.save(d as IdeaData)
     })
-
-    if (success) {
-      changes = diffAsPatches(oldData, newData)
-      this.#editor._applyPatch(previewMaker.bold('Updated ucards'), changes)
-    }
 
     return success
   }
@@ -146,6 +140,8 @@ export class IdeaState implements IdeaEditor {
   triggerUListOpen = (id: str) => this.#editor.triggerUListOpen(id)
   insertUnderSelected = () => this.#editor.insertUnderSelected()
   getSelectedData = (): str => this.#editor.getSelectedData()
+
+  _getTree = () => this.#editor._getTree()
 }
 
 interface State {
@@ -184,6 +180,66 @@ export function useIdeaState(id: str, upageId: str, training?: TrainingIdAndDTO)
     data: state.data,
     changer: changer,
   }
+}
+
+export function _generateTestIdea(data: IdeaData): Bytes[] {
+  const updatesAndCR = _generateTestUPageAndGetCR({ ublocks: data.ublocks })
+  const emptyIdea: IdeaRelatedData = {}
+  const givenIdea: IdeaRelatedData = Object.fromEntries(Object.entries(data).filter(([key]) => key !== 'ublocks'))
+  updatesAndCR.cr._applyPatch([], diffAsPatches(emptyIdea, givenIdea))
+  return updatesAndCR.updates
+}
+
+class TestIdeaState extends IdeaState {
+  constructor(data: IdeaData, training: PartialTrainingData) {
+    const keeper = new RuntimeDataKeeper(bfsUBlocks(data.ublocks))
+    const updates = _generateTestIdea(data)
+    super({ id: '', createIdea: f, ownerId: '', upageId: '', updates }, training, {
+      sendUpdate: f,
+      deleteUpdates: f,
+      deleteFiles: f,
+    })
+    keeper.transferRuntimeData(this._getTree())
+  }
+}
+
+export function useTestIdeaState_(data: IdeaData, initialTraining?: TrainingIdAndDTO) {
+  const [training, setTraining] = useState(initialTraining)
+  const [changer] = useState(
+    () =>
+      new TestIdeaState(data, {
+        training,
+        setTraining: (id, dto) =>
+          setTraining((old) => {
+            if (!old) return { ...(dto as TrainingDTO), id }
+            return { ...old, ...dto, id }
+          }),
+      }),
+  )
+  const [state, setState] = useState(changer.state)
+  changer.setStateSetter(setState)
+
+  const { setCursor } = useSetUPageCursor()
+  useEffect(() => setCursor(state.cursor), [state.cursor])
+
+  const { setUPageInfo } = useSetUPageInfo()
+  useEffect(() => setUPageInfo({ readonly: changer.readonly() }), [changer.readonly()]) // always matches upage readonly-ness
+
+  setIdeaChanger(changer)
+
+  return {
+    data: state.data,
+    changer: changer,
+    training,
+  }
+}
+
+export function _ideaFromDTO(dto: IdeaDTO): IdeaData {
+  const idea = new IdeaState(
+    { updates: dto.updates, id: '', createIdea: f, ownerId: '', upageId: '' },
+    { setTraining: f },
+  )
+  return idea.state.data
 }
 
 export function _mockIdeaServer(initialUpdates: Bytes[]) {

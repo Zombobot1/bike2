@@ -1,5 +1,5 @@
 import { Box } from '@mui/material'
-import { range } from 'lodash'
+import { gen } from '../../../utils/algorithms'
 import { f } from '../../../utils/types'
 import { MUIBasedAutocomplete, UAutocomplete } from './UAutocomplete'
 
@@ -9,7 +9,7 @@ const T = () => {
       <UAutocomplete
         placeholder="Complete me"
         selected="Option 1"
-        options={range(30).map((_, i) => `Option ${i}`)}
+        options={gen(30, (i) => `Option ${i}`)}
         onSelect={f}
       />
     </Box>
@@ -22,7 +22,7 @@ const T2 = () => {
       <MUIBasedAutocomplete
         placeholder="Complete me"
         selected="Option 1"
-        options={range(30).map((_, i) => `Option ${i}`)}
+        options={gen(30, (i) => `Option ${i}`)}
         onSelect={f}
       />
     </Box>

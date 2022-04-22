@@ -91,3 +91,7 @@ declare module '*.module.css' {
   const classes: { readonly [key: string]: string }
   export default classes
 }
+
+// remove when PR is merged https://github.com/DefinitelyTyped/DefinitelyTyped/pull/59434
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare function structuredClone<T>(value: T, transfer?: { transfer: any[] }): T

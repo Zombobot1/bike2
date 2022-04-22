@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { alpha, createTheme, Theme, ThemeOptions, useMediaQuery } from '@mui/material'
-import _ from 'lodash'
 import { bool, JSObject, num, str } from '../../../utils/types'
 import { isCypress } from '../../utils/hooks/isCypress'
 import { useLocalStorage } from '../../utils/hooks/useLocalStorage'
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded'
 import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded'
+import ArrowDropDownRoundedIcon from '@mui/icons-material/ArrowDropDownRounded'
+import { isStr } from '../../../utils/utils'
 
 export const COLORS = {
   white: '#fff',
@@ -33,7 +34,7 @@ export function _apm(theme: Theme, typeOrDarkAlpha: APMType | num = '100', light
 
   const isDark = theme.palette.mode === 'dark'
   const primary = theme.palette.primary.main
-  if (!_.isString(typeOrDarkAlpha)) {
+  if (!isStr(typeOrDarkAlpha)) {
     const darkAlpha = typeOrDarkAlpha as num
     return alpha(primary, isDark ? darkAlpha : lightAlpha || darkAlpha)
   }
@@ -100,6 +101,20 @@ const baseTheme = {
           warning: <WarningAmberRoundedIcon fontSize="small" />,
           success: <CheckCircleOutlineRoundedIcon fontSize="small" />,
         },
+      },
+    },
+
+    MuiBackdrop: {
+      styleOverrides: {
+        root: {
+          backdropFilter: 'blur(5px)',
+        },
+      },
+    },
+
+    MuiSelect: {
+      defaultProps: {
+        IconComponent: ArrowDropDownRoundedIcon,
       },
     },
   },
