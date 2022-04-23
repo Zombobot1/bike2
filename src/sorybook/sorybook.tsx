@@ -573,7 +573,7 @@ function SoryBook_({ trees, sories }: SoryBook_) {
   return (
     <>
       {!pinNav && (
-        <Box sx={{ height: '100%', width: '100%', position: 'relative' }}>
+        <Box sx={{ height: '100%', width: '100%', position: 'relative', overflowX: 'hidden' }}>
           <Pane key={counter} Sory={sories.get(soryId) || SORY} outline={isOutlined} soryId={soryId} />
           <NavMover sx={sx}>
             <NavBar {...ps} />

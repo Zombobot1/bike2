@@ -220,6 +220,8 @@ function useSelectablePage(select: (...ids: strs) => void, unselect: Fn) {
   })
 
   const onMouseUp = useC(() => {
+    if (selectionBox.x === -1) return // mouse up is triggered when menu btn is clicked -> double selection
+
     selectionBox.cleanUp()
 
     select(

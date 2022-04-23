@@ -185,7 +185,10 @@ export class UPageTree {
     if (upages.length) this.#onPagesDeleted(upages, { moveTo })
     const deletedSrc = this.#getSrcForDeletion(ids)
     if (deletedSrc.length) this.#onUFilesDeleted(deletedSrc)
-    return this.#changer.remove(ids)
+    console.log(ids, 'b', JSON.parse(JSON.stringify(this.#data)))
+    const r = this.#changer.remove(ids)
+    console.log('r', JSON.parse(JSON.stringify(this.#data)))
+    return r
   }
   rearrange = (underId: str, ids: strs): UPageRawChanges => this.#changer.rearrange(underId, ids)
 

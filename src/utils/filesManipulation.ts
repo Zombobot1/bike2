@@ -27,6 +27,7 @@ export function readImageFromKeyboard(onRead: (f: File) => void) {
     const imageBlob = await retrieveImageFromClipboard(data)
     if (imageBlob) onRead(new File([imageBlob], `img.png`, { type: 'image/png' }))
   }
+  // doesn't work in firefox for localhost
   return () => navigator.clipboard.read().then(retrieveImage).catch(console.error)
 }
 

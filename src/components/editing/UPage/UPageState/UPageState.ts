@@ -95,7 +95,7 @@ export class UPageState implements UPageEditor {
     const movingBlocks = this.#editor.state.cursor.selected.map((id) => this.#editor._getTree().getUBlock(id))
     const blocksPreview = getDeletedBlocksPreview(movingBlocks)
     const update = this.#editor._change((tree) => {
-      const changes = tree.remove(this.#editor.state.cursor.selected, { moveTo: pageId })
+      const changes = tree.remove(this.#editor.state.cursor.selected, { moveTo: pageId }) // delete selected
       return {
         changes,
         preview: previewMaker.bold('Organized blocks into grid', blocksPreview),
@@ -103,7 +103,6 @@ export class UPageState implements UPageEditor {
       }
     })
 
-    this.#editor.deleteSelected({ moveTo: pageId })
     this.#editor.unselect()
 
     this.#handleMoveToPage(pageId, (pageUpdates: Bytes[]) => {

@@ -13,6 +13,7 @@ import { UFile } from '../types'
 
 export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
   const data = d as UMediaFileData
+  console.log({ data })
   const [tmpSrc, setTmpSrc] = useState('')
 
   const onUpload = (src: str) => {
@@ -53,6 +54,7 @@ export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
           size="small"
           onClick={() => {
             setData(id, { src: '' })
+            setTmpSrc('')
             ps.deleteFile(id, upageId)
           }}
         >

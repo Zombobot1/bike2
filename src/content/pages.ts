@@ -12,15 +12,15 @@ const catsPage: UPageData = {
 
 const medium: UPageData = {
   ublocks: [
-    _blocks.test.kittensHL,
-    _blocks.test.kittensS,
+    // _blocks.test.kittensHL,
+    // _blocks.test.kittensS,
     p('small'),
-    _blocks.test.kittensH2L,
+    // _blocks.test.kittensH2L,
     _blocks.test.kittens2S,
-    _blocks.test.kittens3S,
-    _blocks.test.kittensH3L,
-    _blocks.test.fatCode,
-    _blocks.test.kittens4S,
+    // _blocks.test.kittens3S,
+    // _blocks.test.kittensH3L,
+    // _blocks.test.fatCode,
+    // _blocks.test.kittens4S,
   ],
 }
 
