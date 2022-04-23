@@ -1,7 +1,8 @@
 import { useMount } from '../../../utils/hooks/hooks'
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded'
 import { useUImageFile } from '../useUFile'
-import { alpha, IconButton, styled } from '@mui/material'
+import { alpha, Box, IconButton, styled, CircularProgress } from '@mui/material'
+import { circularProgressClasses } from '@mui/material/CircularProgress'
 import { str } from '../../../../utils/types'
 import { useState } from 'react'
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded'
@@ -13,7 +14,6 @@ import { UFile } from '../types'
 
 export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
   const data = d as UMediaFileData
-  console.log({ data })
   const [tmpSrc, setTmpSrc] = useState('')
 
   const onUpload = (src: str) => {
@@ -61,9 +61,36 @@ export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
           <DeleteRoundedIcon />
         </Delete>
       )}
+      {ps.isUploading && (
+        <ProgressWrapper data-cy="img-preloader">
+          <CircularProgress
+            variant="indeterminate"
+            sx={{
+              color: (theme) => theme.palette.primary.main,
+              left: 0,
+              [`& .${circularProgressClasses.circle}`]: {
+                strokeLinecap: 'round',
+              },
+            }}
+            size={20}
+            thickness={4}
+          />
+        </ProgressWrapper>
+      )}
     </ResizableWidth>
   )
 }
+const ProgressWrapper = styled(Box)(({ theme }) => ({
+  position: 'absolute',
+  right: '-0.75rem',
+  bottom: '-0.75rem',
+  width: '2rem',
+  height: '2rem',
+  borderRadius: '50%',
+  padding: '6px',
+  // display: 'flex', // strange anomaly occurs, had to use padding 6px
+  backgroundColor: theme.palette.background.paper,
+}))
 
 const Img = styled('img')(({ theme }) => ({
   display: 'block',
