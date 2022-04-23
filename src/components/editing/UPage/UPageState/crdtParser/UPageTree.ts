@@ -27,6 +27,7 @@ import { TOCs } from '../types'
 import { UPageRawChanges } from './UPageStateCR'
 import { UPageTreeStructureChanger } from './UPageTreeChanger'
 import { isUBlockInOpenNode } from './ulistManagement'
+import { DeleteFiles, FileInfos } from '../../../UFile/FileUploader'
 
 export type OnPageAdded = (newPageId: str, underId: str) => void
 export type OnPagesDeleted = (ids: strs, o?: { moveTo?: str }) => void
@@ -42,14 +43,14 @@ export class UPageTree {
   #getId: GetId
   #onPageAdded: OnPageAdded
   #onPagesDeleted: OnPagesDeleted // TODO: delete page when it is turned into something else
-  #onUFilesDeleted: SetStrs
+  #onUFilesDeleted: DeleteFiles
 
   constructor(
     data: WithUBlocks,
     getId: GetId,
     onPageAdded: OnPageAdded,
     onPagesDeleted: OnPagesDeleted,
-    onUFilesDeleted: SetStrs,
+    onUFilesDeleted: DeleteFiles,
   ) {
     const { idAndBlock, idAndParent, bfsRoute } = bfsUPage(data)
     this.#idAndBlock = idAndBlock
@@ -183,12 +184,9 @@ export class UPageTree {
   remove = (ids: strs, { moveTo = '' } = {}): UPageRawChanges => {
     const upages = this.#getUPagesForDeletion(ids)
     if (upages.length) this.#onPagesDeleted(upages, { moveTo })
-    const deletedSrc = this.#getSrcForDeletion(ids)
-    if (deletedSrc.length) this.#onUFilesDeleted(deletedSrc)
-    console.log(ids, 'b', JSON.parse(JSON.stringify(this.#data)))
-    const r = this.#changer.remove(ids)
-    console.log('r', JSON.parse(JSON.stringify(this.#data)))
-    return r
+    const deletedFileInfos = this.#getFileInfoForDeletion(ids)
+    if (deletedFileInfos.length) this.#onUFilesDeleted(deletedFileInfos)
+    return this.#changer.remove(ids)
   }
   rearrange = (underId: str, ids: strs): UPageRawChanges => this.#changer.rearrange(underId, ids)
 
@@ -249,7 +247,7 @@ export class UPageTree {
       return r
     }
 
-    if (hasSrc(block)) this.#onUFilesDeleted([(block.data as { src: str }).src])
+    if (hasSrc(block)) this.#onUFilesDeleted([{ blockId: block.id, src: (block.data as { src: str }).src }])
 
     const newData = updateData ? data : turnUBlockData(type, block.data) // data was updated
     block.type = type
@@ -261,7 +259,7 @@ export class UPageTree {
     return r
   }
 
-  getAllSrc = (): strs => this.#getAllSrc(this.#bfsRoute)
+  getAllFileInfos = (): FileInfos => this.#getAllFileInfos(this.#bfsRoute)
 
   #insert = (ublocks: UBlocks, underId: str, parentId: str): UPageRawChanges =>
     this.#changer.insert(ublocks, underId, parentId)
@@ -277,15 +275,15 @@ export class UPageTree {
     return [...pages, ...this.#getPagesIn(selectedIds)]
   }
 
-  #getSrcForDeletion = (ids: strs) => this.#getAllSrc(ids.map((id) => this.getUBlock(id)))
+  #getFileInfoForDeletion = (ids: strs) => this.#getAllFileInfos(ids.map((id) => this.getUBlock(id)))
 
-  #getAllSrc = (ublocks: UBlocks): strs => {
-    const r = [] as strs
+  #getAllFileInfos = (ublocks: UBlocks): FileInfos => {
+    const r = [] as FileInfos
     ublocks.forEach((b) => {
       if (!hasSrc(b)) return
 
       const data = b.data as { src: str }
-      r.push(data.src)
+      r.push({ blockId: b.id, src: data.src })
     })
     return r
   }

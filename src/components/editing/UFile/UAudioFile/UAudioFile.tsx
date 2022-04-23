@@ -15,7 +15,7 @@ export function UAudioFile({ id, data: d, setData, readonly, upageId }: UFile) {
       src={data.src}
       onDelete={() => {
         setData(id, { src: '' })
-        deleteFile(id, upageId)
+        deleteFile([{ blockId: id, src: data.src }], upageId)
       }}
       readonly={readonly}
     />

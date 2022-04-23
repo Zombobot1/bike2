@@ -25,7 +25,7 @@ export function UFile_({ id, data: d, setData, readonly, upageId }: UFileP) {
         <Delete
           onClick={prevented(() => {
             setData(id, { src: '' })
-            deleteFile(id, upageId)
+            deleteFile([{ blockId: id, src: data.src }], upageId)
           })}
         >
           <DeleteRoundedIcon />

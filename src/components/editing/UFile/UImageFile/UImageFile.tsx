@@ -55,7 +55,7 @@ export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
           onClick={() => {
             setData(id, { src: '' })
             setTmpSrc('')
-            ps.deleteFile(id, upageId)
+            ps.deleteFile([{ blockId: id, src: data.src }], upageId)
           }}
         >
           <DeleteRoundedIcon />

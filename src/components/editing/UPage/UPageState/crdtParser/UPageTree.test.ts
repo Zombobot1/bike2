@@ -1,9 +1,10 @@
 import { assert, describe, vi, it, expect } from 'vitest'
-import { f, SetStrs } from '../../../../../utils/types'
+import { f } from '../../../../../utils/types'
 import { uuidS } from '../../../../../utils/wrappers/uuid'
 import { UBlocks, UPageBlockData } from '../../ublockTypes'
 import { bfsUBlocks, OnPagesDeleted, UPageTree } from './UPageTree'
 import { _generators, _stateToStr } from './_fakeUPage'
+import { DeleteFiles } from '../../../UFile/FileUploader'
 
 describe('UPageTree', () => {
   describe('insertion', () => {
@@ -97,7 +98,12 @@ describe('UPageTree', () => {
         onFilesDeleted: vi.fn(),
       })
       tree.remove(['img'])
-      expect(onFilesDeleted).toBeCalledWith(['s'])
+      expect(onFilesDeleted).toBeCalledWith([
+        {
+          blockId: 'img',
+          src: 's',
+        },
+      ])
     })
 
     it('deletes file when its block type is changed', () => {
@@ -105,7 +111,12 @@ describe('UPageTree', () => {
         onFilesDeleted: vi.fn(),
       })
       tree.changeType('img', 'text')
-      expect(onFilesDeleted).toBeCalledWith(['s'])
+      expect(onFilesDeleted).toBeCalledWith([
+        {
+          blockId: 'img',
+          src: 's',
+        },
+      ])
     })
   })
 
@@ -215,7 +226,7 @@ const { b, e, g, l, lr, list } = _generators
 
 const _getTree = (...ublocks: UBlocks) => new UPageTree({ ublocks }, uuidS(10), f, f, f)
 
-const _getTreeToSpy = (ublocks: UBlocks, o?: { onPagesDeleted?: OnPagesDeleted; onFilesDeleted?: SetStrs }) => ({
+const _getTreeToSpy = (ublocks: UBlocks, o?: { onPagesDeleted?: OnPagesDeleted; onFilesDeleted?: DeleteFiles }) => ({
   tree: new UPageTree({ ublocks }, uuidS(10), f, o?.onPagesDeleted || f, o?.onFilesDeleted || f),
   onPagesDeleted: o?.onPagesDeleted,
   onFilesDeleted: o?.onFilesDeleted,

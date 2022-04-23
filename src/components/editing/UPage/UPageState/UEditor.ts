@@ -23,6 +23,7 @@ import { RuntimeDataKeeper } from './crdtParser/UPageRuntimeTree'
 import { UPageChange, UPageStateCR } from './crdtParser/UPageStateCR'
 import { OnPageAdded, OnPagesDeleted, UPageTree } from './crdtParser/UPageTree'
 import { UPageCursor } from './types'
+import { FileInfos } from "../../UFile/FileUploader";
 
 interface CursorMutation {
   moveFocusUp: (id?: str, xOffset?: num) => void
@@ -83,7 +84,7 @@ type Constructor = {
   updates: Bytes[]
 
   addImage: (id: str, blobUrl: str) => void
-  deleteFiles: (ids: str | strs, upageId: str) => void
+  deleteFiles: (fileInfos: { blockId: str; src: str }[], upageId: str) => void
 
   sendUpdate: SendUPageUpdate
   deleteUpdates: DeleteUPageUpdates
@@ -104,7 +105,7 @@ export class UEditor implements UEditorI {
   #setState: (state: UEditorState) => void = f
 
   #addImage: (id: str, blobUrl: str) => void // other files are added outside this class
-  #deleteFiles: (src: strs, upageId: str) => void
+  #deleteFiles: (fileInfos: FileInfos, upageId: str) => void
   #getId: (options?: { long?: bool }) => str
 
   #onPageAdded: OnPageAdded
@@ -333,7 +334,7 @@ export class UEditor implements UEditorI {
   #handleCRChange = (newState?: WithUBlocks, { keepRuntimeData = true } = {}) => {
     if (!newState) return
 
-    const srcBefore = this.#tree.getAllSrc()
+    const srcBefore = this.#tree.getAllFileInfos()
 
     if (keepRuntimeData) {
       const keeper = new RuntimeDataKeeper(this.#tree.bfs)
@@ -341,9 +342,9 @@ export class UEditor implements UEditorI {
       keeper.transferRuntimeData(this.#tree)
     } else this.#remakeTree(newState)
 
-    const srcAfter = this.#tree.getAllSrc()
-    const deletedSrc = srcBefore.filter((src) => !srcAfter.includes(src))
-    if (deletedSrc.length) this.#deleteFiles(deletedSrc, this.#id)
+    const srcAfter = this.#tree.getAllFileInfos()
+    const deletedFileInfos = srcBefore.filter(({ src }) => !srcAfter.find((info) => info.src == src))
+    if (deletedFileInfos.length) this.#deleteFiles(deletedFileInfos, this.#id)
 
     this.#state = { ...this.#state }
     this.#state.data = newState

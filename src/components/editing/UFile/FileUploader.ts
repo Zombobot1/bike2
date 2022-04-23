@@ -3,10 +3,13 @@
 import { uploadFile } from '../../../fb/storage'
 import { deleteFile } from '../../../fb/upageChangesAPI'
 import { imageFromSrc, srcfy } from '../../../utils/filesManipulation'
-import { str, SetStr, bool, strs, f } from '../../../utils/types'
+import { str, SetStr, bool, f } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 
 type UploadingFile = { tmpSrc: str; onUpload?: SetStr; uploaded?: bool }
+
+export type FileInfos = { blockId: str; src: str }[]
+export type DeleteFiles = (fileInfos: FileInfos) => void
 
 const idAndFile: Map<str, UploadingFile> = new Map()
 
@@ -55,16 +58,14 @@ class FileUploader {
     }
   }
 
-  delete = (ids: str | strs, upageId: str) => {
-    if (!Array.isArray(ids)) ids = [ids]
-
-    ids.forEach((id) => {
-      const data = idAndFile.get(id)
-      if (!data || data.uploaded) return this.#deleteFile(id, upageId)
+  delete = (fileInfos: FileInfos, upageId: str) => {
+    fileInfos.forEach(({ blockId, src }) => {
+      const data = idAndFile.get(blockId)
+      if (!data || data.uploaded) return this.#deleteFile(src, upageId)
 
       // delete requested before src was set -> delete file
       data.onUpload = (src) => {
-        idAndFile.delete(id)
+        idAndFile.delete(blockId)
         this.#deleteFile(src, upageId)
       }
     })
@@ -89,6 +90,6 @@ export let fileUploader = new FileUploader()
 
 export function _mockFileUploader() {
   fileUploader = new FileUploader(f)
-  fileUploader.delete([''], '')
+  fileUploader.delete([{ blockId: '', src: '' }], '')
   return () => (fileUploader = new FileUploader())
 }
