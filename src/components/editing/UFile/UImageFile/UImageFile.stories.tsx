@@ -13,6 +13,12 @@ function T(ps: UBlockContent) {
   const [state, setState] = useState(ps.data as UMediaFileData)
   return (
     <Box sx={{ width: 500 }}>
+      {/* <Box sx={{ position: 'relative' }}>
+        <img src="src/content/fluffy.jpg" style={{ display: 'block', width: '100%' }} />
+        <Box
+          sx={{ position: 'absolute', right: 0, bottom: 0, width: '2rem', height: '2rem', backgroundColor: 'red' }}
+        ></Box>
+      </Box> */}
       <UImageFile {...ps} data={state} setData={(_, src) => setState(src as UMediaFileData)} upageId="" />
     </Box>
   )

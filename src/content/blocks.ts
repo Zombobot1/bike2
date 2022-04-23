@@ -288,5 +288,3 @@ const test: IdAndBlocks = {
 export const _blocks = { test, pets }
 
 export const _fluffyBlob = () => imageFromSrc('src/content/fluffy.jpg')
-
-// export const _kittensForLists: IdAndBlocks = [['petsForFocus', { type: 'page', data: $(_kittensForListsPage) }]]
