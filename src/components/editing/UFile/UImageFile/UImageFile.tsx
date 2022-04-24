@@ -1,4 +1,4 @@
-import { useMount } from '../../../utils/hooks/hooks'
+import { useMount, useReactive } from '../../../utils/hooks/hooks'
 import ImageRoundedIcon from '@mui/icons-material/ImageRounded'
 import { useUImageFile } from '../useUFile'
 import { alpha, Box, IconButton, styled, CircularProgress } from '@mui/material'
@@ -11,31 +11,25 @@ import { ResizableWidth } from '../../../utils/ResizableWidth/ResizableWidth'
 import { UBlockIdAttribute, UMediaFileData } from '../../UPage/ublockTypes'
 import { fileUploader } from '../FileUploader'
 import { UFile } from '../types'
+import { imageFromSrc, srcfy } from '../../../../utils/filesManipulation'
 
 export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
   const data = d as UMediaFileData
-  const [tmpSrc, setTmpSrc] = useState('')
 
   const onUpload = (src: str) => {
-    // do not replace tmp src to avoid flickering (even with server)
     // setTmpSrc('') // in test mode without server image flickers on insertion because tmpSrc is replaced by real immediately
+    // do not replace tmp src to avoid flickering (even with server)
+    // unset it when image is deleted (otherwise reactivity is broken)
     setData(id, { src })
   }
 
-  const ps = useUImageFile(
-    id,
-    (src) => setData(id, { src }),
-    (tmpFile) => {
-      setTmpSrc(fileUploader.uploadBlob(id, tmpFile, onUpload)) // will unsubscribe on unmount
-    },
-  )
+  const ps = useUImageFile(id, upageId, onUpload, (tmpFile) => setData(id, { $tmpSrc: srcfy(tmpFile) }))
 
   useMount(() => {
-    if (!data.src && fileUploader.hasImage(id)) setTmpSrc(fileUploader.startUpload(id, onUpload))
-    return () => fileUploader.unsubscribe(id, upageId)
+    if (!data.src && data.$tmpSrc) imageFromSrc(data.$tmpSrc).then((f) => ps.uploadFile(f))
   })
 
-  if (!tmpSrc && !data.src) return <Drop1zone {...ps} label="image" icon={<ImageRoundedIcon />} />
+  if (!data.$tmpSrc && !data.src) return <Drop1zone {...ps} label="image" icon={<ImageRoundedIcon />} />
 
   // undefined on first render
   const parent = document.querySelector(`[${UBlockIdAttribute}="${id}"]`)?.parentElement as HTMLDivElement | undefined
@@ -48,13 +42,12 @@ export function UImageFile({ id, data: d, setData, readonly, upageId }: UFile) {
       updateWidth={(width) => setData(id, { width })}
       maxWidth={maxWidth}
     >
-      <Img src={tmpSrc || data.src} data-cy="img" />
+      <Img src={data.$tmpSrc || data.src} data-cy="img" />
       {!readonly && (
         <Delete
           size="small"
           onClick={() => {
-            setData(id, { src: '' })
-            setTmpSrc('')
+            setData(id, { src: '', $tmpSrc: '' })
             ps.deleteFile([{ blockId: id, src: data.src }], upageId)
           }}
         >

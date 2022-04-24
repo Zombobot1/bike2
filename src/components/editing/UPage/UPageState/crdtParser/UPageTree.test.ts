@@ -10,32 +10,32 @@ describe('UPageTree', () => {
   describe('insertion', () => {
     it('inserts in empty form', () => {
       const tree = _getTree(e())
-      tree.onUTextPaste('', 'e', '0\n\n1', 'text', f, f)
+      tree.onUTextPaste('', 'e', '0\n\n1', 'text', f)
       assert.equal(_treeToStr(tree), '{e, [0, 1]}')
     })
 
     it('inserts in not-empty form', () => {
       const tree = _getTree(e([b('0')]))
-      tree.onUTextPaste('0', 'e', '1\n\n2', 'text', f, f)
+      tree.onUTextPaste('0', 'e', '1\n\n2', 'text', f)
       assert.equal(_treeToStr(tree), '{e, [0, 1, 2]}')
     })
 
     it('inserts in grid', () => {
       const tree = _getTree(g([b('00')], [b('01'), b('11')]))
-      tree.onUTextPaste('01', 'g', '1\n\n2', 'text', f, f)
+      tree.onUTextPaste('01', 'g', '1\n\n2', 'text', f)
       assert.equal(_treeToStr(tree), '[{, [00]}, {, [01, 1, 2, 11]}]') // {, - because width is ''
     })
 
     it('inserts in list', () => {
       const tree = _getTree(lr(l('0'), l('1', [l('10')])))
-      tree.onUTextPaste('10', 'l', '11\n\n12', 'text', f, f)
+      tree.onUTextPaste('10', 'l', '11\n\n12', 'text', f)
       assert.equal(_treeToStr(tree), '[{0}, {1, [{10}, {11}, {12}]}]')
     })
 
     it('adds empty block', () => {
       const tree = _getTree(b('0'))
-      tree.onUTextPaste('0', 'r', '', 'text', f, f)
-      tree.onUTextPaste('10', 'r', '2', 'text', f, f)
+      tree.onUTextPaste('0', 'r', '', 'text', f)
+      tree.onUTextPaste('10', 'r', '2', 'text', f)
       assert.equal(_treeToStr(tree), '0__2')
     })
   })
@@ -61,6 +61,12 @@ describe('UPageTree', () => {
       tree.remove(['1', '11', 'l01'])
 
       assert.equal(_treeToStr(tree), '0_[{, [[{l0, [{l02}]}], 10]}, {, [01]}]') // {, - because width is ''
+    })
+
+    it('bug: deletes extra nodes if id is duplicated', () => {
+      const tree = _getTree(b('0'), b('1'), b('2'))
+      tree.remove(['1', '1', '1'])
+      assert.equal(_treeToStr(tree), '0_2') // {, - because width is ''
     })
 
     it('deletes list node if it becomes empty | deletes empty list', () => {

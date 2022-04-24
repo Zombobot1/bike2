@@ -197,7 +197,6 @@ export class UPageTreeStructureChanger {
     parentId: str, // factories are considered as text, it's necessary to know their parents
     data: str,
     type: UBlockType,
-    addImage: (id: str, src: str) => void,
     setIds: SetStrs,
   ): UPageRawChanges => {
     let ublocks = [] as UBlocks
@@ -209,8 +208,7 @@ export class UPageTreeStructureChanger {
         : [{ id: this.#getId(), data: '', type }] // onFactoryEnter
     } else {
       const id = this.#getId()
-      addImage(id, data as str) // let it be here instead of upageState for completeness
-      const imageData: UMediaFileData = { src: '' } // image will be accessed through fileUploader
+      const imageData: UMediaFileData = { src: '', $tmpSrc: data } // image will be accessed through fileUploader
       ublocks = [{ id, data: imageData, type }]
     }
 

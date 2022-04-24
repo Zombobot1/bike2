@@ -24,6 +24,8 @@ export class UAudioFileData {
 export class UMediaFileData {
   src = ''
   width? = 900
+  $tmpSrc?: str
+  // TODO: add height
 }
 
 export class UFileData {

@@ -38,7 +38,6 @@ export class IdeaState implements IdeaEditor {
     idea: PartialIdeaData & { updates: Bytes[] },
     training: PartialTrainingData,
     {
-      addImage = fileUploader.prepareUpload,
       deleteFiles = fileUploader.delete,
       sendUpdate = sendIdeaUpdate,
       deleteUpdates = deleteIdeaUpdates,
@@ -52,7 +51,6 @@ export class IdeaState implements IdeaEditor {
     this.#editor = new UEditor({
       id,
       updates,
-      addImage,
       deleteFiles,
       deleteUpdates,
       getId,
@@ -266,7 +264,6 @@ export function _ideaS(
     { training, setTraining: f },
     {
       getId: uuidS(id),
-      addImage: f,
       deleteFiles: f,
       sendUpdate,
     },

@@ -6,7 +6,7 @@ import { imageFromSrc, srcfy } from '../../../utils/filesManipulation'
 import { str, SetStr, bool, f } from '../../../utils/types'
 import { safe } from '../../../utils/utils'
 
-type UploadingFile = { tmpSrc: str; onUpload?: SetStr; uploaded?: bool }
+type UploadingFile = { onUpload?: SetStr; uploaded?: bool }
 
 export type FileInfos = { blockId: str; src: str }[]
 export type DeleteFiles = (fileInfos: FileInfos) => void
@@ -20,29 +20,7 @@ class FileUploader {
     this.#deleteFile = removeFile
   }
 
-  uploadFile = (id: str, file: File, onUpload: (url: str) => void) => this.#upload(id, file, onUpload)
-
-  // for image pasted
-  uploadBlob = (id: str, blob: Blob, onUpload: (url: str) => void): str => {
-    const tmpFile = new File([blob], 'img.png', { type: 'image/png' })
-    this.#upload(id, tmpFile, onUpload)
-    return srcfy(blob)
-  }
-
-  // triggered in UPageState to share src with new UImage
-  // TODO: replace with $tmpSrc in UMediaFile to avoid call in UPageState
-  prepareUpload = (id: str, blobUrl: str) => {
-    idAndFile.set(id, { tmpSrc: blobUrl })
-  }
-
-  // onUpload (setSrc) is available only when UImage is mounted -> it is a separate function
-  startUpload = (id: str, onUpload: (url: str) => void): str => {
-    const data = safe(idAndFile.get(id))
-    imageFromSrc(data.tmpSrc).then((f) => this.#upload(id, f, onUpload))
-    return data.tmpSrc
-  }
-
-  hasImage = (id: str): bool => idAndFile.has(id) // used in new UImage
+  upload = (id: str, file: File, onUpload: (url: str) => void) => this.#upload(id, file, onUpload)
 
   // called on unmount
   unsubscribe = (id: str, upageId: str) => {
@@ -72,7 +50,7 @@ class FileUploader {
   }
 
   #upload = (id: str, file: File, onUpload: (url: str) => void) => {
-    if (!idAndFile.has(id)) idAndFile.set(id, { tmpSrc: '' })
+    if (!idAndFile.has(id)) idAndFile.set(id, {}) // one UImage can upload multiple files
 
     const data = safe(idAndFile.get(id))
 

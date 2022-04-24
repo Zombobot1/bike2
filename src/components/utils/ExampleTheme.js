@@ -12,9 +12,9 @@ const exampleTheme = {
     h5: 'editor-heading-h5',
   },
   list: {
-    nested: {
-      listitem: 'editor-nested-listitem',
-    },
+    // nested: {
+    //   listitem: 'editor-nested-listitem',
+    // },
     ol: 'editor-list-ol',
     ul: 'editor-list-ul',
     listitem: 'editor-listitem',

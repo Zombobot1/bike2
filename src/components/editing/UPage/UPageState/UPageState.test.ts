@@ -13,14 +13,13 @@ describe('UPageState', () => {
   })
 
   it('adds image block | selects it | gives preview for it', () => {
-    const { preview, addImage, page } = _upageS('0', { addImage: vi.fn() })
+    const { preview, page } = _upageS('0')
 
     page.onUTextPaste('blob:', '0', 'image')
     assert.equal(page.state.cursor.selected.length, 1)
     assert.equal(page.state.cursor.focus, undefined)
 
-    assert.equal(_stateToStr(page.state.data), '0_{}')
-    expect(addImage).toBeCalledWith('1', 'blob:')
+    assert.equal(_stateToStr(page.state.data), '0_{, blob:}')
     assert.equal(_previewToStr(preview()), '<b>Added image</b>')
 
     page.change('1', { src: 'img.de', width: 900 })
@@ -142,6 +141,16 @@ describe('UPageState', () => {
     assert.equal(page.state.data.fullWidth, false)
     page.triggerTurnOffTOC()
     assert.equal(page.state.data.turnOffTOC, true)
+  })
+
+  it('does not select same node multiple times', () => {
+    const { page } = _upageS('0_1_2')
+
+    page.select('0', '1')
+    assert.deepEqual(page.state.cursor.selected, ['0', '1'])
+    page.select('1')
+    page.select('1', '2')
+    assert.deepEqual(page.state.cursor.selected, ['0', '1', '2'])
   })
 
   it('selects blocks | deletes pages', () => {

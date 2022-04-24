@@ -23,7 +23,7 @@ import { RuntimeDataKeeper } from './crdtParser/UPageRuntimeTree'
 import { UPageChange, UPageStateCR } from './crdtParser/UPageStateCR'
 import { OnPageAdded, OnPagesDeleted, UPageTree } from './crdtParser/UPageTree'
 import { UPageCursor } from './types'
-import { FileInfos } from "../../UFile/FileUploader";
+import { FileInfos } from '../../UFile/FileUploader'
 
 interface CursorMutation {
   moveFocusUp: (id?: str, xOffset?: num) => void
@@ -83,7 +83,6 @@ type Constructor = {
   id: str
   updates: Bytes[]
 
-  addImage: (id: str, blobUrl: str) => void
   deleteFiles: (fileInfos: { blockId: str; src: str }[], upageId: str) => void
 
   sendUpdate: SendUPageUpdate
@@ -104,7 +103,6 @@ export class UEditor implements UEditorI {
   #state = new UEditorState()
   #setState: (state: UEditorState) => void = f
 
-  #addImage: (id: str, blobUrl: str) => void // other files are added outside this class
   #deleteFiles: (fileInfos: FileInfos, upageId: str) => void
   #getId: (options?: { long?: bool }) => str
 
@@ -118,7 +116,6 @@ export class UEditor implements UEditorI {
     this.#cr = new UPageStateCR(args.id, args.updates, args.sendUpdate, args.deleteUpdates)
     this.#state.data = this.#cr.state
 
-    this.#addImage = args.addImage
     this.#deleteFiles = args.deleteFiles
 
     this.#onPageAdded = args.onPageAdded
@@ -163,7 +160,7 @@ export class UEditor implements UEditorI {
   }
 
   select = (...ids: strs) => {
-    this.#changeCursor((c) => c.selected.push(...ids))
+    this.#changeCursor((c) => c.selected.push(...ids.filter((id) => !c.selected.includes(id))))
   }
 
   selectAll = () => {
@@ -361,7 +358,7 @@ export class UEditor implements UEditorI {
   ) =>
     this._change((tree, cursor) => {
       let ids = [] as strs
-      const changes = tree.onUTextPaste(underId, parentId, data, type, this.#addImage, (newIds) => (ids = newIds))
+      const changes = tree.onUTextPaste(underId, parentId, data, type, (newIds) => (ids = newIds))
       let preview = [] as ChangePreview
 
       if (type === 'image') {

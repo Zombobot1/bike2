@@ -182,6 +182,7 @@ export class UPageTree {
   }
 
   remove = (ids: strs, { moveTo = '' } = {}): UPageRawChanges => {
+    ids = [...new Set(ids)] // deletes extra nodes if id is duplicated
     const upages = this.#getUPagesForDeletion(ids)
     if (upages.length) this.#onPagesDeleted(upages, { moveTo })
     const deletedFileInfos = this.#getFileInfoForDeletion(ids)
@@ -218,14 +219,8 @@ export class UPageTree {
   onUTextEnter = (dataAbove: str, dataBelow: str, underId: str, setFocus: SetStr): UPageRawChanges =>
     this.#changer.onUTextEnter(dataAbove, dataBelow, underId, setFocus)
 
-  onUTextPaste = (
-    id: str,
-    parentId: str,
-    data: str,
-    type: UBlockType,
-    addImage: (id: str, src: str) => void,
-    setIds: SetStrs,
-  ): UPageRawChanges => this.#changer.onUTextPaste(id, parentId, data, type, addImage, setIds)
+  onUTextPaste = (id: str, parentId: str, data: str, type: UBlockType, setIds: SetStrs): UPageRawChanges =>
+    this.#changer.onUTextPaste(id, parentId, data, type, setIds)
 
   changeType = (id: str, type: UBlockType, data?: UBlockData): UPageRawChanges => {
     const r = [] as UPageRawChanges

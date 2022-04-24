@@ -40,7 +40,6 @@ export class UPageState implements UPageEditor {
     getPageName: (id: str) => str,
     handleMoveToPage = moveBlocks,
     {
-      addImage = fileUploader.prepareUpload,
       deleteFiles = fileUploader.delete,
       sendUpdate = sendUPageUpdate,
       deleteUpdates = deleteUPageUpdates,
@@ -50,7 +49,6 @@ export class UPageState implements UPageEditor {
     this.#editor = new UEditor({
       id,
       updates,
-      addImage,
       deleteFiles,
       deleteUpdates,
       getId,
@@ -285,10 +283,7 @@ const randomNames = [
   'Firefighter Discovers A New Planet',
 ]
 
-export function _upageS(
-  init: _UPageStates,
-  { id = 1, addImage = f, deleteFiles = f, onPageAdded = f, onPagesDeleted = f } = {},
-) {
+export function _upageS(init: _UPageStates, { id = 1, deleteFiles = f, onPageAdded = f, onPagesDeleted = f } = {}) {
   let preview = [] as ChangePreview
   return {
     page: new UPageState(
@@ -299,7 +294,6 @@ export function _upageS(
       () => '',
       () => Promise.resolve(),
       {
-        addImage,
         deleteFiles,
         getId: uuidS(id),
         sendUpdate: (_, __, meta) => {
@@ -309,7 +303,6 @@ export function _upageS(
     ),
     onPageAdded,
     onPagesDeleted,
-    addImage,
     deleteFiles,
     preview: () => preview,
   }
